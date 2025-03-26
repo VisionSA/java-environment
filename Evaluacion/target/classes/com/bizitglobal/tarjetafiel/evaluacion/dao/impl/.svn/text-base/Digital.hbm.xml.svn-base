@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.Digital" table="t_vis_eva_digitales" >
+	<id name="idDigital" type="java.lang.Long" column="c_id_digital">
+		<generator class="increment" />
+	</id>
+
+	<many-to-one name="individuoEvaluacion" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.IndividuoEvaluacion" not-null="false" >
+		<column name="c_id_individuo" />
+	</many-to-one>
+
+	<property name="idOperador" type="java.lang.Long" column="c_id_operador" not-null="false" length="2560"/>
+
+	<many-to-one name="tipoDigital" class="com.bizitglobal.tarjetafiel.general.negocio.TipoDigital" not-null="false" >
+		<column name="c_id_tipo_digital" />
+	</many-to-one>
+
+	<property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="false" length="3594"/>
+
+	<property name="url" type="java.lang.String" column="c_url" not-null="false" length="255"/>
+	
+	<property name="descripcion" type="java.lang.String" column="c_descripcion" not-null="false" length="100"/>
+
+</class>
+</hibernate-mapping>

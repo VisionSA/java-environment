@@ -1,0 +1,5943 @@
+package com.bizitglobal.webapp.faces.beans.transacciones;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.net.Socket;
+import java.sql.Timestamp;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.List;
+
+import javax.faces.component.html.HtmlGraphicImage;
+import javax.faces.component.html.HtmlSelectOneMenu;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.apache.myfaces.custom.fileupload.UploadedFile;
+import org.apache.myfaces.renderkit.html.util.AddResource;
+import org.apache.myfaces.renderkit.html.util.AddResourceFactory;
+import org.dom4j.Element;
+
+import com.bizitglobal.tarjetafiel.commons.filtros.Filtro;
+import com.bizitglobal.tarjetafiel.commons.util.Archivo;
+import com.bizitglobal.tarjetafiel.commons.util.ContextoProperties;
+import com.bizitglobal.tarjetafiel.commons.util.PropertieFile;
+import com.bizitglobal.tarjetafiel.general.exception.ImpresoraException;
+import com.bizitglobal.tarjetafiel.general.impresion.ImpresionTickets;
+import com.bizitglobal.tarjetafiel.general.impresion.RespuestaImpresion;
+import com.bizitglobal.tarjetafiel.general.negocio.Impresora;
+import com.bizitglobal.tarjetafiel.general.negocio.SucTelefono;
+import com.bizitglobal.tarjetafiel.operador.negocio.Operador;
+import com.bizitglobal.tarjetafiel.transacciones.dao.impl.LoteComercioDaoHibernateImpl;
+import com.bizitglobal.tarjetafiel.transacciones.exception.ArchivoDebitoConfException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.ArchivoDebitoHistException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.CodComercioException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.ColaboradorException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.FechaFacturacionNulaException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.FormatoNoValidoCodAutorizacionException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.FormatoNoValidoCodComercioException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.FormatoNoValidoImporteException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.LoteComercioException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.LoteComercioItemException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.LotePosnetNoCargado;
+import com.bizitglobal.tarjetafiel.transacciones.exception.PlasticoClienteException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.TransaccionException;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ArchivoDebitoAutomatico;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ArchivoDebitoConf;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ArchivoDebitoHist;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ArchivoPosnet;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ArchivoPosnetOffline;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.CodComercio;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.Colaborador;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ConciliacionManual;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.DatosItemDebito;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.DiferenciasItemTransaccion;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ItemPosnetOffline;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.LoteComercio;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.LoteComercioItem;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.LoteComercioResumen;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.LotePendiente;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.Origenen;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.PlasticoCliente;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ResultadoConciliacion;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.Transaccion;
+import com.bizitglobal.webapp.faces.beans.BaseBean;
+import com.bizitglobal.webapp.faces.util.Convertidores;
+import com.bizitglobal.webapp.faces.util.Error;
+import com.bizitglobal.webapp.faces.util.Util;
+import com.bizitglobal.webapp.faces.beans.evaluacion.wrappers.WrapperFile;
+import com.bizitglobal.webapp.faces.beans.util.PaginaDeRegistros;
+import com.bizitglobal.webapp.faces.util.Session;
+import com.xml.ArmarXmlTicket;
+
+
+@SuppressWarnings({"rawtypes","unchecked","static-access"})
+public class ConciliacionCuponesBean extends BaseBean {
+	private static final Logger log = Logger.getLogger(ConciliacionCuponesBean.class);
+	private String focoHidden;
+	private UploadedFile uploadedFile;
+	private String titulo;
+	private boolean panelConciliacion;
+	private boolean panelAdjuntar;
+	private boolean panelMensaje=false;
+	private boolean mostrarTablaNoConc;
+	private boolean mostrarTablaLotesAutomAbiertos;
+	private boolean mostrarCombo = false;
+	private boolean mostrarResultConc = false;
+	private List listCuponesNoConc;
+	private boolean conciliado;
+	private boolean mostrarCargaManual = false;
+	private boolean mostrarEncabezado = false;
+	private boolean todos;
+	private boolean panelDebitosControlar = false;
+	private boolean panelDebitosPendientes = false;
+	private boolean esDebitoAut = false;
+	private boolean noEsDebitoAut = false;
+	// bandera para
+	private boolean primero;
+	private ResultadoConciliacion resultadoConciliacion; // un objeto ResultadoConciliacion que contiene los resultados de la conciliacion automatica.
+	private RevisionManual revisionManual; // un objeto para presentar el popup de revision manual de cupones no conciliados.
+
+	private boolean busquedaAvanzada;
+	private PopupAltaLoteComercio popupAltaLoteComercio;
+	private PopupAsociarCuponesATransaccion popupAsociarCuponesATransaccion;
+	private List loteComercioDetalles; // aqui los wrappers para los lote comercio// Detalles
+	private List loteComercios; // aqui los wrappers para asientos
+
+	// Objetos para inicializar desde distintos origenes
+	private int origen = 0;
+	private Long idFormatoArchivo;
+	private Long idTipoConcSeleccionada;
+	private Long idTipoAccionSeleccionada;
+
+	private HtmlSelectOneMenu tipoConc = new HtmlSelectOneMenu();
+	private HtmlSelectOneMenu tipoAccion = new HtmlSelectOneMenu();
+	private HtmlSelectOneMenu tipoFormatoArchivo = new HtmlSelectOneMenu();
+	private List tipoConcItems = new ArrayList();
+	private List tipoAccionItems = new ArrayList();
+	private List tipoFormatoItems = new ArrayList();
+	
+
+	private String tituloNoConciliados = "";
+	private LoteComercio loteComercio;
+	private LoteComercio loteComercioDetallado;
+	private static int numeroLotesComercioTabla = 0;
+	private static int numeroLotesComercioItemTabla = 0;
+	private static int numeroLotesComercioResumenTabla = 0;
+
+	private String listaDeModicadosEnString;
+	private String listaDeEliminadosEnString;
+	private String mensaje;
+
+	private PaginaDeRegistros paginador; // este paginador es para presentar los items que se conciliaran manualmente....
+	private List listaRechazadosAutomaticos; // la lista que tratara el paginador, con los elementos que han sido rechazados automaticamente...
+	private boolean esDebito;
+
+	private List formatosDisponibles; // una lista que guarda todos los ArchivosDebitoConf existentes en el sistema.Estos archivos son utiles para
+										// poder levantar diferentes configuraciones en los archivos planos al momente del debito automatico
+										// es, decir, indica en que caracter empieza cada columna.
+	
+	private boolean filtroManual;
+	private boolean filtroAutomatico;
+	private String loteID;
+	private List listacuponSeleccionado;
+	private List listaTransSeleccionada;
+	private Integer limiteConciliacion = new Integer(90);
+
+	private List comercioList;
+	private String idComercio;
+	private boolean comercio = false;
+	private CodComercio element;
+	private BufferedWriter bw;
+	private List<String> lstIdTransacciones;
+	private File respuestaArchivo;
+	private List listaLotesAutomaticosAbiertos;
+	private String idLoteFiltroAut;
+	LoteComercio loteComercioRevisionManual = null;
+	private int cantRechazados;
+	private int cantRechazosDefinitivos;
+	private int cantConciliada;
+	private Date hoy = new Date();
+	private List listaRechazadosDefinitivos = new ArrayList();
+	private boolean mostrarLinkBusquedaCupNoAsoc;
+
+	private boolean mostrarTablaNoConcCabecera = true;
+	
+	private List loteComercioItemsAprobados = null;
+	private List loteComercioItemsRechazados = null;
+	private List loteComercioItemsEnDuda = null;
+	private List loteComercioItemsNoEncontrados = null;
+	private List loteComercioControl = null;
+	private List lotesPendientes = null;
+	
+	private ArchivoDebitoAutomatico archivoDebitoAutomatico = null;
+
+
+	public ArchivoDebitoAutomatico getArchivoDebitoAutomatico() {
+		return archivoDebitoAutomatico;
+	}
+
+
+	public void setArchivoDebitoAutomatico(ArchivoDebitoAutomatico archivoDebitoAutomatico) {
+		this.archivoDebitoAutomatico = archivoDebitoAutomatico;
+	}
+
+	
+
+	public boolean isEsDebitoAut() {
+		return esDebitoAut;
+	}
+
+
+	public void setEsDebitoAut(boolean esDebitoAut) {
+		this.esDebitoAut = esDebitoAut;
+	}
+
+
+	public boolean isNoEsDebitoAut() {
+		return noEsDebitoAut;
+	}
+
+
+	public void setNoEsDebitoAut(boolean noEsDebitoAut) {
+		this.noEsDebitoAut = noEsDebitoAut;
+	}
+
+
+	public List getLoteComercioItemsAprobados() {
+		return loteComercioItemsAprobados;
+	}
+
+
+	public void setLoteComercioItemsAprobados(List loteComercioItemsAprobados) {
+		this.loteComercioItemsAprobados = loteComercioItemsAprobados;
+	}
+
+
+	public List getLoteComercioItemsRechazados() {
+		return loteComercioItemsRechazados;
+	}
+
+
+	public void setLoteComercioItemsRechazados(List loteComercioItemsRechazados) {
+		this.loteComercioItemsRechazados = loteComercioItemsRechazados;
+	}
+
+
+	public List getLoteComercioItemsEnDuda() {
+		return loteComercioItemsEnDuda;
+	}
+
+
+	public void setLoteComercioItemsEnDuda(List loteComercioItemsEnDuda) {
+		this.loteComercioItemsEnDuda = loteComercioItemsEnDuda;
+	}
+
+
+	public List getListacuponSeleccionado() {
+		return listacuponSeleccionado;
+	}
+
+
+	public void setListacuponSeleccionado(List listacuponSeleccionado) {
+		this.listacuponSeleccionado = listacuponSeleccionado;
+	}
+
+
+	public ConciliacionCuponesBean() {
+		error.borrar();
+		titulo = "Conciliaciones";
+		loteComercios = new ArrayList();
+		borrar();
+	}
+
+
+	public String inicializar() {
+		log.info("Ejecutando ==> inicilizando el bean de Conciliacion de cupones.");
+		borrar();
+		tipoFormatoItems.clear();
+		tipoFormatoItems.add(new SelectItem(new Long(0), "Seleccione un formato."));
+		try {
+			formatosDisponibles = transaccionesService.getArchivoDebitoConfService().getArchivoDebitoConf(new Filtro());
+			Iterator iter = formatosDisponibles.iterator();
+			while (iter.hasNext()) {
+				ArchivoDebitoConf archi = (ArchivoDebitoConf) iter.next();
+				tipoFormatoItems.add(new SelectItem(archi.getIdArchivoDebitoConf(), archi.getDescripcion()));
+			}
+			// limiteConciliacion= getDiasLimiteConciliacion();
+		} catch (ArchivoDebitoConfException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+//		List<String> idsLotesPendientes = transaccionesService.getLoteComercioService().getIdLoteDebitosPendientes();
+//		if(idsLotesPendientes.size()>0){
+//			Iterator<String> iterator = idsLotesPendientes.iterator();
+//			
+//			while(iterator.hasNext()){
+//				String idLote = iterator.next();
+//				LotePendiente lote = new LotePendiente(idLote);
+//				lotesPendientes.add(lote);
+//			}
+//			panelConciliacion = false;
+//			panelDebitosPendientes = true;
+//		}
+		
+		return "conciliacionCupones";
+	}
+
+
+	// *inicializa segun si el ususario registrado es un cajero
+	public String inicializar2() {
+		log.info("Ejecutando ==> inicilizando 2 el bean de Conciliacion de cupones.");
+		agregarLote();
+		borrar();
+		return null;
+	}
+
+
+	private boolean validarCargaAutomatica() {
+		error.borrar();
+		popup.borrar();
+		if (uploadedFile == null || uploadedFile.equals("")) {
+			error.agregar(Error.TRAN_CONCILIACIONES_ARCHIVO_REQUERIDO);
+		}
+		else {
+			Filtro filtro = new Filtro();
+			filtro.agregarCampoOperValor("tipoLote", Filtro.LIKEXS, "A");
+			filtro.agregarCampoOperValor("archivo", Filtro.LIKEXS, uploadedFile.getName());
+			List lotes;
+			try {
+				lotes = transaccionesService.getLoteComercioService().getLoteComercio(filtro);
+				if (lotes.size() != 0)
+					error.agregar(Error.TRAN_CONCILIACIONES_ARCHIVO_CARGADO_PREVIAMENTE);
+
+			} catch (LoteComercioException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return (error.cantidad() == 0) ? true : false;
+	}
+	
+	private boolean validarLoteDiaAnterior(){
+		String fechaLote = transaccionesService.getLoteComercioService().loteComercioSiguiente();
+		
+		log.info("#############################FECHA LOTE################################:  " + fechaLote);
+		
+		if(uploadedFile.getName().contains(fechaLote)){
+			return true;
+		}
+		
+		else { 
+			
+			String fechaLoteDia = fechaLote.substring(2, 4);
+	        String fechaLoteMes  = fechaLote.substring(0, 2);
+	        
+	        String fechaFinal = fechaLoteDia + "/" + fechaLoteMes;
+			
+			error.agregar("Lote incorrecto: El lo que debe cargar ese el de la fecha: " + fechaFinal );
+			return false;}
+			
+	}
+
+	private Integer getDiasLimiteConciliacion() {
+		return new Integer(90);
+		/*
+		 * try { ParametroSistemaDetalle parametroSistemaDetalle= generalService.getParametroSistemaDetalleService().leerParametroSistemaDetalle(new
+		 * Long(8)); return new Integer(parametroSistemaDetalle.getValor()); } catch (ParametroSistemaDetalleException e) { // TODO Auto-generated
+		 * catch block e.printStackTrace(); } return null;
+		 */
+	}
+
+
+	public String listarComercio() {
+		error.borrar();
+		comercioList = new ArrayList();
+		boolean selection = false;
+		try {
+			// TODO: Agregar el tema del filtrado
+			Filtro filtro = new Filtro();
+
+			if (idComercio != null && idComercio.compareTo("") != 0) {
+				filtro.agregarCampoOperValor("codigoPosnet", Filtro.LIKEXS,
+						idComercio);
+				selection = true;
+			}
+
+			if (selection) {
+				comercioList = transaccionesService.getCodComercioService()
+						.getCodComercio(filtro);
+
+				if (comercioList != null && !comercioList.isEmpty()) {
+					panelAdjuntar = true;
+				}
+
+				Iterator iter = comercioList.iterator();
+				while (iter.hasNext()) {
+					element = (CodComercio) iter.next();
+					element.getSucEmpresa().getEmpresa().getRazonSocial();
+				}
+			} else {
+				error.agregar("Debe ingresar el código posnet");
+			}
+		} catch (CodComercioException e) {
+			e.printStackTrace();
+		}
+		Session.redirect("/tarjetafiel/transacciones/conciliacionCupones.jsf");
+		return "";
+	}
+
+
+	public String cancelarBusqueda() {
+		setIdComercio("");
+		panelAdjuntar = false;
+		comercio = true;
+		comercioList = new ArrayList();
+		Session.redirect("/tarjetafiel/transacciones/conciliacionCupones.jsf");
+		return "";
+	}
+
+
+	public void borrar() {
+		error.borrar();
+		tituloLargo = "TARJETA FIEL - Conciliaciones";
+		tituloCorto = "Conciliaciones";
+		
+		popup.borrar();
+		
+		idTipoConcSeleccionada = new Long(0);
+		
+		tipoConc = new HtmlSelectOneMenu();
+		tipoConc.setValue(idTipoConcSeleccionada);
+		
+		tipoConcItems.clear();
+		tipoConcItems.add(new SelectItem(new Long(0), "Seleccione Conciliacion"));
+		tipoConcItems.add(new SelectItem(new Long(1), "Automatica"));
+		tipoConcItems.add(new SelectItem(new Long(2), "Manual"));
+		tipoConcItems.add(new SelectItem(new Long(3), "Debito Automatico"));
+		tipoConcItems.add(new SelectItem(new Long(4), "Cupones ECO"));
+		tipoConcItems.add(new SelectItem(new Long(5), "Transacciones Offline"));
+		tipoConcItems.add(new SelectItem(new Long(6), "Lote Prisma"));
+		
+		tipoAccionItems.clear();
+		tipoAccionItems.add(new SelectItem(new Long(0), "Seleccione Accion"));
+		tipoAccionItems.add(new SelectItem(new Long(1), "Revision Cupones"));
+		tipoAccionItems.add(new SelectItem(new Long(2), "Cargar Nuevo Lote"));
+		
+		
+		restaurar();
+	}
+	
+	public void restaurar(){
+		idFormatoArchivo = new Long(0);
+		idTipoAccionSeleccionada = new Long(0);
+		listCuponesNoConc = new ArrayList();
+		conciliado = false;
+		mostrarCombo = false;
+		mostrarTablaNoConc = false;
+		mostrarTablaLotesAutomAbiertos = false;
+		panelConciliacion = true;
+		panelAdjuntar = false;
+		panelMensaje = false;
+		panelDebitosControlar = false;
+		panelDebitosPendientes = false;
+		esDebitoAut = false;
+		noEsDebitoAut = false;
+		mostrarResultConc = false;
+		mostrarCargaManual = false;
+		mostrarEncabezado = false;
+		tituloNoConciliados = "";
+		loteComercioDetalles = new ArrayList();
+		loteComercios = new ArrayList();
+		loteComercioControl = new ArrayList();
+		listaDeModicadosEnString = "";
+		listaDeEliminadosEnString = "";
+		mensaje="";
+		paginador = new PaginaDeRegistros();
+		// idTipoConcSeleccionada= new Long(0);
+		// idTipoAccionSeleccionada= new Long(0);
+		tipoFormatoArchivo = new HtmlSelectOneMenu();
+		tipoFormatoArchivo.setValue(new Long(0));
+		primero = true;
+		filtroAutomatico = false;
+		filtroManual = false;
+		comercio = false;
+		lstIdTransacciones = new ArrayList<String>();
+		listaLotesAutomaticosAbiertos = new ArrayList();
+		idLoteFiltroAut = "";
+		cantRechazados = 0;
+		cantRechazosDefinitivos = 0;
+		cantConciliada = 0;
+		loteComercioItemsAprobados = new ArrayList();
+		loteComercioItemsRechazados = new ArrayList();
+		loteComercioItemsEnDuda = new ArrayList();
+		loteComercioItemsNoEncontrados = new ArrayList();
+		lotesPendientes = new ArrayList();
+	}
+
+
+	public String cancelar() {
+		borrar();
+		return null;
+	}
+
+
+	public void cambiarTipoAccion(ValueChangeEvent event) {
+		restaurar();
+		Long idTipoconc = new Long(tipoConc.getValue().toString());
+		idTipoAccionSeleccionada = new Long(0);
+		
+		tipoAccion.setValue(idTipoAccionSeleccionada);
+		filtroAutomatico = false;
+		
+		if (idTipoconc.equals(new Long(6)) ) {
+			mostrarCombo = true;
+			panelAdjuntar = false;
+			mostrarResultConc = false;
+			noEsDebitoAut = true;
+			
+				tituloCorto = "Conciliación Prisma";
+		}
+		
+		if (idTipoconc.equals(new Long(2)) || idTipoconc.equals(new Long(1))) {
+			mostrarCombo = true;
+			panelAdjuntar = false;
+			mostrarResultConc = false;
+			noEsDebitoAut = true;
+			if (idTipoconc.equals(new Long(2))) {
+				tituloCorto = "Conciliación Manual";
+			}
+			else
+				tituloCorto = "Conciliación Automatica";
+		}
+		
+		if (idTipoconc.equals(new Long(3))) {
+			mostrarCombo = false;
+			mostrarResultConc = false;
+			esDebitoAut = true;
+			tituloCorto = "Debito Automatico";
+			element = new CodComercio();
+			idComercio = "";
+			comercioList = new ArrayList();
+			comercio = true;
+		}
+		
+		if(idTipoconc.equals(new Long(4))) {
+			mostrarCombo = false;
+			mostrarResultConc = false;
+			noEsDebitoAut = true;
+			tituloCorto = "Conciliación Cupones ECO";
+			panelAdjuntar = true;
+			
+		}
+		
+		if(idTipoconc.equals(new Long(5))) {
+			mostrarEncabezado = false;
+			noEsDebitoAut = true;
+			mostrarCombo = false;
+			mostrarResultConc = false;
+			tituloCorto = "Conciliación Transacciones Offline";
+			panelAdjuntar = true;
+			
+		}
+
+		if (idTipoconc.equals(new Long(0))) {
+		}
+		mostrarEncabezado = false;
+	}
+
+
+	public void habilitaOpciones(ValueChangeEvent event) {
+		comercio = false;
+		Long idTipoconc = new Long(tipoConc.getValue().toString());
+		Long idTipoaccion = new Long(tipoAccion.getValue().toString());
+		mostrarTablaLotesAutomAbiertos = false;
+		mostrarTablaNoConc = false;
+		mostrarEncabezado = false;
+		if ((idTipoconc.equals(new Long(2)) && idTipoaccion.equals(new Long(1)))
+				|| (idTipoconc.equals(new Long(1)) && idTipoaccion.equals(new Long(1)))
+				|| (idTipoconc.equals(new Long(6)) && idTipoaccion.equals(new Long(1)))) {
+			tituloNoConciliados = "Busqueda Transacciones Pendientes de Conciliar";
+			mostrarResultConc = true;
+			listCuponesNoConc = new ArrayList();
+			panelAdjuntar = false;
+			if (idTipoconc.equals(new Long(2))) {
+				filtroManual = true;
+				filtroAutomatico = false;
+				mostrarTablaLotesAutomAbiertos = false;
+				mostrarTablaNoConc = false;
+				if (popupAltaLoteComercio == null)
+					popupAltaLoteComercio = new PopupAltaLoteComercio();
+				else
+					popupAltaLoteComercio.listaLotesAbiertos.clear();
+			}
+			if (idTipoconc.equals(new Long(1))) {
+				filtroManual = false;
+				filtroAutomatico = true;
+				mostrarTablaLotesAutomAbiertos = true;
+				mostrarTablaNoConc = true;
+			}
+			if (idTipoconc.equals(new Long(6))) {
+				filtroManual = false;
+				filtroAutomatico = true;
+				mostrarTablaLotesAutomAbiertos = true;
+				mostrarTablaNoConc = true;
+			}
+		} else {
+			if (idTipoaccion.equals(new Long(0))) {
+				borrar();
+				mostrarCombo = true;
+			}
+			filtroAutomatico = false;
+			filtroManual = false;
+			mostrarResultConc = false;
+			if (idTipoconc.equals(new Long(2)) && idTipoaccion.equals(new Long(2)))
+				agregarLote();
+			if (idTipoconc.equals(new Long(1)) && idTipoaccion.equals(new Long(2)))
+				panelAdjuntar = true;
+			if (idTipoconc.equals(new Long(6)) && idTipoaccion.equals(new Long(2)))
+				panelAdjuntar = true;
+		}
+	}
+
+
+	public String asociarTransaccion() {
+		error.borrar();
+		popupAsociarCuponesATransaccion = new PopupAsociarCuponesATransaccion(loteComercio.getIdLoteComercio());
+		popupAsociarCuponesATransaccion.buscarCuponesNoAsoc(null);
+		String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+		path += "/tarjetafiel/transacciones/popup/asociarTransaccionACupon.jsf";
+		ejecutarJavaScript("popup('" + path + "',1100,900), 'titlebar=no';");
+		return null;
+	}
+
+
+	public String buscarLotesAbiertosCargaAutomatica() {
+		mostrarLinkBusquedaCupNoAsoc = false;
+		mostrarTablaNoConcCabecera = true;
+		listaLotesAutomaticosAbiertos.clear();
+		if (listCuponesNoConc != null)
+			listCuponesNoConc.clear();
+
+		try {
+			Filtro filtro = new Filtro("tipoLote", Filtro.LIKEXS, "A");
+			filtro.agregarCampoOperValor("estadoLote", Filtro.LIKEXS, "F");
+			// filtro.agregarCampoOperValor("loteComercioItems.estadoItem", Filtro.LIKEXS, "X");
+			filtro.agregarOrderBy("idLoteComercio DESC");
+			List result = transaccionesService.getLoteComercioService().getLoteComercio(filtro);
+			Iterator iter = result.iterator();
+			while (iter.hasNext()) {
+				LoteComercio element = (LoteComercio) iter.next();
+				listaLotesAutomaticosAbiertos.add(new WrapperLoteComercioResumen(new LoteComercioResumen(element), element));
+			}
+		} catch (LoteComercioException e) {
+			error.agregar("Ocurrio un error al intentar obtener la informacón de la base.");
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * busca los cupones cargados manual o automaticamente no conciliados ('X')
+	 * 
+	 * @param event
+	 */
+	public void buscarNoConciliados(ActionEvent event) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Map map = context.getExternalContext().getRequestParameterMap();
+		loteID = (String) map.get("idLote");
+		buscarNoConciliados(loteID);
+		mostrarTablaNoConc = true;
+		mostrarTablaNoConcCabecera = false;
+	}
+
+
+	private void buscarNoConciliados(String idLote) {
+		mostrarLinkBusquedaCupNoAsoc = false;
+		Filtro filtro2 = new Filtro();
+		filtro2.agregarCampoOperValor("idLoteComercio", Filtro.IGUAL, idLote);
+		try {
+			loteComercio = (LoteComercio) transaccionesService.getLoteComercioService().getLoteComercio(filtro2).get(0);
+			Set listaItems = loteComercio.getLoteComercioItems();
+			Iterator ite = listaItems.iterator();
+			List listaRechazados = new ArrayList();
+			while (ite.hasNext()) {
+				LoteComercioItem item = (LoteComercioItem) ite.next();
+				if (item.getEstadoItem().equals("X")) {
+					if (item.getTransaccion() != null) {
+						item.getOperador();
+						item.getTransaccion();
+						item.getTransaccion().getClienteTransaccion();
+						item.getTransaccion().setIdCliente(item.getTransaccion().getClienteTransaccion().getIdCliente());
+						item.getTransaccion().getComercioCod();
+						item.getTransaccion().getComercioListaPrecio();
+						item.getTransaccion().getConcepto();
+						item.getTransaccion().getOperador();
+						item.getTransaccion().getOperadorConciliado();
+						item.getTransaccion().getOrigen();
+						listaRechazados.add(item);
+					}
+					else {
+						mostrarLinkBusquedaCupNoAsoc = true;
+					}
+				}
+			}
+			listCuponesNoConc.clear();
+			paginador = new PaginaDeRegistros(6, listaRechazados);
+			Iterator i = paginador.getPrimeraPagina().iterator();
+			while (i.hasNext()) {
+				LoteComercioItem lot = (LoteComercioItem) i.next();
+				lot.getLoteComercio();
+				WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+				listCuponesNoConc.add(cupon);
+			}
+
+		} catch (LoteComercioException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+
+	@Deprecated
+	/**
+	 * busca los cupones cargados automaticamente (origen archivo posnet), no conciliados ('X') 
+	 *  o bien   cupones cargados manualmente (origen carga manual) no conciliados ('X') segun donde se llame el metodo
+	 */
+	private void buscarNoConciliados2(String idLote) {
+		Long idTipoconc = new Long(tipoConc.getValue().toString());
+		Filtro filtro = new Filtro();
+		filtro.agregarCampoOperValor("estadoItem", Filtro.LIKE, "X");
+		filtro.agregarCampoComparacionNulo("transaccion.idTranascciones", Filtro.NOTNULL);
+		if (idTipoconc.equals(new Long(1))) {
+			filtro.agregarCampoOperValor("loteComercio.tipoLote", Filtro.LIKE, "A");
+			filtro.agregarCampoOperValor("loteComercio.idLoteComercio", Filtro.IGUAL, idLote);
+		}
+		else {
+			filtro.agregarCampoOperValor("loteComercio.tipoLote", Filtro.LIKE, "M");
+			filtro.agregarCampoOperValor("loteComercio.idLoteComercio", Filtro.IGUAL, idLote);
+		}
+		try {
+			List listaRechazados = transaccionesService.getLoteComercioItemService().getLoteComercioItem(filtro);
+			Iterator ite = listaRechazados.iterator();
+			while (ite.hasNext()) {
+				LoteComercioItem lot = (LoteComercioItem) ite.next();
+				if (lot.getTransaccion() != null) {
+					lot.getTransaccion().getClienteTransaccion();
+					lot.getTransaccion().setIdCliente(lot.getTransaccion().getClienteTransaccion().getIdCliente());
+					lot.getTransaccion().getComercioCod();
+					lot.getTransaccion().getComercioListaPrecio();
+					lot.getTransaccion().getConcepto();
+					lot.getTransaccion().getOperador();
+					lot.getTransaccion().getOperadorConciliado();
+					lot.getTransaccion().getOrigen();
+				}
+				lot.getOperador();
+				lot.getTransaccion();
+				// lot.getLoteComercio();
+				Filtro filtro2 = new Filtro();
+				filtro2.agregarCampoOperValor("idLoteComercio", Filtro.IGUAL, lot.getLoteComercio().getIdLoteComercio());
+				try {
+					lot.setLoteComercio((LoteComercio) transaccionesService.getLoteComercioService().getLoteComercio(filtro2).get(0));
+				} catch (LoteComercioException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+			listCuponesNoConc.clear();
+			paginador = new PaginaDeRegistros(10, listaRechazados);
+			Iterator i = paginador.getPrimeraPagina().iterator();
+			while (i.hasNext()) {
+				LoteComercioItem lot = (LoteComercioItem) i.next();
+				lot.getLoteComercio();
+				WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+				listCuponesNoConc.add(cupon);
+			}
+		} catch (LoteComercioItemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+
+	public String agregarLote() {
+		error.borrar();
+		popupAltaLoteComercio = new PopupAltaLoteComercio();
+		String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+		path += "/tarjetafiel/transacciones/popup/conciliacionManualNvoLotePopup.jsf";
+		ejecutarJavaScript("popup('" + path + "',1200,900), 'titlebar=no';");
+
+		return null;
+
+	}
+
+
+	/**
+	 * muestra los detalles de un lote cargado manualmente
+	 * 
+	 * @return
+	 */
+	public String verDetallesLotesComerc() {
+		error.borrar();
+		// WrapperLoteComercioCabecera loteCabe =new WrapperLoteComercioCabecera(loteComercioDetallado);
+		popupAltaLoteComercio = new PopupAltaLoteComercio(loteComercioDetallado);
+		String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+		path += "/tarjetafiel/transacciones/popup/conciliacionManualNvoLotePopup.jsf";
+		ejecutarJavaScript("popup('" + path + "',900,900), 'titlebar=no';");
+
+		return null;
+	}
+
+
+	// ***** Métodos necesarios para el paginador
+
+	public String primerRegistroRechazados() {
+		listCuponesNoConc.clear();
+		Iterator i = paginador.getPrimeraPagina().iterator();
+		while (i.hasNext()) {
+			LoteComercioItem lot = (LoteComercioItem) i.next();
+			WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+			listCuponesNoConc.add(cupon);
+		}
+		return null;
+	}
+
+
+	public String ultimoRegistroRechazados() {
+		listCuponesNoConc.clear();
+		Iterator i = paginador.getUltimaPagina().iterator();
+		while (i.hasNext()) {
+			LoteComercioItem lot = (LoteComercioItem) i.next();
+			WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+			listCuponesNoConc.add(cupon);
+		}
+		return null;
+	}
+
+
+	public String siguienteRegistroRechazados() {
+		listCuponesNoConc.clear();
+		Iterator i = paginador.getPaginaSiguiente().iterator();
+		while (i.hasNext()) {
+			LoteComercioItem lot = (LoteComercioItem) i.next();
+			WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+			listCuponesNoConc.add(cupon);
+		}
+		return null;
+	}
+
+
+	public String anteriorRegistroRechazados() {
+		listCuponesNoConc.clear();
+		Iterator i = paginador.getPaginaAnterior().iterator();
+		while (i.hasNext()) {
+			LoteComercioItem lot = (LoteComercioItem) i.next();
+			WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+			listCuponesNoConc.add(cupon);
+		}
+		return null;
+	}
+
+
+	public boolean getHayRechazadosAutomaticos() {
+		return listCuponesNoConc.isEmpty();
+	}
+
+
+	public void cambiarPagina(ValueChangeEvent e) {
+		pagina();
+	}
+
+
+	public String pagina() {
+		listCuponesNoConc.clear();
+		Iterator i = paginador.getPagina(((Long) paginador.getPagSeleccionada().getValue()).intValue()).iterator();
+		while (i.hasNext()) {
+			LoteComercioItem lot = (LoteComercioItem) i.next();
+			WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+			listCuponesNoConc.add(cupon);
+		}
+		return null;
+	}
+
+
+	// *** Fin metodos necesarios para el paginador
+
+	public String ejecutar2(){
+		error.borrar();
+		if (idTipoConcSeleccionada.equals(new Long(1))) { //AUTOMATICA
+			if (validarCargaAutomatica()) {
+//				if(validarLoteDiaAnterior()){
+					listCuponesNoConc.clear();
+					ArchivoPosnet archivoPosnet;
+					try {
+						archivoPosnet = new ArchivoPosnet(uploadedFile.getInputStream(), uploadedFile.getName(),
+								new Long(uploadedFile.getSize()).intValue(), Session.getOperador());
+						resultadoConciliacion = transaccionesService.getConciliacionConsumosServices().conciliarCuponesCargaAutomatica(archivoPosnet,
+								Session.getOperador(), transaccionesService.getListaPrecioParaLiquidarService());
+						boolean hayNoEncontrados = false;
+						if (resultadoConciliacion != null) {
+							listaRechazadosAutomaticos = new ArrayList();
+							Iterator ite = resultadoConciliacion.getLoteComercio().getLoteComercioItems().iterator();
+	
+							while (ite.hasNext()) {
+								LoteComercioItem lot = (LoteComercioItem) ite.next();
+								if (lot.getEstadoItem().compareTo("X") == 0 && lot.getTransaccion() != null) {
+									listaRechazadosAutomaticos.add(lot);
+								}
+								if (lot.getTransaccion() == null) {
+									hayNoEncontrados = true;
+								}
+							}
+							paginador = new PaginaDeRegistros(10, listaRechazadosAutomaticos);
+							Iterator i = paginador.getPrimeraPagina().iterator();
+							while (i.hasNext()) {
+								LoteComercioItem lot = (LoteComercioItem) i.next();
+								WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+								listCuponesNoConc.add(cupon);
+							}
+							if (listCuponesNoConc.isEmpty() && listaRechazadosAutomaticos.isEmpty() && !hayNoEncontrados) {
+								resultadoConciliacion.getLoteComercio().setEstadoLote("C");
+								transaccionesService.getLoteComercioService().actualizarLoteComercio(resultadoConciliacion.getLoteComercio());
+							}
+							mostrarResultConc = true;
+							tituloNoConciliados = "Resultados de la Conciliacion";
+							mostrarEncabezado = true;
+							mostrarTablaLotesAutomAbiertos = true;
+							mostrarTablaNoConc = true;
+							panelAdjuntar = false;
+						}
+	
+					} catch (FormatoNoValidoImporteException e1) {
+						error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para obtener mas detalles del error, o comuniquese con el area de sistemas");
+						e1.printStackTrace();
+					} catch (FormatoNoValidoCodComercioException e1) {
+						error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para obtener mas detalles del error, o comuniquese con el area de sistemas");
+						e1.printStackTrace();
+					} catch (FormatoNoValidoCodAutorizacionException e1) {
+						error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para obtener mas detalles del error,  o comuniquese con el area de sistemas");
+						e1.printStackTrace();
+					} catch (FechaFacturacionNulaException e1) {
+						error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para obtener mas detalles del error,  o comuniquese con el area de sistemas");
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para  obtener mas detalles del error");
+						e1.printStackTrace();
+					} catch (Exception e) {
+						error.agregar("Hubo un error en el proceso de conciliacion.");
+						e.printStackTrace();
+					}
+		//		}
+				
+			}
+
+		}
+		
+		else if (idTipoConcSeleccionada.equals(new Long(6))) { //PRISMA
+			if (validarCargaAutomatica()) {
+//				if(validarLoteDiaAnterior()){
+					listCuponesNoConc.clear();
+					ArchivoPosnet archivoPosnet;
+					try {
+						archivoPosnet = new ArchivoPosnet(uploadedFile.getInputStream(), uploadedFile.getName(),
+								new Long(uploadedFile.getSize()).intValue(), Session.getOperador(),"PRISMA");
+						resultadoConciliacion = transaccionesService.getConciliacionConsumosServices().conciliarCuponesCargaAutomatica(archivoPosnet,
+								Session.getOperador(), transaccionesService.getListaPrecioParaLiquidarService());
+						boolean hayNoEncontrados = false;
+						if (resultadoConciliacion != null) {
+							listaRechazadosAutomaticos = new ArrayList();
+							Iterator ite = resultadoConciliacion.getLoteComercio().getLoteComercioItems().iterator();
+	
+							while (ite.hasNext()) {
+								LoteComercioItem lot = (LoteComercioItem) ite.next();
+								if (lot.getEstadoItem().compareTo("X") == 0 && lot.getTransaccion() != null) {
+									listaRechazadosAutomaticos.add(lot);
+								}
+								if (lot.getTransaccion() == null) {
+									hayNoEncontrados = true;
+								}
+							}
+							paginador = new PaginaDeRegistros(10, listaRechazadosAutomaticos);
+							Iterator i = paginador.getPrimeraPagina().iterator();
+							while (i.hasNext()) {
+								LoteComercioItem lot = (LoteComercioItem) i.next();
+								WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+								listCuponesNoConc.add(cupon);
+							}
+							if (listCuponesNoConc.isEmpty() && listaRechazadosAutomaticos.isEmpty() && !hayNoEncontrados) {
+								resultadoConciliacion.getLoteComercio().setEstadoLote("C");
+								transaccionesService.getLoteComercioService().actualizarLoteComercio(resultadoConciliacion.getLoteComercio());
+							}
+							mostrarResultConc = true;
+							tituloNoConciliados = "Resultados de la Conciliacion";
+							mostrarEncabezado = true;
+							mostrarTablaLotesAutomAbiertos = true;
+							mostrarTablaNoConc = true;
+							panelAdjuntar = false;
+						}
+	
+					} catch (FormatoNoValidoImporteException e1) {
+						error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para obtener mas detalles del error, o comuniquese con el area de sistemas");
+						e1.printStackTrace();
+					} catch (FormatoNoValidoCodComercioException e1) {
+						error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para obtener mas detalles del error, o comuniquese con el area de sistemas");
+						e1.printStackTrace();
+					} catch (FormatoNoValidoCodAutorizacionException e1) {
+						error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para obtener mas detalles del error,  o comuniquese con el area de sistemas");
+						e1.printStackTrace();
+					} catch (FechaFacturacionNulaException e1) {
+						error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para obtener mas detalles del error,  o comuniquese con el area de sistemas");
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para  obtener mas detalles del error");
+						e1.printStackTrace();
+					} catch (Exception e) {
+						error.agregar("Hubo un error en el proceso de conciliacion.");
+						e.printStackTrace();
+					}
+//				}
+				
+			}
+
+		}
+
+		
+		else if(idTipoConcSeleccionada.equals(new Long(4))) { //ECO
+
+			log.info("Ejecutando ==> saveFile()");
+			String path;
+
+			if (!uploadedFile.equals("")) {
+				path = "No grabo";
+				try {
+					path = Archivo.grabarArchivoEco(uploadedFile.getInputStream(), uploadedFile.getName(), new Long(uploadedFile.getSize()).intValue());
+				} catch (IOException e) {
+					e.printStackTrace();
+					error.agregar("Error al subir archivo ECO.");
+					return null;
+				} catch (NullPointerException e2) {
+					e2.printStackTrace();
+				}
+				
+				
+				if(path != null && !path.equals("No grabo")){
+					try{
+						mensaje = transaccionesService.getConciliacionConsumosServices().conciliarEco(path,Session.getOperador().getCodigo().toString());
+						panelMensaje = true;
+						log.info("ruta: " + path);
+					} catch (Exception e) {
+						error.agregar("Error en el proceso de conciliacion de ECO.");
+						e.printStackTrace();
+					}
+				}
+				
+			} 
+		}
+		
+		
+		else if(idTipoConcSeleccionada.equals(new Long(5))) { //Transacciones Offline
+
+			log.info("Ejecutando ==> saveFile()");
+			String path;
+
+			
+			if (!uploadedFile.equals("")) {
+				
+				try {
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(uploadedFile.getInputStream()));
+					ArchivoPosnetOffline archivo = new ArchivoPosnetOffline();
+					String linea = buffer.readLine();
+					archivo.setFecha(linea.substring(47, 53));
+					linea = buffer.readLine();
+					List<ItemPosnetOffline> items = new ArrayList();
+					while (linea != null) {
+						if (!linea.substring(0, 4).equals("FIEL")) {
+							ItemPosnetOffline item = new ItemPosnetOffline();
+							item.setCodComercio(linea.substring(0,12));
+							item.setCupon(linea.substring(24,27));
+							item.setTipoRegistro(linea.substring(28,30));
+							item.setTarjeta(linea.substring(31,50));
+							item.setFecha(linea.substring(51,56));
+							item.setCuota(linea.substring(57,58));
+							item.setImporte(linea.substring(59,73));
+							item.setCodAutorizacion(linea.substring(89,96));
+							item.setCuponOriginal(linea.substring(147,150));
+							item.setEsAnulacion(linea.substring(156,157));
+						
+							items.add(item);
+							linea = buffer.readLine();
+						}
+						else{
+							archivo.setCantidadItems(Integer.parseInt(linea.substring(85, 92))-2);
+							archivo.setItems(items);
+							linea = buffer.readLine();
+						}
+						
+					}
+					
+					Iterator<ItemPosnetOffline> iter = archivo.getItems().iterator();
+					while(iter.hasNext()){
+						ItemPosnetOffline item = iter.next();
+						log.info("COMERCIO" + item.getCodComercio());
+						log.info("TARJETA: " + item.getTarjeta());
+						log.info("MONTO: " + item.getImporte());
+						log.info("ANULADA: " + item.getEsAnulacion());
+					}
+					
+					
+					buffer.close();
+					uploadedFile.getInputStream().close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				
+			}
+		}
+		
+		return null;
+	}
+	
+	private  void copyInputStreamToFile(InputStream inputStream, File file)
+             {
+
+        // append = false
+        try {
+        	FileOutputStream outputStream = new FileOutputStream(file, false);
+       
+            int read;
+            byte[] bytes = new byte[8192];
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        } catch (IOException e) {
+			e.printStackTrace();
+		}
+
+    }
+           
+	
+	
+	public String procesarDebitos(){
+
+		if(uploadedFile != null){
+
+			if (idFormatoArchivo.compareTo(new Long(0)) != 0) {
+		
+//				List listArhivoHist = new ArrayList();
+//				Filtro filtro = new Filtro();
+//		
+//				filtro.agregarCampoOperValor("archivo", filtro.LIKEXS, uploadedFile.getName());
+//				filtro.agregarCampoOperValor("finalizo", filtro.LIKEXS, "S");
+		
+				try {
+//					listArhivoHist = transaccionesService
+//							.getArchivoDebitoHistService()
+//							.getArchivoDebitoHist(filtro);
+//		
+//					if (listArhivoHist != null && listArhivoHist.size() > 0) {
+//						error.agregar("El archivo que intenta cargar ya ha sido Procesado.");
+//					} else {
+								
+						archivoDebitoAutomatico = procesarLote();
+						
+						
+						
+						PropertieFile prop = new PropertieFile(System.getProperty("catalina.home") + File.separator + "webapps" + File.separator
+								+ "contexto.properties");
+
+						String ruta = System.getProperty("catalina.home") + File.separator + "webapps" + File.separator + "archivos"
+								+ File.separator + prop.getProperties("directorioDebitosAutomaticos");
+						
+						
+						File archivoEntrada = new File(ruta + File.separator +  uploadedFile.getName());
+						
+						copyInputStreamToFile(uploadedFile.getInputStream(),archivoEntrada);
+						
+						
+			               saveFileEntrada(archivoEntrada);
+			              
+						
+//						ZipFile zf = new ZipFile(new File("target/file.zip"));
+
+								
+						LoteComercio lote = archivoDebitoAutomatico.getLoteComercio();
+								
+						Set<LoteComercioItem> items = lote.getLoteComercioItems();
+						Iterator iter = items.iterator();
+								
+						int cantItemsEnDuda = 0;
+						int elementoTotal = 0;
+						ConciliaCupon conciliaCupon = new ConciliaCupon();
+						conciliaCupon.setMovAceptados(0);
+						conciliaCupon.setMovRechazados(0);
+						
+						
+						while (iter.hasNext()) {
+							int elemento = 0;
+							loteComercioItemsAprobados = new ArrayList();
+							loteComercioItemsRechazados = new ArrayList();
+							
+							
+							
+							while (iter.hasNext() && elemento <= 20) {
+								
+								elemento = elemento + 1;
+								elementoTotal =elementoTotal + 1;
+								
+								log.info("elemento " + elemento);
+								log.info("elementoTotal new " + elementoTotal);
+									
+							LoteComercioItem item = (LoteComercioItem) iter.next();
+							int result = transaccionesService.getLoteComercioItemService().procesarItemDebito(item.getNroTarjeta(),idComercio); 
+								
+							switch(result){
+								case 0: 
+									loteComercioItemsRechazados.add(item);
+									break;
+								case 1: 
+									loteComercioItemsAprobados.add(item);
+									break;
+//								case 2: 
+//									DatosItemDebito itemEnDuda = transaccionesService.getLoteComercioItemService().getDatosItemEnDuda(item.getNroTarjeta());
+//									if(itemEnDuda!=null){
+//										item.setIndexControl(cantItemsEnDuda);
+//										loteComercioItemsEnDuda.add(cantItemsEnDuda,item);
+//										loteComercioControl.add(itemEnDuda);
+//										cantItemsEnDuda++;
+//									}
+//									else{
+//										loteComercioItemsNoEncontrados.add(item);
+//										log.info("Datos de cliente no encontrados. Nro Tarjeta: " + item.getNroTarjeta());
+//									}
+//									break;
+									
+									case 2: 
+									DatosItemDebito itemEnDuda = transaccionesService.getLoteComercioItemService().getDatosItemEnDuda(item.getNroTarjeta());
+									if(itemEnDuda!=null){
+										loteComercioItemsRechazados.add(item);
+									}
+									else{
+										loteComercioItemsNoEncontrados.add(item);
+										if(item.getCodComercio().equals("2065") || item.getCodComercio().equals("3551")){
+											loteComercioItemsRechazados.add(item);
+										}
+										log.info("Datos de cliente no encontrados. Nro Tarjeta: " + item.getNroTarjeta());
+									}
+									break;
+									
+								case -1: log.info("fallo consulta item nro plastico: " + item.getNroTarjeta());
+									break;
+							}
+						}
+							
+							 conciliaCupon = procesarItemsDebitos(elementoTotal,conciliaCupon);
+							 conciliaCupon.getLoteComercioItemsAprobados().addAll(loteComercioItemsAprobados);
+							 conciliaCupon.getLoteComercioItemsRechazados().addAll(loteComercioItemsRechazados);
+						}
+						
+						if (conciliaCupon != null ) {
+							generarArchivoRespuesta(conciliaCupon);
+						}
+//						if(loteComercioItemsEnDuda.size()>0){
+//							panelDebitosControlar = true;
+//						}
+//						else{
+//							procesarItemsDebitos();
+//						}
+						
+						
+						
+//						lotesPendientes = new ArrayList();
+						
+						List<String> idsLotesPendientes = transaccionesService.getLoteComercioService().getIdLoteDebitosPendientes();
+						if(idsLotesPendientes.size()>0){
+							Iterator<String> iterator = idsLotesPendientes.iterator();
+							
+							while(iterator.hasNext()){
+								String idLote = iterator.next();
+								LotePendiente lotePendiente = new LotePendiente(idLote);
+								log.info("idLote: " + idLote);
+								lotesPendientes.add(lotePendiente);
+							}
+						}
+						
+						if(lotesPendientes.size()>0){
+						Iterator iter1 = lotesPendientes.iterator();
+						while(iter1.hasNext()){
+							LotePendiente lotePendiente = (LotePendiente) iter1.next();	
+							log.info("lotePendiente.getIdLote(): " + lotePendiente.getIdLote());
+								Map param = new HashMap();
+								param.put("LOTE", lotePendiente.getIdLote());
+								generalService.getGenericDao().ejecutarStoreProcedure("SP_DEBITO_CONCILIA", param);
+							
+						}
+						}
+						
+						panelAdjuntar = false;
+						
+//						conciliarDebitosPendientes();
+						
+						inicializar();
+						
+	
+				//	}
+						
+						
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		
+			} else {
+				error.agregar("Seleccione un formato de archivo.");
+			}
+				
+		} else {
+			error.agregar("Seleccione un archivo.");
+		}
+		
+//		Session.redirect("/tarjetafiel/transacciones/conciliacionCupones.jsf");
+		
+//		FacesContext facesContext = FacesContext.getCurrentInstance();
+//		String javaScriptText = "window.close();";
+//		AddResource addResource = AddResourceFactory.getInstance(facesContext);
+//		addResource.addInlineScriptAtPosition(facesContext, AddResource.HEADER_BEGIN, javaScriptText);
+		
+		return null;
+//		return "";
+//		return "conciliacionCupones";
+		
+	}
+
+	
+	public String conciliarDebitosPendientes(){
+		if(lotesPendientes.size()>0){
+		Iterator iter = lotesPendientes.iterator();
+		while(iter.hasNext()){
+			LotePendiente lote = (LotePendiente) iter.next();
+			if(lote.isSeleccionado()){
+				Map param = new HashMap();
+				param.put("LOTE", lote.getIdLote());
+				generalService.getGenericDao().ejecutarStoreProcedure("SP_DEBITO_CONCILIA", param);
+			}
+		}
+		}
+		inicializar();
+		return "";
+	}
+	
+
+	public ArchivoDebitoAutomatico procesarLote(){
+		try{
+			ArchivoDebitoConf archivoConfiguracion = null;
+			Iterator iterFormatos = formatosDisponibles.iterator();
+			while (iterFormatos.hasNext()) {
+				ArchivoDebitoConf archiAux = (ArchivoDebitoConf) iterFormatos.next();
+				if (archiAux.getIdArchivoDebitoConf().compareTo(idFormatoArchivo) == 0) {
+					archivoConfiguracion = archiAux;
+					break;
+				}
+			}
+			ArchivoDebitoAutomatico archivoDebitoAutomatico = new ArchivoDebitoAutomatico(uploadedFile.getInputStream(), uploadedFile.getName(),
+					new Long(uploadedFile.getSize()).intValue(), Session.getOperador(), archivoConfiguracion,idComercio);
+			archivoDebitoAutomatico.setCodigoComercio(idComercio);
+			return archivoDebitoAutomatico;
+		} catch (Exception e3) {
+			error.agregar(e3.getMessage());
+			return null;
+		}
+	}
+	
+	
+	/**
+	 * Este metodo ejecutará las transacciones que originen cada uno de los debitos automaticos.
+	 * */
+	public ConciliaCupon procesarItemsDebitos(int elementoTotal,ConciliaCupon conciliaCupon) {
+
+		log.info("Conciliando Debitos Automaticos");
+		
+//		try{
+//			Iterator iterLoteEnDuda = loteComercioItemsEnDuda.iterator();
+//			while(iterLoteEnDuda.hasNext()){
+//				LoteComercioItem itemDuda = (LoteComercioItem) iterLoteEnDuda.next();
+//				DatosItemDebito datosItem = (DatosItemDebito) loteComercioControl.get(itemDuda.getIndexControl());
+//				if(datosItem.isSeleccionado()){
+//					loteComercioItemsAprobados.add(itemDuda);
+//				}
+//				else{
+//					loteComercioItemsRechazados.add(itemDuda);
+//				}
+//			}
+//		}
+//		catch(Exception e){
+//			e.printStackTraceget();
+//		}
+		int numeroDeCliente = conciliaCupon.getNumeroDeCliente();
+		int movAceptados = conciliaCupon.getMovAceptados();
+		int movRechazados = conciliaCupon.getMovRechazados();
+		Long importeDebito = conciliaCupon.getImporte();
+		
+//		ConciliaCupon conciliaCupon = new ConciliaCupon();
+		
+		String ipTransaccionador = "";
+		String puertoTransaccionador = "";
+		PropertieFile prop = new PropertieFile(System.getProperty("catalina.home") + File.separator + "webapps" + File.separator
+				+ "contexto.properties");
+
+		try {
+			ipTransaccionador = prop.getProperties("ipTransaccionador");
+			puertoTransaccionador = prop.getProperties("puertoTransaccionador");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		
+		
+		try {
+			LoteComercio lote = archivoDebitoAutomatico.getLoteComercio();
+			
+			conciliaCupon.setLote(lote);
+			
+			Iterator iter = loteComercioItemsAprobados.iterator();
+			
+					
+			String codAutorizacion = "";
+			listaRechazadosAutomaticos = new ArrayList();
+			listCuponesNoConc.clear();
+			
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			Date fecha = new Date();
+			String fechaArch = "";
+			conciliaCupon.setFechaArch(fechaArch);
+			
+			String rtaEnergiaSJ = "";
+			boolean energiaSJ = false;
+			
+			String rtaDirecTV = "";
+			boolean direcTV = false;
+			
+			boolean rtaNormal = false;
+			
+			if(archivoDebitoAutomatico.getCodigoComercio().equals("966")){
+				energiaSJ = true;
+				conciliaCupon.setEnergiaSJ(energiaSJ);
+//				fecha.setDate(Integer.parseInt(uploadedFile.getName().substring(5,7)));
+//				fecha.setMonth(Integer.parseInt(uploadedFile.getName().substring(7,9)) - 1);
+				int mesActual = fecha.getMonth() + 1;
+				log.info("format.format(fecha) " + format.format(fecha));
+				
+				log.info("mesActual " + mesActual);
+				
+				fecha.setDate(Integer.parseInt(uploadedFile.getName().substring(6,8)));
+				fecha.setMonth(Integer.parseInt(uploadedFile.getName().substring(4,6)) - 1);
+				
+				int mesArchivo = fecha.getMonth() + 1;
+				
+				log.info("fecha.getMonth()+1 " + mesArchivo);
+				
+				if (mesActual > mesArchivo) {
+					if (mesActual == 12  && mesArchivo == 1  ) {
+					fecha.setYear(fecha.getYear()+1);
+				}
+				}
+				
+				fechaArch = format.format(fecha);
+				conciliaCupon.setFechaArch(fechaArch);
+				
+				log.info("format.format(fecha) nuevo " + format.format(fecha));
+			}
+			
+			else if(archivoDebitoAutomatico.getCodigoComercio().equals("6412")){
+				direcTV = true;
+				conciliaCupon.setDirecTV(direcTV);
+//				fecha.setDate(Integer.parseInt(uploadedFile.getName().substring(5,7)));
+//				fecha.setMonth(Integer.parseInt(uploadedFile.getName().substring(7,9)) - 1);
+//				fecha.setYear(Integer.parseInt(uploadedFile.getName().substring(9,13)) - 1900);
+				fechaArch = format.format(fecha);
+				conciliaCupon.setFechaArch(fechaArch);
+			}
+			
+			else {				
+				rtaNormal = true;
+				conciliaCupon.setRtaNormal(rtaNormal);
+			}
+			
+
+			
+			List<List<String>> debitos = new ArrayList<List<String>>();
+			
+			try {
+				
+				if(rtaNormal && elementoTotal <= 22) {
+					respuestaArchivo = crearArchivo(lote);
+					log.info("respuestaArchivo "+ respuestaArchivo.getAbsolutePath());
+					log.info("respuestaArchivo nombre "+ respuestaArchivo.getName());
+				}		
+				while (iter.hasNext()) {
+					LoteComercioItem item = (LoteComercioItem) iter.next();
+					
+					
+					try {
+						Socket conexion = new Socket(ipTransaccionador, Integer.parseInt(puertoTransaccionador));
+
+						conexion.getOutputStream().write(archivoDebitoAutomatico.armarToken(item).getBytes());
+						conexion.getOutputStream().flush();
+
+						byte[] bytes = new byte[70];
+						conexion.getInputStream().read(bytes);
+						String respuesta = new String(bytes);
+						conexion.getOutputStream().close();
+
+						if (respuesta != null) {
+							String codres = respuesta.substring(14, 15);
+							String res = respuesta.substring(39, 70);
+
+							if (codres.equals("5")) {
+								loteComercioItemsRechazados.add(item);
+							} else {
+								movAceptados++;
+								conciliaCupon.setMovAceptados(movAceptados);
+								conciliaCupon.setImporte(conciliaCupon.getImporte()
+										+ new Long(item.getImporte()));
+								
+								codAutorizacion = respuesta.substring(15, 21);
+								//codAutorizacion = respuesta.substring(15, 22);
+								item.setCodigoAutorizacion(codAutorizacion);
+								if(rtaNormal){
+									armarRegistroRespuesta(item, "ACEPTADO");
+								}
+								if(energiaSJ) {
+									rtaEnergiaSJ += armarRegistroRespuestaEnergiaSJ(item, "A",fechaArch);
+									conciliaCupon.setRtaEnergiaSJ(rtaEnergiaSJ);
+								}
+								if(direcTV) {
+									rtaDirecTV += armarRegistroRespuestaDirecTV(item, "A",fechaArch);
+									conciliaCupon.setRtaDirecTV(rtaDirecTV);
+								}
+								
+								
+								Long nroTarjeta = new Long(item.getNroTarjeta());
+								Long codCom = new Long(archivoDebitoAutomatico.getCodigoComercio());
+								Long codAut = new Long(codAutorizacion);
+
+								List<String> deb = new ArrayList<String>();
+								deb.add(nroTarjeta.toString());
+								deb.add(codAut.toString());
+								deb.add(codCom.toString());
+								debitos.add(deb);
+							}
+							
+							
+						} else {
+							error.agregar("Error al obtener la respuesta del Transaccionador");
+						}
+					} catch (Exception e) {
+						error.agregar("Error en la conexión con el Socket");
+						e.printStackTrace();
+					} 
+					String valor = "1";
+					
+					for (int i = 0; i < 5000; i++) {
+						valor = "2";
+					}					
+				}				
+								
+			} catch (Exception e3) {
+				e3.printStackTrace();
+				error.agregar(e3.getMessage());
+				return null;
+			}
+			
+
+			
+		} catch (NumberFormatException e2) {
+			error.agregar("El formato del archivo no es correcto o este se encuentra dañado.");
+			e2.printStackTrace();
+			return null;
+		} catch (Exception e3) {
+			e3.printStackTrace();
+			error.agregar("El archivo cargado presenta errores.");
+			return null;
+		}
+		
+//		int[] result = { movAceptados, movRechazados, numeroDeCliente };
+
+
+		//inicializar();
+		return conciliaCupon;
+
+	}
+	
+	public void generarArchivoRespuesta(ConciliaCupon conciliaCupon) {
+		
+		try {
+		int movRechazados = 0;
+		Long importeRechazado = 0L;
+		int movAceptados = conciliaCupon.getMovAceptados();
+		boolean rtaNormal = conciliaCupon.isRtaNormal();
+		String fechaArch = conciliaCupon.getFechaArch();
+		String rtaEnergiaSJ = conciliaCupon.getRtaEnergiaSJ();
+		List loteComercioItemsRechazados = conciliaCupon.getLoteComercioItemsRechazados();
+		List loteComercioItemsAprobados = conciliaCupon.getLoteComercioItemsAprobados();
+		
+		String rtaDirecTV = conciliaCupon.getRtaDirecTV();
+		boolean direcTV = conciliaCupon.isDirecTV();
+		boolean energiaSJ = conciliaCupon.isEnergiaSJ();
+		int numeroDeCliente = 0;
+		LoteComercio lote = conciliaCupon.getLote();
+		Date fecha = new Date();
+		
+		PropertieFile prop = new PropertieFile(System.getProperty("catalina.home") + File.separator + "webapps" + File.separator
+				+ "contexto.properties");
+		
+		if (loteComercioItemsRechazados != null && loteComercioItemsRechazados.size() > 0) {
+			Iterator iterRechazados = loteComercioItemsRechazados.iterator();
+			while (iterRechazados.hasNext()) {
+				movRechazados++;
+				LoteComercioItem itemRechazado = (LoteComercioItem) iterRechazados.next();
+				importeRechazado = importeRechazado + new Long(itemRechazado.getImporte());
+				if(conciliaCupon.isRtaNormal()){
+					armarRegistroRespuesta(itemRechazado, "RECHAZADO");
+				}
+				if(conciliaCupon.isEnergiaSJ()){
+					rtaEnergiaSJ += armarRegistroRespuestaEnergiaSJ(itemRechazado, "R",fechaArch);
+				}
+				if(direcTV) {
+					rtaDirecTV += armarRegistroRespuestaDirecTV(itemRechazado, "R",fechaArch);
+				}
+				
+			}
+		}
+		
+		numeroDeCliente = movAceptados + movRechazados;
+		
+		Locale locale = new Locale("es", "AR");      
+		NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+		
+		if(rtaNormal  ){
+			if (archivoDebitoAutomatico.getCodigoComercio().equals("3551")) {
+				bw.close();
+			} else if (archivoDebitoAutomatico.getCodigoComercio().equals("2065")) {
+				bw.newLine();
+				bw.newLine();
+				bw.write("Movimientos Analizados: " + numeroDeCliente);
+				log.info("Movimientos Analizados: " + numeroDeCliente);
+				bw.newLine();
+				bw.write("Movimientos Aceptado: " + movAceptados + " ( " + currencyFormatter.format(new Double((conciliaCupon.getImporte()/100D))) + " )"  );
+				log.info("Movimientos Aceptado: " + movAceptados + " ( " + currencyFormatter.format(new Double((conciliaCupon.getImporte()/100D))) + " )" );
+				bw.newLine();				
+				if (importeRechazado > 0L) {					
+					bw.write("Movimientos Rechazado: " + movRechazados + " ( " + currencyFormatter.format(new Double((importeRechazado/100D))) + " )"  );
+					log.info("Movimientos Rechazado: " + movRechazados + " ( " + currencyFormatter.format(new Double((importeRechazado/100D))) + " )"  );
+				} else {
+					bw.write("Movimientos Rechazado: " + movRechazados);
+					log.info("Movimientos Rechazado: " + movRechazados);
+				}
+				
+				bw.close();
+				
+			} else {
+			bw.newLine();
+			bw.newLine();
+			bw.write("Movimientos Analizados: " + numeroDeCliente);
+			log.info("Movimientos Analizados: " + numeroDeCliente);
+			bw.newLine();
+			bw.write("Movimientos Aceptado: " + movAceptados);
+			log.info("Movimientos Aceptado: " + movAceptados);
+			bw.newLine();
+			bw.write("Movimientos Rechazado: " + movRechazados);
+			log.info("Movimientos Rechazado: " + movRechazados);
+			bw.close();
+		}
+		}
+
+		ArchivoDebitoHist archivoDebitoHis = new ArchivoDebitoHist();
+		archivoDebitoHis.setArchivo(uploadedFile.getName());
+		archivoDebitoHis.setFechaLeido(new Date());
+		archivoDebitoHis.setIdOperador(Session.getOperador().getCodigo());
+		archivoDebitoHis.setCodComercio(element);
+		
+		archivoDebitoHis.setFinalizo("S");
+		
+		Set<LoteComercioItem> loteAprobados = new HashSet();
+		loteAprobados.addAll(loteComercioItemsAprobados);
+		lote.setLoteComercioItems(loteAprobados);
+		lote.setEstadoLote("P");
+		
+		try {
+			transaccionesService.getLoteComercioService().grabarLoteComercio(lote);//loteComercio
+		} catch (Exception e) {
+			e.printStackTrace();
+			error.agregar("Error al Grabar el Historico del Archivo de Debito" + e.getMessage());
+		}
+		
+		
+		try {
+			transaccionesService.getArchivoDebitoHistService().grabarArchivoDebitoHist(archivoDebitoHis);
+		} catch (ArchivoDebitoHistException e) {
+			e.printStackTrace();
+			error.agregar("Error al Grabar el Historico del Archivo de Debito" + e.getMessage());
+		}
+		
+		// Armamos el paginador por si hubo rechazados.....
+					paginador = new PaginaDeRegistros(10, loteComercioItemsRechazados);
+					Iterator i = paginador.getPrimeraPagina().iterator();
+					while (i.hasNext()) {
+						LoteComercioItem lot = (LoteComercioItem) i.next();
+						WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+						listCuponesNoConc.add(cupon);
+					}
+					
+					
+					if(energiaSJ){
+						SimpleDateFormat formatoNombre = new SimpleDateFormat("ddMM");
+						String nomRespuesta = archivoDebitoAutomatico.getCodigoComercio() + "R" + formatoNombre.format(fecha) + ".txt";
+						respuestaEnergiaSJ(rtaEnergiaSJ,nomRespuesta);
+						saveFile();
+//						abrirArchivo(File.separator + prop.getProperties("directorioDebitosAutomaticos") + File.separator + nomRespuesta);
+					}
+					
+					if(direcTV){
+						SimpleDateFormat formato = new SimpleDateFormat("ddMMyyyy");
+						String nomRespuesta = "COB0" + archivoDebitoAutomatico.getCodigoComercio() + formato.format(fecha) + ".txt";
+						respuestaDirecTV(rtaDirecTV,nomRespuesta);
+						saveFile();
+//						abrirArchivo(File.separator + prop.getProperties("directorioDebitosAutomaticos") + File.separator + nomRespuesta);
+					}
+					
+					if(rtaNormal){
+//						descargarArchivo(respuestaArchivo.getPath(),respuestaArchivo.getName());
+						saveFile();
+					}
+					
+		} catch (NumberFormatException e2) {
+			error.agregar("El formato del archivo no es correcto o este se encuentra dañado.");
+			e2.printStackTrace();
+		} catch (Exception e3) {
+			e3.printStackTrace();
+			error.agregar("El archivo cargado presenta errores.");
+		}
+
+
+		
+	}
+	
+	/*
+	 * Este metodo se utiliza para poder almacenar un archivo digital en un directorio predefinido. Primero creamos la ruta donde se va a almacenar el
+	 * archivo.
+	 */
+	public String saveFile() {
+		log.info("Ejecutando ==> saveFile()");
+		String path;
+		String nombreAdelante = null;
+
+		
+			path = "No grabo";
+			Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+			SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+			String fechaFormato = formatoFecha.format(timestamp);
+			String pathAux = "Debitos";
+			
+			try {
+				//String archivosDeComercios = "comercios/docAdjuntos";
+				
+				//char aux[] = Archivo.archivosDeIndividuos.toCharArray();
+//				char aux[] = archivosDeComercios.toCharArray();
+//				for (int i = 0; i < 10; i++)
+//				{
+//					pathAux += aux[i];
+//				}
+				int año = timestamp.getYear() + 1900;
+				pathAux += "/" + año + "-";
+				int mes = timestamp.getMonth() + 1;
+				if (mes < 10) // Si el mes tiene un solo digito, se le agrega un cero a la izquierda.
+				{
+					pathAux += "0" + mes;
+				}
+				else
+					pathAux += +mes;
+				
+				pathAux += "/" +archivoDebitoAutomatico.getCodigoComercio();
+				log.info("Directorio archivo: " + pathAux);
+				String codPosnetStr= null;
+				
+//				String codPosnet = codComercio.getCodigoPosnet().trim();
+//				if (codPosnet.length() < 4) {
+//					 codPosnetStr = ("0000" + codPosnet).substring(("0000" + codPosnet).length() - 4);
+//				}else {
+//					 codPosnetStr = codPosnet;
+//				}
+				
+				 nombreAdelante = codPosnetStr+"-"+fechaFormato;
+				
+//				path = Archivo.grabarArchivoComercio(uploadedFile.getInputStream(), uploadedFile.getName(), new Long(uploadedFile.getSize()).intValue(),
+//						pathAux,nombreAdelante);
+				
+			//	https://tarjetafiel.s3.sa-east-1.amazonaws.com/liquidacionesClientes/Comercioscomercios/docAdjuntos/2023-01/1010-10-01-2023-540015-07-2022_72196.pdf
+				
+				
+				try {
+					//SimpleDateFormat formatoFechaS3 = new SimpleDateFormat("dd-MM-yyyy");
+					String bucket = pathAux;
+//					String bucket = "Atencion/"+formatoFechaS3.format(fechaCierreActual);
+					
+					
+//					if (comunicado) {
+//						 fileAmazonCliente = nombreLiq.trim()+"T.pdf";
+//						
+//					} else {
+//						 fileAmazonCliente = nombrePdfLiqJunto;
+//						
+//					}
+				String	 fileAmazonCliente = respuestaArchivo.getAbsolutePath();
+						
+					Map<String, String> headers = new HashMap<String, String>();
+			    	     			    	    
+			    	    HttpPostMultipart multipart = new HttpPostMultipart("http://192.168.0.76:8080/s3_bucket/storage/uploadFile", "utf-8", headers);
+   
+			    	    multipart.addFormField("bucket", bucket);
+			    	    // Add file
+			    	    multipart.addFilePart("file", new File(fileAmazonCliente));
+			    	    // Print result
+			    	    String response = multipart.finish();
+			    	    System.out.println(response); 
+			    	    log.info("archivo pdf subido al Amazon: " + fileAmazonCliente);
+			    	    
+			    	    File file = new File(path);
+//			    	    file.delete();
+				
+			    	    
+					} catch (Exception e) {
+						log.info("Error en subir archivo al Amazon: " + path);
+						
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	
+				
+				// }
+
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//				return null;
+			} 
+				catch (NullPointerException e2) {
+				e2.printStackTrace();
+			}
+	 catch (Exception e) {
+		e.printStackTrace();
+		return null;
+	}
+			
+				
+				String amazonS31 = "https://s3-sa-east-1.amazonaws.com/tarjetafiel/";
+			String amazonS3 = "s3-sa-east-1.amazonaws.com/tarjetafiel/";
+					
+//				ejecutarJavaScript("popup('" + amazonS3  + pathAux + "/"  + respuestaArchivo.getName() + "',700,400);");
+			ejecutarJavaScript("popup('" + amazonS31  + pathAux + "/"  + respuestaArchivo.getName() + "',700,400);");
+			
+//				ejecutarJavaScript("window.open('https://" + amazonS3  + pathAux + "/"  + respuestaArchivo.getName() + "','popup-" + respuestaArchivo.getName() + "','left=20,top=20, width=1000,height=400')");
+//				 "',700,400);");
+//				ejecutarJavaScript("window.open('http://" + url + serverFileFolder + archivo + "','popup-" + archivo + "','left=20,top=20, width=1000,height=400')");																																			// "',700,400);");
+
+//
+//				WrapperFile wrapperFile = new WrapperFile(null, null, nombreAdelante + "-" + uploadedFile.getName(), fechaFormato, nombreAdelante + "-" + uploadedFile.getName(), timestamp);
+//				wrapperFile.setIdWrappers(new Long(wrapperFile.hashCode()));
+//				//wrapperFile.setListaDocumentos(listAuxTipoDigital);
+//				listTipoDocumentos.add(wrapperFile);
+				    	
+//				FacesContext facesContext = FacesContext.getCurrentInstance();
+//				String javaScriptText = "window.opener.recargar();";
+//				AddResource addResource = AddResourceFactory.getInstance(facesContext);
+//				addResource.addInlineScriptAtPosition(facesContext, AddResource.HEADER_BEGIN, javaScriptText);
+		
+
+		
+		return null;
+	}
+	
+	public String saveFileEntrada(File entradaArchivo) {
+	      log.info("Ejecutando ==> saveFileEntrada()");
+	      String nombreAdelante = null;
+	      String path = "No grabo";
+	      Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+	      SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+	      String fechaFormato = formatoFecha.format(timestamp);
+	      String pathAux = "Debitos";
+
+	      try {
+	         int año = timestamp.getYear() + 1900;
+	         pathAux = pathAux + "/" + año + "-";
+	         int mes = timestamp.getMonth() + 1;
+	         if (mes < 10) {
+	            pathAux = pathAux + "0" + mes;
+	         } else {
+	            pathAux = pathAux + mes;
+	         }
+
+	         pathAux = pathAux + "/" + this.archivoDebitoAutomatico.getCodigoComercio();
+	         log.info("Directorio archivo: " + pathAux);
+	         String codPosnetStr = null;
+	         (new StringBuilder(String.valueOf(codPosnetStr))).append("-").append(fechaFormato).toString();
+
+	         try {
+	            String fileAmazonCliente = entradaArchivo.getAbsolutePath();
+	            Map<String, String> headers = new HashMap();
+	            HttpPostMultipart multipart = new HttpPostMultipart("http://192.168.0.76:8080/s3_bucket/storage/uploadFile", "utf-8", headers);
+	            multipart.addFormField("bucket", pathAux);
+	            multipart.addFilePart("file", new File(fileAmazonCliente));
+	            String response = multipart.finish();
+	            System.out.println(response);
+	            log.info("archivo pdf subido al Amazon: " + fileAmazonCliente);
+	            new File(path);
+	         } catch (Exception var17) {
+	            log.info("Error en subir archivo al Amazon: " + path);
+	            var17.printStackTrace();
+	         }
+	      } catch (NullPointerException var18) {
+	         var18.printStackTrace();
+	      } catch (Exception var19) {
+	         var19.printStackTrace();
+	         return null;
+	      }
+
+	      String amazonS31 = "https://s3-sa-east-1.amazonaws.com/tarjetafiel/";
+	      String amazonS3 = "s3-sa-east-1.amazonaws.com/tarjetafiel/";
+	      log.info("archivo de entrada " + amazonS31 + pathAux + "/" + entradaArchivo.getName());
+	      this.ejecutarJavaScript("popup('" + amazonS31 + pathAux + "/" + entradaArchivo.getName() + "',700,400);");
+	      return null;
+	   }
+
+
+
+	
+	
+	public void respuestaEnergiaSJ(String archivoESJ, String nombre){
+		try {
+			File f = null;
+			FileWriter fw = null;
+			
+			PropertieFile prop = new PropertieFile(System.getProperty("catalina.home") + File.separator + "webapps" + File.separator
+					+ "contexto.properties");
+
+			String ruta = System.getProperty("catalina.home") + File.separator + "webapps" + File.separator + "archivos"
+					+ File.separator + prop.getProperties("directorioDebitosAutomaticos");
+				
+			f = new File(ruta + "/" +  nombre);
+			f.delete();
+
+			fw = new FileWriter(ruta + "/" + nombre);
+			fw.write(archivoESJ);
+			fw.close();
+			
+			if (f != null) {
+				//descargarArchivo(f.getPath(),f.getName());
+			}
+			respuestaArchivo = f;
+			
+		} catch (Exception e) {
+			e.getMessage();
+		}
+	}
+	
+	
+	public void respuestaDirecTV(String archivoDTV, String nombre){
+		try {
+			File f = null;
+			FileWriter fw = null;
+			
+			PropertieFile prop = new PropertieFile(System.getProperty("catalina.home") + File.separator + "webapps" + File.separator
+					+ "contexto.properties");
+
+			String ruta = System.getProperty("catalina.home") + File.separator + "webapps" + File.separator + "archivos"
+					+ File.separator + prop.getProperties("directorioDebitosAutomaticos");
+				
+			f = new File(ruta + "/" +  nombre);
+			f.delete();
+
+			fw = new FileWriter(ruta + "/" + nombre);
+			fw.write(archivoDTV);
+			fw.close();
+			
+			if (f != null) {
+				//descargarArchivo(f.getPath(),f.getName());
+			}
+			
+			respuestaArchivo = f;
+			
+		} catch (Exception e) {
+			e.getMessage();
+		}
+	}
+	
+	
+	public String descargarArchivo(String ruta,String nomArchivo){
+		
+		try {
+			HttpServletResponse response = Session.getResponse();
+			FileInputStream arch;
+			arch = new FileInputStream(ruta);
+			int longitud = arch.available();
+			byte[] datos = new byte[longitud];
+			arch.read(datos);
+			arch.close();
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-Disposition", "attachment;filename=\"" + nomArchivo + "\"");
+			ServletOutputStream ouputStream = response.getOutputStream();
+			ouputStream.write(datos, 0, longitud);
+			ouputStream.flush();
+			ouputStream.close();
+			Session.responseComplete();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	
+	
+	public String abrirArchivo(String archivo) {
+		error.borrar();
+		if ("".equals(archivo)) {
+			log.error("No se encuentra el lote para obtener el archivo");
+			error.agregar("No se encuentra el lote para obtener el archivo");
+			return null;
+		}
+
+		String url;
+		try {
+			url = getServerUrl();
+		} catch (Exception e) {
+			log.error("No se puede encontrar la url de la aplicacion");
+			error.agregar("Error al intentar obtener la ruta de la aplicacion");
+			return null;
+		}
+
+		String serverFileFolder = "";
+		try {
+			serverFileFolder = getServerFileFolder(serverFileFolder);
+		} catch (IOException e) {
+			e.printStackTrace();
+			log.error("No se puede encontrar la url del contenedor de archivos del servidor");
+			error.agregar("Error al intentar obtener la ruta del contenedor de archivos del servidor");
+			return null;
+		}
+		ejecutarJavaScript("window.open('http://" + url + serverFileFolder + archivo + "','popup-" + archivo + "','left=20,top=20, width=1000,height=400')");																																			// "',700,400);");
+
+		return null;
+	}
+
+	
+	private String getServerUrl() throws Exception {
+		String url = "";
+		Object request = FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		if (request instanceof HttpServletRequest)
+		{
+			url = ((HttpServletRequest) request).getServerName() + ":" + ((HttpServletRequest) request).getServerPort();
+		} else
+		{
+			throw new Exception("Error al intentar obtener la ruta de la aplicacion");
+		}
+		return url;
+	}
+	
+	
+	private String getServerFileFolder(String serverFileFolder) throws IOException {
+		serverFileFolder = ContextoProperties.getProperty("directorioArchivos");
+
+		serverFileFolder = serverFileFolder.replace("/webapps", "");
+		return serverFileFolder;
+	}
+	
+	
+	
+	
+	
+	public Transaccion buscarTransaccion(String codAutorizacion) {
+		Filtro filtro = new Filtro();
+		filtro.agregarCampoOperValor("codigoAutorizacion", Filtro.LIKE, codAutorizacion);
+		filtro.agregarCampoOperValor("codComercio", Filtro.LIKE, idComercio);
+
+		try {
+			List lstTransaccion = transaccionesService.getTransaccionService().getTransaccion(filtro);
+			if (lstTransaccion != null && lstTransaccion.size() > 0) {
+				Iterator iter = lstTransaccion.iterator();
+				while (iter.hasNext()) {
+					Transaccion transaccion = (Transaccion) iter.next();
+					lstIdTransacciones.add(String.valueOf(transaccion.getIdTranascciones()));
+					return transaccion;
+				}
+			} else {
+				error.agregar("No se pudo encontrar la transaccion");
+			}
+		} catch (TransaccionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	public File crearArchivo(LoteComercio lote) throws Exception {
+		try {
+			log.info("crearArchivo");
+			PropertieFile prop = new PropertieFile(System.getProperty("catalina.home") + File.separator + "webapps" + File.separator
+					+ "contexto.properties");
+
+			String nombre = System.getProperty("catalina.home") + File.separator + "webapps" + File.separator + "archivos"
+					+ File.separator + prop.getProperties("directorioDebitosAutomaticos");
+
+			File file = new File(nombre);
+			if (!file.exists()) {
+				if (!file.mkdir())
+					throw new Exception("No se ha podido crear el directorio para almacenar la respuesta de debitos.");
+			}
+
+			nombre += File.separator + "res" + uploadedFile.getName();
+			File res = new File(nombre);
+			res.setWritable(true);
+			if (!res.exists()) {
+				if (!res.createNewFile())
+					throw new Exception("No se ha podido crear el archivo de respuesta.");
+			} else {
+				res.delete();
+				res = new File(nombre);
+				if (!res.createNewFile()) {
+					throw new Exception("No se ha podido crear el archivo de respuesta.");
+				}
+			}
+
+			SimpleDateFormat formatoDeFecha = new SimpleDateFormat("dd/MM/yyyy");
+
+			setBw(new BufferedWriter(new FileWriter(res)));
+			
+			if (element.getCodigoPosnet().equals("3551") || element.getCodigoPosnet().equals("2065")) {
+				
+			} else {
+
+			getBw().write("             " + element.getSucEmpresa().getEmpresa().getRazonSocial());
+			getBw().newLine();
+			getBw().write("Comercio:" + element.getCodigoPosnet());
+			getBw().newLine();
+			getBw().write("Fecha Presentación: " + formatoDeFecha.format(lote.getFechaRecepcion()));
+			getBw().newLine();
+			getBw().write("Fecha Proceso: " + formatoDeFecha.format(new Date()));
+			getBw().newLine();
+			getBw().newLine();
+			getBw().write("Nro Documento     Apellido y Nombre             Nro Tarjeta                 Importe               Obs       ");
+			}
+			return res;
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		}
+	}
+
+
+	public String armarRegistroRespuesta(LoteComercioItem item, String repuesta) {
+		
+		log.info("item.getNroTarjeta() " + item.getNroTarjeta() );
+		log.info("archivoDebitoAutomatico.getCodigoComercio() "+ archivoDebitoAutomatico.getCodigoComercio());
+		DatosItemDebito datosItem = transaccionesService.getLoteComercioItemService().getDatosItem(item.getNroTarjeta());
+		
+		if (datosItem == null)  {
+			log.info("item.getNroTarjeta() null "  );
+			
+		} else {
+			log.info("datosItem.getDni() " + datosItem.getDni() );
+			
+		}
+		
+		try {
+			if(archivoDebitoAutomatico.getCodigoComercio().equals("3551")){
+				log.info("armaarchivoDebitoAutomatico.getCodigoComercio() "
+			+archivoDebitoAutomatico.getCodigoComercio()  );
+				if (repuesta.equals("ACEPTADO")) {
+					bw.write(item.getRtaIoTotal()+ "7"+"\r\n" );
+				} else {
+					bw.write(item.getRtaIoTotal()+ "3"+"\r\n" );
+				}
+				
+			} else  if(archivoDebitoAutomatico.getCodigoComercio().equals("2065")){
+				log.info("armaarchivoDebitoAutomatico.getCodigoComercio() "
+			+archivoDebitoAutomatico.getCodigoComercio()  );
+				if (repuesta.equals("ACEPTADO")) {
+					bw.write(item.getRtaOSSE()+ " Aceptado"+"\r\n" );
+				} else {
+					bw.write(item.getRtaOSSE()+ " Rechazado"+"\r\n" );
+				}
+				
+			} 
+			else {
+			
+			bw.newLine();
+			if(datosItem.getDni().length()==7){
+				bw.write("0");
+			}
+			bw.write(datosItem.getDni() + "          ");
+			String nombre = datosItem.getNombreCliente();
+			if (nombre.length() <= 22) {
+				String nombreAux = nombre.concat("            ");
+				bw.write(nombreAux, 0, 22);
+			} else {
+				bw.write(nombre, 0, 22);
+			}
+			bw.write("        " + item.getNroTarjeta() + "            ");
+			bw.write(item.getImporte() + "          ");
+			bw.write(repuesta);
+			
+			/**
+			 * @5022
+			 * Proyecto personalizar debito comercio a preguntar
+			 */	
+			log.error("comercio " + archivoDebitoAutomatico.getCodigoComercio() );
+			if(archivoDebitoAutomatico.getCodigoComercio().equals("6608")){
+				bw.write("  " + item.getRtaComercioNuevo() );
+				log.error("comercio entro " + archivoDebitoAutomatico.getCodigoComercio() );
+			}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return "";
+	}
+	
+	public String armarRegistroRespuestaEnergiaSJ(LoteComercioItem item, String resultado, String fecha) {
+		log.info("armarRegistro item.getRtaEnergiaSJ() "+ item.getRtaEnergiaSJ());
+		
+		String linea = item.getRtaEnergiaSJ() + "";
+		log.info("comienzo linea "+ linea);
+		linea +="\t";
+		linea += item.getImporte().substring(0,9) + "." + item.getImporte().substring(9,11) + "	";
+		linea += resultado + "	";
+		linea += fecha;
+		linea += "\r\n";
+		log.info("fin linea "+ linea);
+		return linea;
+	}
+	
+	public String armarRegistroRespuestaDirecTV(LoteComercioItem item, String resultado, String fecha) {
+			
+		String linea = "";
+		log.info(item.getRtaDirecTV());
+		linea += item.getRtaDirecTV().substring(0,61) + "0000000000000000";
+		linea += resultado;
+		linea += item.getRtaDirecTV().substring(61,81);
+		linea += "                     ";
+		linea += "\r\n";
+		return linea;
+	}
+
+
+	public String cancelarConc() {
+		this.setMostrarResultConc(false);
+		idTipoConcSeleccionada = new Long(0);
+		idTipoAccionSeleccionada = new Long(0);
+		idFormatoArchivo = new Long(0);
+		tipoConc = new HtmlSelectOneMenu();
+		tipoConc.setValue(idTipoConcSeleccionada);
+		return null;
+	}
+
+
+	/**
+	 * conciliacion manual de cupones
+	 * 
+	 * @return
+	 */
+	public String conciliarCupones() {
+		try {
+			List listaDeTransaccionesAceptadasManualmente = new ArrayList();
+
+			Iterator iter = listCuponesNoConc.iterator();
+			while (iter.hasNext()) {
+				WrapperLoteComercioItem wrapLCI = (WrapperLoteComercioItem) iter.next();
+				if (wrapLCI.seleccionado) {
+					LoteComercioItem loteItem = (LoteComercioItem) wrapLCI.getLoteComercioItem();
+					listaDeTransaccionesAceptadasManualmente.add(loteItem);
+				}
+			}
+			if (listaDeTransaccionesAceptadasManualmente.size() > 0) {// revision cupones de origen carga automatica
+				if (idTipoConcSeleccionada.compareTo(new Long(1)) == 0)
+					revisionManual = new RevisionManual(listaDeTransaccionesAceptadasManualmente, true, "Cupon Origen Posnet",
+							"Transaccion en Base de Datos");
+				else { // revision cupones de origen carga manual
+					revisionManual = new RevisionManual(listaDeTransaccionesAceptadasManualmente, false, "Cupon Origen Carga Manual",
+							"Transaccion en Base de Datos");
+					if (loteComercioDetalles != null)
+						loteComercioDetalles.clear();
+				}
+				String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+				path += "/tarjetafiel/transacciones/popup/conciliacionManual.jsf";
+				ejecutarJavaScript("popup('" + path + "',900,900), 'titlebar=no';");
+			}
+
+		} catch (Exception e) {
+			error.agregar("No se pudo rechazar los items");
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+
+	public String habilitarCarga() {
+		panelAdjuntar = true;
+		return null;
+	}
+
+	/****************************************************************************
+	 * Esta clase se utiliza para el popup que asocia un cupon a una transaccion
+	 * 
+	 **************************************************************************** 
+	 */
+
+	public class PopupAsociarCuponesATransaccion {
+
+		private Long nroLoteFiltro;
+		private List listCuponesNoAsociados;
+		private List listTransacciones;
+		private boolean mostrarPanelSeleccionado;
+		private boolean mostrarPanelCuponSeleccionado;
+		private boolean mostrarPanelTransSeleccionada;
+		private boolean mostrarPanelSugerencias;
+		private Date fechaDesde;
+		private Date fechaHasta;
+		private Long idCantDifSeleccionada;
+		private HtmlSelectOneMenu cantDif;
+		private List cantDifItems;
+		private List listaSugerencias;
+		private List listaSugerencias1;
+		private List listaSugerencias2;
+		private List listaSugerencias3;
+		private PaginaDeRegistros paginador;
+
+
+		public List getCantDifItems() {
+			return cantDifItems;
+		}
+
+
+		public void setCantDifItems(List cantDifItems) {
+			this.cantDifItems = cantDifItems;
+		}
+
+
+		public Long getIdCantDifSeleccionada() {
+			return idCantDifSeleccionada;
+		}
+
+
+		public void setIdCantDifSeleccionada(Long idCantDifSeleccionada) {
+			this.idCantDifSeleccionada = idCantDifSeleccionada;
+		}
+
+
+		public PopupAsociarCuponesATransaccion(Long nroLote) {
+			this.nroLoteFiltro = nroLote;
+			listCuponesNoAsociados = new ArrayList();
+			listacuponSeleccionado = new ArrayList();
+			listTransacciones = new ArrayList();
+			listaTransSeleccionada = new ArrayList();
+			mostrarPanelSeleccionado = false;
+			mostrarPanelCuponSeleccionado = false;
+			mostrarPanelTransSeleccionada = false;
+			mostrarPanelSugerencias = false;
+			cantDif = new HtmlSelectOneMenu();
+			cantDifItems = new ArrayList();
+			cantDifItems.add(new SelectItem(new Long(0), "Solo una"));
+			cantDifItems.add(new SelectItem(new Long(1), "Hasta dos"));
+			cantDifItems.add(new SelectItem(new Long(2), "Hasta tres"));
+			cantDifItems.add(new SelectItem(new Long(3), "Sin especificar"));
+			idCantDifSeleccionada = new Long(0);
+			fechaDesde = new Date(Calendar.getInstance().getTime().getTime());
+			fechaHasta = new Date(Calendar.getInstance().getTime().getTime());
+			listaSugerencias = new ArrayList();
+			listaSugerencias1 = new ArrayList();
+			listaSugerencias2 = new ArrayList();
+			listaSugerencias3 = new ArrayList();
+			paginador = new PaginaDeRegistros();
+		}
+
+
+		public boolean isMostrarPanelCuponSeleccionado() {
+			return mostrarPanelCuponSeleccionado;
+		}
+
+
+		public void setMostrarPanelCuponSeleccionado(
+				boolean mostrarPanelCuponSeleccionado) {
+			this.mostrarPanelCuponSeleccionado = mostrarPanelCuponSeleccionado;
+		}
+
+
+		public boolean isMostrarPanelSugerencias() {
+			return mostrarPanelSugerencias;
+		}
+
+
+		public void setMostrarPanelSugerencias(boolean mostrarPanelSugerencias) {
+			this.mostrarPanelSugerencias = mostrarPanelSugerencias;
+		}
+
+
+		public boolean isMostrarPanelTransSeleccionada() {
+			return mostrarPanelTransSeleccionada;
+		}
+
+
+		public void setMostrarPanelTransSeleccionada(boolean mostrarPanelTransSeleccionada) {
+			this.mostrarPanelTransSeleccionada = mostrarPanelTransSeleccionada;
+		}
+
+
+		public String cancelarRechazarCupon() {
+			popup.borrar();
+			return null;
+		}
+
+
+		public String rechazarCupon(ActionEvent event) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			Map map = context.getExternalContext().getRequestParameterMap();
+			String loteItemID = (String) map.get("idLoteItem");
+			// actualializamos el lote
+			cantRechazados--;
+			cantRechazosDefinitivos++;
+			loteComercio.modificarCantidadesItemProcesados(-1, cantConciliada, cantRechazados, cantRechazosDefinitivos);
+			if (cantRechazados == 0) { // o bien cantCupones= cantConciliados+cantRechazosDefinitivos QT=QR+QC => QX=0
+				loteComercio.setEstadoLote("C");
+			}
+			try {
+				Set items = loteComercio.getLoteComercioItems();
+				Iterator it = items.iterator();
+				LoteComercioItem itemRechazado = null;
+				while (it.hasNext()) {
+					LoteComercioItem item = (LoteComercioItem) it.next();
+					if (item.getIdLoteComercioItem().toString().equals(loteItemID)) {
+						item.setEstadoItem("R");
+						item.setFechaUltimaModificacion(new Timestamp(hoy.getTime()));
+						item.setOperador(Session.getOperador());
+						itemRechazado = item;
+						break;
+					}
+				}
+				// actualizamos el lote y el item rechazado
+				transaccionesService.getLoteComercioService().actualizarLoteComercio(loteComercio);
+
+				listCuponesNoAsociados.remove(itemRechazado);
+				mostrarLinkBusquedaCupNoAsoc = false;
+				buscarNoConciliados(loteComercio.getIdLoteComercio().toString());
+				if (listCuponesNoAsociados.size() == 0) {
+					String javaScriptText = "window.opener.recargar(); window.close();";
+					ejecutarJavaScript(javaScriptText);
+				}
+			} catch (LoteComercioException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+
+		public String primerRegistroTransaccion() {
+			listTransacciones.clear();
+			Iterator i = paginador.getPrimeraPagina().iterator();
+			while (i.hasNext()) {
+				WrapperDiferenciasTransacciones w = (WrapperDiferenciasTransacciones) i.next();
+				listTransacciones.add(w);
+			}
+			return null;
+		}
+
+
+		public String anteriorRegistroTransaccion() {
+			listTransacciones.clear();
+			Iterator i = paginador.getPaginaAnterior().iterator();
+			while (i.hasNext()) {
+				WrapperDiferenciasTransacciones w = (WrapperDiferenciasTransacciones) i.next();
+				listTransacciones.add(w);
+			}
+			return null;
+		}
+
+
+		public String siguienteRegistroTransaccion() {
+			listTransacciones.clear();
+			Iterator i = paginador.getPaginaSiguiente().iterator();
+			while (i.hasNext()) {
+				WrapperDiferenciasTransacciones w = (WrapperDiferenciasTransacciones) i.next();
+				listTransacciones.add(w);
+			}
+			return null;
+		}
+
+
+		public String ultimoRegistroAsiento() {
+			listTransacciones.clear();
+			Iterator i = paginador.getUltimaPagina().iterator();
+			while (i.hasNext()) {
+				WrapperDiferenciasTransacciones w = (WrapperDiferenciasTransacciones) i.next();
+				listTransacciones.add(w);
+			}
+			return null;
+		}
+
+
+		public void cambiarPagina(ValueChangeEvent e) {
+			paginaDeTransaccion();
+		}
+
+
+		public String paginaDeTransaccion() {
+			listTransacciones.clear();
+			Iterator i = paginador.getPagina(
+					((Long) paginador.getPagSeleccionada().getValue()).intValue()).iterator();
+			while (i.hasNext()) {
+				WrapperDiferenciasTransacciones w = (WrapperDiferenciasTransacciones) i.next();
+				listTransacciones.add(w);
+			}
+			return null;
+		}
+
+
+		public void buscarCuponesNoAsoc(ActionEvent event) {
+			listCuponesNoAsociados.clear();
+			mostrarPanelSeleccionado = true;
+			mostrarPanelCuponSeleccionado = false;
+			mostrarPanelTransSeleccionada = false;
+			mostrarPanelSugerencias = false;
+			Filtro filtro = new Filtro();
+			filtro.agregarCampoOperValor("estadoItem", Filtro.LIKE, "X");
+			filtro.agregarCampoOperValor("loteComercio.idLoteComercio", Filtro.IGUAL, nroLoteFiltro);
+			filtro.agregarCampoComparacionNulo("transaccion.idTranascciones", Filtro.NULL);
+
+			try {
+				List listaNoAsoc = transaccionesService.getLoteComercioItemService().getLoteComercioItem(filtro);
+				paginador = new PaginaDeRegistros(10, listaNoAsoc);
+				Iterator i = paginador.getPrimeraPagina().iterator();
+				boolean primero = true;
+				while (i.hasNext()) {
+					LoteComercioItem cupon = (LoteComercioItem) i.next();
+					if (primero) {
+						primero = false;
+						cantConciliada = cupon.getLoteComercio().getCuponesConciliados();
+						cantRechazados = cupon.getLoteComercio().getCuponesRechazados();
+						cantRechazosDefinitivos = cupon.getLoteComercio().getCuponesRechazadosDefinitivos();
+					}
+					listCuponesNoAsociados.add(cupon);
+				}
+			} catch (LoteComercioItemException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+
+		public void seleccionarCupon(ActionEvent event) {
+			listaTransSeleccionada.clear();
+			listacuponSeleccionado.clear();
+			listTransacciones.clear();
+			mostrarPanelCuponSeleccionado = true;
+			mostrarPanelTransSeleccionada = true;
+			mostrarPanelSugerencias = true;
+			FacesContext context = FacesContext.getCurrentInstance();
+			Map map = context.getExternalContext().getRequestParameterMap();
+			String loteItemID = (String) map.get("idLoteItem");
+			Iterator iter = listCuponesNoAsociados.iterator();
+			while (iter.hasNext()) {
+				LoteComercioItem element = (LoteComercioItem) iter.next();
+				if (element.getIdLoteComercioItem().compareTo(new Long(loteItemID)) == 0) {
+					WrapperCuponSeleccionado wrap = new WrapperCuponSeleccionado();
+					wrap.setLoteComercioItem(element);
+					listacuponSeleccionado.add(wrap);
+				}
+			}
+
+		}
+
+
+		public void buscarSugerencias(ActionEvent event) {
+			Filtro filtro = new Filtro();
+			if (idTipoConcSeleccionada.longValue() == 1) {
+				filtro.agregarCampoOperValor("origen.idOrigenes", Filtro.IGUAL, Origenen.ORIGEN_POSNET);
+			}
+			filtro.agregarCampoOperValor("fechaReal", Filtro.MAYOR_IGUAL, Filtro.getTO_DATE(fechaDesde));
+			filtro.agregarCampoOperValor("fechaReal", Filtro.MENOR_IGUAL, Filtro.getTO_DATE(fechaHasta));
+			filtro.agregarCampoOperValor("estadoImpacto", Filtro.LIKEXS, "P");
+			filtro.agregarCampoOperValor("tipoRegistro", Filtro.IGUAL, "861");
+			if (idTipoConcSeleccionada.longValue() == 2) {
+				filtro.agregarfuncion(" and  (obj.origen.idOrigenes=" + Origenen.ORIGEN_TELEFONICO + " or obj.origen.idOrigenes = "
+						+ Origenen.ORIGEN_IVR + ")");
+			}
+			try {
+				List transacciones = transaccionesService.getTransaccionService().getTransaccion(filtro);
+				// ///////PONER ESTO COMO CTES!!!
+				// style="font-size: 10px;color: red"
+				/*
+				 * 1 style="width: 65px; display:hidden" 2 width: 65px; display:hidden 3 width: 20px; display:hidden" 4 width: 70px; display:hidden 5
+				 * 6 width: 80px; display:hidden 7 width: 80px; display:hidden 8 width:100px;display:hidden
+				 */
+				List listaSugerenciasAuxi = new ArrayList();
+				listaSugerencias.clear();
+				listaSugerencias1.clear();
+				listaSugerencias2.clear();
+				listaSugerencias3.clear();
+				Iterator iter = transacciones.iterator();
+				while (iter.hasNext()) {
+					Transaccion trans = (Transaccion) iter.next();
+					DiferenciasItemTransaccion diferencias = ((WrapperCuponSeleccionado) listacuponSeleccionado.get(0)).getLoteComercioItem()
+							.setearDiferenciasConTransaccion(trans);
+					WrapperDiferenciasTransacciones wrap = new WrapperDiferenciasTransacciones(trans);
+					if (idCantDifSeleccionada.equals(new Long(3))) {
+						resaltarDiferencias(diferencias, wrap);
+						listaSugerenciasAuxi.add(wrap);
+					} else {
+						if (idCantDifSeleccionada.intValue() + 1 <= diferencias.getCantDiferencias()) {
+							resaltarDiferencias(diferencias, wrap);
+							switch (diferencias.getCantDiferencias()) {
+							case 1:
+								listaSugerencias1.add(wrap);
+								break;
+							case 2:
+								listaSugerencias2.add(wrap);
+								break;
+							case 3:
+								listaSugerencias3.add(wrap);
+								break;
+							default:
+								break;
+							}
+						}
+					}
+				}
+				switch (idCantDifSeleccionada.intValue() + 1) {
+				case 1:
+					listaSugerenciasAuxi.addAll(listaSugerencias1);
+					break;
+				case 2:
+					listaSugerenciasAuxi.addAll(listaSugerencias1);
+					listaSugerenciasAuxi.addAll(listaSugerencias2);
+					break;
+				case 3:
+					listaSugerenciasAuxi.addAll(listaSugerencias1);
+					listaSugerenciasAuxi.addAll(listaSugerencias2);
+					listaSugerenciasAuxi.addAll(listaSugerencias3);
+					break;
+				default:
+					break;
+				}
+
+				paginador = new PaginaDeRegistros(20, listaSugerenciasAuxi);
+				Iterator i = paginador.getPrimeraPagina().iterator();
+				while (i.hasNext()) {
+					WrapperDiferenciasTransacciones w = (WrapperDiferenciasTransacciones) i.next();
+					listaSugerencias.add(w);
+				}
+
+			} catch (TransaccionException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+
+		/**
+		 * este metodo resalta en la pagina las diferencias en rojo que hay entre un cupon y una transaccion
+		 * 
+		 */
+		private void resaltarDiferencias(DiferenciasItemTransaccion diferencias, WrapperDiferenciasTransacciones wrap) {
+			if (diferencias.isDifiereNroCupon()) {
+				wrap.setNroCuponFont("font-size: 10px;color: red");
+			} else {
+				wrap.setNroCuponFont("width: 65px; display:hidden");
+			}
+			if (diferencias.isDifiereNroDoc()) {
+				wrap.setNroDocFont("font-size: 10px;color: red");
+			} else {
+				wrap.setNroDocFont("width: 65px; display:hidden");
+			}
+			if (diferencias.isDifiereNroTarjeta()) {
+				wrap.setNroTarjetaFont("font-size: 10px;color: red");
+			}
+			else {
+				wrap.setNroTarjetaFont("width: 65px; display:hidden");
+			}
+			if (diferencias.isDifiereCantCuotas()) {
+				wrap.setCantCuotasFont("font-size: 10px;color: red");
+			} else {
+				wrap.setCantCuotasFont("width: 65px; display:hidden");
+			}
+			if (diferencias.isDifiereImporte()) {
+				wrap.setImporteFont("font-size: 10px;color: red");
+			} else {
+				wrap.setImporteFont("width: 65px; display:hidden");
+			}
+			if (diferencias.isDifiereCodAut()) {
+				wrap.setCodAutFont("font-size: 10px;color: red");
+			}
+			else {
+				wrap.setCodAutFont("width: 65px; display:hidden");
+			}
+			if (diferencias.isDifiereFechaConsumo()) {
+				wrap.setFechaConsumoFont("font-size: 10px;color: red");
+			} else {
+				wrap.setFechaConsumoFont("width: 65px; display:hidden");
+			}
+			if (diferencias.isDifierePlanCuotas()) {
+				wrap.setPlanCuotasFont("font-size: 10px;color: red");
+			}
+			else {
+				wrap.setPlanCuotasFont("width: 65px; display:hidden");
+			}
+		}
+
+
+		public void grabar(ActionEvent event) {
+			if (listaTransSeleccionada != null && listaTransSeleccionada.size() != 0) {
+				LoteComercioItem loteItem = ((WrapperCuponSeleccionado) listaTransSeleccionada.get(0)).getLoteComercioItem();
+				try {
+					transaccionesService.getLoteComercioItemService().actualizarLoteComercioItem(loteItem);
+					mostrarLinkBusquedaCupNoAsoc = false;
+					buscarNoConciliados(loteComercio.getIdLoteComercio().toString());
+					String javaScriptText = "window.opener.recargar(); window.close();";
+					ejecutarJavaScript(javaScriptText);
+				} catch (LoteComercioItemException e) {
+					e.printStackTrace();
+				}
+			}/*
+			 * else popup.setPopup(popup.ICONO_CONFIRMACION,
+			 * "No ha seleccionado ninguna transaccion para el cupon,¿Desea rechazar definitivamente el cupon?");
+			 */
+		}
+
+
+		public void recargarYCerrarPopup(ActionEvent event) {
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			String javaScriptText = "window.opener.recargar();window.close();";
+			AddResource addResource = AddResourceFactory.getInstance(facesContext);
+			addResource.addInlineScriptAtPosition(facesContext, AddResource.HEADER_BEGIN, javaScriptText);
+		}
+
+
+		public Long getNroLoteFiltro() {
+			return nroLoteFiltro;
+		}
+
+
+		public void setNroLoteFiltro(Long nroLoteFiltro) {
+			this.nroLoteFiltro = nroLoteFiltro;
+		}
+
+
+		public List getListCuponesNoAsociados() {
+			return listCuponesNoAsociados;
+		}
+
+
+		public void setListCuponesNoAsociados(List listCuponesNoAsociados) {
+			this.listCuponesNoAsociados = listCuponesNoAsociados;
+		}
+
+
+		public List getListacuponSeleccionado() {
+			return listacuponSeleccionado;
+		}
+
+
+		public boolean isMostrarPanelSeleccionado() {
+			return mostrarPanelSeleccionado;
+		}
+
+
+		public void setMostrarPanelSeleccionado(boolean mostrarPanelSeleccionado) {
+			this.mostrarPanelSeleccionado = mostrarPanelSeleccionado;
+		}
+
+
+		public Date getFechaDesde() {
+			return fechaDesde;
+		}
+
+
+		public void setFechaDesde(Date fechaDesde) {
+			this.fechaDesde = fechaDesde;
+		}
+
+
+		public Date getFechaHasta() {
+			return fechaHasta;
+		}
+
+
+		public void setFechaHasta(Date fechaHasta) {
+			this.fechaHasta = fechaHasta;
+		}
+
+
+		public List getListTransacciones() {
+			return listTransacciones;
+		}
+
+
+		public void setListTransacciones(List listTransacciones) {
+			this.listTransacciones = listTransacciones;
+		}
+
+
+		public HtmlSelectOneMenu getCantDif() {
+			return cantDif;
+		}
+
+
+		public void setCantDif(HtmlSelectOneMenu cantDif) {
+			this.cantDif = cantDif;
+		}
+
+
+		public List getListaSugerencias() {
+			return listaSugerencias;
+		}
+
+
+		public void setListaSugerencias(List listaSugerencias) {
+			this.listaSugerencias = listaSugerencias;
+		}
+
+
+		public List getListaSugerencias1() {
+			return listaSugerencias1;
+		}
+
+
+		public void setListaSugerencias1(List listaSugerencias1) {
+			this.listaSugerencias1 = listaSugerencias1;
+		}
+
+
+		public List getListaSugerencias2() {
+			return listaSugerencias2;
+		}
+
+
+		public void setListaSugerencias2(List listaSugerencias2) {
+			this.listaSugerencias2 = listaSugerencias2;
+		}
+
+
+		public List getListaSugerencias3() {
+			return listaSugerencias3;
+		}
+
+
+		public void setListaSugerencias3(List listaSugerencias3) {
+			this.listaSugerencias3 = listaSugerencias3;
+		}
+
+
+		public PaginaDeRegistros getPaginador() {
+			return paginador;
+		}
+
+
+		public void setPaginador(PaginaDeRegistros paginador) {
+			this.paginador = paginador;
+		}
+
+	}
+
+	/****************************************************************************
+	 * Esta clase se utiliza para la carga manual de cupones
+	 * 
+	 ****************************************************************************/
+
+	public class PopupAltaLoteComercio {
+		private LoteComercio loteComercio;
+		private Date fechaRecepcion;
+		private Long idTipoLoteSeleccionado;
+		private String nroLote;
+		private int cantCupones;
+		private int cantCuponesCargados;
+		private String nroLoteComercio;
+		private String codComercio;
+		private List tipoLoteItem = new ArrayList();
+		private boolean mostrarFiltro;
+		private HtmlSelectOneMenu tipoLote = new HtmlSelectOneMenu();
+		private List listaLotesAbiertos;
+		private boolean esAltaNvoLote;
+		private boolean mostrarCabeceraLoteEdicion;
+		private Long nroLoteFiltro;
+		private String codComercioFiltro;
+		private List listaTransaccionesAActualizar;
+		private boolean mandarAConciliar;
+		private boolean mostrarGuardar;
+		private int resulConciliacion;
+		private Transaccion transaccionAcomparar;
+		private List transaccionesList;
+		private int actualizarCantFilas;// cambia el comporatmiento del boton que se utiliza para empezar a cargar items//0:para la primera vez q
+										// entra
+		private int cantCuponesCargadosBD;// cantidad de cupones de cada lote cargados actualmente en la base de datos
+		private boolean mostrarBotonesPopupConfirma;
+		private boolean mostrarBotonesPopupConfirma2;
+		private boolean mostrarBotonesPopupGuardar;
+		private boolean deshabilitarCodComercio;
+		private String telefonoSucursal;
+		private boolean mostrarSucEmpresa;
+		private CodComercio codCom;
+		private boolean disabledcodComText;
+		private String accionPopupConfirma2;// aca se guarda cual es la accion q introdujo el usuario en caso de querer cambiar sin guardar los datos
+		private String comercioParam;
+		private int cantCuponesPreviaModificacion;
+		private List cuponesPorCodAut;
+		private int nroFilaHabilitada;
+		private Vector indiceNoValidos;
+		private String importe;
+		private Long idImpresoraSeleccionada;
+		private List impresorasList;
+		private List impresorasItem = new ArrayList();
+		private boolean habilitarImpresion = false;
+		private PaginaDeRegistros paginador = new PaginaDeRegistros();
+		private boolean hayLotesAbiertos;
+		private boolean mostrarCboImpresora;
+		private List operadorItems = new ArrayList();
+		private Long idOperadorSeleccionado;
+		private List operadorList = new ArrayList();
+		private HtmlSelectOneMenu operadorHtml = new HtmlSelectOneMenu();
+
+
+		public CodComercio getCodCom() {
+			return codCom;
+		}
+
+
+		public void setCodCom(CodComercio codCom) {
+			this.codCom = codCom;
+		}
+
+
+		public boolean validar() {
+			error.borrar();
+			popup.borrar();
+			if (popupAltaLoteComercio.codComercio != null) {
+				Filtro filtro = new Filtro();
+				filtro.agregarCampoOperValor("codigoPosnet", Filtro.LIKEXS, Util.quitarRelleno(popupAltaLoteComercio.codComercio));
+				List codcom;
+				try {
+					codcom = transaccionesService.getCodComercioService().getCodComercio(filtro);
+
+					if (codcom.isEmpty())
+						error.agregar(Error.TRAN_CONCIIACIONES_COD_COMERCIO_INEXISTENTE);
+				} catch (CodComercioException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else {
+				if (popupAltaLoteComercio.codComercio == null || popupAltaLoteComercio.codComercio.equals(""))
+					error.agregar(Error.TRAN_CONCIIACIONES_COD_COMERCIO_REQUERIDO);
+			}
+
+			if (popupAltaLoteComercio.cantCupones == 0)
+				error.agregar(Error.TRAN_CONCILIACIONES_CUPONES_PENDIENTES_DE_CONCILIAR);
+
+			System.out.println("cantCupones" + cantCupones + "cantCuponesCargados " + cantCuponesCargados);
+
+			// valida q no haya quedado nigun cupon pendiente en caso de que se editoo un cupon y no se llamo nuevamente al proceso de conciliacion
+			if (hayCuponesPendientes()) {
+				error.agregar(Error.TRAN_CONCILIACIONES_CUPONES_PENDIENTES_DE_CONCILIAR);
+			}
+
+			return (error.cantidad() == 0) ? true : false;
+		}
+
+
+		private boolean hayNoConciliados() {
+			Iterator it = loteComercioDetalles.iterator();
+			while (it.hasNext()) {
+				WrapperLoteComercioItem ele = (WrapperLoteComercioItem) it.next();
+				if (ele.resultadoConciliacion.compareTo("Conciliado") != 0)
+					return true;
+			}
+			return false;
+		}
+
+
+		private boolean hayCuponesPendientes() {
+			Iterator iter = loteComercioDetalles.iterator();
+			while (iter.hasNext()) {
+				WrapperLoteComercioItem wrapItem = (WrapperLoteComercioItem) iter.next();
+				LoteComercioItem item = wrapItem.getLoteComercioItem();
+				if (wrapItem.getResultadoConciliacion().compareTo("Pendiente") == 0) {
+					if (item.getNroCupon() != null && item.getNroCupon().compareTo("") != 0 ||
+							item.getNroDoc() != null && item.getNroDoc().compareTo("") != 0 ||
+							wrapItem.getNroTarjeta1() != null && wrapItem.getNroTarjeta1().compareTo("") != 0 ||
+							wrapItem.getNroTarjeta2() != null && wrapItem.getNroTarjeta2().compareTo("") != 0 ||
+							wrapItem.getNroTarjeta3() != null && wrapItem.getNroTarjeta3().compareTo("") != 0 ||
+							item.getCantCuotas() != null && item.getCantCuotas().compareTo("") != 0 ||
+							item.getImporte() != null && item.getImporte().compareTo("") != 0 ||
+							item.getCodigoAutorizacion() != null && item.getCodigoAutorizacion().compareTo("") != 0 ||
+							item.getFechaReal() != null && item.getFechaReal().compareTo("") != 0 ||
+							item.getPlanCuotas() != null && item.getPlanCuotas().compareTo("") != 0)
+						return true;
+				}
+			}
+
+			return false;
+		}
+
+
+		public PopupAltaLoteComercio() {
+			borrar();
+			try {
+				impresorasList = generalService.getImpresoraService().getImpresora(new Filtro());
+			} catch (ImpresoraException e) {
+				e.printStackTrace();
+			}
+			cargarItems();
+		}
+
+
+		public PopupAltaLoteComercio(LoteComercio loteComercio) {
+			borrar();
+			this.loteComercio = loteComercio;
+		}
+
+
+		public void borrar() {
+			error.borrar();
+			fechaRecepcion = new Date(Calendar.getInstance().getTime().getTime());
+			cantCupones = 0;
+			cantConciliada = 0;
+			cantRechazados = 0;
+			cantRechazosDefinitivos = 0;
+			importe = "";
+			nroLoteComercio = "";
+			loteComercioDetalles = new ArrayList();
+			mostrarFiltro = true;
+			busquedaAvanzada = false;
+			listaLotesAbiertos = new ArrayList();
+			cuponesPorCodAut = new ArrayList();
+			esAltaNvoLote = false;
+			primero = true;
+			mostrarCabeceraLoteEdicion = false;
+			listaTransaccionesAActualizar = new ArrayList();
+			loteComercio = new LoteComercio();
+			mandarAConciliar = false;
+			mostrarGuardar = false;
+			mostrarCboImpresora = false;
+			popup.borrar();
+			transaccionesList = new ArrayList();
+			actualizarCantFilas = 0;
+			mostrarBotonesPopupConfirma = false;
+			mostrarBotonesPopupGuardar = false;
+			mostrarBotonesPopupConfirma2 = false;
+			codComercio = "";
+			cantCuponesCargados = 0;
+			disabledcodComText = false;
+			codCom = null;
+			mostrarSucEmpresa = false;
+			indiceNoValidos = new Vector();
+			idImpresoraSeleccionada = new Long(0);
+			impresorasList = new ArrayList();
+			habilitarImpresion = false;
+
+			// idOperadorSeleccionado=new Long(0);
+		}
+
+
+		private void cargarItems() {
+			if (impresorasItem.size() != impresorasList.size()) {
+				impresorasItem.clear();
+				impresorasItem.add(new SelectItem(new Long(0), "Seleccione una Impresora"));
+				impresorasItem.addAll(Util.cargarSelectItem(impresorasList));
+			}
+			cargarCajeros();
+		}
+
+
+		private void cargarCajeros() {
+			try {
+				Util.limpiarLista(operadorList);
+				Filtro filtro = new Filtro("funcion", Filtro.LIKE, "CAJERO");
+				operadorList = transaccionesService.getColaboradorService().getColaborador(filtro);
+				if (operadorItems.size() != operadorList.size()) {
+					operadorItems = new ArrayList();
+					operadorItems.add(new SelectItem(new Long(0), "Seleccionar Operador"));
+					operadorItems.addAll(Util.cargarSelectItem(operadorList));
+				}
+			} catch (ColaboradorException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+		private void agregarItems() {
+			esAltaNvoLote = false;
+			loteComercioDetalles.clear();
+			primero = true;
+			mostrarCabeceraLoteEdicion = true;
+			mostrarGuardar = true;
+			mostrarCboImpresora = true;
+			double importeDouble = 0;
+			try {
+				loteComercio = transaccionesService.getLoteComercioService().leerLoteComercio(new Long(loteID));
+				Set itemsLote = loteComercio.getLoteComercioItems();
+				fechaRecepcion = loteComercio.getFechaRecepcion();
+				codComercio = comercioParam;
+				nroLote = loteID;
+				cantCupones = loteComercio.getCantCupones().intValue();
+				cantCuponesCargados = 0;
+				cantCuponesCargadosBD = itemsLote.size();
+				cantCuponesPreviaModificacion = cantCupones;
+				System.out.println("cantidad cupones  " + cantCupones);
+				Filtro filtro = new Filtro();
+				filtro.agregarCampoOperValor("codigoPosnet", Filtro.LIKEXS, Util.quitarRelleno(codComercio));
+				List codcomList;
+				try {
+					codcomList = transaccionesService.getCodComercioService().getCodComercio(filtro);
+					codCom = (CodComercio) codcomList.get(0);
+					List listaTelefonos = Convertidores.setToList(codCom.getSucEmpresa().getSucTelefonos());
+					Iterator ite = listaTelefonos.iterator();
+					while (ite.hasNext()) {
+						telefonoSucursal = ((SucTelefono) (ite.next())).getTelefono().getNroTlefono();
+					}
+					mostrarSucEmpresa = true;
+				} catch (CodComercioException e) {
+					e.printStackTrace();
+				}
+				Iterator iter = itemsLote.iterator();
+				int fila = 1;
+				while (iter.hasNext()) {
+					LoteComercioItem item = (LoteComercioItem) iter.next();
+					WrapperLoteComercioItem wrapItem = new WrapperLoteComercioItem();
+					wrapItem.setLoteComercioItem(item);
+					wrapItem.setSoyEditable(false);
+					wrapItem.fila = fila;
+					fila++;
+					wrapItem.setNroTarjeta1(item.getNroTarjeta().substring(6, 8));
+					wrapItem.setNroTarjeta2(item.getNroTarjeta().substring(8, 12));
+					wrapItem.setNroTarjeta3(item.getNroTarjeta().substring(12, 16));
+					/*
+					 * String importe = Util.quitarRelleno(item.getImporte()); String sufijo= importe.substring(0,importe.length()-2); String prefijo=
+					 * importe.substring(importe.length()-2,importe.length()); importe= sufijo +"."+ prefijo;
+					 */
+					importeDouble = (new Double(item.getImporte())).doubleValue() / 100;
+					// wrapItem.setImporte(String.valueOf(importeDouble));
+					item.setImporte(String.valueOf(importeDouble));
+					loteComercioDetalles.add(wrapItem);
+					// /aca seteamos los resultados de conciliacion e iconos
+					if (item.getEstadoItem().compareTo("C") == 0) {
+						wrapItem.setResultadoConciliacion("Conciliado");
+						wrapItem.setIconoConciliacion("/img/icon/ok_22x22.png");
+					} else {
+						if (item.getEstadoItem().compareTo("X") == 0) {
+							if (item.getTransaccion() != null) {
+								wrapItem.setResultadoConciliacion("No conciliado");
+								wrapItem.setIconoConciliacion("/img/button_cancel_22x22.png");
+							} else {
+								wrapItem.setResultadoConciliacion("Trans. no Encontrada");
+								wrapItem.setIconoConciliacion("/img/message_warning_22x22.png");
+							}
+						} else {
+							wrapItem.setResultadoConciliacion("Rechazado");
+							wrapItem.setIconoConciliacion("/img/trashcan_empty_22x22.png");
+						}
+					}
+				}
+				// agregamos los items mas vacios, q restan por cargar
+				for (int i = cantCuponesCargadosBD; i < cantCupones; i++) {
+					WrapperLoteComercioItem wrapItem = new WrapperLoteComercioItem();
+					wrapItem.setLoteComercioItem(new LoteComercioItem());
+					wrapItem.setSoyEditable(false);
+					wrapItem.fila = fila++;
+					if (i == cantCuponesCargadosBD)
+						wrapItem.setSoyEditable(true);
+					wrapItem.setResultadoConciliacion("Pendiente");
+					loteComercioDetalles.add(wrapItem);
+				}
+
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (LoteComercioException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+		public void agregarItemsALote(ActionEvent event) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			Map map = context.getExternalContext().getRequestParameterMap();
+			loteID = (String) map.get("idLote");
+			comercioParam = (String) map.get("comercio");
+			if (cantCuponesCargados == 0) {
+				agregarItems();
+			}
+			else {
+				accionPopupConfirma2 = "cambiarAAgregarItems";
+				popup.setPopup(popup.ICONO_CONFIRMACION, "Algunos cupones no han sido guardados y se perderan, ¿Desea continuar  de todas formas?");
+				mostrarBotonesPopupConfirma = false;
+				mostrarBotonesPopupConfirma2 = true;
+				mostrarBotonesPopupGuardar = false;
+			}
+		}
+
+
+		public void mostrarAvanzada(ActionEvent event) {
+			busquedaAvanzada = true;
+		}
+
+
+		public void ocultarAvanzada(ActionEvent event) {
+			busquedaAvanzada = false;
+		}
+
+
+		public void cambiarANvo(ActionEvent event) {
+			if (cantCuponesCargados == 0) {
+				borrar();
+				mostrarFiltro = false;
+			} else {
+				accionPopupConfirma2 = "cambiaABusquedaLote";
+				popup.setPopup(popup.ICONO_CONFIRMACION, "Algunos cupones no han sido guardados y se perderan, ¿Desea continuar  de todas formas?");
+				mostrarBotonesPopupConfirma = false;
+				mostrarBotonesPopupConfirma2 = true;
+				mostrarBotonesPopupGuardar = false;
+			}
+			Iterator iterator = operadorList.iterator();
+			Long operadorLogueado = Session.getOperador().getCodigo();
+			while (iterator.hasNext()) {
+				Colaborador colaborador = ((Colaborador) iterator.next());
+				Long idOperador = colaborador.getOperador().getCodigo();
+				if (idOperador.longValue() == operadorLogueado.longValue()) {
+					idOperadorSeleccionado = colaborador.getIdColaborador();
+					operadorHtml.setValue(idOperadorSeleccionado);
+					break;
+				}
+			}
+		}
+
+
+		public void cambiarAFiltro(ActionEvent event) {
+			if (cantCuponesCargados == 0) {
+				borrar();
+				mostrarFiltro = true;
+			}
+			else {
+				accionPopupConfirma2 = "cambiaANvo";
+				popup.setPopup(popup.ICONO_CONFIRMACION, "Algunos cupones no han sido guardados y se perderan, ¿Desea continuar  de todas formas?");
+				mostrarBotonesPopupConfirma = false;
+				mostrarBotonesPopupConfirma2 = true;
+				mostrarBotonesPopupGuardar = false;
+			}
+		}
+
+
+		public String habilitarImpresion() {
+			habilitarImpresion = true;
+			return null;
+		}
+
+
+		public String cambiarANvoDesdePopup() {
+			if (!mostrarFiltro) {
+				borrar();
+				loteComercioDetalles.clear();
+				mostrarCabeceraLoteEdicion = false;
+				popup.borrar();
+				// mostrarFiltro=true;
+			}
+			else {
+				borrar();
+				error.borrar();
+				mostrarFiltro = false;
+				loteComercioDetalles.clear();
+				popup.borrar();
+			}
+			return null;
+		}
+
+
+		public String cambiarAFiltroDesdePopup() {
+			if (mostrarFiltro) {
+				mostrarFiltro = false;
+				borrar();
+			}
+			else {
+				borrar();
+				mostrarFiltro = true;
+			}
+			return null;
+		}
+
+
+		public String ejecutarAccion() {
+			if (accionPopupConfirma2.compareTo("cambiaABusquedaLote") == 0) {
+				borrar();
+				mostrarFiltro = false;
+				popup.borrar();
+			}
+			if (accionPopupConfirma2.compareTo("cambiaANvo") == 0) {
+				borrar();
+				mostrarFiltro = true;
+				popup.borrar();
+			}
+
+			if (accionPopupConfirma2.compareTo("cambiarAAgregarItems") == 0) {
+				agregarItems();
+				popup.borrar();
+			}
+			if (accionPopupConfirma2.compareTo("ocultarComponentes") == 0) {
+				borrar();
+				if (!mostrarCargaManual) {
+					mostrarCargaManual = true;
+					mostrarFiltro = false;
+				}
+				else {
+					mostrarCargaManual = false;
+					mostrarFiltro = true;
+				}
+			}
+
+			return null;
+		}
+
+
+		public String cancelarEjecutarAccion() {
+			popup.borrar();
+			return null;
+		}
+
+
+		public void cargar(ActionEvent event) {
+			esAltaNvoLote = true;
+			if (validar2()) {
+				if (actualizarCantFilas == 0) {
+					loteComercioDetalles = new ArrayList();
+					for (int i = 0; i < cantCupones; i++) {
+						WrapperLoteComercioItem wrapItem = new WrapperLoteComercioItem();
+						wrapItem.setLoteComercioItem(new LoteComercioItem());
+						wrapItem.getLoteComercioItem().setEstadoItem("P");
+						if (i == 0)
+							wrapItem.setSoyEditable(true);
+						else
+							wrapItem.setSoyEditable(false);
+						wrapItem.setHabilitarIconoAccion(false);
+						wrapItem.fila = i + 1;
+						wrapItem.setIconoConciliacion("");
+						loteComercioDetalles.add(wrapItem);
+						wrapItem.setResultadoConciliacion("Pendiente");
+					}
+					actualizarCantFilas = 1;// para que no entre de nvo a este if
+					mostrarSucEmpresa = true;
+					cantCuponesPreviaModificacion = cantCupones;
+					cantCuponesCargados = 0;
+				} else {
+					actualizarCantFilas = 2;
+					FacesContext context = FacesContext.getCurrentInstance();
+					cantCuponesPreviaModificacion = Integer.parseInt((context.getExternalContext().getRequestParameterMap()
+							.get("cantCuponesPreviaModificacion").toString()));
+					if (cantCupones != cantCuponesPreviaModificacion) {
+						// cantCuponesPreviaModificacion= cantCuponesPreviaModificacion(loteID);
+						// int i=cantCuponesCargados+cantCuponesCargadosBD
+						System.out.println("cantidad cupones" + cantCupones);
+						System.out.println("cantCuponesPreviaModificacion" + cantCuponesPreviaModificacion);
+						System.out.println("taamaño lista" + loteComercioDetalles.size());
+						cantCuponesCargados = cantCuponesCargados(); //
+						if (cantCuponesPreviaModificacion < cantCupones)
+							agregarFilas(cantCuponesPreviaModificacion, cantCupones);
+						else
+							quitarFilas(cantCupones, cantCuponesPreviaModificacion);
+						cantCuponesPreviaModificacion = cantCupones;
+					}
+
+					/*
+					 * for (int i=loteComercioDetalles.size(); i<cantCupones; i++) { WrapperLoteComercioItem wrapItem = new WrapperLoteComercioItem();
+					 * wrapItem.setLoteComercioItem(new LoteComercioItem()); wrapItem.getLoteComercioItem().setEstadoItem("P");
+					 * //estadoConciliacionList.add("P"); wrapItem.setSoyEditable(false); wrapItem.setHabilitarIconoAccion(false); wrapItem.fila=i+1;
+					 * wrapItem.setResultadoConciliacion("Pendiente"); loteComercioDetalles.add(wrapItem); }
+					 */
+					cantCuponesCargados = cantCuponesCargados();
+				}
+
+				cantCuponesCargadosBD = 0;
+				mostrarGuardar = true;
+				mostrarCboImpresora = true;
+			}
+
+		}
+
+
+		public void agregarFilas(ActionEvent event) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			cantCuponesPreviaModificacion = Integer.parseInt((context.getExternalContext().getRequestParameterMap()
+					.get("cantCuponesPreviaModificacion").toString()));
+			if (validar2() && cantCupones != cantCuponesPreviaModificacion) {
+				// cantCuponesPreviaModificacion= cantCuponesPreviaModificacion(loteID);
+				// int i=cantCuponesCargados+cantCuponesCargadosBD
+				System.out.println("cantidad cupones" + cantCupones);
+				System.out.println("cantCuponesPreviaModificacion" + cantCuponesPreviaModificacion);
+				System.out.println("taamaño lista" + loteComercioDetalles.size());
+				cantCuponesCargados = cantCuponesCargados();//
+				if (cantCuponesPreviaModificacion < cantCupones)
+					agregarFilas(cantCuponesPreviaModificacion, cantCupones);
+				else
+					quitarFilas(cantCupones, cantCuponesPreviaModificacion);
+				cantCuponesPreviaModificacion = cantCupones;
+			}
+
+		}
+
+
+		private void quitarFilas(int desde, int hasta) {
+			System.out.println("desde" + desde);
+			System.out.println("hasta" + hasta);
+			System.out.println("tamaño" + loteComercioDetalles.size());
+			for (int i = desde; i < hasta; i++) {
+				loteComercioDetalles.remove(desde);
+			}
+
+		}
+
+
+		private void agregarFilas(int desde, int hasta) {
+			for (int i = desde; i < hasta; i++) {
+				WrapperLoteComercioItem wrapItem = new WrapperLoteComercioItem();
+				wrapItem.setLoteComercioItem(new LoteComercioItem());
+				wrapItem.getLoteComercioItem().setEstadoItem("P");
+				wrapItem.setResultadoConciliacion("Pendiente");
+				wrapItem.setSoyEditable(false);
+				if (i == cantCuponesCargados() + cantCuponesCargadosBD) {
+					wrapItem.setSoyEditable(true);
+				}
+				wrapItem.fila = i + 1;
+				loteComercioDetalles.add(wrapItem);
+			}
+		}
+
+
+		// devuelve la cantidad de cupones cargados en memoria o cantidad de cupones cargados en memoria + los de la bd
+		// segun entren por el alta de cupones o modificacion respectivamente
+		private int cantCuponesCargados() {
+			int cant = 0;
+			Iterator iter = loteComercioDetalles.iterator();
+			while (iter.hasNext()) {
+
+				LoteComercioItem element = ((WrapperLoteComercioItem) iter.next()).loteComercioItem;
+				if (element.getPlanCuotas() == null || (element.getPlanCuotas() != null && element.getPlanCuotas().compareTo("") == 0)) {
+					break;
+				}
+				cant++;
+			}
+			if (cant != 0 && !mostrarFiltro) {
+				cant = cant - cantCuponesCargadosBD;
+			}
+			return cant;
+
+		}
+
+
+		private boolean validar2() {
+			error.borrar();
+			if (cantCupones <= 0) {
+				error.agregar(Error.TRAN_CONCILIACIONES_CANT_CUPONES_MENOR_A_UNO);
+			}
+			if (mostrarFiltro) {
+				if (codComercio != null && cantCuponesCargados <= 1) {
+
+					if (!codComercio.equals("")) {
+
+						Filtro filtro = new Filtro();
+						System.out.println("COD COMERCIO" + popupAltaLoteComercio.codComercio);
+
+						filtro.agregarCampoOperValor("codigoPosnet", Filtro.LIKEXS, Util.quitarRelleno(popupAltaLoteComercio.codComercio));
+						List codcomList;
+						try {
+							codcomList = transaccionesService.getCodComercioService().getCodComercio(filtro);
+
+							if (codcomList.isEmpty()) {
+								error.agregar(Error.TRAN_CONCIIACIONES_COD_COMERCIO_INEXISTENTE);
+								mostrarSucEmpresa = false;
+							}
+							else {
+								codCom = (CodComercio) codcomList.get(0);
+								List listaTelefonos = Convertidores.setToList(codCom.getSucEmpresa().getSucTelefonos());
+								Iterator ite = listaTelefonos.iterator();
+								while (ite.hasNext()) {
+									telefonoSucursal = ((SucTelefono) (ite.next())).getTelefono().getNroTlefono();
+								}
+							}
+
+						} catch (CodComercioException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					} else
+						error.agregar(Error.TRAN_CONCIIACIONES_COD_COMERCIO_REQUERIDO);
+				}
+				else {
+					if (popupAltaLoteComercio.codComercio == null || popupAltaLoteComercio.codComercio.equals(""))
+						error.agregar(Error.TRAN_CONCIIACIONES_COD_COMERCIO_REQUERIDO);
+				}
+
+				if (loteComercioDetalles != null && loteComercioDetalles.size() > 0) {
+					if (cantCupones <= cantCuponesCargados) {
+						error.agregar(Error.TRAN_CONCILIACIONES_CANT_CUPONES_MAYOR_CANTIDA_PREVIA);
+						cantCupones = loteComercioDetalles.size();
+					}
+				}
+			}
+			else {
+
+				if (loteComercioDetalles != null && loteComercioDetalles.size() > 0) {
+					if (cantCupones < cantCuponesCargadosBD + cantCuponesCargados) {
+						error.agregar(Error.TRAN_CONCILIACIONES_CANT_CUPONES_MAYOR_CANTIDA_PREVIA);
+						cantCupones = loteComercioDetalles.size();
+					}
+				}
+			}
+
+			return (error.cantidad() == 0) ? true : false;
+		}
+
+
+		public void imprimir(ActionEvent event) {
+			if (loteComercio.getIdLoteComercio() != null) {
+				if (idImpresoraSeleccionada.longValue() != 0) {
+					ArmarXmlTicket armarXmlTicket = new ArmarXmlTicket();
+					try {
+						armarXmlTicket.addFechaHeader(new Date());
+						armarXmlTicket.addHoraHeader(new Date());
+						/* @I7936 */Filtro filtro = new Filtro();
+						filtro.agregarCampoOperValor("codigoPosnet", Filtro.LIKEXS, new Long(loteComercio.getCodComercio()));
+						List<CodComercio> lstCodComercio = transaccionesService.getCodComercioService().getCodComercio(filtro);
+						if (lstCodComercio.isEmpty()) {
+							error.agregar("El comercio buscado no existe");
+						} else {
+							CodComercio codComercio = lstCodComercio.get(0);
+							armarXmlTicket.addNombreComercioHeader(codComercio.getSucEmpresa().getDescripcion());
+
+						}
+
+						armarXmlTicket.addOperadorHeader(Session.getOperador().getCodigo() + "  " + Session.getOperador().getApellido());
+
+						/* @F7936 */armarXmlTicket.addCodigoComercioHeader(loteComercio.getCodComercio());
+						Element cabeceraCupon = armarXmlTicket.addNuevoDato(armarXmlTicket.getDatosTicket().getRootElement(), "cabeceraCupon");
+						Element nroComprobante = armarXmlTicket.addNuevoDato(cabeceraCupon, "nroComprobante");
+						armarXmlTicket.addNuevoAtributo(nroComprobante, "valor", loteComercio.getIdLoteComercio().toString());
+						Element cantidad = armarXmlTicket.addNuevoDato(cabeceraCupon, "cantidad");
+						armarXmlTicket.addNuevoAtributo(cantidad, "valor", loteComercio.getCantCupones().toString());
+						Element importe = armarXmlTicket.addNuevoDato(cabeceraCupon, "importe");
+						BigDecimal importeTotal = loteComercio.getMontoTotal() == null ? new BigDecimal("0") : loteComercio.getMontoTotal();
+						armarXmlTicket.addNuevoAtributo(importe, "valor", importeTotal.setScale(BigDecimal.ROUND_HALF_DOWN, 2).toString());
+						log.info(armarXmlTicket.getDatosTicket().asXML());
+					} catch (Exception e) {
+						error.agregar("Error al imprimir el ticket");
+					}
+					try {
+						impresorasList = generalService.getImpresoraService().getImpresora(new Filtro());
+					} catch (ImpresoraException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					RespuestaImpresion respuestaImpresion = imprimirTickets(armarXmlTicket,
+							(Impresora) Util.buscarElemento(impresorasList, new Impresora(idImpresoraSeleccionada)));
+				} else
+					error.agregar("Debe seleccionar una impresora");
+			} else
+				error.agregar("no es posible imprimir, hubo un error al guardar el lote");
+		}
+
+
+		private RespuestaImpresion imprimirTickets(ArmarXmlTicket armarXmlTicket, Impresora impresora) {
+			try {
+				String respuesta = "";
+				ImpresionTickets impresionTickets = new ImpresionTickets();
+				respuesta += impresionTickets.imprimirTicket(armarXmlTicket, "ticket.cabeceraCupon.xsl", impresora);
+
+				if (respuesta.equals("")) {
+					RespuestaImpresion respuestaImpresion = new RespuestaImpresion("El ticket esta siendo impreso", null, false);
+					respuestaImpresion.setTicket(impresionTickets.getTicket());
+					return respuestaImpresion;
+				} else {
+					return new RespuestaImpresion("La cancelacion de pago se registro con éxito\n" + respuesta, null, true);
+				}
+			} catch (Exception e) {
+				log.error(e, e);
+			}
+
+			return new RespuestaImpresion("Hubo un error al imprimir el ticket", null, true);
+		}
+
+
+		public void recargarYCerrarPopup(ActionEvent event) {
+
+			if (validar()) {
+				grabar2();
+			}
+		}
+
+
+		private void ocultarComponentes() {
+			if (!mostrarCargaManual) {
+				if (cantCuponesCargados == 0) {
+					borrar();
+					mostrarCargaManual = true;
+					mostrarFiltro = false;
+				}
+				else {
+					accionPopupConfirma2 = "ocultarComponentes";
+					popup.setPopup(popup.ICONO_CONFIRMACION,
+							"Algunos cupones no han sido guardados y se perderan, ¿Desea continuar  de todas formas?");
+					mostrarBotonesPopupConfirma = false;
+					mostrarBotonesPopupConfirma2 = true;
+					mostrarBotonesPopupGuardar = false;
+				}
+
+			}
+			else {
+				if (cantCuponesCargados == 0) {
+					borrar();
+					mostrarCargaManual = false;
+					mostrarFiltro = true;
+				}
+				else {
+					accionPopupConfirma2 = "ocultarComponentes";
+					popup.setPopup(popup.ICONO_CONFIRMACION,
+							"Algunos cupones no han sido guardados y se perderan, ¿Desea continuar  de todas formas?");
+					mostrarBotonesPopupConfirma = false;
+					mostrarBotonesPopupConfirma2 = true;
+					mostrarBotonesPopupGuardar = false;
+				}
+			}
+		}
+
+
+		public void cancelar(ActionEvent event) {
+			ocultarComponentes();
+		}
+
+
+		public void buscarLotesNoCerradosConcManual(ActionEvent event) {
+			mostrarLinkBusquedaCupNoAsoc = false;
+			listaLotesAbiertos.clear();
+			if (listCuponesNoConc != null)
+				listCuponesNoConc.clear();
+			List result = transaccionesService.getLoteComercioService().listarLotesNoCerrados(nroLoteFiltro, codComercioFiltro,
+					LoteComercio.TIPO_LOTE_MANUAL, LoteComercioDaoHibernateImpl.ORIGEN_CONC_PCIPAL, idOperadorSeleccionado);
+			Iterator iter = result.iterator();
+			// paginador = new PaginaDeRegistros(10,result);
+			// Iterator iter = paginador.getPrimeraPagina().iterator();
+			while (iter.hasNext()) {
+				LoteComercioResumen element = (LoteComercioResumen) iter.next();
+				WrapperLoteComercioResumen wrapperLoteComercioResumen = new WrapperLoteComercioResumen(element);
+				listaLotesAbiertos.add(wrapperLoteComercioResumen);
+			}
+		}
+
+
+		public void buscarLotesNoCerrados(ActionEvent event) {
+			listaLotesAbiertos.clear();
+			mostrarCabeceraLoteEdicion = false;
+			mostrarSucEmpresa = false;
+			mostrarGuardar = false;
+			Util.limpiarLista(loteComercioDetalles);
+			List result = null;
+			if (!busquedaAvanzada) {
+				result = transaccionesService.getLoteComercioService().listarLotesNoCerrados(nroLoteFiltro, codComercioFiltro,
+						LoteComercio.TIPO_LOTE_MANUAL, LoteComercioDaoHibernateImpl.ORIGEN_CONC_POPUP_CARGA, idOperadorSeleccionado);
+			}
+			else {
+				result = transaccionesService.getLoteComercioService().listarLotesNoCerrados(nroLoteFiltro, codComercioFiltro,
+						LoteComercio.TIPO_LOTE_MANUAL, LoteComercioDaoHibernateImpl.ORIGEN_CONC_POPUP_CARGA, idOperadorSeleccionado);
+			}
+			paginador = new PaginaDeRegistros(10, result);
+			Iterator iter = paginador.getPrimeraPagina().iterator();
+			while (iter.hasNext()) {
+				LoteComercioResumen element = (LoteComercioResumen) iter.next();
+				WrapperLoteComercioResumen wrapperLoteComercioResumen = new WrapperLoteComercioResumen(element);
+				listaLotesAbiertos.add(wrapperLoteComercioResumen);
+			}
+		}
+
+
+		/**
+		 * Este metodo copia los campos de la transaccion q no tienen diferencia con el cupon para que coincidan tanto en valores como en formato
+		 * 
+		 * @param loteComercioItem
+		 * @param diferenciasItemTransaccion
+		 */
+		private void copiarCamposConciliados(LoteComercioItem loteComercioItem, DiferenciasItemTransaccion diferenciasItemTransaccion) {
+			if (loteComercioItem.getIdLoteComercioItem() == null) {
+				if (!diferenciasItemTransaccion.isDifiereCantCuotas())
+					loteComercioItem.setCantCuotas(loteComercioItem.getTransaccion().getCantCuotas());
+				if (!diferenciasItemTransaccion.isDifiereCodAut())
+					loteComercioItem.setCodigoAutorizacion(loteComercioItem.getTransaccion().getCodigoAutorizacion());
+				if (!diferenciasItemTransaccion.isDifiereImporte())
+					loteComercioItem.setImporte(loteComercioItem.getTransaccion().getImporte());
+				if (!diferenciasItemTransaccion.isDifiereNroTarjeta())
+					loteComercioItem.setNroTarjeta(loteComercioItem.getTransaccion().getNroTarjeta());
+				if (!diferenciasItemTransaccion.isDifiereCodComercio())
+					loteComercioItem.setCodComercio(loteComercioItem.getTransaccion().getCodComercio());
+			}
+
+		}
+
+
+		public String grabar2() {
+
+			// /primer paso grabar o actualizar el lote y los items.
+			Set detalleLoteComercio = new HashSet();
+
+			Iterator iter = loteComercioDetalles.iterator();
+			int contador = 0;
+
+			while (iter.hasNext()) {
+				WrapperLoteComercioItem wrap = (WrapperLoteComercioItem) iter.next();
+				LoteComercioItem element = wrap.loteComercioItem;
+
+				// esto se hace para que guarde solo las filas que estan editadas
+				if (element.getCodigoAutorizacion() == null
+						|| (element.getCodigoAutorizacion() != null && element.getCodigoAutorizacion().compareTo("") == 0)) {
+					break;
+				}
+				String estado = element.getEstadoItem();
+				if (estado.equals("C")) {
+					cantConciliada++;
+				} else {
+					if (estado.equals("X")) {
+						cantRechazados++;
+					} else {
+						cantRechazosDefinitivos++;
+					}
+				}
+				element.setLoteComercio(loteComercio);
+				element.setCodComercio(codComercio);
+				String importe = element.getImporte();
+				int posicComa = importe.indexOf(".");
+				if (posicComa == -1) {
+					importe = importe + "00";
+				} else {
+					String prefijo = importe.substring(0, posicComa);
+					String sufijo = importe.substring(posicComa + 1, importe.length());
+					importe = prefijo + sufijo;
+				}
+				importe = Util.completar(importe, 12);
+				element.setImporte(importe);
+				element.setNroLote(nroLoteComercio);
+				// agregamos el cupon al lote solo si el cupon es valido
+				if (!indiceNoValidos.contains(String.valueOf(wrap.getFila() - 1))) {
+					loteComercio.getLoteComercioItems().add(element);
+				}
+				copiarCamposConciliados(element, wrap.getDiferenciasItemTransaccion());
+			}
+			try {
+				loteComercio.modificarCantidadesItemProcesados(cantCupones, cantConciliada, cantRechazados, cantRechazosDefinitivos);
+				if (esAltaNvoLote) {
+					if (idImpresoraSeleccionada.longValue() != 0) {
+						loteComercio.setMontoTotal(new BigDecimal(importe));
+						loteComercio.setEstadoLote("A");
+						if (cantCupones - cantCuponesCargados() == 0) {
+							loteComercio.setEstadoLote("F");
+							if (cantRechazados == 0) { // si estan todos conciliados
+								loteComercio.setEstadoLote("C");
+							}
+						}
+						loteComercio.setFechaReal(fechaRecepcion);
+						loteComercio.setFechaRecepcion(fechaRecepcion);
+						loteComercio.setTipoLote("M");
+						loteComercio.setCodComercio(codComercio);
+						loteComercio.setOperador(Session.getOperador());
+						loteComercio.setNroLote(nroLoteComercio);
+						transaccionesService.getConciliacionConsumosServices().conciliarCuponesCargaManual(loteComercio, true, Session.getOperador(),
+								listaTransaccionesAActualizar, transaccionesService.getListaPrecioParaLiquidarService(), new ArrayList());
+						// DESCOMENTAR LINEA DE ABAJO CUANDO SE SUBA WAR ENTORNO PRODUCCION!!!!!!!!!!
+						imprimir(null);
+						popup.setPopup(popup.ICONO_OK, "Los cambios se han efectuado exitosamente.");
+						mostrarBotonesPopupConfirma = false;
+						mostrarBotonesPopupConfirma2 = false;
+						mostrarBotonesPopupGuardar = true;
+						error.borrar();
+					} else
+						error.agregar("Debe seleccionar una impresora");
+				}
+				else {
+					if (cantCupones - (cantCuponesCargados() + cantCuponesCargadosBD) == 0) {
+						loteComercio.setEstadoLote("F");
+						if (cantRechazados == 0) { // si estan todos conciliados
+							loteComercio.setEstadoLote("C");
+						}
+					}
+					transaccionesService.getConciliacionConsumosServices().conciliarCuponesCargaManual(loteComercio, false, Session.getOperador(),
+							listaTransaccionesAActualizar, transaccionesService.getListaPrecioParaLiquidarService(), new ArrayList());
+					popup.setPopup(popup.ICONO_OK, "Los cambios se han efectuado exitosamente.");
+					mostrarBotonesPopupConfirma = false;
+					mostrarBotonesPopupConfirma2 = false;
+					mostrarBotonesPopupGuardar = true;
+					error.borrar();
+
+				}
+			} catch (FechaFacturacionNulaException e1) {
+				error.agregar("El proceso de conciliacion no termino correctamente, consulte el archivo erroresTrans.log para obtener mas detalles del error");
+				e1.printStackTrace();
+			} catch (Exception e) {
+				popup.setPopup(popup.ICONO_FALLA, "Ocurrio un error al grabar el lote.\n" + e.getStackTrace().toString());
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+
+		public void habilitaFilaModificacion(ActionEvent event) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			int fila = Integer.parseInt((context.getExternalContext().getRequestParameterMap().get("filaAEditar").toString())) - 1;
+			((WrapperLoteComercioItem) loteComercioDetalles.get(fila)).setSoyEditable(true);
+			((WrapperLoteComercioItem) loteComercioDetalles.get(fila)).setResultadoConciliacion("Pendiente");
+		}
+
+
+		public void conciliarDesdeLink(ActionEvent event) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			Map map = context.getExternalContext().getRequestParameterMap();
+			int fila = Integer.parseInt((String) map.get("filita")) - 1;
+			conciliarCupon(fila, "link");
+		}
+
+
+		public String salirSinguardarCambios() {
+			if (cantCuponesCargados == 0) {
+				// aca cerrar la pantalla
+			}
+			else {
+				accionPopupConfirma2 = "cerrarPantalla";
+				popup.setPopup(popup.ICONO_CONFIRMACION, "Algunos cupones no han sido guardados y se perderan, ¿Desea continuar  de todas formas?");
+				mostrarBotonesPopupConfirma = false;
+				mostrarBotonesPopupConfirma2 = true;
+				mostrarBotonesPopupGuardar = false;
+			}
+			return null;
+		}
+
+
+		public String llamarPopupConf() {
+			popup.setPopup(popup.ICONO_CONFIRMACION, "Ha llegado al final de la carga, ¿Desea cerrar el lote y guardar los cambios efectuados?");
+			mostrarBotonesPopupConfirma = true;
+			mostrarBotonesPopupConfirma2 = false;
+			mostrarBotonesPopupGuardar = false;
+			return null;
+		}
+
+
+		public void conciliarDesdeTexto() {
+			FacesContext context = FacesContext.getCurrentInstance();
+			Map map = context.getExternalContext().getRequestParameterMap();
+			int fila = Integer.parseInt((String) map.get("filita")) - 1;
+			conciliarCupon(fila, "");
+
+		}
+
+
+		private void conciliarCupon(int indice, String origen) {
+			boolean valido = true;
+			transaccionAcomparar = null;
+			if (primero) {
+				disabledcodComText = true;
+				primero = false;
+			}
+			if (indice >= 0) {
+				Long idLoteComercioItem = null;
+				Integer key = new Integer(indice);
+				if (cuponesPorCodAut != null) {
+					cuponesPorCodAut.clear();
+				} else
+					cuponesPorCodAut = new ArrayList();
+				LoteComercioItem itemAComparar = null;
+				WrapperLoteComercioItem wrapperLoteComercioItem = null;
+				String nroTarjeta;
+				wrapperLoteComercioItem = (WrapperLoteComercioItem) loteComercioDetalles.get(indice);
+				nroTarjeta = "504906" + wrapperLoteComercioItem.getNroTarjeta1() + wrapperLoteComercioItem.getNroTarjeta2()
+						+ wrapperLoteComercioItem.getNroTarjeta3();
+				itemAComparar = wrapperLoteComercioItem.getLoteComercioItem();
+				itemAComparar.setNroTarjeta(nroTarjeta);
+				itemAComparar.setCodComercio(codComercio);
+				itemAComparar.setCodigoMoneda("032");
+				// la linea de abajo fue comentada el nroLote no se compara!!!
+				// itemAComparar.setNroLote(nroLote);
+				itemAComparar.setTipoRegistro("861");
+				Long codigoAutorizacion = new Long(itemAComparar.getCodigoAutorizacion());
+				Long codigoComercio = new Long(codComercio);
+				try {
+					transaccionesList = transaccionesService.getTransaccionService()
+							.listarTransaccionConciliacion(codigoComercio, codigoAutorizacion);
+				} catch (TransaccionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				if (transaccionesList.size() > 0) {
+					transaccionAcomparar = (Transaccion) transaccionesList.get(0);
+
+					// ********************************************************
+					// condiciones para q la carga de un cupon sea valido
+					// 1) Un cupon debe estar a asociado a una y solo una transaccion ( puede darse el caso de que no pueda asociarse a ninguna por lo
+					// q el cupon debera asociarse manualmente posteriormente)
+					// 2) el codigo de comercio del cupon debe ser igual al codigo de comercio de la transaccion( en este caso le damos la derecha a
+					// la transaccion.
+					// **********************************************************
+					Filtro f = new Filtro();
+					SimpleDateFormat formateador = new SimpleDateFormat("yy/MM/dd");
+					String fechaLimiteConcHasta = formateador.format(new Date()).toString();
+					fechaLimiteConcHasta = fechaLimiteConcHasta.substring(0, 2) + fechaLimiteConcHasta.substring(3, 5)
+							+ fechaLimiteConcHasta.substring(6, 8);
+					GregorianCalendar calendario = new GregorianCalendar();
+					calendario.add(Calendar.DATE, -limiteConciliacion);
+					SimpleDateFormat data = new SimpleDateFormat("yy/MM/dd");
+					String fechaLimiteConcDesde = data.format(calendario.getTime());
+					fechaLimiteConcDesde = fechaLimiteConcDesde.substring(0, 2) + fechaLimiteConcDesde.substring(3, 5)
+							+ fechaLimiteConcDesde.substring(6, 8);
+					// f.agregarCampoOperValor("codigoAutorizacion",Filtro.LIKE,((WrapperLoteComercioItem)
+					// loteComercioDetalles.get(indice)).getLoteComercioItem().getCodigoAutorizacion());
+					/*
+					 * f.agregarCampoOperValor("fechaReal" , Filtro.MAYOR_IGUAL,"'"+fechaLimiteConcDesde+"'"); f.agregarCampoOperValor("fechaReal" ,
+					 * Filtro.MENOR_IGUAL,"'"+fechaLimiteConcHasta+"'");//con el filtro de estas fechas nos aseguramos q no se repita el codigo de
+					 * autorizacion
+					 */
+					// f.agregarCampoOperValor("codigoAutorizacion",Filtro.IGUAL,((WrapperLoteComercioItem)
+					// loteComercioDetalles.get(indice)).getLoteComercioItem().getCodigoAutorizacion());
+					idLoteComercioItem = wrapperLoteComercioItem.getLoteComercioItem().getIdLoteComercioItem();
+					try {
+						cuponesPorCodAut = transaccionesService.getLoteComercioItemService().itemsPorCodAutorizacion(codigoAutorizacion,
+								fechaLimiteConcDesde, fechaLimiteConcHasta, idLoteComercioItem);
+					} catch (LoteComercioItemException ex) {
+						// TODO Auto-generated catch blockyh
+						ex.printStackTrace();
+					}
+					// aca verificamos si cumple el punto 1)
+					if (cuponesPorCodAut.size() == 1) {
+
+						if (((LoteComercioItem) cuponesPorCodAut.get(0)).getTransaccion() != null) {
+							log.info("el cupon ya tiene asociada una transaccion");
+							valido = false; // aca el cupon ya tiene asociada una transaccion
+						}
+					} else if (cuponesPorCodAut.size() > 0) {
+						log.info("el cupon ya fue cargado en otro lote");
+						valido = false; // aca el cod autorizacion ya fue cargado en otro lote
+					}
+
+					// aca verificamos si cumple el punto 2)
+					log.info("Comercio del cupon " + codComercio + "comercio de la transaccion" + transaccionAcomparar.getCodComercio());
+					if (!codComercio.equals(Util.quitarRelleno(transaccionAcomparar.getCodComercio()))) {
+						log.info("El cupon no pertenece al comercio");
+						valido = false;
+					}
+
+					if (valido) {
+						DiferenciasItemTransaccion diferencias = itemAComparar.setearDiferenciasConTransaccion(transaccionAcomparar,
+								LoteComercioItem.ORIGEN_NO_POSNET);
+						if (diferencias.getCantDiferencias() == 0) {
+							// si fue conciliado se agrega en una lista el id de la transaccion para posteriormente
+							// actualizar en la bdlas transacciones q esten en el listado
+
+							((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).getLoteComercioItem().setEstadoItem("C");
+							((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).getLoteComercioItem().setTransaccion(transaccionAcomparar);
+							transaccionAcomparar.getIdTranascciones();
+							listaTransaccionesAActualizar.add(transaccionAcomparar);
+							resulConciliacion = 1;
+							System.out.println("conciliado");
+
+							((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setResultadoConciliacion("Conciliado");
+							((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setIconoConciliacion("/img/icon/ok_22x22.png");
+							((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setDiferenciasItemTransaccion(diferencias);
+						}
+
+						else {
+							((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).getLoteComercioItem().setEstadoItem("X");
+							((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).getLoteComercioItem().setTransaccion(transaccionAcomparar);
+
+							resulConciliacion = 2;
+							((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setIconoConciliacion("/img/button_cancel_22x22.png");
+							((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setResultadoConciliacion("No Conciliado");
+							((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setDiferenciasItemTransaccion(diferencias);
+						}
+					}
+					else {// se rechaza definitivamente el cupon porq no pertenece al comercio o ya fue cargado en otro lote
+						((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).getLoteComercioItem().setEstadoItem("R");
+
+						((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setIconoConciliacion("/img/trashcan_empty_22x22.png");
+						((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setResultadoConciliacion("Omitido");
+						indiceNoValidos.add(String.valueOf(indice));
+					}
+				}
+				else {
+					// / si no encontro ninguna transaccion con el nro de lote y nro cupon ingresado
+					// p le avisa al usuario q no encontro la transaccion asi el usuario tiene la posibilidad de corroborrar,
+					// si ingreso bien el cod de autorizacion
+					((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).getLoteComercioItem().setEstadoItem("X");
+					((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).getLoteComercioItem().setTransaccion(transaccionAcomparar);
+					((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setIconoConciliacion("/img/message_warning_22x22.png");
+					((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setResultadoConciliacion("Trans. no Encontrada");
+				}
+
+				((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setSoyEditable(false);
+				((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).setHabilitarIconoAccion(true);
+
+				((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).getLoteComercioItem().setOperador(Session.getOperador());
+				((WrapperLoteComercioItem) loteComercioDetalles.get(indice)).getLoteComercioItem().setFechaUltimaModificacion(
+						new Timestamp(hoy.getTime()));
+
+				// ahora habilitamos la sgte fila
+				if (indice + 1 < cantCupones
+						&& ((WrapperLoteComercioItem) loteComercioDetalles.get(indice + 1)).getResultadoConciliacion().compareTo("Pendiente") == 0)
+					((WrapperLoteComercioItem) loteComercioDetalles.get(indice + 1)).setSoyEditable(true);
+			}
+
+			cantCuponesCargados = cantCuponesCargados();
+
+			System.out.println("result dpues" + resulConciliacion);
+		}
+
+
+		// /////////////////////////////////////
+		// ***** Métodos necesarios para el paginador
+
+		public String primerRegistro() {
+			listaLotesAbiertos.clear();
+			Iterator i = paginador.getPrimeraPagina().iterator();
+			while (i.hasNext()) {
+				LoteComercioResumen element = (LoteComercioResumen) i.next();
+				WrapperLoteComercioResumen wrapperLoteComercioResumen = new WrapperLoteComercioResumen(element);
+				listaLotesAbiertos.add(wrapperLoteComercioResumen);
+			}
+			return null;
+		}
+
+
+		public String ultimoRegistro() {
+			listaLotesAbiertos.clear();
+			Iterator i = paginador.getUltimaPagina().iterator();
+			while (i.hasNext()) {
+				LoteComercioResumen element = (LoteComercioResumen) i.next();
+				WrapperLoteComercioResumen wrapperLoteComercioResumen = new WrapperLoteComercioResumen(element);
+				listaLotesAbiertos.add(wrapperLoteComercioResumen);
+			}
+			return null;
+		}
+
+
+		public String siguienteRegistro() {
+			listaLotesAbiertos.clear();
+			Iterator i = paginador.getPaginaSiguiente().iterator();
+			while (i.hasNext()) {
+				LoteComercioResumen element = (LoteComercioResumen) i.next();
+				WrapperLoteComercioResumen wrapperLoteComercioResumen = new WrapperLoteComercioResumen(element);
+				listaLotesAbiertos.add(wrapperLoteComercioResumen);
+			}
+			return null;
+		}
+
+
+		public String anteriorRegistro() {
+			listaLotesAbiertos.clear();
+			Iterator i = paginador.getPaginaAnterior().iterator();
+			while (i.hasNext()) {
+				LoteComercioResumen element = (LoteComercioResumen) i.next();
+				WrapperLoteComercioResumen wrapperLoteComercioResumen = new WrapperLoteComercioResumen(element);
+				listaLotesAbiertos.add(wrapperLoteComercioResumen);
+
+			}
+			return null;
+		}
+
+
+		public boolean getHayLotesAbiertos() {
+			return !listaLotesAbiertos.isEmpty();
+
+		}
+
+
+		public void setHayLotesAbiertos(boolean hayLotesAbiertos) {
+			this.hayLotesAbiertos = hayLotesAbiertos;
+		}
+
+
+		public void cambiarPagina(ValueChangeEvent e) {
+			pagina();
+		}
+
+
+		public String pagina() {
+			listaLotesAbiertos.clear();
+			Iterator i = paginador.getPagina(((Long) paginador.getPagSeleccionada().getValue()).intValue()).iterator();
+			while (i.hasNext()) {
+				LoteComercioResumen element = (LoteComercioResumen) i.next();
+				WrapperLoteComercioResumen wrapperLoteComercioResumen = new WrapperLoteComercioResumen(element);
+				listaLotesAbiertos.add(wrapperLoteComercioResumen);
+			}
+			return null;
+		}
+
+
+		// ***** Fin metodos necesarios para el paginador
+
+		// /////////////////////////////////////
+		public List getCuponesPorCodAut() {
+			return cuponesPorCodAut;
+		}
+
+
+		public void setCuponesPorCodAut(List cuponesPorCodAut) {
+			this.cuponesPorCodAut = cuponesPorCodAut;
+		}
+
+
+		public Date getFechaRecepcion() {
+			return fechaRecepcion;
+		}
+
+
+		public void setFechaRecepcion(Date fechaRecepcion) {
+			this.fechaRecepcion = fechaRecepcion;
+		}
+
+
+		public LoteComercio getLoteComercio() {
+			return loteComercio;
+		}
+
+
+		public void setLoteComercio(LoteComercio loteComercio) {
+			this.loteComercio = loteComercio;
+		}
+
+
+		public Long getIdTipoLoteSeleccionado() {
+			return idTipoLoteSeleccionado;
+		}
+
+
+		public void setIdTipoLoteSeleccionado(Long idTipoLoteSeleccionado) {
+			this.idTipoLoteSeleccionado = idTipoLoteSeleccionado;
+		}
+
+
+		public String getNroLote() {
+			return nroLote;
+		}
+
+
+		public void setNroLote(String nroLote) {
+			this.nroLote = nroLote;
+		}
+
+
+		public int getCantCupones() {
+			return cantCupones;
+		}
+
+
+		public void setCantCupones(int cantCupones) {
+			this.cantCupones = cantCupones;
+		}
+
+
+		public List getTipoLoteItem() {
+			return tipoLoteItem;
+		}
+
+
+		public void setTipoLoteItem(List tipoLoteItem) {
+			this.tipoLoteItem = tipoLoteItem;
+		}
+
+
+		public HtmlSelectOneMenu getTipoLote() {
+			return tipoLote;
+		}
+
+
+		public void setTipoLote(HtmlSelectOneMenu tipoLote) {
+			this.tipoLote = tipoLote;
+		}
+
+
+		public String getCodComercio() {
+			return codComercio;
+		}
+
+
+		public void setCodComercio(String codComercio) {
+			this.codComercio = codComercio;
+		}
+
+
+		public boolean isMostrarFiltro() {
+			return mostrarFiltro;
+		}
+
+
+		public void setMostrarFiltro(boolean mostrarFiltro) {
+			this.mostrarFiltro = mostrarFiltro;
+		}
+
+
+		public List getListaLotesAbiertos() {
+			return listaLotesAbiertos;
+		}
+
+
+		public void setListaLotesAbiertos(List listaLotesAbiertos) {
+			this.listaLotesAbiertos = listaLotesAbiertos;
+		}
+
+
+		public String getCodComercioFiltro() {
+			return codComercioFiltro;
+		}
+
+
+		public void setCodComercioFiltro(String codComercioFiltro) {
+			this.codComercioFiltro = codComercioFiltro;
+		}
+
+
+		public Long getNroLoteFiltro() {
+			return nroLoteFiltro;
+		}
+
+
+		public void setNroLoteFiltro(Long nroLoteFiltro) {
+			this.nroLoteFiltro = nroLoteFiltro;
+		}
+
+
+		public boolean isEsAltaNvoLote() {
+			return esAltaNvoLote;
+		}
+
+
+		public void setEsAltaNvoLote(boolean esAltaNvoLote) {
+			this.esAltaNvoLote = esAltaNvoLote;
+		}
+
+
+		public boolean isMostrarCabeceraLoteEdicion() {
+			return mostrarCabeceraLoteEdicion;
+		}
+
+
+		public void setMostrarCabeceraLoteEdicion(boolean mostrarCabeceraLoteEdicion) {
+			this.mostrarCabeceraLoteEdicion = mostrarCabeceraLoteEdicion;
+		}
+
+
+		public boolean isMandarAConciliar() {
+			return mandarAConciliar;
+		}
+
+
+		public void setMandarAConciliar(boolean mandarAConciliar) {
+			this.mandarAConciliar = mandarAConciliar;
+		}
+
+
+		public boolean isMostrarGuardar() {
+			return mostrarGuardar;
+		}
+
+
+		public void setMostrarGuardar(boolean mostrarGuardar) {
+			this.mostrarGuardar = mostrarGuardar;
+		}
+
+
+		public int getResulConciliacion() {
+			return resulConciliacion;
+		}
+
+
+		public void setResulConciliacion(int resulConciliacion) {
+			this.resulConciliacion = resulConciliacion;
+		}
+
+
+		public int getCantCuponesCargados() {
+			return cantCuponesCargados;
+		}
+
+
+		public void setCantCuponesCargados(int cantCuponesCargados) {
+			this.cantCuponesCargados = cantCuponesCargados;
+		}
+
+
+		public String getNroLoteComercio() {
+			return nroLoteComercio;
+		}
+
+
+		public void setNroLoteComercio(String nroLoteComercio) {
+			this.nroLoteComercio = nroLoteComercio;
+		}
+
+
+		public boolean isMostrarBotonesPopupConfirma() {
+			return mostrarBotonesPopupConfirma;
+		}
+
+
+		public void setMostrarBotonesPopupConfirma(boolean mostrarBotonesPopupConfirma) {
+			this.mostrarBotonesPopupConfirma = mostrarBotonesPopupConfirma;
+		}
+
+
+		public boolean isMostrarBotonesPopupGuardar() {
+			return mostrarBotonesPopupGuardar;
+		}
+
+
+		public void setMostrarBotonesPopupGuardar(boolean mostrarBotonesPopupGuardar) {
+			this.mostrarBotonesPopupGuardar = mostrarBotonesPopupGuardar;
+		}
+
+
+		public int getActualizarCantFilas() {
+			return actualizarCantFilas;
+		}
+
+
+		public void setActualizarCantFilas(int actualizarCantFilas) {
+			this.actualizarCantFilas = actualizarCantFilas;
+		}
+
+
+		public int getCantCuponesCargadosBD() {
+			return cantCuponesCargadosBD;
+		}
+
+
+		public void setCantCuponesCargadosBD(int cantCuponesCargadosBD) {
+			this.cantCuponesCargadosBD = cantCuponesCargadosBD;
+		}
+
+
+		public boolean isDeshabilitarCodComercio() {
+			return deshabilitarCodComercio;
+		}
+
+
+		public void setDeshabilitarCodComercio(boolean deshabilitarCodComercio) {
+			this.deshabilitarCodComercio = deshabilitarCodComercio;
+		}
+
+
+		public String getTelefonoSucursal() {
+			return telefonoSucursal;
+		}
+
+
+		public void setTelefonoSucursal(String telefonoSucursal) {
+			this.telefonoSucursal = telefonoSucursal;
+		}
+
+
+		public boolean isMostrarSucEmpresa() {
+			return mostrarSucEmpresa;
+		}
+
+
+		public void setMostrarSucEmpresa(boolean mostrarSucEmpresa) {
+			this.mostrarSucEmpresa = mostrarSucEmpresa;
+		}
+
+
+		public boolean isDisabledcodComText() {
+			return disabledcodComText;
+		}
+
+
+		public void setDisabledcodComText(boolean disabledcodComText) {
+			this.disabledcodComText = disabledcodComText;
+		}
+
+
+		public boolean isMostrarBotonesPopupConfirma2() {
+			return mostrarBotonesPopupConfirma2;
+		}
+
+
+		public void setMostrarBotonesPopupConfirma2(boolean mostrarBotonesPopupConfirma2) {
+			this.mostrarBotonesPopupConfirma2 = mostrarBotonesPopupConfirma2;
+		}
+
+
+		public String getAccionPopupConfirma2() {
+			return accionPopupConfirma2;
+		}
+
+
+		public void setAccionPopupConfirma2(String accionPopupConfirma2) {
+			this.accionPopupConfirma2 = accionPopupConfirma2;
+		}
+
+
+		public int getCantCuponesPreviaModificacion() {
+			return cantCuponesPreviaModificacion;
+		}
+
+
+		public void setCantCuponesPreviaModificacion(int cantCuponesPreviaModificacion) {
+			this.cantCuponesPreviaModificacion = cantCuponesPreviaModificacion;
+		}
+
+
+		public String getImporte() {
+			return importe;
+		}
+
+
+		public void setImporte(String importe) {
+			this.importe = importe;
+		}
+
+
+		public Long getIdImpresoraSeleccionada() {
+			return idImpresoraSeleccionada;
+		}
+
+
+		public void setIdImpresoraSeleccionada(Long idImpresoraSeleccionada) {
+			this.idImpresoraSeleccionada = idImpresoraSeleccionada;
+		}
+
+
+		public List getImpresorasItem() {
+			return impresorasItem;
+		}
+
+
+		public void setImpresorasItem(List impresorasItem) {
+			this.impresorasItem = impresorasItem;
+		}
+
+
+		public boolean isHabilitarImpresion() {
+			return habilitarImpresion;
+		}
+
+
+		public void setHabilitarImpresion(boolean habilitarImpresion) {
+			this.habilitarImpresion = habilitarImpresion;
+		}
+
+
+		public PaginaDeRegistros getPaginador() {
+			return paginador;
+		}
+
+
+		public void setPaginador(PaginaDeRegistros paginador) {
+			this.paginador = paginador;
+		}
+
+
+		public boolean isMostrarCboImpresora() {
+			return mostrarCboImpresora;
+		}
+
+
+		public void setMostrarCboImpresora(boolean mostrarCboImpresora) {
+			this.mostrarCboImpresora = mostrarCboImpresora;
+		}
+
+
+		public List getOperadorItems() {
+			return operadorItems;
+		}
+
+
+		public void setOperadorItems(List operadorItems) {
+			this.operadorItems = operadorItems;
+		}
+
+
+		public Long getIdOperadorSeleccionado() {
+			return idOperadorSeleccionado;
+		}
+
+
+		public void setIdOperadorSeleccionado(Long idOperadorSeleccionado) {
+			this.idOperadorSeleccionado = idOperadorSeleccionado;
+		}
+
+
+		public List getOperadorList() {
+			return operadorList;
+		}
+
+
+		public void setOperadorList(List operadorList) {
+			this.operadorList = operadorList;
+		}
+
+
+		public HtmlSelectOneMenu getOperadorHtml() {
+			return operadorHtml;
+		}
+
+
+		public void setOperadorHtml(HtmlSelectOneMenu operadorHtml) {
+			this.operadorHtml = operadorHtml;
+		}
+
+	}
+
+	public class WrapperCuponSeleccionado {
+
+		private LoteComercioItem loteComercioItem;
+
+
+		public LoteComercioItem getLoteComercioItem() {
+			return loteComercioItem;
+		}
+
+
+		public void setLoteComercioItem(LoteComercioItem loteComercioItem) {
+			this.loteComercioItem = loteComercioItem;
+		}
+
+	}
+
+	public class WrapperDiferenciasTransacciones {
+
+		private Transaccion transaccion;
+		private String nroCuponFont;
+		private String nroDocFont;
+		private String nroTarjetaFont;
+		private String cantCuotasFont;
+		private String importeFont;
+		private String codAutFont;
+		private String fechaConsumoFont;
+		private String planCuotasFont;
+		private int idFila;
+
+
+		private WrapperDiferenciasTransacciones(Transaccion transaccion) {
+			this.transaccion = transaccion;
+		}
+
+
+		public int getIdFila() {
+			return idFila;
+		}
+
+
+		public void setIdFila(int idFila) {
+			this.idFila = idFila;
+		}
+
+
+		public String getCantCuotasFont() {
+			return cantCuotasFont;
+		}
+
+
+		public void setCantCuotasFont(String cantCuotasFont) {
+			this.cantCuotasFont = cantCuotasFont;
+		}
+
+
+		public String getCodAutFont() {
+			return codAutFont;
+		}
+
+
+		public void setCodAutFont(String codAutFont) {
+			this.codAutFont = codAutFont;
+		}
+
+
+		public String getFechaConsumoFont() {
+			return fechaConsumoFont;
+		}
+
+
+		public void setFechaConsumoFont(String fechaConsumoFont) {
+			this.fechaConsumoFont = fechaConsumoFont;
+		}
+
+
+		public String getImporteFont() {
+			return importeFont;
+		}
+
+
+		public void setImporteFont(String importeFont) {
+			this.importeFont = importeFont;
+		}
+
+
+		public String getNroCuponFont() {
+			return nroCuponFont;
+		}
+
+
+		public void setNroCuponFont(String nroCuponFont) {
+			this.nroCuponFont = nroCuponFont;
+		}
+
+
+		public String getNroDocFont() {
+			return nroDocFont;
+		}
+
+
+		public void setNroDocFont(String nroDocFont) {
+			this.nroDocFont = nroDocFont;
+		}
+
+
+		public String getNroTarjetaFont() {
+			return nroTarjetaFont;
+		}
+
+
+		public void setNroTarjetaFont(String nroTarjetaFont) {
+			this.nroTarjetaFont = nroTarjetaFont;
+		}
+
+
+		public String getPlanCuotasFont() {
+			return planCuotasFont;
+		}
+
+
+		public void setPlanCuotasFont(String planCuotasFont) {
+			this.planCuotasFont = planCuotasFont;
+		}
+
+
+		public Transaccion getTransaccion() {
+			return transaccion;
+		}
+
+
+		public void setTransaccion(Transaccion transaccion) {
+			this.transaccion = transaccion;
+		}
+
+
+		public String asociar() {
+
+			WrapperCuponSeleccionado wrap = new WrapperCuponSeleccionado();
+
+			listaTransSeleccionada.clear();
+			wrap.setLoteComercioItem(((WrapperCuponSeleccionado) listacuponSeleccionado.get(0)).getLoteComercioItem());
+			wrap.getLoteComercioItem().setTransaccion(this.transaccion);
+			listaTransSeleccionada.add(wrap);
+
+			return null;
+		}
+
+	}
+
+	public class WrapperLoteComercioResumen {
+		private LoteComercioResumen loteComercioResumen;
+		private LoteComercio loteComercio;
+		private int idLoteCom;
+		private boolean seleccionado;
+
+
+		public WrapperLoteComercioResumen(LoteComercioResumen loteComercioResumen, LoteComercio loteComercio) {
+			this.loteComercioResumen = loteComercioResumen;
+			this.loteComercio = loteComercio;
+			idLoteCom = ++numeroLotesComercioResumenTabla;
+		}
+
+
+		public WrapperLoteComercioResumen(LoteComercioResumen loteComercioResumen) {
+			this.loteComercioResumen = loteComercioResumen;
+			idLoteCom = ++numeroLotesComercioResumenTabla;
+		}
+
+
+		public LoteComercio getLoteComercio() {
+			return loteComercio;
+		}
+
+
+		public void setLoteComercio(LoteComercioResumen loteComercio) {
+			this.loteComercioResumen = loteComercio;
+		}
+
+
+		public int getIdLoteCom() {
+			return idLoteCom;
+		}
+
+
+		public void setIdLoteCom(int idLoteCom) {
+			this.idLoteCom = idLoteCom;
+		}
+
+
+		public LoteComercioResumen getLoteComercioResumen() {
+			return loteComercioResumen;
+		}
+
+
+		public void setLoteComercioResumen(LoteComercioResumen loteComercioResumen) {
+			this.loteComercioResumen = loteComercioResumen;
+		}
+
+
+		public boolean isSeleccionado() {
+			return seleccionado;
+		}
+
+
+		public void setSeleccionado(boolean seleccionado) {
+			this.seleccionado = seleccionado;
+		}
+
+	}
+
+	public class WrapperLoteComercioCabecera {
+
+		private LoteComercio loteComercio;
+		private int idLoteCom;
+
+		private boolean origen;
+
+
+		public WrapperLoteComercioCabecera(LoteComercio loteComercio) {
+			this.loteComercio = loteComercio;
+			idLoteCom = ++numeroLotesComercioTabla;
+		}
+
+
+		public String eliminarLoteComercio() {
+			error.borrar();
+			Long idLoteComercioElegido = new Long(idLoteCom);
+			Iterator iter = loteComercios.iterator();
+			while (iter.hasNext()) {
+				WrapperLoteComercioCabecera loteComercioCabecera = (WrapperLoteComercioCabecera) iter.next();
+				if (loteComercioCabecera.getIdLoteCom() == idLoteComercioElegido.intValue()) {
+					loteComercioDetallado = loteComercioCabecera.getLoteComercio();
+					break;
+				}
+			}
+
+			return null;
+		}
+
+
+		public boolean isOrigen() {
+			return origen;
+		}
+
+
+		public void setOrigen(boolean origen) {
+			this.origen = origen;
+		}
+
+
+		public LoteComercio getLoteComercio() {
+			return loteComercio;
+		}
+
+
+		public void setLoteComercio(LoteComercio loteComercio) {
+			this.loteComercio = loteComercio;
+		}
+
+
+		public int getIdLoteCom() {
+			return idLoteCom;
+		}
+
+
+		public void setIdLoteCom(int idLoteCom) {
+			this.idLoteCom = idLoteCom;
+		}
+
+	}
+
+	public class WrapperLoteComercioItem {
+
+		private LoteComercioItem loteComercioItem;
+		private int idLoteComItem = 0;
+		private boolean seleccionado;
+		private boolean soyEditable;
+
+		private int fila;
+		private boolean habilitarIconoAccion;
+		private String resultadoConciliacion;
+		private String nroTarjeta1;
+		private String nroTarjeta2;
+		private String nroTarjeta3;
+		private String importe;
+		private DiferenciasItemTransaccion diferenciasItemTransaccion;
+
+		private HtmlGraphicImage resN;
+		private String iconoConciliacion;
+
+
+		public WrapperLoteComercioItem() {
+			idLoteComItem = ++numeroLotesComercioItemTabla;
+			loteComercioItem = new LoteComercioItem();
+			loteComercioItem.setIdLoteComercioItem(new Long(idLoteComItem));
+		}
+
+
+		public WrapperLoteComercioItem(LoteComercioItem loteComercioItem, boolean seleccionado) {
+			this.loteComercioItem = loteComercioItem;
+			idLoteComItem = ++numeroLotesComercioItemTabla;
+			this.seleccionado = seleccionado;
+		}
+
+
+		public LoteComercioItem getLoteComercioItem() {
+			return loteComercioItem;
+		}
+
+
+		public void setLoteComercioItem(LoteComercioItem loteComercioItem) {
+			this.loteComercioItem = loteComercioItem;
+		}
+
+
+		public int getIdLoteComItem() {
+			return idLoteComItem;
+		}
+
+
+		public void setIdLoteComItem(int idLoteComItem) {
+			this.idLoteComItem = idLoteComItem;
+		}
+
+
+		public boolean isSeleccionado() {
+			return seleccionado;
+		}
+
+
+		public void setSeleccionado(boolean seleccionado) {
+			this.seleccionado = seleccionado;
+		}
+
+
+		public int getFila() {
+			return fila;
+		}
+
+
+		public void setFila(int fila) {
+			this.fila = fila;
+		}
+
+
+		public String getResultadoConciliacion() {
+			return resultadoConciliacion;
+		}
+
+
+		public void setResultadoConciliacion(String resultadoConciliacion) {
+			this.resultadoConciliacion = resultadoConciliacion;
+		}
+
+
+		public String getNroTarjeta1() {
+			return nroTarjeta1;
+		}
+
+
+		public void setNroTarjeta1(String nroTarjeta1) {
+			this.nroTarjeta1 = nroTarjeta1;
+		}
+
+
+		public String getNroTarjeta2() {
+			return nroTarjeta2;
+		}
+
+
+		public void setNroTarjeta2(String nroTarjeta2) {
+			this.nroTarjeta2 = nroTarjeta2;
+		}
+
+
+		public String getNroTarjeta3() {
+			return nroTarjeta3;
+		}
+
+
+		public void setNroTarjeta3(String nroTarjeta3) {
+			this.nroTarjeta3 = nroTarjeta3;
+		}
+
+
+		public HtmlGraphicImage getResN() {
+			return resN;
+		}
+
+
+		public void setResN(HtmlGraphicImage resN) {
+			this.resN = resN;
+		}
+
+
+		public String getIconoConciliacion() {
+			return iconoConciliacion;
+		}
+
+
+		public void setIconoConciliacion(String iconoConciliacion) {
+			this.iconoConciliacion = iconoConciliacion;
+		}
+
+
+		public boolean isSoyEditable() {
+			return soyEditable;
+		}
+
+
+		public void setSoyEditable(boolean soyEditable) {
+			this.soyEditable = soyEditable;
+		}
+
+
+		public boolean isHabilitarIconoAccion() {
+			return habilitarIconoAccion;
+		}
+
+
+		public void setHabilitarIconoAccion(boolean habilitarIconoAccion) {
+			this.habilitarIconoAccion = habilitarIconoAccion;
+		}
+
+
+		public String getImporte() {
+			return importe;
+		}
+
+
+		public void setImporte(String importe) {
+			this.importe = importe;
+		}
+
+
+		public DiferenciasItemTransaccion getDiferenciasItemTransaccion() {
+			return diferenciasItemTransaccion;
+		}
+
+
+		public void setDiferenciasItemTransaccion(
+				DiferenciasItemTransaccion diferenciasItemTransaccion) {
+			this.diferenciasItemTransaccion = diferenciasItemTransaccion;
+		}
+
+	}
+
+	public class RevisionManual {
+
+		private List listaLotesARevisar;
+		private LoteComercioItem lciCero, lciUno, lciDos, lciTres, lciCuatro, lciCinco, lciSeis, lciSiete, lciOcho, lciNueve;
+		private int cantidadARevisar;
+		private LoteComercioItem loteItemAux;
+		private boolean origenCargaAutom;
+		private String subTitulo1;
+		private String subTitulo2;
+
+
+		public RevisionManual(List listaLotesARevisar, boolean origenCargaAutom, String subTitulo1, String subTitulo2) {
+			this.listaLotesARevisar = listaLotesARevisar;
+			LoteComercio loteComercioRevisionManual = null;
+			this.origenCargaAutom = origenCargaAutom;
+			this.subTitulo1 = subTitulo1;
+			this.subTitulo2 = subTitulo2;
+			this.cantidadARevisar = listaLotesARevisar.size();
+			if (cantidadARevisar != 0) {
+				loteItemAux = new LoteComercioItem();
+				loteItemAux.setTransaccion(new Transaccion());
+				lciCero = loteItemAux;
+				lciUno = loteItemAux;
+				lciDos = loteItemAux;
+				lciTres = loteItemAux;
+				lciCuatro = loteItemAux;
+				lciCinco = loteItemAux;
+				lciSeis = loteItemAux;
+				lciSiete = loteItemAux;
+				lciOcho = loteItemAux;
+				lciNueve = loteItemAux;
+				try {
+					lciCero = (LoteComercioItem) listaLotesARevisar.get(0);
+					lciUno = (LoteComercioItem) listaLotesARevisar.get(1);
+					lciDos = (LoteComercioItem) listaLotesARevisar.get(2);
+					lciTres = (LoteComercioItem) listaLotesARevisar.get(3);
+					lciCuatro = (LoteComercioItem) listaLotesARevisar.get(4);
+					lciCinco = (LoteComercioItem) listaLotesARevisar.get(5);
+					lciSeis = (LoteComercioItem) listaLotesARevisar.get(6);
+					lciSiete = (LoteComercioItem) listaLotesARevisar.get(7);
+					lciOcho = (LoteComercioItem) listaLotesARevisar.get(8);
+					lciNueve = (LoteComercioItem) listaLotesARevisar.get(9);
+					Iterator iterator = listaLotesARevisar.iterator();
+					while (iterator.hasNext()) {
+						LoteComercioItem object = (LoteComercioItem) iterator.next();
+						loteComercio = object.getLoteComercio();
+						break;
+
+					}
+
+				} catch (IndexOutOfBoundsException e) {
+					// no hacer nada
+				}
+			}
+
+		}
+
+
+		/**
+		 * Todos los lotes comercios item deben ser del mismo lote.
+		 * 
+		 * 
+		 * */
+
+		private void actualizarCambiosLoteItem(LoteComercioItem loteComercioItem, boolean esRechazo) {
+			// para evitar el lazy
+			loteComercioItem.getTransaccion();
+			loteComercioItem.getTransaccion().getComercioListaPrecio();
+			loteComercioItem.getTransaccion().getOperador();
+			loteComercioItem.getTransaccion().getClienteTransaccion();
+			loteComercioItem.getTransaccion().getOperadorConciliado();
+			loteComercioItem.getOperador();
+			loteComercioItem.setFechaUltimaModificacion(new Timestamp(hoy.getTime()));
+			loteComercioItem.setOperador(Session.getOperador());
+			loteComercioItem.getTransaccion().setTimestampUltMod(new Timestamp(hoy.getTime()));
+			paginador.getListaDeContenidos().remove(loteComercioItem);
+
+			if (esRechazo) {
+				loteComercioItem.setEstadoItem("R");
+				cantRechazosDefinitivos++;
+				cantRechazados--;
+			} else { // es Conciliacion
+				loteComercioItem.setEstadoItem("C");
+				loteComercioItem.getTransaccion().setEstadoImpacto("C");
+				loteComercioItem.getTransaccion().setFechaConciliado(new Timestamp(Calendar.getInstance().getTime().getTime()));
+				loteComercioItem.getTransaccion().setIdOperadorConciliado(Session.getOperador().getCodigo());
+				cantConciliada++;
+				cantRechazados--;
+			}
+		}
+
+
+		public void guardarYCerrarPopup(ActionEvent event) {
+
+			List listaTransaccionesActualizar = new ArrayList();// lista q guarda los items conciliados
+			List listaBorrados = new ArrayList();
+			// conci revisionManual = new RevisionManual();
+			ConciliacionManual conciliacionManual = new ConciliacionManual();
+			List listaRechazados = new ArrayList();
+			Transaccion transAux = null;
+			loteComercio = lciCero.getLoteComercio();
+			cantConciliada = loteComercio.getCuponesConciliados().intValue();
+			cantRechazados = loteComercio.getCuponesRechazados().intValue();
+			cantRechazosDefinitivos = loteComercio.getCuponesRechazadosDefinitivos().intValue();
+
+			try {
+				if (lciCero.getRechazado().compareTo("S") == 0) {
+					actualizarCambiosLoteItem(lciCero, true);
+					listaRechazados.add(lciCero);
+				} else {
+					if (lciCero != loteItemAux && lciCero.getOmitido().compareToIgnoreCase("N") == 0) {
+						actualizarCambiosLoteItem(lciCero, false);
+						listaTransaccionesActualizar.add(lciCero.getTransaccion().getIdTranascciones());
+					}
+				}
+
+				if (lciUno.getRechazado().compareTo("S") == 0) {
+					actualizarCambiosLoteItem(lciUno, true);
+					listaRechazados.add(lciUno);
+				} else {
+					if (lciUno != loteItemAux && lciUno.getOmitido().compareToIgnoreCase("N") == 0) {
+						actualizarCambiosLoteItem(lciUno, false);
+						listaTransaccionesActualizar.add(lciUno.getTransaccion().getIdTranascciones());
+					}
+				}
+
+				if (lciDos.getRechazado().compareTo("S") == 0) {
+					actualizarCambiosLoteItem(lciDos, true);
+					listaRechazados.add(lciDos);
+				} else {
+					if (lciDos != loteItemAux && lciDos.getOmitido().compareToIgnoreCase("N") == 0) {
+						actualizarCambiosLoteItem(lciDos, false);
+						listaTransaccionesActualizar.add(lciDos.getTransaccion().getIdTranascciones());
+					}
+				}
+
+				if (lciTres.getRechazado().compareTo("S") == 0) {
+					actualizarCambiosLoteItem(lciTres, true);
+					listaRechazados.add(lciTres);
+				} else {
+					if (lciTres != loteItemAux && lciTres.getOmitido().compareToIgnoreCase("N") == 0) {
+						actualizarCambiosLoteItem(lciTres, false);
+						listaTransaccionesActualizar.add(lciTres.getTransaccion().getIdTranascciones());
+					}
+				}
+
+				if (lciCuatro.getRechazado().compareTo("S") == 0) {
+					actualizarCambiosLoteItem(lciCuatro, true);
+					listaRechazados.add(lciCuatro);
+				} else {
+
+					if (lciCuatro != loteItemAux && lciCuatro.getOmitido().compareToIgnoreCase("N") == 0) {
+						actualizarCambiosLoteItem(lciCuatro, false);
+						listaTransaccionesActualizar.add(lciCuatro.getTransaccion().getIdTranascciones());
+					}
+				}
+
+				if (lciCinco.getRechazado().compareTo("S") == 0) {
+					actualizarCambiosLoteItem(lciCinco, true);
+					listaRechazados.add(lciCinco);
+				} else {
+					if (lciCinco != loteItemAux && lciCinco.getOmitido().compareToIgnoreCase("N") == 0) {
+						actualizarCambiosLoteItem(lciCinco, false);
+						listaTransaccionesActualizar.add(lciCinco.getTransaccion().getIdTranascciones());
+					}
+				}
+
+				if (lciSeis.getRechazado().compareTo("S") == 0) {
+					actualizarCambiosLoteItem(lciSeis, true);
+					listaRechazados.add(lciSeis);
+				} else {
+					if (lciSeis != loteItemAux && lciSeis.getOmitido().compareToIgnoreCase("N") == 0) {
+						actualizarCambiosLoteItem(lciSeis, false);
+						listaTransaccionesActualizar.add(lciSeis.getTransaccion().getIdTranascciones());
+					}
+				}
+
+				if (lciSiete.getRechazado().compareTo("S") == 0) {
+					actualizarCambiosLoteItem(lciSiete, true);
+					listaRechazados.add(lciSiete);
+				} else {
+					if (lciSiete != loteItemAux && lciSiete.getOmitido().compareToIgnoreCase("N") == 0) {
+						actualizarCambiosLoteItem(lciSiete, false);
+						listaTransaccionesActualizar.add(lciSiete.getTransaccion().getIdTranascciones());
+					}
+				}
+
+				if (lciOcho.getRechazado().compareTo("S") == 0) {
+					actualizarCambiosLoteItem(lciOcho, true);
+					listaRechazados.add(lciOcho);
+				} else {
+					if (lciOcho != loteItemAux && lciOcho.getOmitido().compareToIgnoreCase("N") == 0) {
+						actualizarCambiosLoteItem(lciOcho, false);
+						listaTransaccionesActualizar.add(lciOcho.getTransaccion().getIdTranascciones());
+					}
+				}
+
+				if (lciNueve.getRechazado().compareTo("S") == 0) {
+					actualizarCambiosLoteItem(lciNueve, true);
+					listaRechazados.add(lciNueve);
+				} else {
+					if (lciNueve != loteItemAux && lciNueve.getOmitido().compareToIgnoreCase("N") == 0) {
+						actualizarCambiosLoteItem(lciNueve, false);
+						listaTransaccionesActualizar.add(lciNueve.getTransaccion().getIdTranascciones());
+					}
+				}
+
+				paginador.reconstruirPaginador();
+				paginador.getPagina(paginador.getPaginaActual());
+				listCuponesNoConc.clear();
+				Iterator i = paginador.getPagina(paginador.getPaginaActual()).iterator();
+				while (i.hasNext()) {
+					LoteComercioItem lot = (LoteComercioItem) i.next();
+					WrapperLoteComercioItem cupon = new WrapperLoteComercioItem(lot, false);
+					listCuponesNoConc.add(cupon);
+				}
+				// verificamos si hay que cerrar el lote
+				if (cantRechazados == 0) {
+					loteComercio.setEstadoLote("C");
+				}
+				if (!listaTransaccionesActualizar.isEmpty() || !listaRechazados.isEmpty()) {
+					loteComercio.modificarCantidadesItemProcesados(-1, cantConciliada, cantRechazados, cantRechazosDefinitivos);
+					transaccionesService.getConciliacionConsumosServices().conciliarCuponesCargaManual(loteComercio, false, Session.getOperador(),
+							listaTransaccionesActualizar, transaccionesService.getListaPrecioParaLiquidarService(), listaRechazados);
+				}
+				resultadoConciliacion = new ResultadoConciliacion();
+				resultadoConciliacion.setConciliados(cantConciliada);
+				resultadoConciliacion.setRechazados(cantRechazados - resultadoConciliacion.getNoEncontrados());
+
+				mostrarTablaNoConcCabecera = false;
+				mostrarTablaNoConc = false;
+				FacesContext facesContext = FacesContext.getCurrentInstance();
+				String javaScriptText = "window.opener.recargar();window.close();";
+				AddResource addResource = AddResourceFactory.getInstance(facesContext);
+				addResource.addInlineScriptAtPosition(facesContext, AddResource.HEADER_BEGIN, javaScriptText);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+
+		}
+
+
+		public String cancelar() {
+			return null;
+		}
+
+
+		public List getListaLotesARevisar() {
+			return listaLotesARevisar;
+		}
+
+
+		public int getCantidadARevisar() {
+			return cantidadARevisar;
+		}
+
+
+		public LoteComercioItem getLciCero() {
+			return lciCero;
+		}
+
+
+		public LoteComercioItem getLciCinco() {
+			return lciCinco;
+		}
+
+
+		public LoteComercioItem getLciCuatro() {
+			return lciCuatro;
+		}
+
+
+		public LoteComercioItem getLciDos() {
+			return lciDos;
+		}
+
+
+		public LoteComercioItem getLciNueve() {
+			return lciNueve;
+		}
+
+
+		public LoteComercioItem getLciOcho() {
+			return lciOcho;
+		}
+
+
+		public LoteComercioItem getLciSeis() {
+			return lciSeis;
+		}
+
+
+		public LoteComercioItem getLciSiete() {
+			return lciSiete;
+		}
+
+
+		public LoteComercioItem getLciTres() {
+			return lciTres;
+		}
+
+
+		public LoteComercioItem getLciUno() {
+			return lciUno;
+		}
+
+
+		public boolean isOrigenCargaAutom() {
+			return origenCargaAutom;
+		}
+
+
+		public void setOrigenCargaAutom(boolean origenCargaAutom) {
+			this.origenCargaAutom = origenCargaAutom;
+		}
+
+
+		public String getSubTitulo1() {
+			return subTitulo1;
+		}
+
+
+		public void setSubTitulo1(String subTitulo1) {
+			this.subTitulo1 = subTitulo1;
+		}
+
+
+		public String getSubTitulo2() {
+			return subTitulo2;
+		}
+
+
+		public void setSubTitulo2(String subTitulo2) {
+			this.subTitulo2 = subTitulo2;
+		}
+
+	}
+
+
+	public String getFocoHidden() {
+		return focoHidden;
+	}
+
+
+	public void setFocoHidden(String focoHidden) {
+		this.focoHidden = focoHidden;
+	}
+
+
+	public UploadedFile getUploadedFile() {
+		return uploadedFile;
+	}
+
+
+	public void setUploadedFile(UploadedFile uploadedFile) {
+		this.uploadedFile = uploadedFile;
+	}
+
+
+	public List getListCuponesNoConc() {
+		return listCuponesNoConc;
+	}
+
+
+	public void setListCuponesNoConc(List listCuponesNoConc) {
+		this.listCuponesNoConc = listCuponesNoConc;
+	}
+
+
+	public boolean isConciliado() {
+		return conciliado;
+	}
+
+
+	public void setConciliado(boolean conciliado) {
+		this.conciliado = conciliado;
+	}
+
+
+	public boolean isMostrarCargaManual() {
+		return mostrarCargaManual;
+	}
+
+
+	public void setMostrarCargaManual(boolean mostrarCargaManual) {
+		this.mostrarCargaManual = mostrarCargaManual;
+	}
+
+
+	public String getTituloNoConciliados() {
+		return tituloNoConciliados;
+	}
+
+
+	public void setTituloNoConciliados(String tituloNoConciliados) {
+		this.tituloNoConciliados = tituloNoConciliados;
+	}
+
+
+	public boolean isMostrarEncabezado() {
+		return mostrarEncabezado;
+	}
+
+
+	public void setMostrarEncabezado(boolean mostrarEncabezado) {
+		this.mostrarEncabezado = mostrarEncabezado;
+	}
+
+
+	public PopupAltaLoteComercio getPopupAltaLoteComercio() {
+		return popupAltaLoteComercio;
+	}
+
+
+	public void setPopupAltaLoteComercio(PopupAltaLoteComercio popupAltaLoteComercio) {
+		this.popupAltaLoteComercio = popupAltaLoteComercio;
+	}
+
+
+	public String getListaDeModicadosEnString() {
+		return listaDeModicadosEnString;
+	}
+
+
+	public void setListaDeModicadosEnString(String listaDeModicadosEnString) {
+		this.listaDeModicadosEnString = listaDeModicadosEnString;
+	}
+
+
+	public String getListaDeEliminadosEnString() {
+		return listaDeEliminadosEnString;
+	}
+
+
+	public void setListaDeEliminadosEnString(String listaDeEliminadosEnString) {
+		this.listaDeEliminadosEnString = listaDeEliminadosEnString;
+	}
+
+
+	public static int getNumeroLotesComercioItemTabla() {
+		return numeroLotesComercioItemTabla;
+	}
+
+
+	public static void setNumeroLotesComercioItemTabla(
+			int numeroLotesComercioItemTabla) {
+		ConciliacionCuponesBean.numeroLotesComercioItemTabla = numeroLotesComercioItemTabla;
+	}
+
+
+	public static int getNumeroLotesComercioTabla() {
+		return numeroLotesComercioTabla;
+	}
+
+
+	public static void setNumeroLotesComercioTabla(int numeroLotesComercioTabla) {
+		ConciliacionCuponesBean.numeroLotesComercioTabla = numeroLotesComercioTabla;
+	}
+
+
+	public LoteComercio getLoteComercioDetallado() {
+		return loteComercioDetallado;
+	}
+
+
+	public void setLoteComercioDetallado(LoteComercio loteComercioDetallado) {
+		this.loteComercioDetallado = loteComercioDetallado;
+	}
+
+
+	public boolean isTodos() {
+		return todos;
+	}
+
+
+	public void setTodos(boolean todos) {
+		this.todos = todos;
+	}
+
+
+	public LoteComercio getLoteComercio() {
+		return loteComercio;
+	}
+
+
+	public void setLoteComercio(LoteComercio loteComercio) {
+		this.loteComercio = loteComercio;
+	}
+
+
+	public List getLoteComercioDetalles() {
+		return loteComercioDetalles;
+	}
+
+
+	public void setLoteComercioDetalles(List loteComercioDetalles) {
+		this.loteComercioDetalles = loteComercioDetalles;
+	}
+
+
+	public List getLoteComercios() {
+		return loteComercios;
+	}
+
+
+	public void setLoteComercios(List loteComercios) {
+		this.loteComercios = loteComercios;
+	}
+
+
+	public String getTitulo() {
+		return titulo;
+	}
+
+
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
+	}
+
+
+	public boolean getPanelAdjuntar() {
+		return panelAdjuntar;
+	}
+	
+	public void setPanelAdjuntar(boolean panelAdjuntar) {
+		this.panelAdjuntar = panelAdjuntar;
+	}
+	
+	public boolean getPanelConciliacion() {
+		return panelConciliacion;
+	}
+	
+	public void setPanelconciliacion(boolean panelConciliacion) {
+		this.panelConciliacion = panelConciliacion;
+	}
+
+	public Long getIdTipoConcSeleccionada() {
+		return idTipoConcSeleccionada;
+	}
+
+
+	public void setIdTipoConcSeleccionada(Long idTipoConcSeleccionada) {
+		this.idTipoConcSeleccionada = idTipoConcSeleccionada;
+	}
+
+
+	public List getTipoConcItems() {
+		return tipoConcItems;
+	}
+
+
+	public void setTipoConcItems(List tipoConcItems) {
+		this.tipoConcItems = tipoConcItems;
+	}
+
+
+	public HtmlSelectOneMenu getTipoConc() {
+		return tipoConc;
+	}
+
+
+	public void setTipoConc(HtmlSelectOneMenu tipoConc) {
+		this.tipoConc = tipoConc;
+	}
+
+
+	public boolean isMostrarCombo() {
+		return mostrarCombo;
+	}
+
+
+	public void setMostrarCombo(boolean mostrarCombo) {
+		this.mostrarCombo = mostrarCombo;
+	}
+
+
+	public Long getIdTipoAccionSeleccionada() {
+		return idTipoAccionSeleccionada;
+	}
+
+
+	public void setIdTipoAccionSeleccionada(Long idTipoAccionSeleccionada) {
+		this.idTipoAccionSeleccionada = idTipoAccionSeleccionada;
+	}
+
+
+	public HtmlSelectOneMenu getTipoAccion() {
+		return tipoAccion;
+	}
+
+
+	public void setTipoAccion(HtmlSelectOneMenu tipoAccion) {
+		this.tipoAccion = tipoAccion;
+	}
+
+
+	public List getTipoAccionItems() {
+		return tipoAccionItems;
+	}
+
+
+	public void setTipoAccionItems(List tipoAccionItems) {
+		this.tipoAccionItems = tipoAccionItems;
+	}
+
+
+	public boolean isMostrarTablaLotesAutomAbiertos() {
+		return mostrarTablaLotesAutomAbiertos;
+	}
+
+
+	public void setMostrarTablaLotesAutomAbiertos(boolean mostrarTablaLotesAutomAbiertos) {
+		this.mostrarTablaLotesAutomAbiertos = mostrarTablaLotesAutomAbiertos;
+	}
+
+
+	public boolean isMostrarTablaNoConc() {
+		return mostrarTablaNoConc;
+	}
+
+
+	public void setMostrarTablaNoConc(boolean mostrarTablaNoConc) {
+		this.mostrarTablaNoConc = mostrarTablaNoConc;
+	}
+
+
+	public boolean isMostrarResultConc() {
+		return mostrarResultConc;
+	}
+
+
+	public void setMostrarResultConc(boolean mostrarResultConc) {
+		this.mostrarResultConc = mostrarResultConc;
+	}
+
+
+	public ResultadoConciliacion getResultadoConciliacion() {
+		return resultadoConciliacion;
+	}
+
+
+	public void setResultadoConciliacion(ResultadoConciliacion resultadoConciliacion) {
+		this.resultadoConciliacion = resultadoConciliacion;
+	}
+
+
+	public RevisionManual getRevisionManual() {
+		return revisionManual;
+	}
+
+
+	public void setRevisionManual(RevisionManual revisionManual) {
+		this.revisionManual = revisionManual;
+	}
+
+
+	public PaginaDeRegistros getPaginador() {
+		return paginador;
+	}
+
+
+	public void setPaginador(PaginaDeRegistros paginador) {
+		this.paginador = paginador;
+	}
+
+
+	public List getListaRechazadosAutomaticos() {
+		return listaRechazadosAutomaticos;
+	}
+
+
+	public void setListaRechazadosAutomaticos(List listaRechazadosAutomaticos) {
+		this.listaRechazadosAutomaticos = listaRechazadosAutomaticos;
+	}
+
+
+	public boolean isEsDebito() {
+		if (idTipoConcSeleccionada.compareTo(new Long(3)) == 0)
+			return true;
+		return false;
+	}
+
+
+	public void setEsDebito(boolean esDebito) {
+		this.esDebito = esDebito;
+	}
+
+
+	public Long getIdFormatoArchivo() {
+		return idFormatoArchivo;
+	}
+
+
+	public void setIdFormatoArchivo(Long idFormatoArchivo) {
+		this.idFormatoArchivo = idFormatoArchivo;
+	}
+
+
+	public HtmlSelectOneMenu getTipoFormatoArchivo() {
+		return tipoFormatoArchivo;
+	}
+
+
+	public void setTipoFormatoArchivo(HtmlSelectOneMenu tipoFormatoArchivo) {
+		this.tipoFormatoArchivo = tipoFormatoArchivo;
+	}
+
+
+	public List getTipoFormatoItems() {
+		return tipoFormatoItems;
+	}
+
+
+	public void setTipoFormatoItems(List tipoFormatoItems) {
+		this.tipoFormatoItems = tipoFormatoItems;
+	}
+
+
+	public boolean isMostrarComboFormato() {
+		idTipoConcSeleccionada = (Long) tipoConc.getValue();
+		if (idTipoConcSeleccionada.compareTo(new Long(3)) == 0)
+			return true;
+		return false;
+	}
+
+
+	public boolean isPrimero() {
+		return primero;
+	}
+
+
+	public void setPrimero(boolean primero) {
+		this.primero = primero;
+	}
+
+
+	public boolean validar() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public boolean isFiltroManual() {
+		return filtroManual;
+	}
+
+
+	public void setFiltroManual(boolean filtroManual) {
+		this.filtroManual = filtroManual;
+	}
+
+
+	public boolean isFiltroAutomatico() {
+		return filtroAutomatico;
+	}
+
+
+	public void setFiltroAutomatico(boolean filtroAutomatico) {
+		this.filtroAutomatico = filtroAutomatico;
+	}
+
+
+	public PopupAsociarCuponesATransaccion getPopupAsociarCuponesATransaccion() {
+		return popupAsociarCuponesATransaccion;
+	}
+
+
+	public void setPopupAsociarCuponesATransaccion(
+			PopupAsociarCuponesATransaccion popupAsociarCuponesATransaccion) {
+		this.popupAsociarCuponesATransaccion = popupAsociarCuponesATransaccion;
+	}
+
+
+	public List getListaTransSeleccionada() {
+		return listaTransSeleccionada;
+	}
+
+
+	public void setListaTransSeleccionada(List listaTransSeleccionada) {
+		this.listaTransSeleccionada = listaTransSeleccionada;
+	}
+
+
+	public boolean isBusquedaAvanzada() {
+		return busquedaAvanzada;
+	}
+
+
+	public void setBusquedaAvanzada(boolean busquedaAvanzada) {
+		this.busquedaAvanzada = busquedaAvanzada;
+	}
+
+
+	public void setComercioList(List comercioList) {
+		this.comercioList = comercioList;
+	}
+
+
+	public List getComercioList() {
+		return comercioList;
+	}
+
+
+	public void setIdComercio(String idComercio) {
+		this.idComercio = idComercio;
+	}
+
+
+	public String getIdComercio() {
+		return idComercio;
+	}
+
+
+	public void setComercio(boolean comercio) {
+		this.comercio = comercio;
+	}
+
+
+	public boolean isComercio() {
+		return comercio;
+	}
+
+
+	public void setElement(CodComercio element) {
+		this.element = element;
+	}
+
+
+	public CodComercio getElement() {
+		return element;
+	}
+
+
+	public BufferedWriter getBw() {
+		return bw;
+	}
+
+
+	public void setBw(BufferedWriter bw) {
+		this.bw = bw;
+	}
+
+
+	public String getIdLoteFiltroAut() {
+		return idLoteFiltroAut;
+	}
+
+
+	public void setIdLoteFiltroAut(String idLoteFiltroAut) {
+		this.idLoteFiltroAut = idLoteFiltroAut;
+	}
+
+
+	public List getListaLotesAutomaticosAbiertos() {
+		return listaLotesAutomaticosAbiertos;
+	}
+
+
+	public void setListaLotesAutomaticosAbiertos(List listaLotesAutomaticosAbiertos) {
+		this.listaLotesAutomaticosAbiertos = listaLotesAutomaticosAbiertos;
+	}
+
+
+	public int getCantRechazados() {
+		return cantRechazados;
+	}
+
+
+	public void setCantRechazados(int cantRechazados) {
+		this.cantRechazados = cantRechazados;
+	}
+
+
+	public int getCantRechazosDefinitivos() {
+		return cantRechazosDefinitivos;
+	}
+
+
+	public void setCantRechazosDefinitivos(int cantRechazosDefinitivos) {
+		this.cantRechazosDefinitivos = cantRechazosDefinitivos;
+	}
+
+
+	public int getCantConciliada() {
+		return cantConciliada;
+	}
+
+
+	public void setCantConciliada(int cantConciliada) {
+		this.cantConciliada = cantConciliada;
+	}
+
+
+	public boolean isMostrarLinkBusquedaCupNoAsoc() {
+		return mostrarLinkBusquedaCupNoAsoc;
+	}
+
+
+	public void setMostrarLinkBusquedaCupNoAsoc(boolean mostrarLinkBusquedaCupNoAsoc) {
+		this.mostrarLinkBusquedaCupNoAsoc = mostrarLinkBusquedaCupNoAsoc;
+	}
+
+
+	public boolean isMostrarTablaNoConcCabecera() {
+		return mostrarTablaNoConcCabecera;
+	}
+
+
+	public void setMostrarTablaNoConcCabecera(boolean mostrarTablaNoConcCabecera) {
+		this.mostrarTablaNoConcCabecera = mostrarTablaNoConcCabecera;
+	}
+	
+	public boolean isPanelMensaje() {
+		return panelMensaje;
+	}
+
+
+	public void setPanelMensaje(boolean panelMensaje) {
+		this.panelMensaje = panelMensaje;
+	}
+
+
+	public String getMensaje() {
+		return mensaje;
+	}
+
+
+	public void setMensaje(String mensaje) {
+		this.mensaje = mensaje;
+	}
+
+
+	public boolean isPanelDebitosControlar() {
+		return panelDebitosControlar;
+	}
+
+
+	public void setPanelDebitosControlar(boolean panelDebitosControlar) {
+		this.panelDebitosControlar = panelDebitosControlar;
+	}
+
+	public boolean isPanelDebitosPendientes() {
+		return panelDebitosPendientes;
+	}
+
+
+	public void setPanelDebitosPendientes(boolean panelDebitosPendientes) {
+		this.panelDebitosPendientes = panelDebitosPendientes;
+	}
+
+	public List getLoteComercioControl() {
+		return loteComercioControl;
+	}
+
+
+	public void setLoteComercioControl(List loteComercioControl) {
+		this.loteComercioControl = loteComercioControl;
+	}
+	
+	
+	public List getLotesPendientes() {
+		return lotesPendientes;
+	}
+
+
+	public void setLotesPendientes(List lotesPendientes) {
+		this.lotesPendientes = lotesPendientes;
+	}
+
+}

@@ -1,0 +1,10 @@
+#Updated at Wed May 11 16:32:53 GMT-03:00 2011
+#Wed May 11 16:32:53 GMT-03:00 2011
+email.port=587
+email.host=smtp.gmail.com
+email.protocol=smtp
+email.username=info@tarjetafiel.com
+email.password=bizit2011
+email.mailFrom=Tarjeta Fiel<info@tarjetafiel.com>
+#email.username=bizit.global.test
+#email.password=Bizit123456

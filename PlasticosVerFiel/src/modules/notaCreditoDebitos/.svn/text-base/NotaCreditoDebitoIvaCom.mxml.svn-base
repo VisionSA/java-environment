@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="50%" xmlns:textInput="com.util.components.textInput.*" horizontalAlign="center" verticalAlign="middle" verticalGap="5" xmlns:mate="http://mate.asfusion.com/">
+	<mx:HBox width="100%" verticalAlign="middle">
+		<mx:Label text="{this.label}" styleName="lblNegro18"/>
+	</mx:HBox>
+	<mx:HBox>
+		<mx:RadioButtonGroup id="rbGroup"/>
+		<mx:RadioButton label="Con Iva" change="{conIva = !conIva}" group="{rbGroup}" color="#000000" fontSize="14" fontWeight="bold" selected="true"/>	
+		<mx:RadioButton label="Sin Iva" change="{conIva = !conIva}" group="{rbGroup}" fontSize="14" color="#000000" fontWeight="bold"/>
+	</mx:HBox>
+	
+	
+	
+	<mx:HBox horizontalAlign="center" verticalAlign="middle">
+		<mx:Label text="Importe Bruto:" styleName="lblNegro16" width="150"/>
+		<textInput:TextInputMoneda styleName="textoRojo22" width="200" id="txtImporte" change="this.changedImporte()"/>	
+	</mx:HBox>
+	
+	<mx:HBox horizontalAlign="center" verticalAlign="middle" includeInLayout="{conIva}" visible="{conIva}">
+		<mx:Label text="Iva:" styleName="lblNegro16" width="150"/>
+		<textInput:TextInputMoneda editable="false" width="200" styleName="textoAzul22" id="txtIva"/>	
+	</mx:HBox>
+	<mx:Button label="Realizar {tipoNota}" click="manager.realizarNotaCreditoIvaCliente(Number(txtImporte.text),tipoNota,typeEvent,typeDispatchComplete)"
+		 enabled="{isCliente ? manager.cliente != null : manager.comercio != null}"/>
+	
+	<mate:Listener type="{typeDispatchComplete}" receive="txtImporte.text = '0', txtIva.text = '0'"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.utils.UIDUtil;
+		
+		[Bindable]public var isCliente:Boolean = true;
+		
+		[Bindable]public var tipoNota:String;
+		
+		[Bindable]public var manager:Manager; 
+		
+		[Bindable]public var typeEvent:String;			
+		
+		[Bindable]private var typeDispatchComplete:String = UIDUtil.createUID(); 
+		
+		[Bindable]private var _conIva:Boolean = true;
+		
+		private function changedImporte():void{
+			var num:Number = Number(txtImporte.text) / 1.21;
+			num = Number(txtImporte.text) - num;
+			txtIva.text = num.toString();
+		}
+		
+		[Bindable (event="changeConIva")]
+		public function get conIva():Boolean{
+			return _conIva; 
+		}
+		
+		public function set conIva(value:Boolean):void{
+			_conIva = value;
+			if(_conIva){
+				typeEvent = typeEvent.replace("SIN_IVA","IVA");
+			} else {
+				typeEvent = typeEvent.replace("IVA","SIN_IVA");
+			}
+			dispatchEvent(new Event("changeConIva"));
+		}
+		
+		
+		
+		]]>
+	</mx:Script>
+</mx:VBox>

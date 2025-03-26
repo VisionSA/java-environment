@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.Grupo" table="t_vis_prov_grupos"  >
+
+    <id name="idGrupo" type="java.lang.Long" column="c_id_grupo">
+        <generator class="increment" />
+    </id>
+
+    <property name="descripcion" type="java.lang.String" column="c_descripcion" not-null="false" length="50" />
+
+</class>
+</hibernate-mapping>

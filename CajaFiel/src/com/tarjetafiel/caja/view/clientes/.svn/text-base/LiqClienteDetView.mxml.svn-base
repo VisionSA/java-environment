@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	keyDown="if(event.keyCode == Keyboard.ESCAPE)PopUpManager.removePopUp(this)" 
+	close="PopUpManager.removePopUp(this)" layout="vertical" title="Detalle de Liquidacion" 
+	showCloseButton="true" horizontalAlign="center" verticalAlign="middle" 
+	paddingBottom="8" paddingLeft="8" paddingRight="8" paddingTop="8" creationComplete="this.adg1.setFocus()">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.CtaCteCliente;
+			import mx.collections.GroupingField;
+			import mx.utils.ObjectUtil;
+			import mx.validators.DateValidator;
+			
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import mx.managers.PopUpManager;
+						
+			
+			public function orderByDate(obj1:Object, obj2:Object):int{
+				return ObjectUtil.compare(obj1,obj2);	
+			}
+			
+			private function groupFunc(item:Object, field:GroupingField):String
+		    {        	  	
+        	  	return CtaCteCliente(item).transaccion.comercioCod.sucEmpresa.descripcion;        	  	        	  	
+      		}
+      		
+      		private function groupFuncCupon(item:Object, field:GroupingField):String
+		    {        	  	        	  	
+        	  	return CtaCteCliente(item).transaccion.nroCupon.toString();        	  	        	  	
+      		}
+			
+		]]>
+	</mx:Script>	
+	<mx:AdvancedDataGrid id="adg1" designViewDataType="tree" width="800" height="400" dataProvider="{ModelLocator.getInstance().liqClienteModel.arrayCtaCte}">		
+		<mx:columns>			
+			<mx:AdvancedDataGridColumn headerText="Comercio">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.codComercio.sucEmpresa.empresa.razonSocial}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Sucursal">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.codComercio.sucEmpresa.descripcion}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Fecha" sortCompareFunction="orderByDate">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{outerDocument.dateFormat.format(data.timestampFlex)}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Concepto" paddingLeft="10" width="130">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.conceptoDetalle.concepto.descripcion}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Cupón" paddingLeft="10" width="130">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.transaccion.nroCupon}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>											
+			<mx:AdvancedDataGridColumn headerText="Cuota" dataField="nroCuota" formatter="{numberFormat}"/>
+			<mx:AdvancedDataGridColumn headerText="Total" dataField="importe" formatter="{currencyFormat}"/>			
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5">
+		<mx:HBox width="50%">
+			<mx:Button label="Cerrar" click="PopUpManager.removePopUp(this)"/>
+		</mx:HBox>
+		<mx:HBox width="50%" horizontalAlign="right" verticalAlign="middle">
+			<mx:Label text="Total:" styleName="tituloBusquedas"/>
+			<mx:TextInput editable="false" text="{currencyFormat.format(ModelLocator.getInstance().liqClienteModel.importeLiquidacion)}"/>
+		</mx:HBox>
+	</mx:HBox>
+	<mx:DateFormatter id="dateFormat" formatString="DD/MM/YYYY"/>
+	<mx:CurrencyFormatter currencySymbol="$" id="currencyFormat" rounding="nearest" precision="2"/>
+	<mx:NumberFormatter id="numberFormat" rounding="none" precision="0" />	
+</mx:TitleWindow>

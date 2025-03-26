@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.MovXCuentaXConcepto" >
+	<subselect>
+		Select sum(mov.c_signo * movmp.c_monto) total, con.c_id_concepto,pc.c_id_plan_cuenta, con.c_descripcion concepto, pc.titulo cuenta, cmp.c_id_caja, mov.c_id_cajaapertura
+		from t_vis_fon_movimientos_mp movMp
+		INNER JOIN t_vis_fon_movimientos mov ON mov.c_id_movimiento = movmp.c_id_movimiento
+		INNER JOIN t_vis_tra_conceptos con ON con.c_id_concepto = mov.c_id_concepto
+		INNER JOIN t_vis_gen_formas_pagos fp ON fp.c_id_forma_pago = movMp.c_id_forma_pago 
+		INNER JOIN t_vis_fon_cajas_mp cmp ON fp.c_id_forma_pago = cmp.c_id_forma_pago
+		INNER JOIN t_vis_cont_plan_cuenta pc ON pc.c_id_plan_cuenta = cmp.c_id_plan_cuenta
+		WHERE mov.c_id_caja is not null
+		GROUP BY pc.c_id_plan_cuenta, con.c_id_concepto, con.c_descripcion, pc.titulo, cmp.c_id_caja, mov.c_id_cajaapertura
+		ORDER BY pc.c_id_plan_cuenta, cuenta		
+	</subselect>
+	
+	<composite-id class="com.bizitglobal.tarjetafiel.fondos.negocio.MovXCuentaXConceptoId" name="id">
+		<key-property name="idApertura" type="java.lang.Long" column="C_ID_CAJAAPERTURA"/>
+		<key-property name="idCaja" type="java.lang.Long" column="C_ID_CAJA"/>
+		<key-property name="idPlanCuenta" type="java.lang.Long" column="C_ID_PLAN_CUENTA"/>
+		<key-property name="idConcepto" type="java.lang.Long" column="C_ID_CONCEPTO"/>
+	</composite-id>	
+	
+	<property name="cuenta" type="java.lang.String" column="CUENTA"/>
+	
+	<property name="concepto" type="java.lang.String" column="CONCEPTO"/>
+	
+	<property name="total" type="java.lang.Double" column="TOTAL"/>	
+	
+</class>
+
+	<sql-query name="movimientoPorCunetaXConcepto">
+	
+	</sql-query>
+</hibernate-mapping>

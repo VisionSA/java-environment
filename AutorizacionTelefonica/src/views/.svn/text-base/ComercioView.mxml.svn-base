@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" resizeEffect="{resizeEff}" horizontalAlign="center" verticalAlign="top" width="100%" title="Detalle Comercio" xmlns:mate="http://mate.asfusion.com/"  layout="vertical" includeInLayout="{comercioViewModel.mostrarPanelComercio}" visible="{comercioViewModel.mostrarPanelComercio}">
+
+	<!--<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center">
+		<mx:Label text="Cod. Comercio:"/>
+		<mx:TextInput width="40" id="txtCodigo" maxChars="4" restrict="0-9" keyUp="pasarFocoABusquedaComercio()"/>
+    </mx:HBox>
+	<mx:LinkButton  id="comercioBusqLink" label="Buscar Comercio" click="buscarComercio()"  keyDown="keyPress(event)"/>
+    <mx:Binding source="txtNombre.text" destination="comercioViewModel.comercio.sucEmpresa.descripcion"/>
+	<mx:Panel height="100%" width="100%" layout="horizontal" id="titleComercio" title="Detalle" includeInLayout="{comercioViewModel.mostrarPanelComercio}" visible="{comercioViewModel.mostrarPanelComercio}">
+	 -->
+    	<mx:Form height="100%">
+			<mx:FormItem label="Empresa:">
+				<mx:Label text="{comercioViewModel.comercio.sucEmpresa.empresa.razonSocial}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Sucursal:">
+				<mx:Label text="{comercioViewModel.comercio.sucEmpresa.descripcion}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Localidad:">
+				<mx:Label text="{comercioViewModel.comercio.sucEmpresa.domicilio.localidad.nombre}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Direccion">
+				<mx:Label text="{comercioViewModel.direccion}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Telefono">
+				<mx:Label text=""/>
+			</mx:FormItem>
+			
+		</mx:Form>
+		<!--<mx:Form width="30%">
+			<mx:FormItem label="Lista de Precio">
+				<mx:ComboBox id="cboListaPrecio" selectedItem="{comercioViewModel.listaPrecioSelected}"  prompt="Seleccione lista de precio" change="comercioViewModel.listaPrecioSelected = cboListaPrecio.selectedItem as ListaPrecio;pasarFocoAMonto()" labelField="descripcion" dataProvider="{comercioViewModel.comercio.comercioListaPrecioSet}" ></mx:ComboBox>
+			</mx:FormItem>
+		</mx:Form>-->
+
+	<mx:Resize id="resizeEff"/>
+	
+	<!--<mate:Listener receive="{txtCodigo.setFocus()}" type="focusCodComercio"/>-->	
+	
+	<mate:Listener receive="{focusLisPreDesdePopupBusqueda()}" type="focusEnListaPrecio"/>	
+	<mate:Listener receive="{this.inicializar()}" type="inicializar"/>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import events.SimuladorEvent;
+			import com.tarjetafiel.caja.vo.ListaPrecio;
+			import views.models.ComercioViewModel;			
+		[Bindable]public var comercioViewModel:ComercioViewModel;
+		
+		private function buscarComercio():void{
+		    	
+			/*var codigoPosnet:String = txtCodigo.text;
+			this.comercioViewModel.buscarPorCodComercio(codigoPosnet);
+			comercioViewModel.dispatcher.dispatchEvent(new SimuladorEvent(SimuladorEvent.DISABLED_SIMULADOR));
+			cboListaPrecio.setFocus();*/
+		}
+		
+		private function inicializar():void{
+			comercioViewModel.inicializar();
+		}
+		
+		
+		public function focusLisPreDesdePopupBusqueda() :void{
+			this.comercioViewModel.comercio= this.comercioViewModel.comercio;
+			this.comercioViewModel.mostrarPanelComercio=true;
+		}
+		
+		public function keyPress(evt:KeyboardEvent):void{
+			if(evt.keyCode == Keyboard.ENTER){
+				buscarComercio();
+			}
+		}
+		
+		
+		private function pasarFocoAMonto():void{
+			comercioViewModel.dispatcher.dispatchEvent(new Event("focusMonto"));
+		}	
+		
+		private function pasarFocoABusquedaComercio():void{
+			/*if(txtCodigo.text.length==4){
+				comercioBusqLink.setFocus();
+			}*/
+		}	
+		
+		]]>
+	</mx:Script>
+	
+</mx:Panel>

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.Cheque" table="T_VIS_FON_CHEQUES" >
+	
+	<cache usage="read-write"/>
+	
+	<id name="idCheque" type="java.lang.Long" column="C_ID_CHEQUE">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_CHEQUE_ID</param>
+		</generator>
+	</id>
+	
+	<property name="tipo" type="java.lang.Character" column="C_TIPO" not-null="true" />
+	<property name="sucursalBanco" type="java.lang.String" column="C_SUCURSAL_BANCO" not-null="false" />
+	<property name="codigoPostal" type="java.lang.String" column="C_COD_POSTAL" not-null="false" />
+	<property name="cuenta" type="java.lang.String" column="C_CUENTA" not-null="false" />
+	<property name="numero" type="java.lang.String" column="C_NUMERO" not-null="true" length="20"/>
+	<property name="beneficiario" type="java.lang.String" column="C_BENEFICIARIO" not-null="true" length="120"/>
+	<property name="fechaEmision" type="java.util.Date" column="C_FECHA_EMISION" not-null="true" length="3594"/>
+	<property name="fechaPago" type="java.util.Date" column="C_FECHA_PAGO" not-null="true" length="3594"/>
+	<property name="esCruzado" type="java.lang.Character" column="C_ESCRUZADO" not-null="true" />
+	<property name="noOrden" type="java.lang.Character" column="C_NO_ORDEN" not-null="true" />
+	<property name="importe" type="java.lang.Double" column="C_IMPORTE" not-null="true" />
+	<property name="codRed" type="java.lang.String" column="C_COD_RED" not-null="false" length="5"/>
+	<property name="conciliado" type="java.lang.Character" column="C_CONCILIADO" not-null="false" />
+	<property name="procesado" type="java.lang.Character" column="C_PROCESADO" not-null="false" />
+	<property name="cbu" type="java.lang.String" column="C_CBU" not-null="false" length="22"/>
+	
+    <many-to-one name="banco" class="com.bizitglobal.tarjetafiel.general.negocio.Banco" not-null="false" cascade="none" >
+		<column name="C_ID_BANCO" />
+	</many-to-one>
+		
+    <many-to-one name="bancoPropio" class="com.bizitglobal.tarjetafiel.fondos.negocio.BancoPropio" not-null="false"  cascade="none">
+		<column name="C_ID_BANCO_PROPIO" />
+	</many-to-one>
+	
+	<many-to-one name="tipoCuentaBanco" class="com.bizitglobal.tarjetafiel.general.negocio.TipoCuentaBanco" not-null="false"  cascade="none">
+		<column name="C_ID_TIPO_CTA_BANCO" />
+	</many-to-one>
+	
+    <set name="historial" inverse="true" cascade="save-update" order-by="c_timestamp"   >
+        <key>
+            <column name="C_ID_CHEQUE" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.ChequeHistorial"/>
+    </set>
+	
+</class>
+</hibernate-mapping>

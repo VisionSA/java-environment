@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"  
+	label="Notas Crédito - Debito" width="100%" height="100%" xmlns:modules="com.util.modules.*" 
+	xmlns:notaCreditoDebitos="modules.notaCreditoDebitos.*" verticalAlign="middle" horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/">
+	
+	<notaCreditoDebitos:MainEventMap/>	
+	
+	<mx:VBox horizontalAlign="center" verticalAlign="middle" id="vboxPermisos">
+			<mx:Label text="Validando Permisos" id="labelPermisos" width="100%" textAlign="center" fontSize="30" color="#FF0000"/>			
+	</mx:VBox>
+	
+	<mx:ToggleButtonBar dataProvider="viewNotaCreditoDebito" id="toggleButton" visible="false" includeInLayout="false"/>
+	<mx:ViewStack width="100%" height="100%" id="viewNotaCreditoDebito" visible="false" includeInLayout="false">
+		<modules:VboxLoadModule module="modules/notaCreditoDebitos/NotaCreditoConsumo.swf" label="ND Consumo/Cargo ND Pagos"/>				
+		<modules:VboxLoadModule module="modules/notaCreditoDebitos/NotaDebitoPago.swf" label="Traspaso de Pago entre clientes"/>
+		<modules:VboxLoadModule module="modules/notaCreditoDebitos/NotaCreditoDebitoConIva.swf" label="Nota Débito / Crédito con Iva"/>
+	</mx:ViewStack>
+	
+	<mate:Listener type="{OperadorEvent.OPERADOR_LOGUEADO}" receive="onCreationComplete()"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import events.OperadorEvent;
+			import models.ApplicationModel;
+			import managers.PermisosManager;
+			
+			
+			[Bindable]public var permisosManager:PermisosManager;
+			
+			[Bindable]public var applicationModel:ApplicationModel;
+			
+			private function onCreationComplete():void{
+				permisosManager.addEventListener("notaCreditoDebitoFlex"+OperadorEvent.PERMISO_HABILITADO,function(evt:Event):void{
+					vboxPermisos.includeInLayout = false;
+					vboxPermisos.visible = false;
+					viewNotaCreditoDebito.includeInLayout = true;
+					viewNotaCreditoDebito.visible = true;
+					toggleButton.visible = true;
+					toggleButton.includeInLayout = true;
+					
+				});
+				
+				permisosManager.addEventListener("notaCreditoDebitoFlex"+OperadorEvent.PERMISO_DESHABILITADO,function(evt:Event):void{
+					labelPermisos.text = "Permiso Denegado";					
+				});
+				permisosManager.validarPermiso("notaCreditoDebitoFlex",applicationModel.operador);
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

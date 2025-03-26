@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fxpProperties abbreviated="false" authoringTool="Flex Builder" compiles="true" parentProject="1e002091-807c-4456-91ca-7ceb0a6b58e9" projectUUID="1e002091-807c-4456-91ca-7ceb0a6b58e9" sdkVersion="3.3.0" uuid="90526d5e-d662-4f60-8aa1-18aaf2a4f9b5" version="4">
+  <projects/>
+  <src/>
+  <swc>
+    <linked location="sdkPlaceHolder" path="sdkPlaceHolder" position="0" uuid="90526d5e-d662-4f60-8aa1-18aaf2a4f9b5"/>
+    <linked location="C:/Users/testing/git/test-git-repository/CobranzasFiel/libs" path="/libs" position="1" uuid="90526d5e-d662-4f60-8aa1-18aaf2a4f9b5"/>
+    <linked location="${DOCUMENTS}/BizitLib/bin/BizitLib.swc" path="${DOCUMENTS}/BizitLib/bin/BizitLib.swc" position="2" uuid="90526d5e-d662-4f60-8aa1-18aaf2a4f9b5"/>
+    <linked location="${DOCUMENTS}/FielLib/bin/FielLib.swc" path="${DOCUMENTS}/FielLib/bin/FielLib.swc" position="3" uuid="90526d5e-d662-4f60-8aa1-18aaf2a4f9b5"/>
+  </swc>
+  <misc/>
+  <theme/>
+</fxpProperties>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS ENTITY="JSFProcess">
+ <PROCESS-ITEM ENTITY="JSFProcessGroup" NAME="rules:#*" PATH="/*" SHAPE="32,17,0,0">
+  <PROCESS-ITEM ENTITY="JSFProcessItem" ID="rules:#*:0" NAME="item" PATH="/*">
+   <PROCESS-ITEM-OUTPUT ENTITY="JSFProcessItemOutput"
+    ID="Menu::#jsp#Menu.jsp" NAME="output2" PATH="/jsp/Menu.jsp"
+    TARGET="rules:#jsp#Menu.jsp" TITLE="Menu"/>
+   <PROCESS-ITEM-OUTPUT ENTITY="JSFProcessItemOutput"
+    ID="DemoLink_01::#jsp#Ejemplo_01#Demo_JavaScripApplet.jsp"
+    NAME="output" PATH="/jsp/Ejemplo_01/Demo_JavaScripApplet.jsp"
+    TARGET="rules:#jsp#Ejemplo_01#Demo_JavaScripApplet.jsp" TITLE="DemoLink_01"/>
+   <PROCESS-ITEM-OUTPUT ENTITY="JSFProcessItemOutput"
+    ID="DemoLink_02::#jsp#Ejemplo_02#Demo_AppletApplet_01.jsp"
+    NAME="output1" PATH="/jsp/Ejemplo_02/Demo_AppletApplet_01.jsp"
+    TARGET="rules:#jsp#Ejemplo_02#Demo_AppletApplet_01.jsp" TITLE="DemoLink_02"/>
+   <PROCESS-ITEM-OUTPUT ENTITY="JSFProcessItemOutput"
+    ID="DemoLink_03A::#jsp#Ejemplo_03#Demo_AppletServlet_JSP.jsp"
+    NAME="output3" PATH="/jsp/Ejemplo_03/Demo_AppletServlet_JSP.jsp"
+    TARGET="rules:#jsp#Ejemplo_03#Demo_AppletServlet_JSP.jsp" TITLE="DemoLink_03A"/>
+   <PROCESS-ITEM-OUTPUT ENTITY="JSFProcessItemOutput"
+    ID="DemoLink_03B::#jsp#Ejemplo_03#Demo_AppletServlet_JSF.jsp"
+    NAME="output4" PATH="/jsp/Ejemplo_03/Demo_AppletServlet_JSF.jsp"
+    TARGET="rules:#jsp#Ejemplo_03#Demo_AppletServlet_JSF.jsp" TITLE="DemoLink_03B"/>
+   <PROCESS-ITEM-OUTPUT ENTITY="JSFProcessItemOutput"
+    ID="DemoLink_04::#jsp#Ejemplo_04#Demo_AppletServlet.jsp"
+    NAME="output5" PATH="/jsp/Ejemplo_04/Demo_AppletServlet.jsp"
+    TARGET="rules:#jsp#Ejemplo_04#Demo_AppletServlet.jsp" TITLE="DemoLink_04"/>
+   <PROCESS-ITEM-OUTPUT ENTITY="JSFProcessItemOutput"
+    ID="ObjetoRequestJSP::#jsp#ObjetosRequest#ObjetosRequest_JSP.jsp"
+    NAME="output6" PATH="/jsp/ObjetosRequest/ObjetosRequest_JSP.jsp"
+    TARGET="rules:#jsp#ObjetosRequest#ObjetosRequest_JSP.jsp" TITLE="ObjetoRequestJSP"/>
+   <PROCESS-ITEM-OUTPUT ENTITY="JSFProcessItemOutput"
+    ID="ObjetoRequestJSF::#jsp#ObjetosRequest#ObjetosRequest_JSF.jsp"
+    NAME="output7" PATH="/jsp/ObjetosRequest/ObjetosRequest_JSF.jsp"
+    TARGET="rules:#jsp#ObjetosRequest#ObjetosRequest_JSF.jsp" TITLE="ObjetoRequestJSF"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM ENTITY="JSFProcessGroup"
+  NAME="rules:#jsp#Ejemplo_01#Demo_JavaScripApplet.jsp"
+  PATH="/jsp/Ejemplo_01/Demo_JavaScripApplet.jsp" SHAPE="240,33,0,0"/>
+ <PROCESS-ITEM ENTITY="JSFProcessGroup"
+  NAME="rules:#jsp#Ejemplo_02#Demo_AppletApplet_01.jsp"
+  PATH="/jsp/Ejemplo_02/Demo_AppletApplet_01.jsp" SHAPE="256,177,0,0"/>
+ <PROCESS-ITEM ENTITY="JSFProcessGroup" NAME="rules:#jsp#Menu.jsp"
+  PATH="/jsp/Menu.jsp" SHAPE="272,321,0,0"/>
+ <PROCESS-ITEM ENTITY="JSFProcessGroup"
+  NAME="rules:#jsp#Ejemplo_03#Demo_AppletServlet_JSP.jsp"
+  PATH="/jsp/Ejemplo_03/Demo_AppletServlet_JSP.jsp" SHAPE="288,465,0,0"/>
+ <PROCESS-ITEM ENTITY="JSFProcessGroup"
+  NAME="rules:#jsp#Ejemplo_03#Demo_AppletServlet_JSF.jsp"
+  PATH="/jsp/Ejemplo_03/Demo_AppletServlet_JSF.jsp" SHAPE="304,497,0,0"/>
+ <PROCESS-ITEM ENTITY="JSFProcessGroup"
+  NAME="rules:#jsp#Ejemplo_04#Demo_AppletServlet.jsp"
+  PATH="/jsp/Ejemplo_04/Demo_AppletServlet.jsp" SHAPE="304,529,0,0"/>
+ <PROCESS-ITEM ENTITY="JSFProcessGroup"
+  NAME="rules:#jsp#ObjetosRequest#ObjetosRequest_JSP.jsp"
+  PATH="/jsp/ObjetosRequest/ObjetosRequest_JSP.jsp" SHAPE="304,561,0,0"/>
+ <PROCESS-ITEM ENTITY="JSFProcessGroup"
+  NAME="rules:#jsp#ObjetosRequest#ObjetosRequest_JSF.jsp"
+  PATH="/jsp/ObjetosRequest/ObjetosRequest_JSF.jsp" SHAPE="304,593,0,0"/>
+</PROCESS>

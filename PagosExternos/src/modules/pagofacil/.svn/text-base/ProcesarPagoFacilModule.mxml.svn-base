@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" paddingBottom="5" paddingTop="5" layout="vertical" 
+	xmlns:upload="com.util.upload.*" xmlns:pagofacil="modules.pagofacil.*" xmlns:date="com.util.components.date.*" 
+	xmlns:paginacion="com.util.paginacion.*" backgroundColor="#6E6E6E" width="100%" 
+	xmlns:mate="http://mate.asfusion.com/" height="100%"
+	creationComplete="popUpUpload.nombreFiltro = 'Archivo Cobro Externo', popUpUpload.extensionFiltro = '*.900'">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.util.components.alert.AlertOk;
+			import vo.ArchivoCobroExternoNegocio;
+			import mx.core.Application;			
+			import mx.managers.PopUpManager;
+			import mx.events.CloseEvent;
+			
+			[Bindable]public var manager:Manager;
+			
+			private var popUpUpload:UploadArchivo = new UploadArchivo();
+			
+			private var listarCuentasClientes:ListarCuentasClientes = new ListarCuentasClientes();
+			
+			private function uploadNuevoArchivo():void{
+				/* Estas dos primeras sentencias se agregaron para que el paginador 
+				no sea nulo y refersque los cobros externos cuando termine de hacer el upload 
+				de dichos archivos */
+				paginador.paginador.pagina = 0;
+				manager.paginador = paginador.paginador;
+				 
+				popUpUpload.manager = this.manager;
+				PopUpManager.addPopUp(popUpUpload,this,true);
+				PopUpManager.centerPopUp(popUpUpload);
+				
+				/* popUpUpload.tipoArchivo = "PF"; */
+			}
+			
+			public function listarClientes(idArchivo:Number):void{
+				
+				
+				listarCuentasClientes.manager = this.manager;
+				
+				manager.procesarListarCuentas(idArchivo);
+				
+				PopUpManager.addPopUp(listarCuentasClientes,this,true);
+				PopUpManager.centerPopUp(listarCuentasClientes);
+			}
+			
+			
+			private function paginar():void{
+				manager.paginador = paginador.paginador;
+				manager.paginar();
+			}
+			
+			
+			private function buscar():void{
+				/* AlertOk.show(" buscar "); */
+				paginador.paginador.pagina = 0;
+				manager.paginador = paginador.paginador;
+				manager.listAllArchivos(dateDesde.selectedDate);
+			}
+			
+			
+			public function paginacionCompleta():void{
+				/* AlertOk.show("ProcesarPagofacil paginacionCompleta"); */
+				paginador.paginacionCompleta(manager.paginador);				
+				 
+			}
+			
+			
+			public function procesar(data:Object):void{
+				 manager.procesarArchivo(data as ArchivoCobroExternoNegocio); 				 
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mate:Listener type="paginacionCompleta" receive="paginacionCompleta()"/>
+	
+	<mx:ApplicationControlBar width="100%">
+		<mx:Label text="Fecha desde:" styleName="lblInfoCaja"/>
+		<date:DateFiledMultiLan id="dateDesde" selectedDate="{manager.fechaBuscar}"/>
+		<mx:Button label="Buscar" click="buscar()"/>
+	</mx:ApplicationControlBar>	
+	
+	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" height="100%" width="100%" dataProvider="{manager.archivosList}">
+		<mx:columns>
+	        <mx:AdvancedDataGridColumn headerText="Cobro Externo" dataField="nombreOrigen"/>	
+			<mx:AdvancedDataGridColumn headerText="Fecha" dataField="fecha" formatter="{dateFormat}"/>
+			<mx:AdvancedDataGridColumn headerText="Nombre" dataField="nombreArchivo"/>
+			<mx:AdvancedDataGridColumn headerText="Cantidad Transacciones" dataField="cantTransacciones"/>
+			<mx:AdvancedDataGridColumn headerText="Monto Total" dataField="montoTotal" formatter="{currenencyFormatter}"/>
+			<mx:AdvancedDataGridColumn headerText="Procesado" >
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:HBox width="100%" enabled="false" verticalAlign="middle" horizontalAlign="center">
+							<mx:CheckBox selected="{data.procesado == 'S' ? true : false}"/>
+						</mx:HBox>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			
+			<mx:AdvancedDataGridColumn headerText="Procesar">				
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Button label="Procesar" enabled="{data.procesado == 'N' ? ((data.montoTotal > 0)  ? true : false )  : false}"    click="outerDocument.procesar(data)"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			
+			<mx:AdvancedDataGridColumn headerText="Listar Clientes">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Button label="Listar Clientes" enabled="{data.procesado == 'S' ? ((data.montoTotal > 0)  ? true : false )  : false}"  click="outerDocument.listarClientes(data.idArchivo)"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormat"/>
+	<mx:CurrencyFormatter id="currenencyFormatter" rounding="nearest" precision="2" currencySymbol="$"/>
+	
+	<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" horizontalGap="2">
+		<paginacion:PaginadorComp id="paginador" verticalGap="0" paginar="this.paginar()"/>
+		<mx:Button label="Subir nuevo" click="uploadNuevoArchivo()"/>
+	</mx:HBox>
+	
+</mx:Module>

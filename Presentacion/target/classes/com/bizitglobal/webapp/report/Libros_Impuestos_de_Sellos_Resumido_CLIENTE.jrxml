@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Libros_Impuestos_de_Sellos_Resumido_CLIENTE"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="URLImagen" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="Fecha_desde" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="Fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<queryString><![CDATA[SELECT fecha,  concepto,  sellos,  loteHogar,  accionSocial,  total
+FROM
+  (SELECT TRUNC(ctacli.c_fecha_facturacion)                                              AS fecha,
+    'Refinanciacion'                                                                     AS concepto,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0))                   AS sellos,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0))                   AS loteHogar,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0))                   AS accionSocial,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) AS total
+  FROM t_vis_tra_ctacte_clientes ctacli
+  WHERE TRUNC(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}
+  AND TRUNC(ctacli.c_fecha_facturacion)   <= $P{Fecha_hasta}
+  AND ctacli.c_id_concepto_detalle IN (67,68,69)
+  AND ctacli.c_id_liq_cliente             IS NOT NULL
+  AND c_id_tranascciones                  IN
+    (SELECT DISTINCT(c_id_tranascciones)
+    FROM t_vis_tra_ctacte_clientes
+    WHERE c_id_concepto_detalle            = 73
+    AND TRUNC(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}
+    AND TRUNC(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta}
+    )
+  GROUP BY TRUNC(ctacli.c_fecha_facturacion)
+  UNION
+  SELECT TRUNC(ctacli.c_fecha_facturacion)                                               AS fecha ,
+    'Repactacion'                                                                        AS concepto,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0))                   AS sellos,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0))                   AS loteHogar,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0))                   AS accionSocial,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) AS total
+  FROM t_vis_tra_ctacte_clientes ctacli
+  WHERE TRUNC(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}
+  AND TRUNC(ctacli.c_fecha_facturacion)   <= $P{Fecha_hasta}
+  and ctacli.c_id_concepto_detalle in (67,68,69)
+  AND ctacli.c_id_liq_cliente             IS NOT NULL
+  AND c_id_tranascciones                  IN
+    (SELECT DISTINCT(c_id_tranascciones)
+    FROM t_vis_tra_ctacte_clientes
+    WHERE c_id_concepto_detalle            =57
+    AND TRUNC(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}
+    AND TRUNC(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta}
+    )
+  GROUP BY TRUNC(ctacli.c_fecha_facturacion)
+  UNION
+  SELECT TRUNC(ctacli.c_fecha_facturacion)                                               AS fecha,
+    'Consumo'                                                                            AS concepto,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0))                   AS sellos,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0))                   AS loteHogar,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0))                   AS accionSocial,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) AS total
+  FROM t_vis_tra_ctacte_clientes ctacli
+  WHERE TRUNC(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}
+  AND TRUNC(ctacli.c_fecha_facturacion)   <= $P{Fecha_hasta}
+  and ctacli.c_id_concepto_detalle in (67,68,69)
+  AND ctacli.c_id_liq_cliente             IS NOT NULL
+  AND c_id_tranascciones                  IN
+    (SELECT DISTINCT(c_id_tranascciones)
+    FROM t_vis_tra_ctacte_clientes
+    WHERE c_id_concepto_detalle            =1
+    AND TRUNC(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}
+    AND TRUNC(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta}
+    )
+  GROUP BY TRUNC(ctacli.c_fecha_facturacion)
+  UNION
+  SELECT TRUNC(ctacli.c_fecha_facturacion)                                               AS fecha,
+    'Adelanto'                                                                           AS concepto,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0))                   AS sellos,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0))                   AS loteHogar,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0))                   AS accionSocial,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) AS total
+  FROM t_vis_tra_ctacte_clientes ctacli
+  WHERE TRUNC(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}
+  AND TRUNC(ctacli.c_fecha_facturacion)   <= $P{Fecha_hasta}
+  and ctacli.c_id_concepto_detalle in (67,68,69)
+  AND ctacli.c_id_liq_cliente             IS NOT NULL
+  AND c_id_tranascciones                  IN
+    (SELECT DISTINCT(c_id_tranascciones)
+    FROM t_vis_tra_ctacte_clientes
+    WHERE c_id_concepto_detalle            = 22
+    AND TRUNC(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}
+    AND TRUNC(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta}
+    )
+  GROUP BY TRUNC(ctacli.c_fecha_facturacion)
+  UNION
+  SELECT TRUNC(ctacli.c_fecha_facturacion)                                               AS fecha,
+    'Liquidacion'                                                                        AS concepto,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0))                   AS sellos,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0))                   AS loteHogar,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0))                   AS accionSocial,
+    SUM(DECODE(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) AS total
+  FROM t_vis_tra_ctacte_clientes ctacli
+  WHERE TRUNC(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}
+  AND TRUNC(ctacli.c_fecha_facturacion)   <= $P{Fecha_hasta}
+  AND ctacli.c_id_concepto_detalle        IN (67,68,69)
+  AND ctacli.c_id_liq_cliente             IS NOT NULL
+  AND c_id_tranascciones NOT              IN
+    (SELECT DISTINCT c_id_tranascciones
+    FROM t_vis_tra_ctacte_clientes
+    WHERE c_id_concepto_detalle           IN (1,22,57,73)
+    AND TRUNC(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}
+    AND TRUNC(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta}
+    )
+  GROUP BY TRUNC(ctacli.c_fecha_facturacion)
+  )
+WHERE total <> 0
+order by trunc(fecha)]]></queryString>
+
+	<field name="FECHA" class="java.util.Date"/>
+	<field name="CONCEPTO" class="java.lang.String"/>
+	<field name="SELLOS" class="java.math.BigDecimal"/>
+	<field name="LOTEHOGAR" class="java.math.BigDecimal"/>
+	<field name="ACCIONSOCIAL" class="java.math.BigDecimal"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+
+	<variable name="SUM_SELLOS" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{SELLOS}]]></variableExpression>
+	</variable>
+	<variable name="SUM_ACCIONSOCIAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{ACCIONSOCIAL}]]></variableExpression>
+	</variable>
+	<variable name="SUM_TOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+	<variable name="SUM_LOTEHOGAR" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{LOTEHOGAR}]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="59"  isSplitAllowed="true" >
+				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="432"
+						y="3"
+						width="100"
+						height="53"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement
+						x="7"
+						y="12"
+						width="291"
+						height="30"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier-Bold" size="16" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[LIBROS DE SELLOS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="44"
+						width="49"
+						height="15"
+						key="staticText-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[CLIENTE]]></text>
+				</staticText>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="22"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="2"
+						width="90"
+						height="15"
+						key="staticText-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Opcion:Resumido]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="268"
+						y="2"
+						width="62"
+						height="17"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<text><![CDATA[Fecha desde:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="330"
+						y="4"
+						width="78"
+						height="14"
+						key="textField-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{Fecha_desde}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="408"
+						y="1"
+						width="60"
+						height="17"
+						key="staticText-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<text><![CDATA[Fecha hasta:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="469"
+						y="3"
+						width="52"
+						height="16"
+						key="textField-22"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{Fecha_hasta}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="16"  isSplitAllowed="true" >
+				<rectangle radius="0" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="534"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-1"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="453"
+						y="3"
+						width="80"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="361"
+						y="3"
+						width="93"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Acción Social]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="275"
+						y="3"
+						width="86"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Lote Hogar]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="83"
+						y="3"
+						width="111"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Concepto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="196"
+						y="3"
+						width="79"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Sellos]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="2"
+						y="3"
+						width="81"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Fecha]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="13"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="0"
+						width="83"
+						height="13"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{FECHA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="85"
+						y="0"
+						width="112"
+						height="13"
+						key="textField-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="197"
+						y="0"
+						width="77"
+						height="13"
+						key="textField-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SELLOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="274"
+						y="0"
+						width="86"
+						height="13"
+						key="textField-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{LOTEHOGAR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="361"
+						y="0"
+						width="92"
+						height="13"
+						key="textField-19"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{ACCIONSOCIAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="453"
+						y="0"
+						width="80"
+						height="13"
+						key="textField-20"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{TOTAL}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="13"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="309"
+						y="0"
+						width="170"
+						height="13"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Pagina " + $V{PAGE_NUMBER} + " de   "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="478"
+						y="0"
+						width="47"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Courier" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="true" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="84"
+						y="0"
+						width="70"
+						height="13"
+						key="textField-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Bottom">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="7"
+						y="0"
+						width="76"
+						height="13"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Fecha Impresión:]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="405"
+						y="1"
+						width="0"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="23"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="108"
+						y="6"
+						width="84"
+						height="11"
+						key="textField-23"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Total General:"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="196"
+						y="6"
+						width="77"
+						height="12"
+						key="textField-24"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_SELLOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="452"
+						y="6"
+						width="80"
+						height="12"
+						key="textField-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_TOTAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="277"
+						y="6"
+						width="83"
+						height="12"
+						key="textField-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_LOTEHOGAR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="363"
+						y="6"
+						width="89"
+						height="12"
+						key="textField-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_ACCIONSOCIAL}]]></textFieldExpression>
+				</textField>
+			</band>
+		</summary>
+</jasperReport>

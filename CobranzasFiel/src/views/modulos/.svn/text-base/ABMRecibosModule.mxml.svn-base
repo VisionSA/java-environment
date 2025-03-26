@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" 
+	width="100%" 
+	height="100%" 
+	horizontalAlign="center"
+	creationComplete="init()">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import mx.collections.ArrayCollection;
+			import views.components.ViewAddRangoRecibo;
+			import mx.managers.PopUpManager;
+			import mx.core.IFlexDisplayObject;
+			import mx.utils.StringUtil;
+			import com.tarjetafiel.caja.vo.Recibo;
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import com.tarjetafiel.caja.vo.Cobrador;
+			import model.CobranzasModelLocator;
+			import events.GenericAsignacionCobradoresEvent;
+			
+			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			private function init():void{			
+				
+				modelo.cobrador = null;
+				modelo.listaRecibos = null;
+				modelo.rangoReciboSeleccionado = null;
+				modelo.listaDetalleRecibos = null;
+				modelo.detalleReciboSeleccionado = null;
+								
+				if (modelo.listaCobradores == null){
+					new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.BUSCAR_COBRADORES_EVENT,null).dispatch();	
+				}
+			}
+			
+			private function buscarRangos():void {
+				var cobrador : Cobrador = modelo.listaCobradores.getItemAt(cmboCobradores.selectedIndex) as Cobrador;
+				new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.BUSCAR_RECIBOS_EVENT,cobrador).dispatch();
+			}
+			
+			
+			private function datosCobradores(obj : Object) : String {				
+				return obj.apellido + ", " + obj.nombre;				
+			}
+			
+			
+			private function labelRecibosDesdeHasta(item:Object, column:DataGridColumn):String {
+				if (item != null){
+					var r : Recibo = new Recibo();
+					r.desde = item.desde;
+					r.hasta = item.hasta;
+					if (r != null){
+						return StringUtil.substitute("{0} - {1}",r.desde,r.hasta);	
+					}else {
+						return "";					
+					}
+				}else {
+					return "";
+				}
+			}
+			
+			private function labelNroPago(item:Object, column:DataGridColumn):String {
+				if (item != null){
+					var r : Recibo = new Recibo();
+					r.ctaCteCliente = item.ctaCteCliente;
+					if (r.ctaCteCliente.toString() != "NaN"){
+						return StringUtil.substitute("Cta.Cte.Nro: {0}",r.ctaCteCliente);	
+					}else {
+						return "No utilizado";					
+					}
+				}else {
+					return "";
+				}
+			}
+			
+			private function labelEstadoRecibo(item:Object, column:DataGridColumn):String {
+				if (item != null){
+					var r : Recibo = new Recibo();
+					r.esEstadoAnulado = item.esEstadoAnulado;
+					r.ctaCteCliente = item.ctaCteCliente;
+					if (r.ctaCteCliente.toString() == "NaN"){
+						if (r.esEstadoAnulado == 'N'){
+							return "Habilitado";	
+						}else {
+							return "Anulado";					
+						}
+					}else {
+						return "Utilizado";
+					}
+					
+				}else {
+					return "";
+				}
+			}
+			
+			
+			
+			private function abrirVentanaRango():void{
+				var vent : IFlexDisplayObject = PopUpManager.createPopUp(this,ViewAddRangoRecibo,true);
+				PopUpManager.centerPopUp(vent);
+			}
+				
+			private function selccionarRecibo():void {
+				var obj : Object = modelo.listaRecibos.getItemAt(dgRecibos.selectedIndex);
+				new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.SELECCIONAR_RANGO_RECIBO_EVENT,obj).dispatch();
+				
+			}
+			
+			private function buscarDetalleRecibos():void {
+				var param : Recibo = modelo.listaRecibos.getItemAt(dgRecibos.selectedIndex) as Recibo;
+				new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.BUSCAR_DETALLE_RECIBOS_EVENT,param).dispatch();
+			}
+			
+			private function seleccionarDetalleRecibo():void {
+				var recibo : Recibo = modelo.listaDetalleRecibos.getItemAt(dgDetalleRecibo.selectedIndex) as Recibo;
+				new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.SELECCIONAR_DETALLE_RECIBO_EVENT,recibo).dispatch();
+			}
+			
+			private function anularRecibo():void {
+				Alert.yesLabel = "SI";
+ 				Alert.noLabel = "NO";
+ 				Alert.show("Si anula el recibo, quedara inutilizado\ny no podrá volverse a habilitar\n¿Está seguro que desea anularlo?",
+ 				StringUtil.substitute("Anular recibo nro. {0}",modelo.detalleReciboSeleccionado.codigoRecibo)
+ 				,Alert.YES | Alert.NO,
+ 				this,confirmarAnulacionRecibo,null,
+ 				Alert.NO);								
+			}
+			
+			private function confirmarAnulacionRecibo(eventObj:CloseEvent):void{
+				 if (eventObj.detail==Alert.YES) {
+				 	new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.ANULAR_RECIBO_EVENT,modelo.detalleReciboSeleccionado.idRecibo).dispatch();				 	
+				 }
+				
+				
+			}
+			
+			
+			
+			
+		]]>
+	</mx:Script>
+
+	<mx:Canvas id="canvasFiltro" width="600" borderStyle="solid" borderThickness="2" borderColor="0">
+		<mx:VBox width="100%" horizontalAlign="center">
+			<mx:Label text="Filtro de Búsqueda" fontSize="18" fontWeight="bold"/>
+			<mx:Form id="formFiltro" width="100%" >			
+				
+				<mx:FormItem label="Cobrador" >
+					<mx:ComboBox id="cmboCobradores" dataProvider="{modelo.listaCobradores}" labelFunction="datosCobradores"/>
+				</mx:FormItem>				
+				<mx:HBox width="100%" horizontalAlign="right">			
+					<mx:Button id="btnBuscar" label="Buscar" width="120" click="buscarRangos()"/>
+				</mx:HBox>
+			</mx:Form>			
+		</mx:VBox>
+	</mx:Canvas>
+	
+	<mx:VBox visible="{modelo.listaRecibos != null}" >
+		<mx:Label text="{modelo.tituloRango}" fontStyle="italic" fontSize="12"/>
+		<mx:HBox >
+			<mx:DataGrid height="100" width="250" dataProvider="{modelo.listaRecibos}" id="dgRecibos" itemClick="selccionarRecibo()">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Recibos Asignados (Desde-Hasta)" dataField="desde" textAlign="center" labelFunction="labelRecibosDesdeHasta" />
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:VBox>
+				<mx:Button id="btnAdd" label="Agregar" width="100" click="abrirVentanaRango()"/>
+				<mx:Button id="btnDetalle" label="Detalles" width="100" enabled="{modelo.rangoReciboSeleccionado != null}" click="buscarDetalleRecibos()"/>
+			</mx:VBox>	
+		</mx:HBox>
+	</mx:VBox>
+	
+	<mx:VBox visible="{modelo.listaDetalleRecibos != null}" >
+		<mx:DataGrid id="dgDetalleRecibo" dataProvider="{modelo.listaDetalleRecibos}" width="500" itemClick="seleccionarDetalleRecibo()">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Nro Recibo" dataField="codigoRecibo" width="80"/>
+				<mx:DataGridColumn headerText="Nro de Pago" dataField="ctaCteCliente" labelFunction="labelNroPago"/>
+				<mx:DataGridColumn headerText="Rango" labelFunction="labelRecibosDesdeHasta" width="100"/>
+				<mx:DataGridColumn headerText="Estado" dataField="esEstadoAnulado" labelFunction="labelEstadoRecibo" width="80"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:HBox width="100%" horizontalAlign="right">
+			<mx:Button label="Anular" width="100" enabled="{modelo.esReciboAnulable}" click="anularRecibo()"/>
+		</mx:HBox>
+	</mx:VBox>
+	
+</mx:Module>

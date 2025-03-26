@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.impuestos.negocio.JurisdiccionActividad" table="t_vis_juris_actividades">
+    <id name="idJurisdiccionActividad" type="java.lang.Long" column="c_id_juris_actividad">
+        <generator class="increment" />
+    </id>
+	
+	<property name="descActividad" type="java.lang.String" column="c_desc_actividad" length="100" not-null="true"/>
+	
+    <!-- Associations -->
+    <many-to-one name="categoria" class="com.bizitglobal.tarjetafiel.impuestos.negocio.Categoria" not-null="false"  >
+        <column name="c_id_categoria_imp" />
+    </many-to-one>
+    
+    <many-to-one name="jurisdiccion" class="com.bizitglobal.tarjetafiel.impuestos.negocio.Jurisdiccion" not-null="true"  cascade="none">
+        <column name="c_id_jurisdiccion" />
+    </many-to-one>
+    
+     <many-to-one name="aplicable" class="com.bizitglobal.tarjetafiel.impuestos.negocio.Aplicable" not-null="true"  cascade="none">
+        <column name="c_id_aplicable" />
+    </many-to-one>
+   
+    
+    
+	<set name="retenciones" inverse="false" cascade="none"  >
+        <key>
+            <column name="c_id_juris_actividad" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.impuestos.negocio.Retencion"/>
+    </set>  
+    
+</class>
+
+</hibernate-mapping>

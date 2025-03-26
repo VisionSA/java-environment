@@ -1,0 +1,964 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--@I3918--><mx:Module xmlns:mx="http://www.adobe.com/2006/mxml"
+	layout="vertical" width="100%" height="100%" creationComplete="init()"
+	horizontalAlign="center" xmlns:date="com.util.components.date.*">
+<!--@F3918-->	<mx:Script>
+		<![CDATA[
+			import mx.formatters.DateFormatter;
+		]]>
+	</mx:Script>
+	<mx:Script>
+		<![CDATA[
+			import mx.formatters.DateFormatter;
+		]]>
+	</mx:Script>
+	
+	<mx:Style source="assets/styles/main.css"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import mx.utils.URLUtil;
+			import mx.utils.StringUtil;
+			import mx.containers.VBox;
+			import mx.events.CloseEvent;
+			import business.ConciliacionFondoCabecera;
+			import mx.controls.dataGridClasses.DataGridItemRenderer;
+			import business.DetalleExtracto;
+			import events.ConciliacionFondoCabeceraEvent;
+			import com.tarjetafiel.caja.vo.BancoPropio;
+			import events.ConciliacionFondoEvent;
+			import business.MovimientoConciliable;
+			import business.BaseConciliacion;
+			import events.MovimientoConciliableEvent;
+			import flash.sampler.NewObjectSample;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.controls.DateField;
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import events.ExtractoBancarioEvent;
+			import model.ConciliacionModelLocator;
+			import model.PaginacionSearchModelLocator;
+			import mx.collections.ArrayCollection;
+			import com.tarjetafiel.caja.vo.Operador;
+			import flash.events.KeyboardEvent;
+			import flash.ui.Keyboard;
+			import mx.events.ListEvent;
+
+
+			[Bindable]
+			private var modelo : ConciliacionModelLocator = ConciliacionModelLocator.getInstance();
+			private var haber:Number=0;
+			private var debe:Number=0;
+			private var numPage:int = 0;
+            [Bindable]
+		    public  var pageSize:int = 10;
+		    public var cabecera:ConciliacionFondoCabecera;
+			public var btnSeleccionarTodoEstado:Boolean;
+			
+			private function init():void {
+				var filtro:Filtro = new Filtro();
+				filtro.agregarCampoOperValor("habilitado",Filtro.LIKEXS,"S");
+				new ExtractoBancarioEvent(ExtractoBancarioEvent.BUSCAR_BANCOS_PROPIOS_EVENT,filtro).dispatch();
+				PaginacionSearchModelLocator.getInstanceCabecera().cantPorPagina = pageSize;
+				dgConciliacionFondoCabecera.addEventListener(ListEvent.ITEM_ROLL_OVER,pasarParametros);
+				modelo.btnSeleccionarTodoSel=false;
+				
+			}
+			private function pasarParametros(event:ListEvent):void{
+				cabecera = modelo.listaCabeceraConciliable.getItemAt(event.rowIndex)as ConciliacionFondoCabecera;
+				btnSeleccionarTodoEstado = modelo.btnSeleccionarTodoSel;
+			}
+			
+			private function buscarNoConciliados():void {
+				var filtro:Filtro = new Filtro();
+				filtro.agregarCampoOperValor("fechaMovimiento",Filtro.MAYOR_IGUAL,Filtro.toDate(DateField.stringToDate(fechaDesdeDt.text, "DD/MM/YYYY")));
+				filtro.agregarCampoOperValor("fechaMovimiento",Filtro.MENOR_IGUAL,Filtro.toDate(DateField.stringToDate(fechaHastaDt.text, "DD/MM/YYYY")));
+				filtro.agregarCampoOperValor("bancoPropio.idBancoPropio",Filtro.IGUAL,bancoPropioCBox.selectedItem.idBancoPropio);
+				filtro.agregarCampoOperValor("conciliado",Filtro.LIKEXS,'N');
+				
+				new ExtractoBancarioEvent(ExtractoBancarioEvent.LEER_EXTRACTO_BANCARIO_EVENT,filtro).dispatch();
+				modelo.bancoPropioSeleccionado = bancoPropioCBox.selectedItem as BancoPropio;
+				
+				var mov:MovimientoConciliable = new MovimientoConciliable();
+				mov.idPlanCuentas = new Number(bancoPropioCBox.selectedItem.planCuenta.idPlanCuenta);
+				mov.fechaDesde = DateField.stringToDate(fechaDesdeDt.text, "DD/MM/YYYY");
+				mov.fechaHasta = DateField.stringToDate(fechaHastaDt.text, "DD/MM/YYYY");
+				new MovimientoConciliableEvent(MovimientoConciliableEvent.TRAER_MOVIMIENTOS_CONCILIABLE_EVENT,mov).dispatch();
+				
+				buscarCabecerasNoConciliados(0,pageSize);
+				
+			}
+			
+			private function buscarCabecerasNoConciliados(firstResult:int, maxResults:int):void
+			{
+				var cab:ConciliacionFondoCabecera = new ConciliacionFondoCabecera();
+				var filtro:Filtro = new Filtro();
+				filtro.agregarCampoOperValor("bancoPropio.idBancoPropio",Filtro.IGUAL,bancoPropioCBox.selectedItem.idBancoPropio);
+				filtro.agregarCampoOperValor("conciliado",Filtro.LIKEXS,"N");
+				filtro.orderBy.push("idCabeceraConciliacion"); 
+				if(firstResult == 0)
+					new ConciliacionFondoCabeceraEvent(ConciliacionFondoCabeceraEvent.BUSCAR_CANTIDAD_PAGINAS_CONCILIACION,null,filtro).dispatch();
+					
+				cab.firstResult = firstResult * pageSize;
+				cab.maxResults = maxResults;
+				new ConciliacionFondoCabeceraEvent(ConciliacionFondoCabeceraEvent.TRAER_NO_CONCILIADOS_FONDOS_CABECERA_EVENT,cab,filtro).dispatch();
+				
+			}
+			
+			private function seleccionExtracto():void {
+				var obj : Object = dgExtracto.selectedItem;
+				new ConciliacionFondoEvent(ConciliacionFondoEvent.ARMAR_CONCILIACION_EVENT,obj).dispatch();
+				this.refreshConciliacionTemporal();
+				this.mostrarMensajeGrabar();
+/*@I3918*/				modelo.concTempVisible = true;
+/*@F3918*/			}
+			
+			private function seleccionMovimiento():void {
+				var obj : Object = dgMovimientoFondo.selectedItem;
+				new ConciliacionFondoEvent(ConciliacionFondoEvent.ARMAR_CONCILIACION_EVENT,obj).dispatch();
+				this.refreshConciliacionTemporal();
+				this.mostrarMensajeGrabar();
+/*@I3918*/				modelo.concTempVisible = true;
+/*@F3918*/			}
+			private function mostrarMensajeGrabar():void{
+				if(modelo.btnGrabarConcVisible)
+				{
+					var alert:Alert = Alert.show("Desea grabar la conciliacion","Grabar",Alert.YES|Alert.NO);
+					alert.addEventListener(CloseEvent.CLOSE,alertGrabarConciliacion);
+				}
+			}
+			
+			private function sacarItem():void{
+				var obj : Object = dgConcTemp.selectedItem;
+				modelo.cabeceraNueva.conciliacionFondos.removeItemAt(modelo.cabeceraNueva.conciliacionFondos.getItemIndex(obj));
+				this.refreshConciliacionTemporal();
+				modelo.btnGrabarConcVisible = (debe == haber && modelo.cabeceraNueva.conciliacionFondos.length>0);
+				
+				if(obj is MovimientoConciliable)
+				{
+					modelo.listaMovimiento.addItem(obj);
+				}else
+				{
+					modelo.listaExtracto.addItem(obj);
+				}
+			}
+			private function refreshConciliacionTemporal():void{
+				
+				txtDebe.text = "";
+				txtHaber.text = "";
+				txtDiferencia.text = "";
+				haber = 0;
+				debe = 0;
+				for each (var obj : Object in modelo.cabeceraNueva.conciliacionFondos){
+					if(obj instanceof MovimientoConciliable)
+					{
+						mostrarSumaDebeHaberMovmiento(obj.importe,obj.signo);
+					}else
+					{
+						mostrarSumaDebeHaberExtracto(obj.importe,obj.signo);
+					}
+				}
+				txtDiferencia.text = numberFormat.format(debe - haber).toString();
+			}
+			
+			public function mostrarSumaDebeHaberMovmiento(importe:Number, tipo:String):void
+			{
+				if(tipo=="D")
+				{
+					txtHaber.text = numberFormat.format(haber + importe).toString();
+					haber+=importe;
+				}else
+				{
+					txtDebe.text = numberFormat.format(debe + importe).toString();
+					debe+=importe;
+				}
+				
+			}
+			public function mostrarSumaDebeHaberExtracto(importe:Number, tipo:String):void
+			{
+				if(tipo=="D")
+				{
+					txtDebe.text = numberFormat.format(debe + importe).toString();
+					debe+=importe;
+				}else
+				{
+					txtHaber.text = numberFormat.format(haber + importe).toString();
+					haber+=importe;
+				}
+			}
+			
+			private function seleccionCabecera():void {
+				modelo.cabeceraSeleccionada = dgConciliacionFondoCabecera.selectedItem as ConciliacionFondoCabecera;
+				var cab:ConciliacionFondoCabecera = modelo.cabeceraSeleccionada;
+			}
+			
+			private function getFechaExtracto(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaMovimiento);
+			}
+			private function getFechaMovimiento(item:Object, column:DataGridColumn):String {
+				return df.format(item.fecha);
+			}
+			private function getFechaGeneracionCabecera(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaGeneracion);
+			}
+			public function getFechaItem(item:Object, column:DataGridColumn):String {
+				return df.format(item.contenedor.fechaItem);
+			}
+			public function getFechaItemTemp(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaItem);
+			}
+			
+			
+			public function getDescricionBanco(item:Object):String {
+				var bcoPropioSel:BancoPropio = item as BancoPropio;
+				return bcoPropioSel.banco.descripcion + " " + bcoPropioSel.numeroCuenta;
+			}
+			public function mostraInfoBanco():void {
+				var bcoPropioSel:BancoPropio = bancoPropioCBox.selectedItem as BancoPropio;
+/*@I3918*/				/* lblInfoBanco.text =  bcoPropioSel.banco.descripcion; */
+/*@F3918*/				limpiarDetalle(false);
+				modelo.concTempVisible = false;
+				
+				if(modelo.listaMovimiento!=null)
+					modelo.listaMovimiento.removeAll();
+				if(modelo.listaExtracto!=null)
+					modelo.listaExtracto.removeAll();
+			}
+			
+			private function alertGrabarConciliacion(evt:CloseEvent):void {
+                if(evt.detail==Alert.YES){
+                	grabarConciliacion();
+                }
+            }
+            
+			private function grabarConciliacion():void {
+				new ConciliacionFondoEvent(ConciliacionFondoEvent.GRABAR_CONCILIACION_EVENT,txComentNuevoConc.text).dispatch();
+				buscarCabecerasNoConciliados(0,pageSize);
+				limpiarDetalle(false);
+			}
+			
+			private function limpiarDetalle(isCancelar:Boolean):void {
+				if(modelo.cabeceraNueva!=null && modelo.cabeceraNueva.conciliacionFondos!=null)
+				{
+					if(isCancelar)
+					{
+						for each (var obj : Object in modelo.cabeceraNueva.conciliacionFondos){
+							if(obj is MovimientoConciliable)
+							{
+								modelo.listaMovimiento.addItem(obj);
+							}else
+							{
+								modelo.listaExtracto.addItem(obj);
+							}
+						}						
+					}
+					modelo.cabeceraNueva.conciliacionFondos.removeAll();
+					
+				}
+				txtDebe.text = "";
+				txtHaber.text = "";
+				txtDiferencia.text = "";
+				haber = 0;
+				debe = 0;
+				modelo.btnGrabarConcVisible = false;
+/*@I3918*/				modelo.concTempVisible = false;				
+/*@F3918*/			}
+			
+			
+			private function confirmarConciliacion():void{
+				 
+				if(!modelo.btnSeleccionarTodoSel)
+				{
+					var listConfirmar:ArrayCollection = new ArrayCollection();
+					var listSeleccionados:ArrayCollection = modelo.listaCabeceraConciliable;
+					for(var i:String in listSeleccionados){
+						if(listSeleccionados[i].seleccionado){
+							listConfirmar.addItem(listSeleccionados[i]);
+						}
+					}
+					if(listConfirmar.length>0)
+					{
+						new ConciliacionFondoCabeceraEvent(ConciliacionFondoCabeceraEvent.CONFIRMAR_CONCILIACION_CABECERA_EVENT,listConfirmar).dispatch();
+					}
+				}else
+				{
+					var filtro:Filtro = new Filtro();
+					filtro.agregarCampoOperValor("bancoPropio.idBancoPropio",Filtro.IGUAL,bancoPropioCBox.selectedItem.idBancoPropio);
+					filtro.agregarCampoOperValor("conciliado",Filtro.LIKEXS,"N");
+					new ConciliacionFondoCabeceraEvent(ConciliacionFondoCabeceraEvent.CONFIRMAR_TODOS_CONCILIACION_CABECERA_EVENT,null,filtro).dispatch();
+					btnSeleccionarTodosApariencia();
+				}
+				buscarCabecerasNoConciliados(0,pageSize);
+							
+			}
+			
+			private function seleccionarTodo():void{
+				
+				var listSeleccionados:ArrayCollection = dgConciliacionFondoCabecera.dataProvider as ArrayCollection;
+				
+				if(listSeleccionados!=null && listSeleccionados.length>0)
+				{
+					for(var i:String in listSeleccionados){
+						listSeleccionados[i].seleccionado = !listSeleccionados[i].seleccionado;
+					}
+					btnSeleccionarTodosApariencia();
+				} 
+			}
+			private function btnSeleccionarTodosApariencia():void
+			{
+				modelo.btnSeleccionarTodoSel = !modelo.btnSeleccionarTodoSel;
+				if(modelo.btnSeleccionarTodoSel)
+				{
+					btnSeleccionarTodo.setStyle("color", 0x0174DF);
+					btnSeleccionarTodo.setStyle("borderColor", 0x00388B);
+					btnSeleccionarTodo.setStyle("borderAlpha", 1);
+					
+				} 
+				else
+				{ 
+					btnSeleccionarTodo.setStyle("color", 0x000000);
+					btnSeleccionarTodo.setStyle("borderColor", 0xBDBDBD);
+					btnSeleccionarTodo.setStyle("borderAlpha", 0.5);
+				}	
+				
+			}
+			
+			private function deshacerConciliacion():void {
+				
+				var listDeshacer:ArrayCollection = new ArrayCollection();
+				var listSeleccionados:ArrayCollection = dgConciliacionFondoCabecera.dataProvider as ArrayCollection;
+				for(var i:String in listSeleccionados){
+					if(listSeleccionados[i].seleccionado){
+						//listSeleccionados[i].conciliacionFondosFlex = listSeleccionados[i].conciliacionFondos.source;
+						//listSeleccionados[i].conciliacionFondos = null;//para no enviar al servidor
+						listSeleccionados[i].operadorConfirmo = null;
+						listSeleccionados[i].operadorReversion = null;
+						listDeshacer.addItem(listSeleccionados[i]);
+					}
+				}
+				if(listDeshacer.length>0)
+				{
+					new ConciliacionFondoCabeceraEvent(ConciliacionFondoCabeceraEvent.DESHACER_CONCILIACION_CABECERA_EVENT,listDeshacer).dispatch();
+					buscarNoConciliados();
+				}else
+				{
+					Alert.show("Seleccione al menos una conciliacion a confirmar.");
+				}			
+				
+			}
+			
+			
+			/******* FILTRO MOVMIENTO CONCILIABLE *****/
+/*@I3918*/			private function filterData():void
+			{
+				if(chkFilterImporte.selected) 
+					txtImporteExtracto.text = txtImporte.text;
+				if(chkFilterDescripcion.selected)
+					txtDescripcionExtracto.text = txtDescripcion.text;
+				
+				
+/*@F3918*/				if (txtImporte.text.length == 0 && txtDescripcion.text.length == 0 && txtNumero.text.length == 0)
+				{
+/*@I3918*/					if(chkFilterImporte.selected || chkFilterDescripcion.selected){
+						if(modelo.listaMovimiento!=null)
+						{
+							modelo.listaMovimiento.filterFunction = null;
+							modelo.listaMovimiento.refresh();
+						}
+						if(modelo.listaExtracto!=null)
+						{
+							modelo.listaExtracto.filterFunction = null;
+							modelo.listaExtracto.refresh();
+						}
+					}else
+					{
+						modelo.listaMovimiento.filterFunction = null;
+						modelo.listaMovimiento.refresh(); 
+/*@F3918*/					}
+				}
+				else
+				{
+/*@I3918*/					if(chkFilterImporte.selected || chkFilterDescripcion.selected)
+/*@F3918*/					{
+						modelo.listaMovimiento.filterFunction = userFilterGeneral;
+						modelo.listaMovimiento.refresh();
+/*@I3918*/						
+						modelo.listaExtracto.filterFunction = userFilterGeneralExtracto;
+						modelo.listaExtracto.refresh();
+/*@F3918*/					}else
+					{
+/*@I3918*/						modelo.listaMovimiento.filterFunction = userFilterGeneral;
+/*@F3918*/						modelo.listaMovimiento.refresh();
+					}
+				}
+			}
+			
+/*@I3918*/			private function userFilterGeneral(item:MovimientoConciliable):Boolean
+			{
+				var matchImporte:Boolean = true;
+				var matchDescripcion:Boolean = true;
+				var matchNumero:Boolean = true;
+				
+/*@F3918*/				if(txtNumero.text.length != 0)
+				{
+					matchNumero = false;
+					matchNumero = userFilterNumero(item);
+				}
+				
+				if(txtImporte.text.length != 0)
+				{
+					matchImporte = false;
+					matchImporte = userFilterImporte(item);
+				}
+				
+				if(txtDescripcion.text.length !=0)
+				{
+					matchDescripcion = false;
+					matchDescripcion = userFilter(item);
+				}
+				
+				return matchNumero && matchImporte && matchDescripcion;
+			}
+			
+			private function userFilterNumero(item:Object):Boolean
+			{
+				var match:Boolean = false;
+				var value:String = new String();				
+				var properties:Array = new Array();
+				item is MovimientoConciliable?properties.push("numero"):properties.push("nroComprobante");
+/*@I3918*/				var text:String = item is MovimientoConciliable?txtNumero.text:txtNumeroExtracto.text;
+				for each(var property:String in properties)
+				{
+					value = item[property].toString().toLowerCase();
+/*@F3918*/					match = (value.indexOf(text.toLowerCase(), 0) > -1);
+					if (match)
+					{
+						break;
+					}
+				}	
+				return match;
+			}
+			
+/*@I3918*/			private function userFilterImporte(item:MovimientoConciliable):Boolean
+/*@F3918*/			{
+				//var tmp:String;
+				var match:Boolean = false;
+				var value:String = new String();				
+				var properties:Array = new Array();
+				properties.push("importe");
+				for each(var property:String in properties)
+				{
+					value = item[property].toString().toLowerCase();
+					match = (value.indexOf(txtImporte.text.toLowerCase(), 0) > -1);
+					if (match)
+					{
+						break;
+					}
+				}	
+				return match;
+/*@I3918*/			}
+			
+			
+			private function userFilter(item:MovimientoConciliable):Boolean
+/*@F3918*/			{
+				//var tmp:String;
+				var match:Boolean = false;
+				var value:String = new String();				
+				var properties:Array = new Array();
+				properties.push("descripcion");
+				for each(var property:String in properties)
+				{
+					value = item[property].toString().toLowerCase();
+/*@I3918*/					match = (value.indexOf(txtDescripcion.text.toLowerCase(), 0) > -1);
+/*@F3918*/					if (match)
+					{
+						break;
+					}
+				}				
+				return match;
+/*@I3918*/			}
+			/*******FIN FILTRO MOVMIENTO CONCILIABLE*****/
+			
+			/******* FILTRO EXTRACTO BANCARIO*****/
+			private function filterDataExtracto():void
+			{
+				if(chkFilterImporte.selected) 
+					txtImporte.text = txtImporteExtracto.text;
+				if(chkFilterDescripcion.selected)
+					txtDescripcion.text = txtDescripcionExtracto.text;
+				
+				if (txtImporteExtracto.text.length == 0 && txtDescripcionExtracto.text.length == 0 && txtNumeroExtracto.text.length == 0)
+				{
+					if(chkFilterImporte.selected || chkFilterDescripcion.selected){
+						if(modelo.listaMovimiento!=null)
+						{
+							modelo.listaMovimiento.filterFunction = null;
+							modelo.listaMovimiento.refresh();
+						}
+						if(modelo.listaExtracto!=null)
+						{
+							modelo.listaExtracto.filterFunction = null;
+							modelo.listaExtracto.refresh();
+						}
+					}
+				}
+				else
+				{
+					if(chkFilterImporte.selected || chkFilterDescripcion.selected)
+					{
+						modelo.listaMovimiento.filterFunction = userFilterGeneral;
+						modelo.listaMovimiento.refresh();
+						
+						modelo.listaExtracto.filterFunction = userFilterGeneralExtracto;
+						modelo.listaExtracto.refresh();
+					}else
+					{
+						modelo.listaExtracto.filterFunction = userFilterGeneralExtracto;
+						modelo.listaExtracto.refresh();
+					}
+				}
+				
+			}
+			
+			private function userFilterGeneralExtracto(item:DetalleExtracto):Boolean
+			{
+				var matchImporte:Boolean = true;
+				var matchDescripcion:Boolean = true;
+				var matchNumero:Boolean = true;
+				
+				if(txtNumeroExtracto.text.length != 0)
+				{
+					matchNumero = false;
+					matchNumero = userFilterNumero(item);
+				}
+				
+				if(txtImporteExtracto.text.length != 0)
+				{
+					matchImporte = false;
+					matchImporte = userFilterImporteExtracto(item);
+				}
+				
+				if(txtDescripcionExtracto.text.length !=0)
+				{
+					matchDescripcion = false;
+					matchDescripcion = userFilterExtracto(item);
+				}
+				
+				return matchNumero && matchImporte && matchDescripcion;
+			}
+			
+			private function userFilterImporteExtracto(item:DetalleExtracto):Boolean
+			{
+				//var tmp:String;
+				var match:Boolean = false;
+				var value:String = new String();				
+				var properties:Array = new Array();
+				properties.push("importe");
+				for each(var property:String in properties)
+				{
+					value = item[property].toString().toLowerCase();
+					match = (value.indexOf(txtImporteExtracto.text.toLowerCase(), 0) > -1);
+					if (match)
+					{
+						break;
+					}
+				}	
+				return match;
+			}
+			
+			
+			private function userFilterExtracto(item:DetalleExtracto):Boolean
+			{
+				//var tmp:String;
+				var match:Boolean = false;
+				var value:String = new String();				
+				var properties:Array = new Array();
+				properties.push("descripcion");
+				for each(var property:String in properties)
+				{
+					value = item[property].toString().toLowerCase();
+					match = (value.indexOf(txtDescripcionExtracto.text.toLowerCase(), 0) > -1);
+					if (match)
+					{
+						break;
+					}
+				}				
+				return match;
+			}
+			
+			
+/*@F3918*/			/*******FIN FILTRO EXTRACTO BANCARIO*****/
+/*@I3918*/			
+			public function listasNulas():Boolean
+			{
+				return (modelo.listaMovimiento == null && modelo.listaExtracto == null);
+			}
+/*F3918*/			
+			public function formatearNumero(item:Object, column:DataGridColumn):String{
+				return numberFormat.format(item.importe).toString();
+			}
+			
+			private function navigatePage(event:Event):void{
+			 	if(event.currentTarget.selectedItem){
+			 		PaginacionSearchModelLocator.getInstanceCabecera().nexPag = true; 
+			 		var maxPag:int = PaginacionSearchModelLocator.getInstanceCabecera().numPage;
+			 		var pagina:int = int(event.currentTarget.selectedItem.label)-1;		
+			 		buscarCabecerasNoConciliados(pagina,pageSize);
+			        if(pagina == maxPag ){ 
+				    	PaginacionSearchModelLocator.getInstanceCabecera().nexPag = false; 
+				    }	
+			    }			 	
+			 }
+			 
+			 private function navigatePageNex():void{		
+			 	var maxPag:int = PaginacionSearchModelLocator.getInstanceCabecera().numPage;
+			    var pagina:int = int(pageNav.selectedItem.data);
+			    if(PaginacionSearchModelLocator.getInstanceCabecera().nexPag && PaginacionSearchModelLocator.getInstanceCabecera().numPage != 1){
+				    buscarCabecerasNoConciliados(pagina,pageSize);
+				    pageNav.selectedIndex  = (int(pageNav.selectedIndex) + 1);
+				    if(pagina == maxPag ){ 
+				    	PaginacionSearchModelLocator.getInstanceCabecera().nexPag = false; 
+				    }	
+			    }
+			 }
+			 private function navigatePagePrevious():void{
+			 	if(pageNav.selectedItem.data > 1){	 
+			 	   var pagina:int = int(pageNav.selectedItem.data) -2;
+			 	   buscarCabecerasNoConciliados(pagina,pageSize);			       
+			       pageNav.selectedIndex  = (int(pageNav.selectedIndex) - 1);    
+			       PaginacionSearchModelLocator.getInstanceCabecera().nexPag = true;		       
+			    }
+			 }
+/*@I3918*/			
+			public function comboLabel(item:Object):String
+			{
+				if (item != null)
+				{
+/*@I4239*/					return StringUtil.trim(BancoPropio(item).numeroCuenta) + " - " + StringUtil.trim(BancoPropio(item).banco.descripcion);
+/*@F4239*/				}
+				else
+				{
+					return "";
+				}
+			}
+			
+/*@I4239*/
+/*@F4239*/
+/*@F3918*/
+			
+/*@I4240*/			private function getSqlExtractoForReport():String{
+				var sql:String = "";
+				sql = "SELECT " + 
+					"C_NRO_COMPROBANTE AS NUMERO, " +
+					"replace(to_char(C_IMPORTE, '9999990.99'),'.',',') as IMPORTE, " +
+					"C_FECHA_MOVIMIENTO as FECHA, " + 
+					"C_SIGNO as SIGNO," +
+					"C_DESCRIPCION as DESCRIPCION " + 
+					" FROM T_VIS_FON_DETALLE_EXTRACTO " +  
+					" WHERE C_ID_BANCO_PROPIO= " + String(bancoPropioCBox.selectedItem.idBancoPropio) +
+					" AND C_FECHA_MOVIMIENTO>= TO_DATE('"+df.format(fechaDesdeDt.selectedDate) + "','DD/MM/YYYY')" +
+					" AND C_FECHA_MOVIMIENTO<= TO_DATE('"+df.format(fechaHastaDt.selectedDate) + "','DD/MM/YYYY')" + 
+					" and C_CONCILIADO like 'N' " ;
+				return sql;				
+			}
+			
+			private function getSqlMovimientoForReport():String{
+				var sql:String = "";
+				sql =	"select" +
+					" to_char(ch.c_numero) as NUMERO," +
+					" replace(to_char(ch.c_importe, '9999990.99'),'.',',') as IMPORTE," +
+					" a.c_fecha as FECHA," +
+					" decode(ai.c_signo,-1,'D','C') as SIGNO," +
+					" ai.c_leyenda as DESCRIPCION " +
+					"  from t_vis_fon_cheques_historial chh " +
+					"  join t_vis_fon_asientos_item ai on(chh.c_id_asiento_item=ai.c_id_asiento_item) " +
+					"  join t_vis_fon_cheques ch on (chh.c_id_cheque=ch.c_id_cheque) " +
+					"  JOIN t_vis_fon_bancos_propios bp ON (ai.c_id_plan_cuenta = bp.c_id_plan_cuenta) " +
+					"  JOIN t_vis_gen_bancos bco ON (bp.c_id_banco=bco.c_id_banco) " +
+					"  join t_vis_fon_asientos a on (ai.c_id_asiento=a.c_id_asiento) " +
+					"  where ai.c_id_plan_cuenta = " +  String(bancoPropioCBox.selectedItem.planCuenta.idPlanCuenta) + " "  +
+					"  and trunc(a.c_fecha) between " +
+					"  TO_DATE('" + df.format(fechaDesdeDt.selectedDate) + "','DD/MM/YYYY') " +
+					"  and TO_DATE('" + df.format(fechaHastaDt.selectedDate) + "','DD/MM/YYYY') " +
+					"  and chh.c_conciliado like 'N' ";
+				return sql;				
+			}
+						
+			/**
+			 * Metodo que exporta la tabla Movimientos a Excel 
+			 * mediante el jreport ConciliacionMovimientoExcel
+			 */
+			private function exportarMovExcel():void
+			{
+				var url:String 		= URLUtil.getServerNameWithPort(Application.application.loaderInfo.url);
+				var protocol:String = URLUtil.getProtocol(Application.application.loaderInfo.url);
+				var fullURL:String 	= protocol + "://" + url +"/Presentacion";
+				
+				//Filtros
+				var numeroMov:String = StringUtil.trim(txtNumero.text);
+				numeroMov= (numeroMov==null)? "" : numeroMov;
+				var descripcionMov:String = StringUtil.trim(txtDescripcion.text);
+				descripcionMov= (descripcionMov==null)? "" : descripcionMov;
+				var importeMov:String = StringUtil.trim(txtImporte.text);
+				importeMov= (importeMov==null)? "" : importeMov;
+				
+				//Consultas
+				var sql:String         	= "&SQL="+getSqlMovimientoForReport();
+				var filNum:String         	= "&FiltroNum="+numeroMov;
+				var filDesc:String         	= "&FiltroDesc="+descripcionMov;
+				var filImp:String         	= "&FiltroImp="+importeMov;
+				
+				//Parameters.
+				var aExcel:String		= "&AExcel=excel";
+				
+				//ConciliacionMovimientoExcel.jrxml es copia de ConciliacionExtractoExcel.jrxml
+				//En caso de modificar uno, tambien modificar el otro
+				var ruta:String = fullURL+"/report/ConciliacionMovimientoExcel.jrxml?";
+				ruta = ruta + sql + filNum + filDesc + filImp + aExcel;
+				//Alert.show("ruta: "+ruta);
+				navigateToURL(new URLRequest(ruta), "_blank");
+			}
+			/**
+			 * Metodo que exporta la tabla Extractos a Excel 
+			 * mediante el jreport ConciliacionExtractoExcel
+			 */
+			private function exportarExtExcel():void
+			{
+				var url:String 		= URLUtil.getServerNameWithPort(Application.application.loaderInfo.url);
+				var protocol:String = URLUtil.getProtocol(Application.application.loaderInfo.url);
+				var fullURL:String 	= protocol + "://" + url +"/Presentacion";
+								
+				//Filtros
+				var numeroExt:String = StringUtil.trim(txtNumeroExtracto.text);
+				numeroExt= (numeroExt==null)? "" : numeroExt;
+				var descripcionExt:String = StringUtil.trim(txtDescripcionExtracto.text);
+				descripcionExt= (descripcionExt==null)? "" : descripcionExt;
+				var importeExt:String = StringUtil.trim(txtImporteExtracto.text);
+				importeExt= (importeExt==null)? "" : importeExt;
+				
+				//Consultas
+				var sql:String         	= "&SQL="+getSqlExtractoForReport();
+				var filNum:String         	= "&FiltroNum="+numeroExt;
+				var filDesc:String         	= "&FiltroDesc="+descripcionExt;
+				var filImp:String         	= "&FiltroImp="+importeExt;
+				
+				//Parameters.
+				var aExcel:String		= "&AExcel=excel";
+				
+				//ConciliacionExtractoExcel.jrxml es copia de ConciliacionMovimientoExcel.jrxml
+				//En caso de modificar uno, tambien modificar el otro
+				var ruta:String = fullURL+"/report/ConciliacionExtractoExcel.jrxml?";
+				ruta = ruta + sql + filNum + filDesc + filImp + aExcel;
+				
+				navigateToURL(new URLRequest(ruta), "_blank");
+			}
+/*@F4240*/			 
+			 
+		]]>
+	</mx:Script>
+	<mx:DateFormatter id="df" formatString="DD/MM/YYYY"/>
+	<mx:NumberFormatter id="numberFormat" precision="2" />
+    
+<!--@I3918-->	<mx:Canvas id="canvasContenido" height="100%" width="100%">
+		<mx:VBox width="100%" horizontalAlign="left" minHeight="10" height="100%">
+			<mx:HBox width="100%" horizontalAlign="center">
+				<mx:VBox width="100%">
+					<mx:HBox width="100%">
+						<!--<mx:Label id="lblInfoBanco" text="DE SAN JUAN S.A." fontSize="12" fontWeight="bold" width="150"/>-->
+						<mx:Label text="Cuenta:"/>
+						<mx:ComboBox id="bancoPropioCBox" dataProvider="{modelo.listaBancoPropio}" labelFunction="comboLabel" change="mostraInfoBanco()"/>
+						<mx:Label text="Desde:"/>
+						<date:DateFiledMultiLan id="fechaDesdeDt" formatString="DD/MM/YYYY" selectedDate="{new Date()}"/>
+						<mx:Label text="Hasta:"/>
+						<date:DateFiledMultiLan id="fechaHastaDt" formatString="DD/MM/YYYY" selectedDate="{new Date()}"/>
+						<mx:Button id="buscarBtn" label="Buscar" click="buscarNoConciliados()"/>
+						<mx:VRule height="25"/>
+						<mx:Spacer width="100%"/>
+						<mx:VRule height="25"/>
+						<mx:HBox>
+							<!--<mx:CheckBox label="Filtrar Movimientos" id="chkFilterMovimientos" selected="true" styleName="frmItmBusqueda" click="{filterData()}"/>
+							<mx:CheckBox label="Filtrar Extracto" id="chkFilterExtracto" selected="true" styleName="frmItmBusqueda" click="{filterData()}"/>-->
+							<mx:CheckBox label="Igualar Filtro Descripcion"  id="chkFilterDescripcion" />
+							<mx:CheckBox label="Igualar Filtro Importe" id="chkFilterImporte"  selected="true"/>
+<!--@F3918-->						</mx:HBox>
+					</mx:HBox>
+				</mx:VBox>
+			</mx:HBox>
+<!--@I3918-->
+			<mx:ApplicationControlBar width="100%" verticalAlign="middle">
+				<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center">
+					<mx:FormItem label="Número" styleName="frmItmBusqueda">
+						<mx:TextInput id="txtNumero" width="80" change="{filterData()}" valueCommit="{filterData()}" 
+									  restrict="0-9" enabled="{modelo.habilitarFiltrosParaConcicliacion}"/>
+					</mx:FormItem>
+					<mx:FormItem label="Descripción" horizontalAlign="right" styleName="frmItmBusqueda">
+						<mx:TextInput id="txtDescripcion" width="150" change="{filterData()}" valueCommit="{filterData()}" 
+									  enabled="{modelo.habilitarFiltrosParaConcicliacion}"/>
+					</mx:FormItem>
+					<mx:FormItem  label="Importe" horizontalAlign="right" styleName="frmItmBusqueda">
+						<mx:TextInput id="txtImporte" width="65" restrict="0-9." change="{filterData()}" valueCommit="{filterData()}" 
+									  enabled="{modelo.habilitarFiltrosParaConcicliacion}"/>
+					</mx:FormItem>
+					<mx:VRule height="25"/>
+					<mx:Spacer width="100%"/>
+					<!--<mx:VBox>
+						<mx:CheckBox label="Filtrar Movimientos" id="chkFilterMovimientos" selected="true" styleName="frmItmBusqueda" click="{filterData()}"/>
+						<mx:CheckBox label="Filtrar Extracto" id="chkFilterExtracto" selected="true" styleName="frmItmBusqueda" click="{filterData()}"/>
+						<mx:CheckBox label="Igualar Filtro Descripcion"  id="chkFilterDescripcion" styleName="frmItmBusqueda"/>
+						<mx:CheckBox label="Igualar Filtro Importe" id="chkFilterImporte" styleName="frmItmBusqueda" selected="true"/>
+					</mx:VBox>-->
+					<mx:VRule height="25"/>
+					<mx:FormItem label="Número" styleName="frmItmBusqueda">
+						<mx:TextInput id="txtNumeroExtracto" width="80" change="{filterDataExtracto()}" valueCommit="{filterDataExtracto()}" 
+									  restrict="0-9" enabled="{modelo.habilitarFiltrosParaConcicliacion}"/>
+					</mx:FormItem>
+					<mx:FormItem label="Descripción" horizontalAlign="right" styleName="frmItmBusqueda">
+						<mx:TextInput id="txtDescripcionExtracto" width="150" change="{filterDataExtracto()}" valueCommit="{filterDataExtracto()}" 
+									  enabled="{modelo.habilitarFiltrosParaConcicliacion}"/>
+					</mx:FormItem>
+					<mx:FormItem  label="Importe" horizontalAlign="right" styleName="frmItmBusqueda">
+						<mx:TextInput id="txtImporteExtracto" width="65" restrict="0-9." change="{filterDataExtracto()}" valueCommit="{filterDataExtracto()}" 
+									  enabled="{modelo.habilitarFiltrosParaConcicliacion}"/>
+					</mx:FormItem>
+				</mx:HBox>
+			</mx:ApplicationControlBar>
+			
+			<mx:HBox width="100%" horizontalAlign="center">
+<!--@I4240-->				<mx:HBox width="50%" horizontalAlign="center">
+					<mx:VBox width="80%">
+						<mx:Label text="Movimientos" fontSize="18" width="200"/>
+					</mx:VBox>
+					<mx:VBox width="20%" horizontalAlign="right" height="100%" verticalAlign="middle">
+						<mx:Button id="exportarMovExcelBtn" label="Exportar Movimientos" click="exportarMovExcel()" />
+					</mx:VBox>
+				</mx:HBox>
+				<mx:HBox width="50%" horizontalAlign="center">
+					<mx:VBox width="80%">
+						<mx:Label text="Extractos" fontSize="18" width="200"/>
+					</mx:VBox>
+					<mx:VBox width="20%" horizontalAlign="right" height="100%" verticalAlign="middle">
+						<mx:Button id="exportarExtExcelBtn" label="Exportar Extractos" click="exportarExtExcel()" />
+					</mx:VBox>
+				</mx:HBox>
+<!--@F4240-->			</mx:HBox>
+			<mx:HBox width="100%" horizontalAlign="center">
+				<mx:VBox width="50%" horizontalAlign="left">
+<!--@F3918-->					<mx:DataGrid id="dgMovimientoFondo" dataProvider="{modelo.listaMovimiento}" width="100%" itemClick="seleccionMovimiento()" textAlign="center"  height="400">
+						<mx:columns>
+				           <mx:DataGridColumn dataField="fecha" headerText="Fecha" labelFunction="getFechaMovimiento" textAlign="left" width="80"/>
+				           <mx:DataGridColumn dataField="numero" headerText="Numero" textAlign="right" width="80"/>
+				           <mx:DataGridColumn dataField="descripcion" headerText="Descripción" textAlign="left" width="300"/>
+				           <mx:DataGridColumn dataField="signo" headerText="Signo" textAlign="center" width="40"/>
+				           <mx:DataGridColumn dataField="importe" headerText="Importe" textAlign="right" labelFunction="formatearNumero" width="80"/>
+				        </mx:columns>
+					</mx:DataGrid>
+				</mx:VBox>
+<!--@I3918-->				<mx:VBox width="50%" horizontalAlign="right">
+<!--@F3918-->					<mx:DataGrid id="dgExtracto" dataProvider="{modelo.listaExtracto}" width="100%" itemClick="seleccionExtracto()" textAlign="center" height="400">
+						<mx:columns>
+				           <mx:DataGridColumn dataField="fechaMovimiento" headerText="Fecha" labelFunction="getFechaExtracto" textAlign="left" width="80"/>
+				           <mx:DataGridColumn dataField="nroComprobante" headerText="Numero" textAlign="right" width="80"/>
+				           <mx:DataGridColumn dataField="descripcion" headerText="Descripción" textAlign="left" width="300"/>
+				           <mx:DataGridColumn dataField="signo" headerText="Signo" textAlign="center" width="40"/>
+				           <mx:DataGridColumn dataField="importe" headerText="Importe" textAlign="right" labelFunction="formatearNumero" width="80"/>
+				        </mx:columns>
+					</mx:DataGrid>
+				</mx:VBox>
+			</mx:HBox>
+<!--@I3918-->			<mx:HBox width="80%" horizontalAlign="center" visible="{modelo.concTempVisible}" includeInLayout="{modelo.concTempVisible}">
+<!--@F3918-->				<mx:Form >
+					<mx:FormItem label="Fecha:">
+						<mx:Label text="{df.format(modelo.cabeceraNueva.fechaGeneracion)}" />
+					</mx:FormItem>
+					<mx:FormItem  label="Comentario">
+						<mx:TextInput id="txComentNuevoConc" text="{modelo.cabeceraNueva.comentario}"/>
+					</mx:FormItem>
+				</mx:Form>
+				<mx:DataGrid id="dgConcTemp" dataProvider="{modelo.cabeceraNueva.conciliacionFondos}" textAlign="left" height="126" itemClick="sacarItem()">
+					<mx:columns>
+					   <mx:DataGridColumn dataField="nroIdentifica" headerText="Numero" textAlign="right" width="80"/>
+					   <mx:DataGridColumn dataField="fechaItem" headerText="Fecha" labelFunction="getFechaItemTemp" textAlign="center" width="80"/>
+			           <mx:DataGridColumn dataField="descripcionGen" headerText="Descripción"  textAlign="left" width="200" />
+			           <mx:DataGridColumn dataField="debe" headerText="Debe" textAlign="right" />
+			           <mx:DataGridColumn dataField="haber" headerText="Haber" textAlign="right" />
+			        </mx:columns>
+				</mx:DataGrid>
+				<mx:VBox height="76">
+					<mx:Button id="GrabarConciliacionBtn" label="Grabar Conciliacion" click="grabarConciliacion()" visible="{modelo.btnGrabarConcVisible}"/>
+					<mx:Button id="btnCancelar" label="Cancelar" click="limpiarDetalle(true)" width="133"/>
+				</mx:VBox>
+			</mx:HBox>
+<!--@I3918-->			
+			<mx:HBox  width="90%" horizontalAlign="center" visible="{modelo.concTempVisible}" includeInLayout="{modelo.concTempVisible}">
+<!--@F3918-->				<mx:VBox width="480" >
+					
+				</mx:VBox>
+				<mx:VBox width="100" >
+					<mx:TextInput id="txtDebe" width="80"  fontWeight="bold" fontSize="12"  color="#1844E6" editable="false" textAlign="center"/>
+				</mx:VBox>
+				<mx:VBox width="100" >
+					<mx:TextInput id="txtHaber" width="80" fontWeight="bold" fontSize="12" editable="false" color="#1844E6" textAlign="center"/>
+				</mx:VBox>
+				<mx:VBox width="100" >
+					<mx:TextInput id="txtDiferencia" width="80" fontWeight="bold" fontSize="12" editable="false" textAlign="center" color="#376732"/>
+				</mx:VBox>
+			</mx:HBox>
+			<mx:HBox  width="100%" >
+				
+			</mx:HBox>
+			<mx:HBox  width="100%" horizontalAlign="left">
+				<mx:VBox width="20%" >
+					<mx:Button id="btnSeleccionarTodo" label="Seleccionar Todo" click="seleccionarTodo()" />		
+				</mx:VBox>
+				<mx:HBox width="80%">  
+				     <mx:Label text="    Pagina" fontWeight="bold" width="70"/>
+				     <mx:Image toolTip="Anterior" click="{navigatePagePrevious()}" id="imgPrevious" source="assets/images/anterior.png" />
+				     <mx:ComboBox id="pageNav" change="{navigatePage(event)}" dataProvider="{PaginacionSearchModelLocator.getInstanceCabecera().paginas}" selectedIndex="{(PaginacionSearchModelLocator.getInstanceCabecera().numPage-1)}" styleName="comboBoxPopup" height="18" width="60"/>
+				     <mx:Image toolTip="Siguiente"   click="{navigatePageNex()}"   id="imgNex"      source="assets/images/siguiente.png" />
+				     <mx:Label text="de" fontWeight="bold"/>
+				     <mx:Label text="{PaginacionSearchModelLocator.getInstanceCabecera().numPage}" fontWeight="bold"/>
+		        </mx:HBox>
+			</mx:HBox>
+			<mx:HBox width="100%" horizontalAlign="center" verticalAlign="top">
+				<mx:DataGrid id="dgConciliacionFondoCabecera" dataProvider="{modelo.listaCabeceraConciliable}" width="100%" textAlign="center" >
+					<mx:columns>
+					   <mx:DataGridColumn id="cSeleccionar" dataField="seleccionado" itemRenderer="components.itemCheckBox" headerText="" width="30" textAlign="center" />
+					   <mx:DataGridColumn dataField="idCabeceraConciliacion" headerText="Id" textAlign="center" width="50"/>
+			           <mx:DataGridColumn dataField="fechaGeneracion" headerText="Fecha Generacion" labelFunction="getFechaGeneracionCabecera"  textAlign="center" width="115"/>
+			           <mx:DataGridColumn dataField="comentario" headerText="Comentario" textAlign="center" width="300"/>
+			           <mx:DataGridColumn headerText="Conciliacion" textAlign="center" width="620" >
+					  	<mx:itemRenderer>
+					  		<mx:Component>
+					  		
+					  			<mx:HBox width="100%" horizontalAlign="center">
+					  				<mx:DataGrid dataProvider="{data.conciliacionFondosFlex}" width="580" textAlign="center" height="80" >
+										<mx:columns>
+								           <mx:DataGridColumn dataField="tipo" headerText="Tipo"  textAlign="left" width="30"/>
+								           <mx:DataGridColumn dataField="contenedor.fechaItem" headerText="Fecha" labelFunction="outerDocument.getFechaItem" textAlign="center" width="70"/>
+								           <mx:DataGridColumn dataField="contenedor.nroIdentifica" headerText="Numero" textAlign="center" width="70"/>
+								           <mx:DataGridColumn dataField="contenedor.descripcionGen" headerText="Descripción"  textAlign="left" width="200" />
+								           <mx:DataGridColumn dataField="contenedor.debe" headerText="Debe" textAlign="right" width="70"/>
+								           <mx:DataGridColumn dataField="contenedor.haber" headerText="Haber" textAlign="right" width="70"/>
+									  
+								        </mx:columns>
+									</mx:DataGrid>
+					  				
+					  			</mx:HBox>
+					  		</mx:Component>
+					  	</mx:itemRenderer>
+					  </mx:DataGridColumn>
+			        </mx:columns>
+				</mx:DataGrid>
+				
+				<mx:VBox width="20%" height="121" horizontalAlign="center" verticalAlign="top">
+					<mx:Button id="btnConfirmarConciliacion" label="Confirmar" click="confirmarConciliacion()" />
+					<mx:Button id="btnDeshacerConciliacion" label="Deshacer" click="deshacerConciliacion()"/>
+				</mx:VBox>
+			</mx:HBox>
+			
+										     
+		</mx:VBox>
+	</mx:Canvas>
+	
+</mx:Module>

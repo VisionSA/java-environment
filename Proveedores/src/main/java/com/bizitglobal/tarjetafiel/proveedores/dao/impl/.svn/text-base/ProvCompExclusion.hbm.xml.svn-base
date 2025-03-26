@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.ProvCompExclusion" table="t_vis_prov_exclusiones"  >
+    <id name="idExclusion" type="java.lang.Long" column="c_id_prov_exclusion">
+        <generator class="increment" />
+    </id>
+    
+    <property name="porcAplicado" type="java.lang.Float" column="c_porc_aplicado" not-null="true" length="10" />  
+    <property name="monto" type="java.math.BigDecimal" column="c_monto" not-null="true" length="10" />
+    
+    <many-to-one name="exclusion"    
+    			 class="com.bizitglobal.tarjetafiel.impuestos.negocio.Exclusion" 
+    			 not-null="true" 
+    			 cascade="none">
+        <column name="c_id_ret_exclusion" />
+    </many-to-one>
+    
+    <many-to-one name="retencion"    
+    			 class="com.bizitglobal.tarjetafiel.proveedores.negocio.ProvCompRetencion" 
+    			 not-null="true" 
+    			 cascade="save-update">
+        <column name="c_id_prov_retencion" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Hoja07"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="561"
+		 pageHeight="841"
+		 columnWidth="561"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="URLImagen" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[select * from t_vis_tra_clientes WHERE c_id_cliente = 1]]></queryString>
+
+	<field name="C_ID_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_SUCURSAL" class="java.math.BigDecimal"/>
+	<field name="C_ID_INDIVIDUO" class="java.math.BigDecimal"/>
+	<field name="C_LIMITE_CREDITO" class="java.math.BigDecimal"/>
+	<field name="C_SALDO_LINEA" class="java.math.BigDecimal"/>
+	<field name="C_ID_ESTADO_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_OPERADOR_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_OPERADOR_COBRANZA" class="java.math.BigDecimal"/>
+	<field name="C_ID_ESTADO_COBRANZA" class="java.math.BigDecimal"/>
+	<field name="C_HABILITADO_CONSUMO" class="java.lang.String"/>
+	<field name="C_ID_OPER_HAB_CONSUMO" class="java.math.BigDecimal"/>
+	<field name="C_CICLO" class="java.math.BigDecimal"/>
+	<field name="C_ADICIONAL" class="java.math.BigDecimal"/>
+	<field name="C_ID_TITULAR" class="java.math.BigDecimal"/>
+	<field name="C_FECHA_ESTADO_CLIENTE" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_ESTADO_COBRANZA" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_HABILITADO_CONSUMO" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_ALTA" class="java.sql.Timestamp"/>
+	<field name="C_NRO_SOLICITUD" class="java.lang.String"/>
+	<field name="C_CLIENTE_VIEJO" class="java.math.BigDecimal"/>
+	<field name="V_NOMBRE" class="java.lang.String"/>
+	<field name="V_DOMICILIO" class="java.lang.String"/>
+	<field name="V_LOCALIDAD" class="java.lang.String"/>
+	<field name="V_COD_POST" class="java.lang.String"/>
+	<field name="V_PROVINCIA" class="java.lang.String"/>
+	<field name="C_FECHA_MORA" class="java.sql.Timestamp"/>
+	<field name="C_ID_PLAN_MORA" class="java.math.BigDecimal"/>
+	<field name="C_CAMBIO_ESTADO_COB" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="60"  isSplitAllowed="true" >
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="149"
+						y="10"
+						width="283"
+						height="45"
+						key="image-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="760"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="548"
+						height="533"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Calibri" size="9" isUnderline="false"/>
+					</textElement>
+				<text><![CDATA[declaran conocer y aceptar que sus datos personales y todos aquellos vinculados o emergentes de este contrato, integren la base de datos de VISION S.A., otorgando su autorización expresa para el tratamiento automatizado de los mismos, su utilización en relación con las actividades que desarrolle VISION S.A. y la provisión de información acerca del grado de cumplimiento de sus obligaciones a las bases de información que corresponda de acuerdo con las disposiciones legales y reglamentarias en vigencia (Ley 25.065 de Tarjetas de Crédito, Ley 25.326 de Protección de Datos Personales, Ley 21.526 de Entidades Financieras y normas reglamentarias del B.C.R.A). El titular de los datos personales tiene la facultad de ejercer el derecho de acceso a los mismos en forma gratuita a intervalos no inferiores a seis (6) meses, salvo que se acredite un interés legítimo al efecto conforme lo establecido en el art. 14, inciso 3 de la ley 25.326.
+21. Fiador. El Sr. ____________, D.N.I. N° ____________, cuyos datos personales y firmas constan al pie del presente, se constituye/n en liso/s y principal/es pagador/es y solidariamente responsable/s por todas las obligaciones emergentes del uso de la/s tarjetas que fueren emitidas por Tarjeta FIEL a nombre del TITULAR y/o su/s adicional/es, renunciando a los beneficios de excusión y división y fijando domicilio a todos los efectos derivados del presente donde más abajo se indica. Esta asunción de responsabilidad abarcará incluso las obligaciones que se generen por el uso de la/s tarjetas aunque se hubiesen contraído en exceso de los límites asignados con más los intereses, comisiones, cargos, honorarios y/o costos extrajudiciales y/o judiciales y accesorios que correspondan, aún después de vencido el plazo de vigencia de la tarjeta y hasta su total cancelación.
+22. Independencia. Salvo que expresamente Tarjeta FIEL manifieste que promueve a determinado proveedor, bien o servicio, ella no responderá ante el incumplimiento de las obligaciones que asuman los establecimientos comerciales adheridos al Sistema de Tarjetas FIEL.Por lo tanto, el TITULAR, el/los adicional/es y el/los fiador/es no podrá/n negarse al pago de monto consignado en el resumen aunque no haya/n recibido el objeto o servicio contratados, lo hubiera/n rechazado por cualquier causa ó lo hubiese recibido en calidad o cantidad inferior o plazo distinto al estipulado o publicitado o mediara la entrega de una nota de crédito; siendo el o los reclamos a los establecimientos adheridos exclusivamente por cuenta y riesgo del TITULAR y/o sus adicional/es. En el caso que el TITULAR, el/los usuario/s adicional/es y/o el/los fiador/es interpusiere/n reclamo o acción legal contra cualesquiera de los establecimientos, por causa de las mercaderías adquiridas o de los servicios prestados, ello no autorizará a suspender o demorar el pago a Tarjeta FIEL de comisiones, cargos y saldos deudores que surjan de los resúmenes.
+23. Jurisdicción. Para cualquier efecto relacionado con el presente, el TITULAR, el/los adicional/es, el/los fiador/es, y el EMISOR constituyen sus respectivos domicilios en las direcciones indicadas en este formulario, declarando bajo juramento que todos los datos allí consignados son completos y verídicos, autorizando a la entidad a corroborarlos de la manera que esta considere adecuada y comprometiéndose a comunicar de inmediato cualquier variación que se produjese en ellos. A todos los efectos del presente, ambas partes y los fiadores se someten a la jurisdicción y competencia de los Tribunales Ordinarios correspondientes al domicilio del Titular, el/los adicional/es y el/los fiador/es.
+24. Precancelación: El TITULAR podrá precancelar total o parcialmente la financiación que le otorga TARJETA FIEL, no existiendo comisión por precancelación anticipada, en los términos de la Com.”A” 5460 del B.C.R.A.
+25. Operaciones por Ventanilla: El TITULAR tiene el derecho de realizar operaciones por ventanilla, sin restricciones de tipo de operación ni de monto mínimo. Este derecho no generará comisión ni cargo alguno.
+DECLARACIÓN JURADA SOBRE LA CONDICIÓN DE PERSONA EXPUESTA POLÍTICAMENTE
+El/la que suscribe, ________________________________ declara bajo juramento que los datos consignados en la presente son correctos, completos y fiel expresión de la verdad y que SI / NO se encuentra incluido y/o alcanzado dentro de la "Nómina de Personas Expuestas Políticamente" aprobada por la Unidad de Información Financiera, que ha leído.
+En caso afirmativo indicar detalladamente el motivo: ________________
+Además, asume el compromiso de informar cualquier modificación que se produzca a este respecto, dentro de los treinta (30) días de ocurrida, mediante la presentación de una nueva declaración jurada. El USUARIO podrá consultar el “Régimen de Transparencia” elaborado por el Banco Central sobre la base de la información proporcionada por los sujetos obligados a fin de comparar los costos, características y requisitos de los productos y servicios financieros, ingresando a http://www.bcra.gob.ar/BCRAyVos/Regimen_de_transparencia.asp.
+EL TITULAR manifiesta en forma expresa, suscribiendo la presente de conformidad, que en los términos normados por la Comunicación “A” 5460 del Banco Central de la República Argentina, ha recibido de TARJETA FIEL un ejemplar del presente instrumento que firma en este acto, debidamente intervenido por TARJETA FIEL.
+En prueba de conformidad, se emiten tantos ejemplares como firmantes, de un mismo tenor y a un solo efecto en la ciudad de San Juan, a  los ______ días del mes de ___________________ de ______.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="504"
+						y="743"
+						width="43"
+						height="12"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[8]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="743"
+						width="171"
+						height="12"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Visión SA - Mendoza 360 Sur - San Juan]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="250"
+						y="743"
+						width="43"
+						height="12"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[v/7.1]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="1"
+						y="540"
+						width="546"
+						height="189"
+						key="rectangle-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="274"
+						y="540"
+						width="0"
+						height="188"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="603"
+						width="546"
+						height="0"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="665"
+						width="274"
+						height="0"
+						key="line-3"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="6"
+						y="543"
+						width="44"
+						height="15"
+						key="staticText-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[TITULAR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="606"
+						width="75"
+						height="15"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[ADICIONAL #1]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="668"
+						width="75"
+						height="15"
+						key="staticText-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[ADICIONAL #2]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="280"
+						y="543"
+						width="44"
+						height="15"
+						key="staticText-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[FIADOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="555"
+						width="91"
+						height="10"
+						key="staticText-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Firma]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="565"
+						width="91"
+						height="10"
+						key="staticText-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Aclaración y DNI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="575"
+						width="91"
+						height="10"
+						key="staticText-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Domicilio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="280"
+						y="555"
+						width="91"
+						height="10"
+						key="staticText-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Firma]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="280"
+						y="565"
+						width="91"
+						height="10"
+						key="staticText-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Aclaración y DNI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="280"
+						y="575"
+						width="91"
+						height="10"
+						key="staticText-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Domicilio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="638"
+						width="91"
+						height="10"
+						key="staticText-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Domicilio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="628"
+						width="91"
+						height="10"
+						key="staticText-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Aclaración y DNI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="618"
+						width="91"
+						height="10"
+						key="staticText-19"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Firma]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="700"
+						width="91"
+						height="10"
+						key="staticText-20"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Domicilio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="690"
+						width="91"
+						height="10"
+						key="staticText-21"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Aclaración y DNI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="680"
+						width="91"
+						height="10"
+						key="staticText-22"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Firma]]></text>
+				</staticText>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<actionScriptProperties analytics="false" mainApplicationPath="GestionClienteFiel.mxml" projectUUID="09be57a5-d90d-4b54-816a-6f0716b57124" version="6">
+  <compiler additionalCompilerArguments="-locale en_US -services config\services-config-server.xml" autoRSLOrdering="false" copyDependentFiles="true" flexSDK="Flex 3.3 (build 4852)" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderLocation="C:/entorno/repositorios/testing/Presentacion/src/main/webapp" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+    <compilerSourcePath/>
+    <libraryPath defaultLinkType="1">
+      <libraryPathEntry kind="4" path=""/>
+      <libraryPathEntry kind="1" linkType="1" path="libs"/>
+      <libraryPathEntry kind="3" linkType="1" path="/FielLib/bin/FielLib.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/BizitLib/bin/BizitLib.swc" useDefaultLinkType="false"/>
+    </libraryPath>
+    <sourceAttachmentPath/>
+  </compiler>
+  <applications>
+    <application path="GestionClienteFiel.mxml"/>
+  </applications>
+  <modules>
+    <module application="src/ProcesaPagoFacil.mxml" destPath="modules/principal/GestionClienteModule.swf" optimize="false" sourcePath="src/modules/principal/GestionClienteModule.mxml"/>
+    <module application="src/GestionClienteFiel.mxml" destPath="modules/principal/AdminModule.swf" optimize="true" sourcePath="src/modules/principal/AdminModule.mxml"/>
+    <module application="src/GestionClienteFiel.mxml" destPath="modules/principal/OperadorModule.swf" optimize="true" sourcePath="src/modules/principal/OperadorModule.mxml"/>
+  </modules>
+  <buildCSSFiles/>
+</actionScriptProperties>

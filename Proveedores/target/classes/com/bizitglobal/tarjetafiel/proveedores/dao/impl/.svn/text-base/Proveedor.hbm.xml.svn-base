@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.Proveedor" table="t_vis_prov_proveedores"> 
+    <id name="idProveedor" type="java.lang.Long" column="c_id_proveedor">
+        <generator class="increment" />
+    </id>
+
+    <property name="cuit" type="long" column="c_cuit" not-null="true" length="11"/>
+    <property name="razonSocial" type="java.lang.String" column="c_razon_social" not-null="true" length="30"/>
+    <property name="nombreFantasia" type="java.lang.String" column="c_nombre_fantasia" not-null="true" length="100"/>
+    <property name="alias" type="java.lang.String" column="c_alias" not-null="false" length="30"/>
+    <property name="inscripcionDgr" type="java.lang.String" column="c_inscripcion_dgr" length="20"/>
+    <property name="integranteSoc" type="java.lang.Character" column="c_integrante_soc" />
+    <property name="empleador" type="java.lang.Character" column="c_empleador" />
+    <property name="fechaFactura" type="java.lang.Character" column="c_es_fecha_factura" />
+    <property name="activo" type="java.lang.Character" column="c_activo" />
+    <property name="limiteCredito" type="java.math.BigDecimal" column="c_limite_credito"  not-null="true" length="10"/>
+    <property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="true" length="3594"/>
+    
+    <!-- Associations -->
+    <many-to-one name="grupo"    
+                 class="com.bizitglobal.tarjetafiel.proveedores.negocio.Grupo" 
+                 not-null="true"
+                 cascade="none">
+        <column name="c_id_grupo" />
+    </many-to-one>
+    
+    <many-to-one name="sucursalFiel"    
+    			 class="com.bizitglobal.tarjetafiel.general.negocio.SucursalFiel" 
+    			 not-null="true"
+    			 cascade="none">
+        <column name="c_id_sucursal" />
+    </many-to-one>
+
+    <many-to-one name="moneda"    
+				 class="com.bizitglobal.tarjetafiel.general.negocio.Moneda" 
+				 not-null="true"
+				 cascade="none">
+        <column name="c_id_moneda" />
+    </many-to-one>
+
+    <many-to-one name="modalidadPago"    
+    		     class="com.bizitglobal.tarjetafiel.general.negocio.ModalidadPago" 
+        		 not-null="true" 
+        		 cascade="save-update">
+        <column name="c_id_modalidad_pago" />
+    </many-to-one>
+    
+    <many-to-one name="jurisdiccion"    
+    		     class="com.bizitglobal.tarjetafiel.impuestos.negocio.Jurisdiccion" 
+        		 not-null="true" 
+        		 cascade="none">
+        <column name="c_id_jurisdiccion" />
+    </many-to-one>
+
+	<many-to-one name="operador"    
+				 class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" 
+				 not-null="true"
+				 cascade="none">
+        <column name="c_id_operador" />
+    </many-to-one>    
+
+    <set name="relaciones" inverse="false" cascade="all"    >
+        <key>
+            <column name="c_id_proveedor" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.RelacionProveedor"/>
+    </set>
+
+    <set name="domicilios" inverse="false" cascade="all"    >
+        <key>
+            <column name="c_id_proveedor" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorDomicilio"/>
+    </set>
+
+    <set name="emails" inverse="false" cascade="all"    >
+        <key>
+            <column name="c_id_proveedor" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorEmail"/>
+    </set>
+    
+    <set name="provedorCategoria" inverse="false" cascade="all"    >
+        <key>
+            <column name="c_id_proveedor" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorCategoria"/>
+    </set>
+
+    <set name="comprobantes" inverse="false" cascade="none"    >
+        <key>
+            <column name="c_id_proveedor" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.Comprobante"/>
+    </set>
+    
+    <set name="formasDePago" inverse="false" cascade="all"    >
+        <key>
+            <column name="c_id_proveedor" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorFormaPago"/>
+    </set>
+
+    <set name="telefonos" inverse="false" cascade="all"    >
+        <key>
+            <column name="c_id_proveedor" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorTelefono"/>
+    </set>
+
+    <set name="tiposVtos" inverse="false" cascade="all"    >
+        <key>
+            <column name="c_id_proveedor" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.TipoVencimiento"/>
+    </set>
+
+    <set name="clieRelaciones" inverse="false" cascade="all"    >
+        <key>
+            <column name="c_id_proveedor" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.ClienteRelacion"/>
+    </set>
+
+</class>
+</hibernate-mapping>

@@ -1,0 +1,61 @@
+.infoApplicationControlBar {
+	highlightAlphas: 0, 0;
+	fillAlphas: 0.74, 0.5;
+	fillColors: #000099, #00ccff;
+	backgroundColor: #0000ff;
+	backgroundAlpha: 0.47;
+	cornerRadius: 14;
+	dropShadowEnabled: true;
+	shadowDistance: 5;
+	shadowDirection: right;
+	horizontalAlign: "center";
+	verticalAlign: "middle";
+}
+
+.lblTitleInfo
+{
+	color: #FFFFFF;
+	fontSize: 15;
+	fontWeight: bold;
+	textAlign: center;
+}
+
+.lblItemInfo
+{
+	fontFamily: Georgia;
+	fontSize: 13;
+	fontStyle: italic;
+	textAlign: left;
+	color: #FFFFFF;
+}
+
+.lblVersionInfo
+{
+	fontFamily: Georgia;
+	fontSize: 13;
+	fontStyle: italic;
+	textAlign: left;
+	color: #353434;
+	fontWeight: bold;
+	textDecoration: underline;
+}
+
+.lblVersionDetallesInfo
+{
+	fontFamily: Georgia;
+	fontStyle: italic;
+	textAlign: left;
+	color: #FFFFFF;
+	color: #353434;
+	fontSize: 12;
+}
+
+.lblMedioPagoInfo
+{
+	color: #FFFFFF;
+}
+
+lnkVersiones {
+	selectionColor: #003399;
+	textSelectedColor: #cccccc;
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import managers.ClienteManager;
+			import views.categorias.cliente.models.CtaCteClienteModel;
+			import views.categorias.cliente.ComposicionDetalleCtaCteView;
+			import views.categorias.cliente.DetalleCtaCteView;
+			import views.categorias.cliente.ResumidoCtaCteView;
+			import views.categorias.cliente.modules.CtaCteClienteModule;
+		]]>
+	</mx:Script>
+	<Injectors targets="{[CtaCteClienteModule,ResumidoCtaCteView,DetalleCtaCteView,ComposicionDetalleCtaCteView]}">
+		<ObjectBuilder generator="{CtaCteClienteModel}">
+		 <Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="ctaCteClienteModel"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="saldoAnterior" sourceKey="saldoAnteriorCtaCte" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayMovientosCtaCteResumen" sourceKey="arrayMovientosCtaCteResumen" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayMovientoCtaCteDetalles" sourceKey="arrayMovientoCtaCteDetalles" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayComposicionDetalleCtaCte" sourceKey="arrayComposicionDetalleCtaCte" source="{ClienteManager}"/>
+	</Injectors>
+</EventMap>

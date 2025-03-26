@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" 
+ 	width="600" 
+ 	borderStyle="solid" 
+ 	borderThickness="2" 
+ 	borderColor="#000000" creationComplete="init()">
+ 
+ 	<mx:Script>
+ 		<![CDATA[
+ 			import com.tarjetafiel.caja.vo.Plan;
+ 			import mx.events.CloseEvent;
+ 			import mx.controls.Alert;
+ 			import mx.managers.PopUpManager;
+ 			import mx.core.IFlexDisplayObject;
+ 			import com.tarjetafiel.caja.vo.PlanVersion;
+ 			import com.tarjetafiel.caja.vo.util.Filtro;
+ 			import events.GenericPlanEvent;
+ 			import model.CobranzasModelLocator;
+ 			import mx.core.Application;
+ 			
+ 			[Bindable]
+ 			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+ 			
+ 			
+ 			private function init():void {
+ 				
+ 				var filtro:Filtro = new Filtro();						
+				filtro.campos.push("plan.idPlan");				
+				filtro.operadores.push(Filtro.IGUAL);								
+				filtro.valores.push(modelo.planSeleccionado.idPlan);
+ 				new GenericPlanEvent(GenericPlanEvent.BUSCAR_VERSIONES_EVENT,filtro).dispatch();
+ 				
+ 			}
+ 			
+ 			
+ 			private function getFecha(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaDesde);
+			}
+ 			
+ 			private function seleccionarVersion():void {
+ 				var version : PlanVersion = modelo.listaVersiones.getItemAt(dgVersiones.selectedIndex) as PlanVersion;
+ 				version.plan = modelo.planSeleccionado;
+ 				new GenericPlanEvent(GenericPlanEvent.SELECCIONAR_VERSION_EVENT,version).dispatch();
+ 			}
+ 			
+ 			private function verVersion():void {
+ 				Application.application.modulo.url = "views/modulos/ViewEditarVersionModule.swf";
+                //Application.application.modulo.loadModule();
+ 			}
+ 			
+ 			private function nuevaVersion():void {
+ 				Application.application.modulo.url = "views/modulos/NuevaVersionModule.swf";
+                //Application.application.modulo.loadModule();
+ 			}
+ 			 			
+ 			private function salir():void {
+ 				
+ 				new GenericPlanEvent(GenericPlanEvent.INICIALIZAR_EDIT_PLAN_MODULO_EVENT,null).dispatch();
+ 				Application.application.modulo.unloadModule();
+ 				Application.application.modulo.url = modelo.moduloSeleccionado.url;
+                Application.application.modulo.data = modelo.moduloSeleccionado.data;
+                Application.application.modulo.loadModule();
+ 			}
+ 			
+ 			private function eliminarVersion():void {
+ 				Alert.yesLabel = "SI";
+ 				Alert.noLabel = "NO";
+ 				Alert.show("Esta Seguro?","Eliminar "+modelo.versionSeleccionada.descripcion,Alert.YES | Alert.NO,this,confirmarEliminar,null,Alert.NO);
+ 			}
+ 			
+ 			
+ 			 private function confirmarEliminar(eventObj:CloseEvent):void {
+ 			 	 
+ 			 	 if (eventObj.detail==Alert.YES) {
+ 			 	 	new GenericPlanEvent(GenericPlanEvent.ELIMINAR_VERSION_EVENT,modelo.versionSeleccionada).dispatch();
+ 			 	 }
+ 			 	 
+ 			 }
+ 			 
+ 			 private function actualizarPlan():void {
+ 			 		
+ 			 	Alert.yesLabel = "SI";
+ 				Alert.noLabel = "NO";
+ 				Alert.show("Esta Seguro?","Modificar "+modelo.planSeleccionado.descripcion,Alert.YES | Alert.NO,this,confirmarModificar,null,Alert.NO);
+
+ 			 }
+ 			 
+ 			 
+ 			 private function confirmarModificar(eventObj:CloseEvent):void {
+ 			 	 
+ 			 	 if (eventObj.detail==Alert.YES) {
+ 			 	 	
+	 			 	
+	 			 	if (chkPorDefecto.selected && modelo.planSeleccionado.esPlanPorDefecto != "S"){
+	 			 		Alert.yesLabel = "SI";
+ 						Alert.noLabel = "NO";
+ 						Alert.show("Esta Seguro?\n","Setear "+modelo.planSeleccionado.descripcion+" por Defecto",Alert.YES | Alert.NO,this,confirmarPlanPorDefecto,null,Alert.NO);
+	 			 	} else {
+	 			 		var plan : Plan = new Plan(); 			 	
+	 			 	
+		 			 	if (chkHabilitado.selected){
+		 			 		plan.habilitado = "S";	
+		 			 	}else {
+		 			 		plan.habilitado = "N";
+		 			 	}
+		 			 	
+		 			 	if (chkPorDefecto.selected){
+		 			 		plan.esPlanPorDefecto = "S";	
+		 			 	}else {
+		 			 		plan.esPlanPorDefecto = "N";
+		 			 	}
+		 			 	
+		 			 	
+		 			 	
+	 					new GenericPlanEvent(GenericPlanEvent.MODIFICAR_PLAN_EVENT,plan).dispatch(); 	
+	 			 		salir();
+		 			 	}			 	 	
+ 			 	 	
+ 			 	 }
+ 			 	 
+ 			 }
+ 			 
+ 			private function confirmarPlanPorDefecto(eventObj:CloseEvent):void{
+ 				if (eventObj.detail==Alert.YES) {
+ 					var plan : Plan = new Plan(); 			 	
+	 			 	
+	 			 	if (chkHabilitado.selected){
+	 			 		plan.habilitado = "S";	
+	 			 	}else {
+	 			 		plan.habilitado = "N";
+	 			 	}
+	 			 	
+	 			 	plan.esPlanPorDefecto = "S";
+	 			 	
+	 			 	new GenericPlanEvent(GenericPlanEvent.SETEAR_PLAN_POR_DEFECTO_EVENT,modelo.planSeleccionado).dispatch();
+	 			 	
+ 					new GenericPlanEvent(GenericPlanEvent.MODIFICAR_PLAN_EVENT,plan).dispatch(); 	
+ 			 		salir();
+ 				}
+ 				
+ 			} 
+ 			
+ 		]]>
+ 	</mx:Script>
+ 
+ 
+ 	<mx:DateFormatter id="df" formatString="DD/MM/YYYY"/>
+ 	
+	<mx:Form>
+		<mx:FormItem label="Nombre:">
+			<mx:TextInput text="{modelo.planSeleccionado.descripcion}" editable="false"/>
+		</mx:FormItem>
+		<mx:FormItem label="Habilitado:">
+			<mx:CheckBox id="chkHabilitado" selected="{modelo.planSeleccionado.habilitado == 'S'}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Por Defecto:">
+			<mx:CheckBox id="chkPorDefecto" selected="{modelo.planSeleccionado.esPlanPorDefecto == 'S'}" enabled="{modelo.planSeleccionado.esPlanPorDefecto != 'S'}"/>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:HBox width="100%" horizontalAlign="center">
+		<mx:VBox horizontalAlign="center" width="80%">
+			<mx:Label text="Versiones" fontSize="18" fontWeight="bold" textDecoration="underline" />
+			<mx:DataGrid id="dgVersiones" height="90" width="90%" dataProvider="{modelo.listaVersiones}" itemClick="seleccionarVersion()">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Vigencia Desde" width="100" dataField="fechaDesde" labelFunction="getFecha"/>
+					<mx:DataGridColumn headerText="Descripción" dataField="descripcion"/>
+					<mx:DataGridColumn headerText="Filtro" dataField="queryClientesQueAplican">
+						<mx:itemRenderer>
+				  			<mx:Component>
+				  				<mx:HBox horizontalScrollPolicy="off" toolTip="{data.queryClientesQueAplican}">
+				  					<mx:Label text="{data.queryClientesQueAplican}" />
+				  				</mx:HBox>				  				
+				  			</mx:Component>
+				  		</mx:itemRenderer>
+					</mx:DataGridColumn>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:HBox horizontalAlign="right" width="90%">
+				<mx:Button label="Nueva" width="80" click="nuevaVersion()"/>
+				<mx:Button label="Visualizar" width="80" enabled="{modelo.versionSeleccionada != null}" click="verVersion()"/>
+				<mx:Button label="Eliminar" width="80" enabled="{modelo.versionSeleccionada != null}" click="eliminarVersion()"/>				
+			</mx:HBox>
+		</mx:VBox>	
+	</mx:HBox>
+	<mx:HRule width="100%" />
+	<mx:HBox width="100%" horizontalAlign="right" paddingLeft="5" paddingRight="5" paddingBottom="20" paddingTop="10">
+		<mx:Button label="Guardar" click="actualizarPlan()"/>
+		<mx:Button label="Cancelar" click="salir()"/>
+		
+	</mx:HBox>
+</mx:Module>

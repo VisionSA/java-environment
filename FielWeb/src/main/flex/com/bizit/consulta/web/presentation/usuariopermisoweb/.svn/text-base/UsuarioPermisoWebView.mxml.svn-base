@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="usuarioPermisoWebView_creationCompleteHandler(event)" height="100%" title="UsuarioPermisoWeb List" width="100%">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.ProgressBar;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.messaging.ChannelSet;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import com.bizit.consulta.web.entity.UsuarioPermisoWeb;
+			
+			import spark.components.TitleWindow;
+			
+			[Bindable]
+			public var remotingChannels:ChannelSet;
+			
+			private var progressBar:ProgressBar;
+
+			protected function usuarioPermisoWebView_creationCompleteHandler(event:FlexEvent):void
+			{
+				usuarioPermisoWebService.list();
+			}
+			
+			protected function usuarioPermisoWebView_usuarioPermisoWebCreateEventHandler(event:UsuarioPermisoWebEvent):void
+			{
+				usuarioPermisoWebService.create(event.usuarioPermisoWeb);
+				showProgressBar();
+			}
+			
+			protected function usuarioPermisoWebView_usuarioPermisoWebUpdateEventHandler(event:UsuarioPermisoWebEvent):void
+			{
+				usuarioPermisoWebService.update(event.usuarioPermisoWeb);
+				showProgressBar();
+			}
+			
+			private function showForm(usuarioPermisoWeb:UsuarioPermisoWeb = null):void 
+			{
+				var form:UsuarioPermisoWebForm = PopUpManager.createPopUp(this, UsuarioPermisoWebForm, true) as UsuarioPermisoWebForm;
+				form.remotingChannels = remotingChannels;
+				form.usuarioPermisoWeb = usuarioPermisoWeb != null ? usuarioPermisoWeb : new UsuarioPermisoWeb();
+				form.addEventListener(UsuarioPermisoWebEvent.CREATE, usuarioPermisoWebView_usuarioPermisoWebCreateEventHandler);
+				form.addEventListener(UsuarioPermisoWebEvent.UPDATE, usuarioPermisoWebView_usuarioPermisoWebUpdateEventHandler);
+				PopUpManager.centerPopUp(form);
+			}
+			
+			private function showProgressBar():void {
+				progressBar = PopUpManager.createPopUp(this, ProgressBar, true) as ProgressBar;
+				progressBar.indeterminate = true;
+				progressBar.mode="manual";
+				PopUpManager.centerPopUp(progressBar);
+			}
+			
+			private function closeProgressBar():void {
+				PopUpManager.removePopUp(progressBar);
+			}
+
+			protected function usuarioPermisoWebService_createResultHandler(event:ResultEvent):void
+			{
+				var createdUsuarioPermisoWeb:UsuarioPermisoWeb = event.result as UsuarioPermisoWeb;
+				var people:ArrayCollection = usuarioPermisoWebGrid.dataProvider as ArrayCollection;
+				people.addItem(createdUsuarioPermisoWeb);
+				closeProgressBar();
+			}
+			
+			protected function usuarioPermisoWebService_updateResultHandler(event:ResultEvent):void
+			{
+				var updatedUsuarioPermisoWeb:UsuarioPermisoWeb = event.result as UsuarioPermisoWeb;
+				var people:ArrayCollection = usuarioPermisoWebGrid.dataProvider as ArrayCollection;
+				for (var i:int=0; i<people.length; i++) {
+					var usuarioPermisoWeb:UsuarioPermisoWeb = people.getItemAt(i) as UsuarioPermisoWeb;
+					if (usuarioPermisoWeb.id == updatedUsuarioPermisoWeb.id) {
+						people.removeItemAt(i);
+						people.addItemAt(updatedUsuarioPermisoWeb, i);
+					}
+				}
+				closeProgressBar();
+			}
+			
+			protected function usuarioPermisoWebService_removeResultHandler(event:ResultEvent):void
+			{
+				var people:ArrayCollection = usuarioPermisoWebGrid.dataProvider as ArrayCollection;
+				people.removeItemAt(usuarioPermisoWebGrid.selectedIndex);
+				closeProgressBar();
+			}
+
+			protected function usuarioPermisoWebService_faultHandler(event:FaultEvent):void
+			{
+				closeProgressBar();
+				Alert.show(event.fault.faultString, "Remote Operation Failed");
+			}
+
+			protected function editUsuarioPermisoWebBtn_clickHandler(event:MouseEvent):void
+			{
+				if (usuarioPermisoWebGrid.selectedIndex > -1) {
+					var selectedUsuarioPermisoWeb:UsuarioPermisoWeb = usuarioPermisoWebGrid.selectedItem as UsuarioPermisoWeb;
+					showForm(selectedUsuarioPermisoWeb);
+				}
+			}
+
+			protected function deleteUsuarioPermisoWebBtn_clickHandler(event:MouseEvent):void
+			{
+				if (usuarioPermisoWebGrid.selectedIndex > -1) {
+					var selectedUsuarioPermisoWeb:UsuarioPermisoWeb = usuarioPermisoWebGrid.selectedItem as UsuarioPermisoWeb;
+					showProgressBar();
+					usuarioPermisoWebService.remove(selectedUsuarioPermisoWeb.id);
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RemoteObject channelSet="{remotingChannels}" destination="usuarioPermisoWebService" fault="usuarioPermisoWebService_faultHandler(event)" id="usuarioPermisoWebService">
+			<s:method name="create" result="usuarioPermisoWebService_createResultHandler(event)"/>
+			<s:method name="update" result="usuarioPermisoWebService_updateResultHandler(event)"/>
+			<s:method name="remove" result="usuarioPermisoWebService_removeResultHandler(event)"/>
+		</s:RemoteObject>
+		
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:Button click="showForm();" id="newUsuarioPermisoWebBtn" label="New UsuarioPermisoWeb"/>
+	
+	<mx:DataGrid dataProvider="{usuarioPermisoWebService.list.lastResult}" height="80%" id="usuarioPermisoWebGrid" width="80%">
+		<mx:columns>
+		</mx:columns>
+	</mx:DataGrid>
+	
+	<s:Group>
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		<s:Button click="editUsuarioPermisoWebBtn_clickHandler(event)" id="editUsuarioPermisoWebBtn" label="Edit"/>
+		<s:Button click="deleteUsuarioPermisoWebBtn_clickHandler(event)" id="deleteUsuarioPermisoWebBtn" label="Delete"/>
+	</s:Group>
+</s:Panel>

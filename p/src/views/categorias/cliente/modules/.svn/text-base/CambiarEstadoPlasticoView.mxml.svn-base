@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow close="PopUpManager.removePopUp(this)" xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical"
+	 showCloseButton="true" title="{plasticosXClienteModel.titleCambio}" width="450">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.PlasticoLugar;
+			import views.categorias.cliente.models.PlasticosXClienteModel;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.vo.PlasticoEstado;
+			import mx.controls.ComboBox;
+			import views.categorias.cliente.models.PlasticosModel;
+			
+			[Bindable]public var plasticosModel:PlasticosModel;
+			
+			[Bindable]public var plasticosXClienteModel:PlasticosXClienteModel; 
+			
+			private function cambiarEstadoLugar():void{
+				
+				if(viewStack.selectedIndex == 0){
+					plasticosXClienteModel.cambiarDeEstado(cboProximoEstado.selectedItem as PlasticoEstado)
+				} else {
+					plasticosXClienteModel.cambiarDeLugar(cboProximoLugar.selectedItem as PlasticoLugar)
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:ViewStack width="100%" height="100%" id="viewStack" selectedIndex="{plasticosXClienteModel.indexViewCambioEstadoLugar}">
+		<mx:VBox width="100%" height="100%">
+			<mx:Form width="100%" height="100%">
+				<mx:FormItem label="Estado Actual:">
+					<mx:Label text="{plasticosXClienteModel.plastico.estadoPlastico.descripcion}" styleName="lblSeleccionado"/>
+				</mx:FormItem>
+				<mx:FormItem label="Proximo Estado:">
+					<mx:ComboBox labelField="descripcion" id="cboProximoEstado"
+						dataProvider="{plasticosModel.plasticoEstadosList}" ></mx:ComboBox>
+				</mx:FormItem>
+			</mx:Form>
+		</mx:VBox>
+		<mx:VBox width="100%" height="100%">
+			<mx:Form width="100%" height="100%">
+				<mx:FormItem label="Lugar Actual:">
+					<mx:Label errorString="''" text="{plasticosXClienteModel.plastico.plasticoLugar.descripcion}" styleName="lblSeleccionado"/>
+				</mx:FormItem>
+				<mx:FormItem label="Proximo Lugar:">
+					<mx:ComboBox labelField="descripcion" id="cboProximoLugar"
+						dataProvider="{plasticosModel.plasticoLugarList}" ></mx:ComboBox>
+				</mx:FormItem>
+			</mx:Form>
+		</mx:VBox>		
+	</mx:ViewStack>
+	
+	<mx:HBox width="100%" horizontalAlign="right">
+		<mx:Button label="Guardar" click="this.cambiarEstadoLugar()"/>
+		<mx:Button label="Cancelar" click="this.dispatchEvent(new CloseEvent(CloseEvent.CLOSE))"/>
+	</mx:HBox>
+	
+</mx:TitleWindow>

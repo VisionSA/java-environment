@@ -1,0 +1,1092 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="constanciaRetencionComercio"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="575"
+		 columnSpacing="0"
+		 leftMargin="10"
+		 rightMargin="10"
+		 topMargin="10"
+		 bottomMargin="10"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="URLImagen" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="fecha_label" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="mes" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="anio" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cuit" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="comercio" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[select  'a-Retencion' as tipo ,to_number(com.c_codigo_posnet) as codPosnet, 'Const. Percepcion/Retencion R.G.(A.F.I.P.)796'as Titulo , 
+      'Constancia  Nro.'|| const.c_id_constancia_ret_com as nroConstancia,
+      emp.c_razon_social as razonSocial, emp.c_cuit,
+      dom.c_calle_nombre || '  '||  dom.c_calle_numero || ' -Piso:' || nvl(to_char(dom.c_piso),'') || ' -Dpto: '|| nvl(dom.c_depto,' ') || ' Bº: '|| nvl(bar.c_descripcion,' ') as domicilio,
+      nvl(loc.c_codigo_postal,' ') ||'  '|| loc.c_nombre || ' -' || prov.c_nombre as localidad 
+      ,case when impret.c_codigo_regimen is not null then 'R.G. ' || impret.c_codigo_regimen  ||'-'|| impret.c_descripcion else impret.c_descripcion end as retencion, 
+       liq.c_fecha_liquidacion     as  fechaLiq,
+       ret.c_id_liquidacion as idLiq,
+       ret.c_monto as monto,
+       nvl((select  distinct  nvl(cat.c_descripcion,'') from  t_vis_tra_cod_comercios_acti comActi
+                               inner join     t_vis_juris_actividades acti on acti.c_id_juris_actividad = comacti.c_id_juris_actividad
+                               inner join  t_vis_imp_categorias cat on cat.c_id_categoria_imp = acti.c_id_categoria_imp
+                               inner join  t_vis_imp_tipo_impuestos tipo on tipo.c_id_tipo_impuesto =  cat.c_id_tipo_impuesto
+                               where   tipo.c_id_tipo_impuesto = 1
+                                     and comacti.c_id_cod_comercio = com.c_id_cod_comercio), '-') as condIva,
+                               nvl((select  distinct nvl(cat.c_descripcion,'') from  t_vis_tra_cod_comercios_acti comActi
+                               inner join     t_vis_juris_actividades acti on acti.c_id_juris_actividad = comacti.c_id_juris_actividad
+                               inner join  t_vis_imp_categorias cat on cat.c_id_categoria_imp = acti.c_id_categoria_imp
+                               inner join  t_vis_imp_tipo_impuestos tipo on tipo.c_id_tipo_impuesto =  cat.c_id_tipo_impuesto
+                               where   tipo.c_id_tipo_impuesto = 2
+                                    and comacti.c_id_cod_comercio = com.c_id_cod_comercio), '-') as condGanancias,
+                               nvl((select  distinct nvl(cat.c_descripcion,'') from  t_vis_tra_cod_comercios_acti comActi
+                               inner join     t_vis_juris_actividades acti on acti.c_id_juris_actividad = comacti.c_id_juris_actividad
+                               inner join  t_vis_imp_categorias cat on cat.c_id_categoria_imp = acti.c_id_categoria_imp
+                               inner join  t_vis_imp_tipo_impuestos tipo on tipo.c_id_tipo_impuesto =  cat.c_id_tipo_impuesto
+                               where   tipo.c_id_tipo_impuesto = 5
+                                    and comacti.c_id_cod_comercio = com.c_id_cod_comercio), '-') as ingBrutos,   
+                               nvl(com.c_inscripcion_dgr, '-') as inscripDgr         
+from  t_vis_tra_liq_com_retenciones ret
+inner join t_vis_tra_constancia_ret_com const  on  const.c_id_constancia_ret_com = ret.c_id_constancia_ret_com
+inner join t_vis_imp_retenciones impRet  on  impRet.c_cod_retencion = ret.c_cod_retencion
+inner join t_vis_tra_liq_comercios liqCom on  liqCom.c_id_liq_comercio=  ret.c_id_liquidacion
+inner  join  t_vis_tra_liquidaciones liq on liqcom.c_numero_liquidacion= liq.c_id_liquidacion
+inner join t_vis_tra_cod_comercios com  on com.c_id_cod_comercio  =  const.c_cod_comercio
+inner join t_vis_gen_suc_empresas suc  on com.c_id_sucursal=  suc.c_id_sucursal
+inner join t_vis_gen_domicilios  dom on suc.c_id_domicilio =  dom.c_id_domicilio
+inner join t_vis_gen_barrios bar on  dom.c_id_barrio = bar.c_id_barrio
+inner join t_vis_gen_localidades  loc on loc.c_id_localidad= dom.c_id_localidad
+inner join t_vis_gen_provincias  prov on prov.c_id_provincia= loc.c_id_provincia
+inner join t_vis_gen_empresas emp on emp.c_id_empresa =  suc.c_id_empresa
+inner join t_vis_juris_actividades ja on ja.c_id_juris_actividad = impRet.c_id_juris_actividad
+inner join t_vis_imp_categorias ic on ic.c_id_categoria_imp = ja.c_id_categoria_imp
+
+--inner join t_vis_tra_ctacte_comercios cta on cta.c_id_liq_comercio =  liq.c_id_liq_comercio
+where --const.c_mes = '03' and const.c_anio = '2010'
+      --and const.c_cod_comercio= 3956
+      const.c_mes = $P{mes} and const.c_anio = $P{anio}
+      and const.c_cod_comercio= $P{comercio}
+      and ic.c_id_tipo_impuesto in (1,2)
+
+union 
+select  'b-Percepcion' as tipo,to_number(com.c_codigo_posnet)  as codPosnet, 'Const. Percep./Retención R.G.(A.F.I.P.)796'as Titulo , 
+      'Constancia  Nro.'|| const.c_id_constancia_ret_com as nroConstancia,
+       emp.c_razon_social as razonSocial, emp.c_cuit,
+       dom.c_calle_nombre || '  '||  dom.c_calle_numero || ' -Piso:' || decode(nvl(dom.c_piso,0),'',dom.c_piso) || ' -Dpto: '|| nvl(dom.c_depto,' ') || ' Bº: '|| nvl(bar.c_descripcion,' ') as domicilio,
+       nvl(loc.c_codigo_postal,' ') ||'  '|| loc.c_nombre || ' -' || prov.c_nombre as localidad ,
+       impExc.c_descripcion   as retencion ,  
+       liq.c_fecha_liquidacion    as  fechaLiq,
+       ret.c_id_liquidacion as idLiq,
+       ret.c_monto as monto, 
+       (select  distinct nvl(cat.c_descripcion,'') from  t_vis_tra_cod_comercios_acti comActi
+                               inner join     t_vis_juris_actividades acti on acti.c_id_juris_actividad = comacti.c_id_juris_actividad
+                               inner join  t_vis_imp_categorias cat on cat.c_id_categoria_imp = acti.c_id_categoria_imp
+                               inner join  t_vis_imp_tipo_impuestos tipo on tipo.c_id_tipo_impuesto =  cat.c_id_tipo_impuesto
+                               where   tipo.c_id_tipo_impuesto = 1
+                                     and comacti.c_id_cod_comercio = com.c_id_cod_comercio) as condIva,
+                                (select  distinct nvl(cat.c_descripcion,'') from  t_vis_tra_cod_comercios_acti comActi
+                               inner join     t_vis_juris_actividades acti on acti.c_id_juris_actividad = comacti.c_id_juris_actividad
+                               inner join  t_vis_imp_categorias cat on cat.c_id_categoria_imp = acti.c_id_categoria_imp
+                               inner join  t_vis_imp_tipo_impuestos tipo on tipo.c_id_tipo_impuesto =  cat.c_id_tipo_impuesto
+                               where   tipo.c_id_tipo_impuesto = 2
+                                    and comacti.c_id_cod_comercio = com.c_id_cod_comercio) as condGanancias,
+                                 (select  distinct nvl(cat.c_descripcion,'') from  t_vis_tra_cod_comercios_acti comActi
+                               inner join     t_vis_juris_actividades acti on acti.c_id_juris_actividad = comacti.c_id_juris_actividad
+                               inner join  t_vis_imp_categorias cat on cat.c_id_categoria_imp = acti.c_id_categoria_imp
+                               inner join  t_vis_imp_tipo_impuestos tipo on tipo.c_id_tipo_impuesto =  cat.c_id_tipo_impuesto
+                               where   tipo.c_id_tipo_impuesto = 5
+                                    and comacti.c_id_cod_comercio = com.c_id_cod_comercio) as ingBrutos,
+                                    com.c_inscripcion_dgr  as inscripDgr         
+from  t_vis_tra_liq_com_retenciones ret
+inner join t_vis_tra_constancia_ret_com const  on  const.c_id_constancia_ret_com = ret.c_id_constancia_ret_com
+inner join t_vis_tra_liq_comercios liqCom on  liqCom.c_id_liq_comercio=  ret.c_id_liquidacion
+inner  join  t_vis_tra_liquidaciones liq on liqcom.c_numero_liquidacion= liq.c_id_liquidacion
+inner  join t_vis_tra_liq_com_exclusiones  exc  on  exc.C_ID_LIQ_COM_RETENCION= ret.C_ID_LIQ_COM_RETENCION
+inner join T_VIS_IMP_RET_EXCLUSION impExc  on  impExc.C_ID_RET_EXCLUSION = exc.C_ID_RET_EXCLUSION
+inner join t_vis_tra_cod_comercios com  on com.c_id_cod_comercio  =  const.c_cod_comercio
+inner join t_vis_gen_suc_empresas suc  on com.c_id_sucursal=  suc.c_id_sucursal
+inner join t_vis_gen_domicilios  dom on suc.c_id_domicilio =  dom.c_id_domicilio
+inner join t_vis_gen_barrios bar on  dom.c_id_barrio = bar.c_id_barrio
+inner join t_vis_gen_localidades  loc on loc.c_id_localidad= dom.c_id_localidad
+inner join t_vis_gen_provincias  prov on prov.c_id_provincia= loc.c_id_provincia
+inner join t_vis_gen_empresas emp on emp.c_id_empresa =  suc.c_id_empresa
+inner join t_vis_imp_retenciones impRet  on  impRet.c_cod_retencion = ret.c_cod_retencion
+inner join t_vis_juris_actividades ja on ja.c_id_juris_actividad = impRet.c_id_juris_actividad
+inner join t_vis_imp_categorias ic on ic.c_id_categoria_imp = ja.c_id_categoria_imp
+
+where const.c_mes = $P{mes} and const.c_anio = $P{anio}
+     and const.c_cod_comercio= $P{comercio}
+     and ic.c_id_tipo_impuesto in (1,2) 
+      
+order by 2,1 desc ,9 asc]]></queryString>
+
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="CODPOSNET" class="java.math.BigDecimal"/>
+	<field name="TITULO" class="java.lang.String"/>
+	<field name="NROCONSTANCIA" class="java.lang.String"/>
+	<field name="RAZONSOCIAL" class="java.lang.String"/>
+	<field name="C_CUIT" class="java.math.BigDecimal"/>
+	<field name="DOMICILIO" class="java.lang.String"/>
+	<field name="LOCALIDAD" class="java.lang.String"/>
+	<field name="RETENCION" class="java.lang.String"/>
+	<field name="FECHALIQ" class="java.sql.Timestamp"/>
+	<field name="IDLIQ" class="java.math.BigDecimal"/>
+	<field name="MONTO" class="java.math.BigDecimal"/>
+	<field name="CONDIVA" class="java.lang.String"/>
+	<field name="CONDGANANCIAS" class="java.lang.String"/>
+	<field name="INGBRUTOS" class="java.lang.String"/>
+	<field name="INSCRIPDGR" class="java.lang.String"/>
+
+	<variable name="SUM_MONTO_1" class="java.math.BigDecimal" resetType="Group" resetGroup="retencion" calculation="Sum">
+		<variableExpression><![CDATA[$F{MONTO}]]></variableExpression>
+	</variable>
+
+		<group  name="comercio" >
+			<groupExpression><![CDATA[$F{CODPOSNET}]]></groupExpression>
+			<groupHeader>
+			<band height="40"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="66"
+						y="3"
+						width="130"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial Black" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{RAZONSOCIAL}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="18"
+						y="3"
+						width="47"
+						height="10"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<text><![CDATA[Razón Social:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="358"
+						y="3"
+						width="28"
+						height="10"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<text><![CDATA[C.U.I.T.:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="388"
+						y="3"
+						width="42"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{C_CUIT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="18"
+						y="15"
+						width="47"
+						height="10"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<text><![CDATA[Domicilio Fiscal:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="66"
+						y="15"
+						width="255"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DOMICILIO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="66"
+						y="26"
+						width="255"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{LOCALIDAD}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="334"
+						y="15"
+						width="52"
+						height="10"
+						key="staticText-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<text><![CDATA[Nro. Ing. Brutos.:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="388"
+						y="15"
+						width="42"
+						height="10"
+						key="textField-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{INSCRIPDGR}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="443"
+						y="15"
+						width="38"
+						height="10"
+						key="staticText-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<text><![CDATA[Ing. Brutos.:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="484"
+						y="15"
+						width="76"
+						height="10"
+						key="textField-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{INGBRUTOS}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="437"
+						y="3"
+						width="45"
+						height="10"
+						key="staticText-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<text><![CDATA[Cond.ante Iva:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="432"
+						y="26"
+						width="49"
+						height="10"
+						key="staticText-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<text><![CDATA[Imp. Ganancias:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="484"
+						y="26"
+						width="76"
+						height="10"
+						key="textField-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CONDGANANCIAS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="484"
+						y="3"
+						width="76"
+						height="10"
+						key="textField-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CONDIVA}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="retencion" >
+			<groupExpression><![CDATA[$F{CODPOSNET}.toString().concat($F{RETENCION})]]></groupExpression>
+			<groupHeader>
+			<band height="23"  isSplitAllowed="true" >
+				<rectangle radius="2" >
+					<reportElement
+						mode="Opaque"
+						x="17"
+						y="0"
+						width="540"
+						height="12"
+						backcolor="#CCCCCC"
+						key="rectangle-2"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="20"
+						y="2"
+						width="545"
+						height="10"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{RETENCION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="24"
+						y="14"
+						width="53"
+						height="9"
+						key="staticText-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<text><![CDATA[Fecha]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="84"
+						y="14"
+						width="70"
+						height="9"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<text><![CDATA[Nro Liquidación]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="161"
+						y="14"
+						width="79"
+						height="9"
+						key="staticText-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<text><![CDATA[Monto]]></text>
+				</staticText>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="13"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="13"
+						y="11"
+						width="228"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="241"
+						y="2"
+						width="0"
+						height="10"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="98"
+						y="1"
+						width="67"
+						height="9"
+						key="staticText-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Arial Black" size="6"/>
+					</textElement>
+				<text><![CDATA[Total Retenido:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="176"
+						y="1"
+						width="63"
+						height="9"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial" size="6" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_MONTO_1}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="50"  isSplitAllowed="true" >
+				<rectangle radius="2" >
+					<reportElement
+						mode="Opaque"
+						x="18"
+						y="35"
+						width="540"
+						height="14"
+						backcolor="#CCCCCC"
+						key="rectangle-1"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="20"
+						y="37"
+						width="62"
+						height="12"
+						forecolor="#000000"
+						key="staticText-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<text><![CDATA[Comercio nro:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="84"
+						y="37"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{CODPOSNET}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="117"
+						y="37"
+						width="177"
+						height="12"
+						forecolor="#000000"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TITULO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="295"
+						y="37"
+						width="80"
+						height="12"
+						forecolor="#000000"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{fecha_label}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="377"
+						y="37"
+						width="94"
+						height="12"
+						forecolor="#000000"
+						key="textField-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NROCONSTANCIA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="475"
+						y="37"
+						width="40"
+						height="12"
+						forecolor="#000000"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Pág " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="520"
+						y="37"
+						width="30"
+						height="12"
+						forecolor="#000000"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="FillFrame" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="19"
+						y="3"
+						width="67"
+						height="29"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="10"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="85"
+						y="1"
+						width="68"
+						height="9"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IDLIQ}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="160"
+						y="1"
+						width="80"
+						height="9"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{MONTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="24"
+						y="1"
+						width="53"
+						height="9"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Arial" size="6"/>
+					</textElement>
+				<textFieldExpression   class="java.sql.Timestamp"><![CDATA[$F{FECHALIQ}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="20"  isSplitAllowed="true" >
+				<rectangle radius="2" >
+					<reportElement
+						mode="Opaque"
+						x="16"
+						y="4"
+						width="524"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-5"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true"
+						isPrintInFirstWholeBand="true"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="21"
+						y="5"
+						width="575"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-6"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true"
+						isPrintInFirstWholeBand="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="6" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[VISION S.A - Mendoza 360 Sur, Galería Torres de Cuyo (5400) San Juan Tel. (0264) 429-3400 - C.U.I.T. 30-70704996-7 Ing. Brutos 000/070962/8 - IVA: Responsable Inscripto
+
+]]></text>
+				</staticText>
+			</band>
+		</pageFooter>
+		<lastPageFooter>
+			<band height="158"  isSplitAllowed="true" >
+				<rectangle radius="2" >
+					<reportElement
+						mode="Transparent"
+						x="16"
+						y="17"
+						width="525"
+						height="120"
+						backcolor="#CCCCCC"
+						key="rectangle-3"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="2" >
+					<reportElement
+						x="16"
+						y="3"
+						width="525"
+						height="14"
+						backcolor="#CCCCCC"
+						key="rectangle-4"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="18"
+						y="4"
+						width="522"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Mensajes
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="75"
+						y="91"
+						width="366"
+						height="11"
+						key="staticText-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica" size="8"/>
+					</textElement>
+				<text><![CDATA[Uruguay 250 esq. Torrente (Radio San Antonio). Tel: 4293425.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="72"
+						y="79"
+						width="388"
+						height="11"
+						key="staticText-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Salvador María del Carril 412 (N) Esq. 29 de Agosto. Tel: 4293427.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="19"
+						y="20"
+						width="289"
+						height="11"
+						backcolor="#CCCCCC"
+						key="staticText-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[SUCURSALES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="20"
+						y="79"
+						width="114"
+						height="11"
+						key="staticText-19"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[ALBARDÓN:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="20"
+						y="91"
+						width="115"
+						height="11"
+						key="staticText-20"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[MEDIA AGUA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="20"
+						y="32"
+						width="114"
+						height="11"
+						key="staticText-21"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[SAN JUAN:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="67"
+						y="32"
+						width="329"
+						height="11"
+						key="staticText-22"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Mendoza 360 (Sur) Local 4 – Edificio Torres de Cuyo - Tel. 429-3400.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="68"
+						y="44"
+						width="329"
+						height="11"
+						key="staticText-23"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Boulevard Sarmiento 273 (Oeste) - Tel. 429-3424.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="21"
+						y="44"
+						width="114"
+						height="11"
+						key="staticText-24"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[RAWSON:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="20"
+						y="55"
+						width="114"
+						height="11"
+						key="staticText-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[CAUCETE: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="67"
+						y="55"
+						width="329"
+						height="11"
+						key="staticText-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Godoy Cruz 585 (Radio Santa Rita). Tel: 4293444. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="20"
+						y="67"
+						width="114"
+						height="11"
+						key="staticText-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[JACHAL:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="67"
+						y="67"
+						width="329"
+						height="11"
+						key="staticText-28"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[San Juan 530 (Optica San José). Tel: (02647) 420500.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="297"
+						y="20"
+						width="276"
+						height="11"
+						backcolor="#CCCCCC"
+						key="staticText-29"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[ASESORES COMERCIALES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="320"
+						y="32"
+						width="277"
+						height="11"
+						key="staticText-30"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica" size="8"/>
+					</textElement>
+				<text><![CDATA[Mario Clavel  Tel. 15-5049417 - mail: mclavel@tarjetafiel.com]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="320"
+						y="44"
+						width="276"
+						height="11"
+						key="staticText-31"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica" size="8"/>
+					</textElement>
+				<text><![CDATA[Virginia Lopez Tel. 15-5062674 - mail: vlopez@tarjetafiel.com]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="215"
+						y="108"
+						width="222"
+						height="11"
+						backcolor="#CCCCCC"
+						key="staticText-32"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-BoldOblique" size="8" isBold="true" isItalic="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[SÁBADOS DE 17 A 21 HS.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="21"
+						y="108"
+						width="480"
+						height="11"
+						backcolor="#CCCCCC"
+						key="staticText-33"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[Nuevo horario de atención en Casa Central, días                 
+ ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="311"
+						y="108"
+						width="229"
+						height="11"
+						backcolor="#CCCCCC"
+						key="staticText-34"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[   Mendoza 360 Sur - Galería Torres de Cuyo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="21"
+						y="123"
+						width="571"
+						height="11"
+						backcolor="#CCCCCC"
+						key="staticText-35"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="8" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[Autorización Telefónica Tel: 429-3400 - 0810-222-3400 - lunes a sábados de 8:30hs a 22hs - domingos de 10:00hs a 14:00hs                  
+ ]]></text>
+				</staticText>
+				<line direction="BottomUp">
+					<reportElement
+						x="317"
+						y="18"
+						width="0"
+						height="82"
+						key="line-3"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</line>
+				<rectangle radius="2" >
+					<reportElement
+						mode="Opaque"
+						x="17"
+						y="142"
+						width="524"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-3"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true"
+						isPrintInFirstWholeBand="true"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="22"
+						y="143"
+						width="575"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-4"
+						positionType="Float"
+						isPrintRepeatedValues="false"
+						isRemoveLineWhenBlank="true"
+						isPrintInFirstWholeBand="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="6" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[VISION S.A - Mendoza 360 Sur, Galería Torres de Cuyo (5400) San Juan Tel. (0264) 429-3400 - C.U.I.T. 30-70704996-7 Ing. Brutos 000/070962/8 - IVA: Responsable Inscripto
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="320"
+						y="56"
+						width="276"
+						height="11"
+						key="staticText-36"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" pdfFontName="Helvetica" size="8"/>
+					</textElement>
+				<text><![CDATA[Mauricio Sosa Tel. 15-5062783 - mail: msosa@tarjetafiel.com]]></text>
+				</staticText>
+			</band>
+		</lastPageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

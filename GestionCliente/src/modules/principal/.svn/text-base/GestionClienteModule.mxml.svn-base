@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" 
+		   paddingBottom="5" paddingTop="5" 
+		   layout="vertical" 
+		   xmlns:upload="com.util.upload.*" 
+		   xmlns:date="com.util.components.date.*" 
+		   xmlns:paginacion="com.util.paginacion.*" 
+		   backgroundColor="#6E6E6E" 
+		   xmlns:mate="http://mate.asfusion.com/" 
+		   height="100%" width="100%"
+		   xmlns:modules="com.util.modules.*"
+		   xmlns:principal="modules.principal.*"
+		   creationComplete="inicializar()"
+		   >
+	
+	
+	<mx:Resize id="resize"/>
+	
+	<mx:ViewStack width="100%" height="100%" id="viewStack">
+		<modules:VboxLoadModule module="modules/principal/OperadorModule.swf" label="Operador" id="vistaOperador" />
+		<modules:VboxLoadModule module="modules/principal/AdminModule.swf" label="Administrador" id="vistaAdmin" />
+	</mx:ViewStack>
+	
+	
+	
+	<mx:Script>
+		
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.GestionClienteLog;
+			import com.tarjetafiel.caja.vo.Operador;
+			import com.util.components.alert.AlertOk;
+			
+			import models.ApplicationModel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ICollectionView;
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import mx.events.CollectionEvent;
+			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ListEvent;
+			import mx.utils.ObjectUtil;
+			
+			
+			[Bindable]public var manager:Manager;
+			[Bindable]public var applicationModel:ApplicationModel;
+			
+
+			private var timer:Timer = new Timer(2000);
+			
+			public function inicializar():void{
+				// Se coloca un timer por 2 seg , ya que demora en obtener el operador, 
+				// y no hay forma de controlar el asincronismo
+				timer.addEventListener(TimerEvent.TIMER, fooPartTwo);
+				timer.start();
+			}
+			
+			private function fooPartTwo(event:TimerEvent):void {
+				timer.removeEventListener(TimerEvent.TIMER, fooPartTwo);
+				timer = null;
+				// 3 seconds have passed, now do something more
+				load();
+			}
+			
+			private function load():void{
+				manager.operador = applicationModel.operador;
+				//administrador
+				if(manager.operador.permiteLinea == 'A'){
+					viewStack.removeChild(vistaOperador)
+					manager.buscarGestionVigente();
+					manager.buscarGestionVencida();
+				}
+				//Operador
+				else{
+					viewStack.removeChild(vistaAdmin);
+					manager.buscarGestionConConsumo();
+					manager.buscarGestionSinConsumo();
+				}
+			}	
+			
+			
+		]]>
+	</mx:Script>
+
+	
+</mx:Module>
+

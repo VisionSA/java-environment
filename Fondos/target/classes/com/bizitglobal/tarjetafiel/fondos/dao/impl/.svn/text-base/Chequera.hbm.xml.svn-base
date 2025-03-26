@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.Chequera" table="T_VIS_FON_CHEQUERAS" >
+	<id name="idChequera" type="java.lang.Long" column="C_ID_CHEQUERA">
+		<generator class="increment" />
+	</id>
+	
+	<property name="nroInicio" type="java.lang.Long" column="C_NUMERO_INICIO" not-null="true"/>
+	<property name="nroFin" type="java.lang.Long" column="C_NUMERO_FIN" not-null="true"/>
+	<property name="proximoAUsar" type="java.lang.Long" column="C_PROXIMO_A_USAR" not-null="true"/>
+	<property name="ultimaModificacion" type="java.util.Date" column="C_ULTIMA_MODIF" not-null="false" length="3594"/>
+	<property name="habilitado" type="java.lang.Character" column="C_HABILITADO" not-null="false" />
+	
+    <many-to-one name="bancoPropio" class="com.bizitglobal.tarjetafiel.fondos.negocio.BancoPropio" not-null="true" >
+		<column name="C_ID_BANCO_PROPIO" />
+	</many-to-one>
+	
+	<many-to-one name="operador" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="false" >
+		<column name="C_ID_OPERADOR" />
+	</many-to-one>
+	
+</class>
+</hibernate-mapping>

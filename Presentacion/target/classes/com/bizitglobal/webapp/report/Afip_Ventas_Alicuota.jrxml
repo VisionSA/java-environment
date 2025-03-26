@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Afip_Ventas_Alicuota"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="351"
+		 pageHeight="2834611"
+		 columnWidth="351"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="net.sf.jasperreports.print.keep.full.text" value="true" />
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true" />
+	<property name="net.sf.jasperreports.export.xls.wrap.text" value="false" />
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true" />
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false" />
+	<property name="ireport.zoom" value="1.0" />
+	<property name="ireport.x" value="0" />
+	<property name="ireport.y" value="0" />
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="net.sf.jasperreports.engine.design.JasperDesign" />
+	<import value="com.bizitglobal.webapp.faces.beans.util.*" />
+
+	<parameter name="fecha_desde" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<queryString><![CDATA[select  
+orden,
+(case when (neto_gravado<0) then '090' 
+else '099' end) AS Tipo,
+campo_03 AS N_comprobante,
+neto_gravado,
+impuesto_liquidado
+   
+from (  
+select 
+0 as orden,
+lpad(trim(replace(TO_CHAR(a.c_id_liq_cliente,'9999999'),',', '' )),20,'0') AS campo_03,  
+to_char(a.c_fecha_cierre,'yyyyMMdd') AS Tipo,  
+    
+(SELECT SUM(c_importe*c_signo) from t_vis_tra_ctacte_clientes  
+WHERE c_id_liq_cliente=a.c_id_liq_cliente  
+AND c_id_concepto_detalle in(2,23,25,30,36,58,59,75,76,80,151,153,157,160,162,164,166,355,363,410,522,631,724,807,836,861,867,871,874,876,934,980,6)) AS neto_gravado,  
+ 
+(SELECT SUM(c_importe*c_signo) from t_vis_tra_ctacte_clientes  
+WHERE c_id_liq_cliente=a.c_id_liq_cliente  
+AND c_id_concepto_detalle in(3,24,38,60,70,77,78,152,154,155,156,158,159,161,163,165,167,354,366,523,632,725,808,837,862,868,875,877,935,981,7)) AS impuesto_liquidado  
+  
+from t_vis_tra_liq_clientes a, t_vis_tra_clientes e,t_vis_eva_individuos f  
+Where trunc(a.c_fecha_cierre) BETWEEN $P{fecha_desde} and $P{fecha_hasta} 
+ 
+AND ( 
+(SELECT SUM(c_importe*c_signo) from t_vis_tra_ctacte_clientes  
+WHERE c_id_liq_cliente=a.c_id_liq_cliente  
+AND c_id_concepto_detalle in(2,23,25,30,36,58,59,75,76,80,151,153,157,160,162,164,166,355,363,410,522,631,724,807,836,861,867,871,874,876,934,980,6))<>0 OR   
+  
+(SELECT SUM(c_importe*c_signo) from t_vis_tra_ctacte_clientes  
+WHERE c_id_liq_cliente=a.c_id_liq_cliente  
+AND c_id_concepto_detalle in(3,24,38,60,70,77,78,152,154,155,156,158,159,161,163,165,167,354,366,523,632,725,808,837,862,868,875,877,935,981,7))<>0)  
+AND a.c_id_cliente=e.c_id_cliente  
+AND e.c_id_individuo=f.c_id_individuo  
+AND a.c_id_liquidacion_clientes IN(SELECT c_id_liquidacion_clientes FROM t_vis_tra_liquidaciones_cli WHERE c_confirmada = 'S' )  
+group by  e.v_nombre,f.c_cuil,a.c_id_liq_cliente,a.c_fecha_cierre)
+
+union
+
+select 
+orden,
+'099' AS Tipo,    
+campo_03 AS N_comprobante,  
+neto_gravado+neto_gravado2 as neto_gravado,
+impuesto_liquidado+impuesto_liquidado2 as impuesto_liquidado
+  
+from (select   
+  
+lpad(trim(replace(TO_CHAR(a.c_id_liq_comercio,'9999999'),',', '' )),20,'0') AS campo_03,  
+1 as orden,  
+(SELECT SUM(c_importe*c_signo*-1) from t_vis_tra_ctacte_comercios  
+WHERE c_id_liq_comercio=a.c_id_liq_comercio  
+AND c_id_concepto_detalle in(18,20,869,86,361,362,872,524,527,910,911,914) 
+) AS neto_gravado,  
+  
+(SELECT NVL(SUM(c_importe*c_signo),0) from t_vis_tra_ctacte_comercios  
+WHERE c_id_liq_comercio=a.c_id_liq_comercio  
+AND c_id_concepto_detalle in(193,196)  
+) AS neto_gravado2,  
+ 
+(SELECT SUM(c_importe*c_signo*-1) from t_vis_tra_ctacte_comercios  
+WHERE c_id_liq_comercio=a.c_id_liq_comercio  
+AND c_id_concepto_detalle in (19,21,870,360,526,912) 
+) AS impuesto_liquidado,  
+  
+(SELECT NVL(SUM(c_importe*c_signo),0) from t_vis_tra_ctacte_comercios  
+WHERE c_id_liq_comercio=a.c_id_liq_comercio  
+AND c_id_concepto_detalle in(322,323)  
+) AS impuesto_liquidado2  
+  
+from t_vis_tra_liq_comercios a,t_vis_tra_liquidaciones b  
+where trunc(b.c_fecha_liquidacion) BETWEEN $P{fecha_desde} and $P{fecha_hasta} 
+AND a.c_numero_liquidacion=b.c_id_liquidacion)]]></queryString>
+
+	<field name="ORDEN" class="java.math.BigDecimal"/>
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="N_COMPROBANTE" class="java.lang.String"/>
+	<field name="NETO_GRAVADO" class="java.math.BigDecimal"/>
+	<field name="IMPUESTO_LIQUIDADO" class="java.math.BigDecimal"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="15"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="0"
+						width="60"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Tipo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="60"
+						y="0"
+						width="126"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-23"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[N° de Comprobante]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="186"
+						y="0"
+						width="82"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Neto Gravado]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="268"
+						y="0"
+						width="83"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Impuesto]]></text>
+				</staticText>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="60"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TIPO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="60"
+						y="0"
+						width="126"
+						height="15"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{N_COMPROBANTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="186"
+						y="0"
+						width="82"
+						height="15"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{NETO_GRAVADO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="268"
+						y="0"
+						width="83"
+						height="15"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPUESTO_LIQUIDADO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.planificadoremail.negocio.Template" table="T_VIS_PLA_TEMPLATES" >
+	
+	<cache usage="read-write"/>
+	<id name="idTemplate" type="java.lang.Long" column="C_ID_TEMPLATE">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_TEMPLATE_ID</param>
+		</generator>
+	</id>
+	
+	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="true" length="150"/>
+	<property name="archivoTemp" type="java.lang.String" column="C_ARCHIVOTEMP" not-null="true"  length="255" />
+		
+    <set name="paramTemplate" inverse="false" cascade="all" lazy="false">
+		<key>
+			<column name="C_ID_TEMPLATE" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.ParamTemplate"/>
+	</set>
+
+    <set name="urlTemplate" inverse="false" cascade="all" lazy="false">
+		<key>
+			<column name="C_ID_TEMPLATE" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.UrlTemplate"/>
+	</set>
+
+	<many-to-one name="tipoOrigen" class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.TipoOrigen" not-null="true" >
+		<column name="C_ID_TIPOORIGEN" />
+	</many-to-one>
+	
+</class>
+</hibernate-mapping>

@@ -1,0 +1,539 @@
+package com.bizitglobal.webapp.faces.beans.fondos;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.math.BigDecimal;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import com.bizitglobal.tarjetafiel.commons.filtros.Filtro;
+import com.bizitglobal.tarjetafiel.commons.util.Convertidores;
+import com.bizitglobal.tarjetafiel.commons.util.Fecha;
+import com.bizitglobal.tarjetafiel.commons.util.PropertieFile;
+import com.bizitglobal.tarjetafiel.fondos.exception.BancoPropioException;
+import com.bizitglobal.tarjetafiel.fondos.exception.ChequeException;
+import com.bizitglobal.tarjetafiel.fondos.negocio.BancoPropio;
+import com.bizitglobal.tarjetafiel.fondos.negocio.Cheque;
+import com.bizitglobal.tarjetafiel.fondos.negocio.ChequeHistorial;
+import com.bizitglobal.tarjetafiel.fondos.negocio.LoteInterbank;
+import com.bizitglobal.tarjetafiel.fondos.negocio.Movimiento;
+import com.bizitglobal.tarjetafiel.fondos.negocio.RegistroUpload;
+import com.bizitglobal.tarjetafiel.proveedores.negocio.Comprobante;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.LiqComercio;
+import com.bizitglobal.webapp.faces.beans.BaseBean;
+import com.bizitglobal.webapp.faces.beans.util.ScrollBean;
+import com.bizitglobal.webapp.faces.util.Session;
+import com.bizitglobal.webapp.faces.util.Util;
+
+
+@SuppressWarnings({"rawtypes","unchecked"})
+public class InterbankingBean extends BaseBean {
+	private static final Logger log = Logger.getLogger(InterbankingBean.class);
+	private Filtro filtro = new Filtro();
+	private LoteInterbank loteInterbank;
+	private List chequeList = new ArrayList();
+	private Long idBancoSeleccionado;
+	private List bancoItems = new ArrayList();
+	private List bancoPropioList;
+	private Date fecha = new Date();
+	private List acredList = new ArrayList();
+	private boolean listaCargada;
+	private FileReader fr = null;
+	private FileWriter fw = null;
+	private BufferedReader br = null;
+	private Double sumatoria;
+
+
+	public InterbankingBean() {
+		super();
+		borrar();
+	}
+
+
+	public List getChequeList() {
+		return chequeList;
+	}
+
+
+	public void setChequeList(List chequeList) {
+		this.chequeList = chequeList;
+	}
+
+
+	public Filtro getFiltro() {
+		return filtro;
+	}
+
+
+	public void setFiltro(Filtro filtro) {
+		this.filtro = filtro;
+	}
+
+
+	public Long getIdBancoSeleccionado() {
+		return idBancoSeleccionado;
+	}
+
+
+	public void setIdBancoSeleccionado(Long idBancoSeleccionado) {
+		this.idBancoSeleccionado = idBancoSeleccionado;
+	}
+
+
+	public List getBancoItems() {
+		return bancoItems;
+	}
+
+
+	public void setBancoItems(List bancoItems) {
+		this.bancoItems = bancoItems;
+	}
+
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+
+	public boolean getListaCargada() {
+		return listaCargada;
+	}
+
+
+	public void setListaCargada(boolean listaCargada) {
+		this.listaCargada = listaCargada;
+	}
+
+
+	public Integer getTotalAcred() {
+		return chequeList.size();
+	}
+
+
+	public Double getSumatoria() {
+		return new BigDecimal(sumatoria).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
+
+
+	public void setSumatoria(Double sumatoria) {
+		this.sumatoria = sumatoria;
+	}
+
+
+	/************************************************************************
+	 * ACCIONES DEL BEAN DE INTERBANKING
+	 ************************************************************************/
+
+	public String inicializar() {
+		borrar();
+		try {
+			filtro.reset();
+			bancoPropioList = fondosService.getBancoPropioService().getBancoPropios(filtro);
+			bancoItems.clear();
+			bancoItems.add(new SelectItem(new Long(0), "Seleccione banco"));
+			bancoItems.addAll(Util.cargarSelectItem(bancoPropioList));
+		} catch (BancoPropioException e) {
+			e.printStackTrace();
+		}
+		if (Session.getBean("ScrollBean") != null)
+		{
+			ScrollBean bean = (ScrollBean) Session.getBean("ScrollBean");
+			bean.setHiddenScrollY(new Integer(0));
+		}
+		cargarItems();
+		return "generarInterbanking";
+	}
+
+
+	private void cargarItems() {
+
+	}
+
+
+	public void grabar(ActionEvent event) {
+		try {
+			if (validar()) {
+				popup.setPopup(popup.ICONO_OK, "El ???????? ha sido almacenada exitosamente.");
+			}
+			else {
+				ScrollBean scrollBean = (ScrollBean) Session.getBean("ScrollBean");
+				scrollBean.borrar();
+			}
+		} catch (Exception e3) {
+			popup.setPopup(popup.ICONO_FALLA, "Fallo el alta.");
+			e3.printStackTrace();
+		}
+	}
+
+
+	public void borrar() {
+		borrarBaseBean();
+		alta = true;
+		tituloLargo = "TARJETA FIEL";
+		tituloCorto = "Archivo Interbanking";
+		chequeList.clear();
+		idBancoSeleccionado = new Long(0);
+		acredList.clear();
+		fecha = new Date();
+		loteInterbank = new LoteInterbank();
+		loteInterbank.setFechaGenerado(new Date());
+		listaCargada = false;
+		sumatoria = new Double(0);
+	}
+
+
+	public String cancelar() {
+		borrar();
+		return "inicio";
+	}
+
+
+	public boolean validar() {
+		error.borrar();
+		if (idBancoSeleccionado != null && idBancoSeleccionado.equals(new Long(0)))
+			error.agregar("Debe seleccionar una cuenta");
+
+		if (fecha == null) {
+			error.agregar("Debe cargar una fecha");
+		} else {
+			if (!Fecha.addDias(new Date(), 179).after(fecha)) {
+				error.agregar("No se pueden realizar acreditaciones superiores a 180 dias ");
+			} else {
+				filtro.reset();
+				filtro.agregarCampoOperValor("tipo", Filtro.LIKEXS, "A");
+				filtro.agregarCampoOperValor("fechaPago", Filtro.MENOR, Filtro.getTO_DATE(fecha));
+				filtro.agregarCampoOperValor("bancoPropio.idBancoPropio", Filtro.IGUAL, idBancoSeleccionado);
+				try {
+					if (!fondosService.getChequeService().contarChequesPendiente(filtro).equals(new Long(0))) {
+						error.agregar("Existen TEF pendientes de upload con fecha anterior");
+					}
+				} catch (ChequeException e) {
+					error.agregar("Ocurrio un error");
+				}
+
+			}
+		}
+
+		return !error.hayErrores();
+	}
+
+
+	public String irANuevoGeneracion() {
+		return inicializar();
+	}
+
+
+	public String irAListarArchivos() {
+		// borrar();
+		// tituloCorto = "Listado de Cheques";
+		// cargarItems();
+		// Session.redirect("/tarjetafiel/fondos/listarCheque.jsf");
+		return "";
+	}
+
+
+	public String listar() {
+		error.borrar();
+		listaCargada = false;
+		sumatoria = new Double(0);
+		chequeList.clear();
+		if (validar()) {
+			try {
+				filtro.reset();
+				filtro.agregarCampoOperValor("tipo", Filtro.LIKEXS, "A");
+				filtro.agregarCampoOperValor("procesado", Filtro.LIKEXS, "N");
+				if (fecha != null)
+					filtro.agregarCampoOperValor("fechaPago", Filtro.MAYOR_IGUAL, Filtro.getTO_DATE(fecha));
+				filtro.agregarCampoOperValor("fechaPago", Filtro.MENOR, Filtro.getTO_DATE(Fecha.addDias(fecha, 1)));
+				// filtro.agregarCampoOperValor("fechaPago", Filtro.IGUAL, Filtro.getTO_DATE(fecha));
+				if (idBancoSeleccionado != null && !idBancoSeleccionado.equals(new Long(0)))
+					filtro.agregarCampoOperValor("bancoPropio.idBancoPropio", Filtro.IGUAL, idBancoSeleccionado);
+				try {
+					Iterator iter = fondosService.getChequeService().getCheques(filtro).iterator();
+					while (iter.hasNext()) {
+						Cheque cheque = (Cheque) iter.next();
+						chequeList.add(new chequeWraper(cheque));
+						sumatoria = sumatoria + cheque.getImporte();
+					}
+					if (!chequeList.isEmpty())
+						listaCargada = true;
+				} catch (ChequeException e) {
+					error.agregar("Error al leer las acreditaciones.");
+					e.printStackTrace();
+				}
+			} catch (Exception e) {
+				error.agregar("Error al leer las acreditaciones.");
+				e.printStackTrace();
+			}
+
+			Session.redirect("/tarjetafiel/fondos/generarInterbanking.jsf");
+
+		}
+		return null;
+	}
+
+
+	public String generar() {
+		error.borrar();
+		acredList.clear();
+		Filtro filtro = new Filtro();
+		StringBuffer idChequesIN = null;
+		boolean flag = true;
+		Iterator iter = chequeList.iterator();
+		while (iter.hasNext()) {
+			chequeWraper che = (chequeWraper) iter.next();
+			if (che.seleccionado) {
+				if (flag) {
+					idChequesIN = new StringBuffer(che.getCheque().getIdCheque().toString());
+					flag = !flag;
+				} else {
+					idChequesIN.append("," + che.getCheque().getIdCheque());
+				}
+			}
+		}
+		if (idChequesIN != null) {
+			try {
+				// String listINidCheque = idChequesIN.substring(0, idChequesIN.length() -1);
+				Map uploadMap = fondosService.getChequeService().obtenerUpload(idChequesIN.toString());
+				acredList.add(armarCabecera());
+				// Armo los objetos a grabar
+				loteInterbank.setCabecera(acredList.get(0).toString());
+				loteInterbank.setFechaSolicitud(fecha);
+				loteInterbank.setBancoPropio((BancoPropio) Util.buscarElemento(bancoPropioList, new BancoPropio(idBancoSeleccionado)));
+				loteInterbank.setOperador(Session.getOperador());
+				loteInterbank.setRegistrosUpload(new HashSet());
+				RegistroUpload registro; // para cada linea del archivo
+				int orden = 0; // para el orden en la linea del archivo
+				iter = uploadMap.keySet().iterator();
+				while (iter.hasNext()) {
+					Long idCheque = (Long) iter.next();
+					StringBuffer linea = (StringBuffer) uploadMap.get(idCheque);
+					// Ya lo agrego en la query
+					// linea.append("                                          000000000000            0000000000                                                              ");
+					ChequeHistorial chequeHistorial;
+					try {
+						filtro.reset();
+						filtro.agregarCampoOperValor("cheque.idCheque", Filtro.IGUAL, idCheque);
+						filtro.agregarCampoOperValor("chequeEstado.idChequeEstado", Filtro.IGUAL, "1");
+						List chequeHistorialList = fondosService.getChequeHistorialService().getChequeHistorials(filtro);
+						chequeHistorial = (ChequeHistorial) chequeHistorialList.get(0);
+						if (chequeHistorial.getMovimientoMP() != null) {
+							Movimiento movimiento = chequeHistorial.getMovimientoMP().getMovimiento();
+							String target = movimiento.getConcepto().getTarget();
+							// Estos son genericos para todos las acreditaciones
+							linea.delete(116, 118);
+							linea.insert(116, "OP");
+							linea.delete(118, 130);
+							linea.insert(118, Convertidores.completarIzquierda(movimiento.getIdMovimiento().toString(), new Character('0'), 12));
+							if (target != null) {
+								if (target.equals("CO")) {
+									log.info("Es un comercio");
+									filtro.reset();
+									filtro.agregarCampoOperValor("movimiento", Filtro.IGUAL, movimiento.getIdMovimiento());
+									LiqComercio liqComercio = (LiqComercio) transaccionesService.getLiqComercioService().getLiqComercio(filtro)
+											.get(0);
+									linea.delete(104, 116);
+									linea.insert(104, Convertidores.completarIzquierda(liqComercio.getLiquidacion().getIdLiquidacion().toString(),
+											new Character('0'), 12));
+									linea.delete(130, 142);
+									linea.insert(130,
+											Convertidores.completarIzquierda(liqComercio.getCodComercio().getCodigoPosnet(), new Character('0'), 12));
+									// linea.append(Convertidores.completarIzquierda(" ", new Character(' '), 36));
+									linea.delete(178, 189);
+									linea.insert(178, liqComercio.getCodComercio().getSucEmpresa().getEmpresa().getCuit());
+								} else {
+									if (target.equals("PR")) {
+										log.info("Es un proveedor");
+										filtro.reset();
+										filtro.agregarCampoOperValor(
+												"movimiento", Filtro.IGUAL, movimiento.getIdMovimiento());
+										Comprobante comprobante = (Comprobante) proveedoresService.getComprobanteService().getComprobantes(filtro)
+												.get(0);
+										linea.delete(104, 116);
+										linea.insert(104,
+												Convertidores.completarIzquierda(comprobante.getNroLargo().toString(), new Character('0'), 12));
+										linea.delete(130, 142);
+										linea.insert(130, Convertidores.completarIzquierda(comprobante.getProveedor().getIdProveedor().toString(),
+												new Character('0'), 12));
+										// linea.append(Convertidores.completarIzquierda(" ", new Character(' '), 36));
+										linea.delete(178, 189);
+										linea.insert(178, comprobante.getProveedor().getCuit());
+									}
+								}
+							}
+						}
+						orden = orden + 1;
+						registro = new RegistroUpload(null, chequeHistorial.getCheque(), loteInterbank, new Integer(orden), linea.toString());
+						// Segun el target del concepto buscar donde se origino "CO" o "PR"
+					} catch (Exception e) {
+						error.agregar("Error al leer los datos de las acreditaciones.");
+						e.printStackTrace();
+						return null;
+					}
+					acredList.add(linea);
+					loteInterbank.getRegistrosUpload().add(registro);
+				}
+				grabarArchivo(acredList);
+			} catch (ChequeException e) {
+				error.agregar("Error al leer los datos de las acreditaciones.");
+				e.printStackTrace();
+			} catch (Exception e) {
+				error.agregar("Error Generico");
+				e.printStackTrace();
+			}
+			if (!error.hayErrores()) {
+				try {
+					fondosService.getChequeService().actualizarTodosProcesados(idChequesIN.toString());
+					inicializar();
+				} catch (ChequeException e) {
+					error.agregar("Error al actualizar los datos de las acreditaciones. Notifique a sistemas.");
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * Arma la cabecera del archivo en base a banco propio selecionado y a las fechas
+	 * 
+	 * @return una linea
+	 * @throws Exception
+	 */
+	private StringBuffer armarCabecera() throws Exception {
+		Format dateFormat = new SimpleDateFormat("yyyyMMdd");
+		BancoPropio bancoPropio = (BancoPropio) Util.buscarElemento(bancoPropioList, new BancoPropio(idBancoSeleccionado));
+		StringBuffer cabeza = new StringBuffer(240);
+		cabeza.append("*U*");
+		cabeza.append(Convertidores.completarIzquierda(bancoPropio.getBanco().getIdBanco().toString(), new Character('0'), 3));
+		if (bancoPropio.getTipoCuenta().equals("CC"))
+			cabeza.append("01");
+		else if (bancoPropio.getTipoCuenta().equals("CA"))
+			cabeza.append("02");
+		cabeza.append(bancoPropio.getNumeroCuenta().trim().concat("                 ").substring(0, 17));
+		cabeza.append("D");
+		cabeza.append(dateFormat.format(fecha));
+		cabeza.append("S");
+		cabeza.append(Convertidores.completarIzquierda(" ", new Character(' '), 61));
+		cabeza.append("00000");
+		dateFormat = new SimpleDateFormat("MM/dd/yy");
+		cabeza.append(dateFormat.format(new Date()));
+		cabeza.append("        ");// Reservado para poner el numero de lote que estamos subiendo
+		cabeza.append(Convertidores.completarIzquierda(" ", new Character(' '), 123));
+		return cabeza;
+	}
+
+
+	private void grabarArchivo(List lineasList) {
+		String key = "catalina.home";
+		key = System.getProperty(key);
+		PropertieFile prop = new PropertieFile(key + "/webapps/contexto.properties");
+		StringBuffer linea = null;
+		try {
+			File f = null;
+			try {
+				f = new File(key + "/" + prop.getProperties("directorioArchivos") + "/" + "acred.dat");
+				f.delete();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			fw = new FileWriter(key + "/" + prop.getProperties("directorioArchivos") + "/" + "acred.dat");
+			if (!lineasList.isEmpty()) {
+				Iterator iter = lineasList.iterator();
+				while (iter.hasNext()) {
+					linea = (StringBuffer) iter.next();
+					if (linea != null) {
+						for (int i = linea.length(); i < 240; i++) {
+							linea.append(" ");
+						}
+						linea.append("\r\n");
+						fw.write(linea.toString());
+					}
+				}
+			}
+			fw.close();
+			// ejecutarJavaScript("popup('" + "/../archivos/"+ "acred.dat" + "',700,400), 'titlebar=no';");
+			if (f != null) {
+				HttpServletResponse response = Session.getResponse();
+				FileInputStream archivo2 = new FileInputStream(f.getPath());
+				int longitud = archivo2.available();
+				byte[] datos = new byte[longitud];
+				archivo2.read(datos);
+				archivo2.close();
+				response.setContentType("application/octet-stream");
+				response.setHeader("Content-Disposition", "attachment;filename=\"" + f.getName() + "\"");
+				ServletOutputStream ouputStream = response.getOutputStream();
+				ouputStream.write(datos, 0, longitud);
+				ouputStream.flush();
+				ouputStream.close();
+				Session.responseComplete();
+			}
+		} catch (Exception e) {
+			error.agregar("Error al generar el archivo");
+			e.getMessage();
+			e.printStackTrace();
+		}
+		if (!error.hayErrores()) {
+			try {
+				fondosService.getLoteInterbankService().grabarLoteInterbank(loteInterbank);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public class chequeWraper {
+		private boolean seleccionado;
+		private Cheque cheque;
+
+
+		public chequeWraper(Cheque cheque) {
+			seleccionado = true;
+			this.cheque = cheque;
+			this.cheque.getBanco().getDescripcion();
+		}
+
+
+		public boolean isSeleccionado() {
+			return seleccionado;
+		}
+
+
+		public void setSeleccionado(boolean seleccionado) {
+			this.seleccionado = seleccionado;
+		}
+
+
+		public Cheque getCheque() {
+			return cheque;
+		}
+
+
+		public void setCheque(Cheque cheque) {
+			this.cheque = cheque;
+		}
+
+	}
+}

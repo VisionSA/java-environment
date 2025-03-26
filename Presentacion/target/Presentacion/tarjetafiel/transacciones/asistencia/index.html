@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<link rel="shortcut icon" href="images/logo.png">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Tarjeta Fiel | Planilla de asistencias</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"> 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" >
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+<link href="css/alertify.css"                        rel="stylesheet" type="text/css">
+<link href="css/alertifyThemes.css"                  rel="stylesheet" type="text/css">
+<link href="css/alertifySemantic.css"                rel="stylesheet" type="text/css">
+<link href="css/alertifyBootstrap.css"               rel="stylesheet" type="text/css">
+<link href="css/firacode.css"                        rel="stylesheet" type="text/css">
+<link href="css/vuetify.css"                         rel="stylesheet">
+<link href="css/sb-admin.css"                        rel="stylesheet">
+<link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="page-top">
+
+<nav class="navbar-navbar-default" role="navigation">
+<a class="navbar-brand mr-1 text-white" href="index.html">Tarjeta Fiel | Planilla de asistencias</a>
+</nav>
+
+<!-- <div class="container" > -->
+<div id="app">
+<v-app id="inspire">
+
+<v-row>
+<v-col>
+<a><img src="images/logofiel.png"></a>
+</v-col>
+
+<v-col
+
+cols="3"
+sm="3">
+<p>Razon social:VISION S.A.</p>
+</v-col
+> 
+
+<v-col
+
+cols="3"
+sm="3">
+<p>CUIT:30707049967</p>        
+</v-col>
+
+<v-col
+
+cols="3"
+sm="3">
+<p>Inscripcion N°:8562</p>
+</v-col>
+
+<v-col
+cols="3">
+<p>Registro de asistencias del personal Res. 21/01</p>
+</v-col>
+
+</v-row>
+
+<v-row class="inputs">
+<v-col
+class="d-flex"
+cols="3"
+sm="3"
+hide-details="auto"
+>
+<v-select
+class="d-flex"
+cols="3"
+sm="3"
+:items="Operador"
+label="Operador"
+id="operador"
+dense
+required
+hide-details="auto"
+></v-select>
+</v-col>
+
+<v-col
+class="d-flex"
+cols="3"
+sm="3"
+hide-details="auto"
+>
+<v-select
+class="d-flex"
+cols="3"
+sm="3"
+class="mes"
+:items="Mes"
+label="Mes"
+id="mes"
+dense
+required
+hide-details="auto"
+></v-select>
+</v-col>
+
+<v-col
+class="d-flex"
+cols="3"
+sm="3"
+hide-details="auto"
+>
+<v-select
+class="d-flex"
+cols="3"
+sm="3"
+class="anio"
+:items="Anio"
+label="Año"
+id="anio"
+dense
+required
+hide-details="auto"
+></v-select>
+</v-col>
+
+<v-col>
+<v-btn
+small
+class="d-flex"
+cols="3"
+sm="3"
+depressed
+dense
+color="primary"
+@click="buscar"
+id="buscar"
+>
+Buscar
+</v-btn>
+</v-col>
+
+<v-col>
+<v-btn
+small
+class="d-flex"
+cols="3"
+sm="3"
+depressed
+dense
+color="primary"
+onclick="javascript:window.print()"
+>
+Imprimir
+</v-btn>
+</v-col>
+
+</v-row>
+        <!--   --------- tabla general -----------         -->
+<v-row class="tabla">    
+<v-data-table
+id="tabla"
+dense
+:headers="headers"
+:items="desserts"
+item-key="name"
+:page.sync="page"
+:items-per-page="itemsPerPage"
+hide-default-footer
+@page-count="pageCount = $event"
+>
+
+        <!--    --------------- editar horario entrada mañana --------------  -->
+<template v-slot:item.horario1="props">
+<v-edit-dialog
+:return-value.sync="props.item.horaEntMan"
+@save="save(
+props.item.dia,
+props.item.horaEntMan,
+props.item.horaSalMan,
+props.item.horaEntTar,
+props.item.horaSalTar,
+props.item.observacion)"
+@cancel="cancel"
+@cerrar="cerrar"
+>
+{{ props.item.horaEntMan }}
+<template v-slot:input>
+<v-text-field
+type="time"
+v-model="props.item.horaEntMan"
+label="Editar horario"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+
+        <!--    --------------- editar horario salida tarde --------------  -->
+<template v-slot:item.horario2="props">
+<v-edit-dialog
+:return-value.sync="props.item.horaSalMan"
+@save="save(
+props.item.dia,
+props.item.horaEntMan,
+props.item.horaSalMan,
+props.item.horaEntTar,
+props.item.horaSalTar,
+props.item.observacion)"
+@cancel="cancel"
+@cerrar="cerrar"
+>
+{{ props.item.horaSalMan }}
+<template v-slot:input>
+<v-text-field
+type="time"
+v-model="props.item.horaSalMan"
+label="Editar horario"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+        <!--    --------------- editar horario entrada tarde --------------  -->
+<template v-slot:item.horario3="props">
+<v-edit-dialog
+:return-value.sync="props.item.horaEntTar"
+@save="save(
+props.item.dia,
+props.item.horaEntMan,
+props.item.horaSalMan,
+props.item.horaEntTar,
+props.item.horaSalTar,
+props.item.observacion)"
+
+@cancel="cancel"
+@cerrar="cerrar"
+>
+{{ props.item.horaEntTar }}
+<template v-slot:input>
+<v-text-field
+type="time"
+v-model="props.item.horaEntTar"
+label="Editar horario"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+        <!--    --------------- editar horario salida tarde --------------  -->
+<template v-slot:item.horario4="props">
+<v-edit-dialog
+:return-value.sync="props.item.horaSalTar"
+@save="save(
+props.item.dia,
+props.item.horaEntMan,
+props.item.horaSalMan,
+props.item.horaEntTar,
+props.item.horaSalTar,
+props.item.observacion)"
+@cancel="cancel"
+@cerrar="cerrar"
+>
+{{ props.item.horaSalTar }}
+<template v-slot:input>
+<v-text-field
+type="time"
+v-model="props.item.horaSalTar"
+label="Editar horario"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+
+        <!--    --------------- editar observacion --------------  -->
+<template v-slot:item.observacion="props">
+<v-edit-dialog
+:return-value.sync="props.item.observacion"
+@save="save(
+props.item.dia,
+props.item.horaEntMan,
+props.item.horaSalMan,
+props.item.horaEntTar,
+props.item.horaSalTar,
+props.item.observacion)"
+@cancel="cancel"
+@cerrar="cerrar"
+>
+{{ props.item.observacion }}
+<template v-slot:input>
+<v-text-field
+v-model="props.item.observacion"
+label="Editar observacion"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+</v-data-table>
+</v-row>
+
+<!-- <template v-slot:item.horas="props">
+        <v-edit-dialog
+        :return-value.sync="props.item.horas"
+        @save="save(
+        props.item.horas)"
+        @cancel="cancel"
+        @cerrar="cerrar"
+        >
+        {{ props.item.horas }}
+        <template v-slot:input>
+        <v-text-field
+        v-model="props.item.horas"
+        label="Editar horas"
+        ></v-text-field>
+        </template>
+        </v-edit-dialog>
+        </template>
+        </v-data-table>
+        </v-row> -->
+       <!-- ----------- snack text ------------- -->
+<v-snackbar
+v-model="snack"
+:timeout="1000"
+:color="snackColor"
+>
+{{ snackText }}
+
+<template v-slot:action="{ attrs }">
+<v-btn
+v-bind="attrs"
+text
+@click="snack = false"
+>
+Cerrar
+</v-btn>
+</template>
+</v-snackbar>
+</div>
+
+
+</v-app>
+<!-- </div> -->
+
+        <!-- ----------footer---------- -->
+<!-- <footer class="footer">
+<div class="container1">
+<div class="copyright text-center text-white my-auto">
+<h1 id="footer">Tarjeta Fiel</h1>
+</div>
+</div>
+</footer>
+</div>  
+</div>
+</div> -->
+<!-- /#wrapper -->
+  
+<!-- Scroll to Top Button-->
+ <a class="scroll-to-top rounded" href="#page-top">
+   <i class="fas fa-angle-up"></i>
+ </a> 
+ <script src="js/axios.min.js"></script>
+ <script src="js/vue.min.js"></script>
+ <script src="js/vuetify.min.js"></script>
+ <script src="js/alertify.js"></script>
+ <script src="vendor/jquery/jquery.min.js"></script>
+ <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+ <script src="js/sb-admin.min.js"></script>
+ <script src="js/script.js"></script>
+ <script src="js/moment.js"></script>
+ <script src="js/moment-with-locales.js"></script>
+</body>
+
+</html>

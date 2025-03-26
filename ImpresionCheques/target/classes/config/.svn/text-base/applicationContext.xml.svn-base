@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+                       "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+ 
+ <!-- DEFINICION DEL DATA SOURCE -->
+ <import resource="classpath:/config/dataSource.xml" />
+
+ <!-- DEFINICION DEL SESSION FACTORY -->
+ <import resource="classpath:/config/sessionFactory.xml"/>
+ 
+ <!-- DEFINICION DEL HIBERNATE TEMPLATE, TRANSACTION MANAGER, ETC... -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/commonContext.xml"/>
+
+ <!-- DEFINICION DEL CONTEXT DE GENERAL -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/general/generalContext.xml"/>
+
+  <!-- DEFINICION DEL CONTEXT DE FONDOS-->
+  <import resource="classpath:/com/bizitglobal/tarjetafiel/fondos/fondosContext.xml"/>
+  
+  <!-- DEFINICION DEL CONTEXT DE FONDOS-->
+  <import resource="classpath:/com/bizitglobal/tarjetafiel/fondos/fondosContext.xml"/>
+
+</beans>

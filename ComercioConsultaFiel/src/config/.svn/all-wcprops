@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/config
+END
+messaging-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/config/messaging-config.xml
+END
+Copy of weborb-services-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/config/Copy%20of%20weborb-services-config.xml
+END
+proxy-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/config/proxy-config.xml
+END
+data-management-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/config/data-management-config.xml
+END
+services-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/config/services-config.xml
+END
+remoting-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/config/remoting-config.xml
+END
+services-config-server.xml
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/config/services-config-server.xml
+END
+trans-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/config/trans-config.xml
+END

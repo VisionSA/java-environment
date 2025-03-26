@@ -1,0 +1,14 @@
+/* CSS file */
+
+.VTabSkin
+{
+	fillAlphas : 1.0, 1.0;
+	fillColors : #ffffff, #000000;
+	disabledSkin : Embed(source="VTabSkin.swf", symbol="VTab_disabledSkin");
+	downSkin : Embed(source="VTabSkin.swf", symbol="VTab_downSkin");
+	overSkin : Embed(source="VTabSkin.swf", symbol="VTab_overSkin");
+	upSkin : Embed(source="VTabSkin.swf", symbol="VTab_upSkin");
+	selectedDisabledSkin : Embed(source="VTabSkin.swf", symbol="VTabSelected_disabledSkin");
+	selectedUpSkin : Embed(source="VTabSkin.swf", symbol="VTabSelected_upSkin");
+	selectedOverSkin : Embed(source="VTabSkin.swf", symbol="VTabSelected_upSkin");
+}

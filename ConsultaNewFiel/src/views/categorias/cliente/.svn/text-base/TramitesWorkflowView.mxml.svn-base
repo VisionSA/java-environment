@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VboxComun xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" module="{VboxComun.URL_MODULES_CLIENTE}TramitesWorkflowModule.swf" width="100%" height="100%" label="Tramites" verticalAlign="top">
+	
+</VboxComun>

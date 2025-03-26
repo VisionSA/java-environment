@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/spark" close="handleCloseEvent();" creationComplete="usuarioPermisoWebForm_creationCompleteHandler(event)" height="300" title="UsuarioPermisoWeb Form" width="400">
+    <fx:Script>
+        <![CDATA[
+            import mx.collections.ArrayCollection;
+            import mx.controls.Alert;
+            import mx.events.FlexEvent;
+            import mx.managers.PopUpManager;
+            import mx.messaging.ChannelSet;
+            import mx.rpc.events.FaultEvent;
+            import mx.rpc.events.ResultEvent;
+            
+            import mx.validators.Validator;
+            
+            import com.bizit.consulta.web.entity.UsuarioPermisoWeb;
+            
+            import com.bizit.consulta.web.entity.PermisoWeb;
+            import com.bizit.consulta.web.entity.UsuarioWeb;
+
+            
+            [Bindable]
+            public var remotingChannels:ChannelSet;
+            
+            [Bindable]
+            public var usuarioPermisoWeb:UsuarioPermisoWeb;
+            
+            private function handleCloseEvent():void {
+                PopUpManager.removePopUp(this);
+            }            
+            
+            private function processSave():void {
+                if (!validateAndCommit()){
+                    return;
+                }
+                this.dispatchEvent(new UsuarioPermisoWebEvent(((!usuarioPermisoWeb.id || usuarioPermisoWeb.id <= 0) ? UsuarioPermisoWebEvent.CREATE : UsuarioPermisoWebEvent.UPDATE), usuarioPermisoWeb));
+                PopUpManager.removePopUp(this);
+            }
+            
+            private function validateAndCommit():Boolean{
+                var validatorErrors:Array = Validator.validateAll(validators.source);
+                if (validatorErrors.length > 0){
+                    return false;
+                }
+                usuarioPermisoWeb.usuario = usuarioInput.selectedItem;
+                usuarioPermisoWeb.permiso = permisoInput.selectedItem;
+
+                return true;
+            }
+            
+            protected function usuarioPermisoWebForm_creationCompleteHandler(event:FlexEvent):void
+            {
+                permisoWebService.list();
+                usuarioWebService.list();
+
+            }
+            
+            protected function permisoWebService_faultHandler(event:FaultEvent):void
+            {
+                Alert.show(event.fault.faultString, "Remote Operation Failed");
+            }
+
+            protected function permisoWebService_listResultHandler(event:ResultEvent):void
+            {
+                permisoInput.dataProvider = event.result as ArrayCollection;
+                selectPermiso();
+            }
+
+            private function selectPermiso():void {
+            	if (usuarioPermisoWeb.permiso == null) {
+            		return;
+            	}
+            	for each(var permisoWebItem:PermisoWeb in permisoInput.dataProvider) {
+            		if (usuarioPermisoWeb.permiso.id == permisoWebItem.id) {
+            			permisoInput.selectedItem = permisoWebItem;
+            			return;
+            		}
+            	}
+            }
+
+            protected function usuarioWebService_faultHandler(event:FaultEvent):void
+            {
+                Alert.show(event.fault.faultString, "Remote Operation Failed");
+            }
+
+            protected function usuarioWebService_listResultHandler(event:ResultEvent):void
+            {
+                usuarioInput.dataProvider = event.result as ArrayCollection;
+                selectUsuario();
+            }
+
+            private function selectUsuario():void {
+            	if (usuarioPermisoWeb.usuario == null) {
+            		return;
+            	}
+            	for each(var usuarioWebItem:UsuarioWeb in usuarioInput.dataProvider) {
+            		if (usuarioPermisoWeb.usuario.id == usuarioWebItem.id) {
+            			usuarioInput.selectedItem = usuarioWebItem;
+            			return;
+            		}
+            	}
+            }
+
+
+        ]]>
+    </fx:Script>
+    
+    <fx:Declarations>
+    	<s:RemoteObject channelSet="{remotingChannels}" destination="permisoWebService" fault="permisoWebService_faultHandler(event)" id="permisoWebService">
+    	    <s:method name="list" result="permisoWebService_listResultHandler(event)"/>
+    	</s:RemoteObject>
+        <s:RemoteObject channelSet="{remotingChannels}" destination="usuarioWebService" fault="usuarioWebService_faultHandler(event)" id="usuarioWebService">
+    	    <s:method name="list" result="usuarioWebService_listResultHandler(event)"/>
+    	</s:RemoteObject>
+        <s:ArrayList id="validators">
+            <mx:StringValidator id="usuarioValidator" property="text" required="true" source="{usuarioInput}"/>
+            <mx:StringValidator id="permisoValidator" property="text" required="true" source="{permisoInput}"/>
+        </s:ArrayList>
+    </fx:Declarations>
+    
+    <s:layout>
+        <s:VerticalLayout/>
+    </s:layout>
+    
+    <mx:Form id="usuarioPermisoWebForm">
+        <mx:FormItem id="usuarioField" label="Usuario">
+        	<s:DropDownList id="usuarioInput" labelField="nombreUsuario"/>	</mx:FormItem>
+        <mx:FormItem id="permisoField" label="Permiso">
+        	<s:DropDownList id="permisoInput" labelField="nombre"/>	</mx:FormItem>
+    </mx:Form>
+    
+    <s:Group>
+        <s:layout>
+            <s:HorizontalLayout/>
+        </s:layout>
+        <s:Button click="processSave();" label="Save"/>
+        <s:Button click="handleCloseEvent();" label="Cancel"/>
+    </s:Group>
+    
+    
+</s:TitleWindow>

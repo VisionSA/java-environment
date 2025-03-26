@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" paddingBottom="5" paddingTop="5" layout="vertical" 
+		   xmlns:upload="com.util.upload.*" xmlns:date="com.util.components.date.*" 
+		   xmlns:paginacion="com.util.paginacion.*" backgroundColor="#6E6E6E" 
+		   xmlns:mate="http://mate.asfusion.com/" 
+		   height="100%" width="100%" 
+		   xmlns:local="*"
+		   xmlns:controls="com.iwobanas.controls.*" 
+		   xmlns:dataGridClasses="com.iwobanas.controls.dataGridClasses.*"
+		   xmlns:modules="com.util.modules.*"
+		   xmlns:principal="modules.principal.*"
+		   >
+
+	
+	<mx:ToggleButtonBar dataProvider="stackAdmin" width="100%"/>
+	
+	<mx:ViewStack width="100%" height="100%" id="stackAdmin" >
+		
+		
+		<mx:HBox horizontalGap="0" height="100%" width="100%" id="vigentes" label="Vigentes">
+			
+			<mx:VBox label="Eventos" width="100%" height="100%" horizontalAlign="center">
+				
+				<controls:MDataGrid id="adg"  height="100%" width="100%" dataProvider="{manager.gestionesVigentesList}"
+									allowMultipleSelection="true" 
+									doubleClickEnabled="true" 
+									sortableColumns="true"
+									>
+					
+					<controls:columns>
+						<dataGridClasses:MDataGridColumn headerText="F.Asignación" dataField="fechaAsignacion" labelFunction="formatDate" textAlign="left" width="0.08" />
+						<dataGridClasses:MDataGridColumn headerText="F.Vencimiento" dataField="fechaVencimiento" labelFunction="formatDate" textAlign="left" width="0.08" />					
+						<dataGridClasses:MDataGridColumn headerText="Cuenta" dataField="numeroCuenta" textAlign="right" width="0.08" />
+						<dataGridClasses:MDataGridColumn headerText="Apellido y Nombre" dataField="nombre" textAlign="left" width="0.18"/>
+						<dataGridClasses:MDataGridColumn headerText="Operador" dataField="usuario" textAlign="left" width="0.18"
+														 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+						<dataGridClasses:MDataGridColumn headerText="Estado Gestión" dataField="estadoGestion" textAlign="left" width="0.18"
+														 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+						<dataGridClasses:MDataGridColumn headerText="F.Gestión" dataField="fechaGestion" labelFunction="formatDate" textAlign="left" width="0.11" />
+						<dataGridClasses:MDataGridColumn headerText="F.Consumo" dataField="fechaConsumo" labelFunction="formatDate" textAlign="left" width="0.11" 
+														 sortCompareFunction="date_sortCompareFunc"/>
+						<dataGridClasses:MDataGridColumn headerText="Id Gestión" dataField="idGestion" textAlign="left" visible="false"/>
+						<dataGridClasses:MDataGridColumn headerText="Id Tipo Gestión" dataField="idTipoGestion" textAlign="left" visible="false"/>
+						<dataGridClasses:MDataGridColumn headerText="Id Estado Actual" dataField="idEstadoActual" textAlign="left" visible="false"/>
+					</controls:columns>
+				</controls:MDataGrid>
+				
+				
+				<mx:ApplicationControlBar width="100%" paddingRight="5">
+					<mx:HBox width="100%" horizontalGap="2" >
+						<mx:VBox width="33.33%" height="100%">
+						</mx:VBox>
+						<mx:VBox width="33.33%" height="100%" verticalAlign="middle" horizontalAlign="center">
+							<mx:ControlBar>
+								<mx:Button label="Asignar Cliente" id="botonAsignarCliente" click="asignarCliente()"/>
+								<mx:Button label="Exportar Planilla" id="botonGenerarInforme" click="generarInforme()"/>
+							</mx:ControlBar>
+						</mx:VBox>
+						<mx:VBox width="33.33%" height="100%" verticalAlign="middle" horizontalAlign="right" paddingRight="5">
+							<mx:Label text="Cantidad: {ICollectionView(adg.dataProvider).length} / {adg.originalCollection.length}" 
+									  color = "white" />
+						</mx:VBox>		
+					</mx:HBox>
+				</mx:ApplicationControlBar>	
+				
+			</mx:VBox>		
+		</mx:HBox>
+		
+		
+		
+		
+		<mx:HBox horizontalGap="0" height="100%" width="100%" id="vencidas" label="Vencidas">
+			
+			<mx:VBox label="Eventos" width="100%" height="100%" horizontalAlign="center">
+				
+				<controls:MDataGrid id="adg1"  height="100%" width="100%" dataProvider="{manager.gestionesVencidasList}"
+									allowMultipleSelection="true" 
+									doubleClickEnabled="true" 
+									sortableColumns="true"
+									itemDoubleClick="reasignarCliente()" 
+									keyDown="pressKey(event)"
+									>
+					
+					<controls:columns>
+						<dataGridClasses:MDataGridColumn headerText="F.Asignación" dataField="fechaAsignacion" labelFunction="formatDate" textAlign="left" width="0.08" />
+						<dataGridClasses:MDataGridColumn headerText="F.Vencimiento" dataField="fechaVencimiento" labelFunction="formatDate" textAlign="left" width="0.08" />					
+						<dataGridClasses:MDataGridColumn headerText="Cuenta" dataField="numeroCuenta" textAlign="right" width="0.08" />
+						<dataGridClasses:MDataGridColumn headerText="Apellido y Nombre" dataField="nombre" textAlign="left" width="0.18"/>
+						<dataGridClasses:MDataGridColumn headerText="Operador" dataField="usuario" textAlign="left" width="0.18"
+														 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+						<dataGridClasses:MDataGridColumn headerText="Estado Gestión" dataField="estadoGestion" textAlign="left" width="0.18"
+														 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+						<dataGridClasses:MDataGridColumn headerText="F.Gestión" dataField="fechaGestion" labelFunction="formatDate" textAlign="left" width="0.11" />
+						<dataGridClasses:MDataGridColumn headerText="F.Consumo" dataField="fechaConsumo" labelFunction="formatDate" textAlign="left" width="0.11" 
+														 sortCompareFunction="date_sortCompareFunc"/>
+						<dataGridClasses:MDataGridColumn headerText="Id Gestión" dataField="idGestion" textAlign="left" visible="false"/>
+						<dataGridClasses:MDataGridColumn headerText="Id Tipo Gestión" dataField="idTipoGestion" textAlign="left" visible="false"/>
+						<dataGridClasses:MDataGridColumn headerText="Id Estado Actual" dataField="idEstadoActual" textAlign="left" visible="false"/>
+						
+					</controls:columns>
+				</controls:MDataGrid>
+				
+				
+				<mx:ApplicationControlBar width="100%" paddingRight="5">
+					<mx:HBox width="100%" horizontalGap="2" >
+						<mx:VBox width="33.33%" height="100%">
+						</mx:VBox>
+						<mx:VBox width="33.33%" height="100%" verticalAlign="middle" horizontalAlign="center">
+						</mx:VBox>
+						<mx:VBox width="33.33%" height="100%" verticalAlign="middle" horizontalAlign="right" paddingRight="5">
+							<mx:Label text="Cantidad: {ICollectionView(adg1.dataProvider).length} / {adg1.originalCollection.length}" 
+									  color = "white" />
+						</mx:VBox>		
+					</mx:HBox>
+				</mx:ApplicationControlBar>	
+				
+			</mx:VBox>		
+		</mx:HBox>
+		
+	</mx:ViewStack>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import com.iwobanas.controls.dataGridClasses.filters.MultipleChoiceFilter;
+			import com.tarjetafiel.caja.vo.GestionClienteLog;
+			import com.tarjetafiel.caja.vo.Operador;
+			import com.util.components.alert.AlertOk;
+			import com.util.components.alert.AlertError;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ICollectionView;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import mx.events.CollectionEvent;
+			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ListEvent;
+			import mx.formatters.DateFormatter;
+			import mx.utils.ObjectUtil;
+			
+			
+			[Bindable]public var manager:Manager;
+			
+			[Bindable]
+			public var filter:MultipleChoiceFilter;
+			private var _dateformatter:DateFormatter = new DateFormatter();
+			
+			
+			private function formatDate(item:Object,column:DataGridColumn):String
+			{
+				_dateformatter.formatString = "DD/MM/YY";
+				return _dateformatter.format(item[column.dataField]);
+			}
+			
+			
+			private function date_sortCompareFunc(itemA:Object, itemB:Object):int {
+				var d1:Date = new Date(Date.parse(itemA.fechaConsumo));
+				var d2:Date = new Date(Date.parse(itemB.fechaConsumo));
+				if(itemA.fechaConsumo==null) d1 = new Date(3000,1,1,1,1,1,1); // Si el campo no tiene fecha, 
+				if(itemB.fechaConsumo==null) d2 = new Date(3000,1,1,1,1,1,1); // utilizo fecha con año 3000 para comparar (siempre será mayoar)
+				return ObjectUtil.dateCompare(d1, d2);
+			}
+			
+			
+			public function asignarCliente():void {
+				manager.abrirPopUpAsignarCliente();
+			}
+			
+			public function generarInforme():void{
+				manager.abrirPopUpGenerarInforme();
+				//manager.generarInforme();
+			}
+			
+			public function reasignarCliente():void{
+				if(adg1.selectedItem.fechaConsumo == null){
+					manager.idClienteSelected = adg1.selectedItem.numeroCuenta;
+					manager.nombreCliente = adg1.selectedItem.nombre;
+					manager.abrirPopUpReasignarCliente();
+				}
+				else {
+					AlertError.show("El Cliente ya consumió");
+				}
+			}
+			
+			private function pressKey(event:KeyboardEvent):void{
+				if (event.keyCode == Keyboard.ENTER) {
+					reasignarCliente();
+				}
+			}
+			
+			
+			
+			
+		]]>
+	</mx:Script>
+	
+</mx:Module>

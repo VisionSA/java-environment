@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.DiaPago" table="t_vis_eva_dias_pago" >
+	<id name="idDiaPago" type="java.lang.Long" column="c_id_dia_pago">
+		<generator class="increment" />
+	</id>
+
+	<property name="diaPago" type="java.lang.Integer" column="c_dia_pago" not-null="false" length="4"/>
+
+	<many-to-one name="partido" class="com.bizitglobal.tarjetafiel.general.negocio.Partido" not-null="false" >
+		<column name="c_id_partido" />
+	</many-to-one>
+
+	<property name="habilitado_lista" column="c_habilitado_lista" type="string"></property>  	
+	
+</class>
+</hibernate-mapping>

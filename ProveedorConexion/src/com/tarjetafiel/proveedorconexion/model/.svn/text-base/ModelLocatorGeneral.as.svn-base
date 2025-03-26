@@ -1,0 +1,197 @@
+package com.tarjetafiel.proveedorconexion.model {
+	import com.adobe.cairngorm.model.IModelLocator;
+	import com.tarjetafiel.caja.vo.GestorCuentaNew;
+	import com.tarjetafiel.caja.vo.HistoricoEstadoCobranza;
+	
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
+	
+	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
+	import mx.core.Application;
+	import mx.formatters.NumberBaseRoundType;
+	import mx.formatters.NumberFormatter;
+	
+	
+	[Bindable]
+	public class ModelLocatorGeneral implements IModelLocator {
+		
+		private static var produccion:String = "http://192.168.0.7:8080";
+		
+		private static var _instance:ModelLocatorGeneral = null;			
+						
+		public var busquedaVisible:int = 0;
+		public var busquedaVisibleComercios:int = 0;
+		
+		
+		/* Configuración de Canales*/
+		public var AMFChannelDefinition:String = null;
+		
+		
+		public function ModelLocatorGeneral(enforcer:SingletonEnforcer) {
+			if (enforcer == null){
+				throw new Error("Solo se puede tener una instancia de ModelLocatorGeneral");
+			}  
+		}
+		
+		public static function getInstance(): ModelLocatorGeneral {
+			if (_instance == null){
+				_instance =  new ModelLocatorGeneral(new SingletonEnforcer());
+				
+			}
+			return _instance;
+		}
+		
+		public var numberFormat:NumberFormatter = new NumberFormatter();
+		public var bancoModel:BancoModel = new BancoModel();
+		
+		//Clientes
+		public var clienteSeleccionado:ClienteModel = new ClienteModel();
+		public var historicoEstado : HistoricoEstadoCobranza = null;
+		public var gestorCuentaNew : GestorCuentaNew = null;
+		
+		public var listaCorrienteResumen : ArrayCollection = null;
+		public var listaSaldoCuenta : ArrayCollection = null;
+		public var listaHistoricoEstado : ArrayCollection = null;
+		public var listaHistoricoComercial : ArrayCollection = null;
+		public var listaRevisionLinea : ArrayCollection = null;
+		
+		public var informacionCliente:String;
+		public var revLineaCredito:String;
+		public var titularAppRegistro:String;
+		public var adicionalAppRegistro:String;
+		public var revTelefonoLaboral:String;
+		public var operador:Number;
+		public var fechaResumen:Date;
+		public var pagoSugerido:Number = 0;
+		public var pagoMinimo:Number = 0;
+		public var deuda:Number = 0;
+		public var deuda1:Number = 0;
+		public var pagoNoFacturado:Boolean;
+		public var saldoBanco:Boolean;		
+		public var pagoCuenta:Number = 0;
+		public var suPago:Number = 0; 
+		public var deudaFinal:Number; 
+		public var pagoTotal:Number = 0;
+		public var importeTotal:Number = 0;
+		public var suPago1:Number = 0; 
+		public var deudaFinal1:Number; 
+		public var pagoTotal1:Number = 0;
+		public var importeTotal1:Number = 0;
+		
+		public var listaPagoGestion : ArrayCollection = null;
+		public var listaRefRep : ArrayCollection = null;
+		public var listaControlClientes : ArrayCollection = null;
+		public var listaAccionesCliente : ArrayCollection = null;
+		public var listaHistLineaCredito : ArrayCollection = null;
+		public var listaLineaCredito : ArrayCollection = null;
+		public var listaLineaCreditoTem : ArrayCollection = null;
+		public var listaReclamos : ArrayCollection = null;
+		public var listaBancoCentral : ArrayCollection = null;
+		public var listaTramites : ArrayCollection = null;
+		public var listaDigitales : ArrayCollection = null;
+		
+		public var dispatcher:IEventDispatcher;
+		
+		public var cantidadDias : Number;
+		public var monto : Number;
+		
+		
+		//public var dataToggle : int = CERO;
+		
+		public static const GENERAL : int = 2;
+		public static const HISTORICO : int = 1;
+		public static const CERO : int = 0;
+		
+		public var urlDocAdj:String;
+		public var fecha1:Date;
+		public var servidor:String;
+		
+		public function setUrlDocAdj(index:Number):void//Indice de listaDigitales que contiene la ruta que 
+		{												//abrirá el iframe del modulo verDocAdj
+			var doc:Object = listaDigitales.getItemAt(index);
+			var timestamp:Date = doc.fecha;
+			var año:String = timestamp.fullYear.toString();
+			var mes:String = "0";
+			if((timestamp.month+1)<10){
+				mes+=(timestamp.month+1);
+			}
+			else mes = (timestamp.month+1).toString();
+			
+			if(timestamp<fecha1){
+				urlDocAdj = "http://192.168.0." + servidor + ":8080/archivos/individuos/" + año + "-" + mes + "/" + doc.url;
+			}
+			else urlDocAdj = produccion + "/archivos/individuos/" + año + "-" + mes + "/" + doc.url;
+		}
+		
+		
+		
+		public function setURLChannelDefinition(url:String) : void {
+			var pattern : RegExp = /\/Presentacion\/.*swf.*/;
+			AMFChannelDefinition = url.replace(pattern,"/Presentacion/weborb.wo");
+		}
+		
+		
+		public function susPago(pago:Number):void{
+			
+			numberFormat.rounding = NumberBaseRoundType.NEAREST;	
+			numberFormat.useThousandsSeparator = false;		
+			numberFormat.precision = 2;
+			suPago = pago;			
+			
+			deudaFinal = Number(numberFormat.format(deuda - suPago));
+			//deudaFinal = deuda - suPago;
+			//Alert.show(" DEUDA " + deuda + " Pago " + suPago + " deudaFinal " + deudaFinal );
+			deudaFinal = deudaFinal < 0 ? 0 : deudaFinal;
+			pagoTotal = suPago;
+			importeTotal = pagoTotal + deudaFinal;
+			
+			/*dispatcher.dispatchEvent(new Event("changedSuPago"));*/
+		}
+		
+		public function susPago1(pago:Number):void{
+			numberFormat.rounding = NumberBaseRoundType.NEAREST;	
+			numberFormat.useThousandsSeparator = false;		
+			numberFormat.precision = 2;
+			suPago1 = pago;	
+			deudaFinal1 = Number(numberFormat.format(deuda1 - suPago1));
+			//deudaFinal1 = deuda1 - suPago1;			
+			deudaFinal1 = deudaFinal1 < 0 ? 0 : deudaFinal1;
+			pagoTotal1 = suPago1;
+			importeTotal1 = pagoTotal1 + deudaFinal1;
+			
+			/*dispatcher.dispatchEvent(new Event("changedSuPago"));*/
+		}
+		
+		/*[Bindable(event="changedSuPago")]
+		public function get suPago():Number{
+			return suPago;
+		}
+		
+		
+		public function set suPago(pago:Number):void{
+			suPago = pago;
+			dispatcher.dispatchEvent(new Event("changedSuPago"));
+		}*/
+		
+		public function setDeuda(number:Number):void{	
+			pagoTotal = 0;
+			suPago = 0;
+			deuda = number 
+			deudaFinal = deuda;
+			importeTotal = deuda;
+		}
+		
+		public function setDeuda1(number:Number):void{	
+			pagoTotal1 = 0;
+			suPago1 = 0;
+			deuda1 = number 
+			deudaFinal1 = deuda1;
+			importeTotal1 = deuda1;
+		}
+		
+	}
+	
+}
+class SingletonEnforcer {}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalAlign="center" 
+	verticalAlign="middle" backgroundColor="#B7BABC" paddingBottom="10" 
+	paddingLeft="10" paddingRight="10" paddingTop="10" xmlns:maps="views.categorias.cliente.maps.*" xmlns:textInput="com.util.components.textInput.*">
+	
+	<mx:HBox width="100%" horizontalAlign="left" verticalAlign="middle">
+		<mx:Label styleName="lblInfoBlanco" text="Importe"/>
+		<textInput:TextInputMoneda id="txtImporte" text="{adelantoEfectivoModel.importe}" enter="this.adelantoEfectivoModel.calcularCuota(Number(txtImporte.text))"/>
+		<mx:Button label="Simular" click="this.adelantoEfectivoModel.calcularCuota(Number(txtImporte.text))"/>
+	</mx:HBox>
+
+	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" dataProvider="{adelantoEfectivoModel.cuota}"
+				 height="100%" width="100%" fontSize="16" fontWeight="bold" sortableColumns="false">
+				<mx:groupedColumns>				
+					<mx:AdvancedDataGridColumnGroup headerText="Solicitado">				
+						<mx:AdvancedDataGridColumn headerText="Cantidad de Cuotas" dataField="cantidadCuota"/>
+						<mx:AdvancedDataGridColumn headerText="Importe de la Cuota">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.formatMoneda(data.capital + data.interes)}" fontSize="16"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>						
+						<mx:AdvancedDataGridColumn headerText="Importe a financiar">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.formatMoneda((Number(data.cantidadCuota)*Number(data.capital + data.interes)).toString())}" fontSize="16"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+					</mx:AdvancedDataGridColumnGroup>				
+				</mx:groupedColumns>
+	</mx:AdvancedDataGrid>
+	
+	<maps:AdelantoEfectivoModelMap/>
+	
+	<mx:Script>
+		<![CDATA[
+			import views.categorias.cliente.models.AdelantoEfectivoModel;
+			import com.util.format.FormatUtil;
+			
+			[Bindable]public var adelantoEfectivoModel:AdelantoEfectivoModel;
+			
+			public function formatMoneda(obj:Object):String{
+				return FormatUtil.formatMoneda(obj);				
+				
+			}
+			
+			public function formatPorcenaje(obj:Object):String{
+				return FormatUtil.formatPorcentaje(obj);
+			}
+		]]>
+	</mx:Script>	
+	
+</mx:VBox>

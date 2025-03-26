@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.planificadoremail.negocio.EmailInCola" table="T_VIS_PLA_EMAILINCOLA" >
+	
+	<cache usage="read-write"/>
+	<id name="idEmail" type="java.lang.Long" column="C_ID_EMAILINCOLA">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_EMAILINCOLA_ID</param>
+		</generator>
+	</id>
+	
+	<property name="email" type="java.lang.String" column="C_EMAIL" not-null="true" length="50"/>
+	<property name="pendiente" type="java.lang.Boolean" column="C_PENDIENTE" not-null="true"/>
+	<property name="fecCreacion" type="java.util.Date" column="C_FEC_CREACION" not-null="true"/>
+	<property name="fecEnvio" type="java.util.Date" column="C_FEC_ENVIO"/>	
+	<property name="asunto" type="java.lang.String" column="C_ASUNTO" not-null="true" length="100"/>
+	<property name="claveUnica" type="java.lang.String" column="C_CLAVE_UNICA" not-null="true" length="50"/>
+	<property name="estado" type="java.lang.String" column="C_ESTADO" not-null="true" length="20"/>
+	<property name="idIdentificador" type="java.lang.Long" column="C_IDENTIFICADOR" not-null="true"/>
+    
+  	<many-to-one name="planProcesoEmail" class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.PlanProcesoEmail" not-null="true">
+		<column name="C_ID_PLAN" />
+	</many-to-one>
+	
+	<set name="valoresParam" inverse="false" cascade="all" lazy="false">
+		<key>
+			<column name="C_ID_EMAILINCOLA" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.ValoresParanEmail"/>
+	</set>
+    
+    <many-to-one name="historicoPlan" class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.HistoricoPlan" not-null="true" cascade="save-update" lazy="false">
+		<column name="C_ID_HISTPLAN" />
+	</many-to-one>
+</class>
+</hibernate-mapping>

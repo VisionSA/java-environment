@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.ComprobanteImputado" table="t_vis_prov_ctes_imputados"  >
+    <id name="idComprobanteImputado" type="java.lang.Long" column="c_id_ctes_imputado" unsaved-value="null">
+        <generator class="increment" />
+    </id>
+
+    <property name="importeCancela" type="java.math.BigDecimal" column="c_importe_cancela" length="10"/>
+
+    <property name="fechaEmision" type="java.sql.Timestamp" column="c_fecha_imputacion" length="3594"/>
+
+    <!-- Associations -->
+  
+    <many-to-one name="cuotaComprobanteD"    
+    		     class="com.bizitglobal.tarjetafiel.proveedores.negocio.CuotaComprobante" 
+    		     not-null="true">
+        <column name="c_id_cuota_comprobante_d" />
+    </many-to-one>
+    
+    <many-to-one name="cuotaComprobanteH"    
+				 class="com.bizitglobal.tarjetafiel.proveedores.negocio.CuotaComprobante" 
+				 not-null="true">
+        <column name="c_id_cuota_comprobante_h" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.CajaApertura" table="T_VIS_FON_CAJAS_APERTURAS" >
+	
+	<cache usage="read-write"/>
+	
+	<id name="idCajaApertura" type="java.lang.Long" column="C_ID_CAJAAPERTURA">
+		<generator class="increment" />
+	</id>
+	
+	<property name="saldoInicial" type="java.lang.Double" column="C_SALDO_INICIAL" not-null="false"/>
+	<property name="fechaApertura" type="java.util.Date" column="C_FECHA_APERTURA" not-null="true" length="3594"/>
+	<property name="signoApertura" type="java.lang.Character" column="C_SIGNO_APERTURA" not-null="true" />
+ 	<property name="saldoFinal" type="java.lang.Double" column="C_SALDO_FINAL" not-null="false" />
+	<property name="signoFinal" type="java.lang.Character" column="C_SIGNO_FINAL" not-null="false" />
+	<property name="fechaCierre" type="java.util.Date" column="C_FECHA_CIERRE" not-null="false" length="3594"/>
+	<property name="estado" type="java.lang.Character" column="C_ESTADO" not-null="false" />
+	
+	
+    <many-to-one name="caja" class="com.bizitglobal.tarjetafiel.fondos.negocio.Caja" not-null="false" >
+		<column name="C_ID_CAJA" />
+	</many-to-one>
+	
+	<many-to-one name="operador" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="false" >
+		<column name="C_ID_OPERADOR" />
+	</many-to-one>
+   	
+</class>
+</hibernate-mapping>

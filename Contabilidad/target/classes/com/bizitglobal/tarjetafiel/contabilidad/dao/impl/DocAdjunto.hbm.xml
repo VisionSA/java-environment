@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+                               
+<hibernate-mapping>
+<class name="com.bizitglobal.tarjetafiel.contabilidad.negocio.DocAdjunto" table="t_cont_doc_adjuntos" >
+	<id name="idDocAdjunto" type="java.lang.Long" column="c_id_doc_adjunto">
+		<generator class="increment" />
+	</id>
+    <property name="isAsiento" type="java.lang.String" column="c_is_asiento" not-null="false" length="1"/>
+	<property name="idOperador" type="java.lang.Long" column="c_id_operador" not-null="false" length="2560"/>
+	<many-to-one name="tipoDigital" class="com.bizitglobal.tarjetafiel.general.negocio.TipoDigital" not-null="false" cascade="none">
+		<column name="c_id_tipo_digital" />
+	</many-to-one>
+	<property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="false" length="3594"/>
+	<property name="url" type="java.lang.String" column="c_url" not-null="false" length="255"/>
+	<property name="descripcion" type="java.lang.String" column="c_descripcion" not-null="false" length="100"/>
+	<property name="idAsiento" type="java.lang.Long" column="c_asiento" not-null="true"/>
+	<property name="idEmpresa" type="java.lang.Integer" column="c_empresa" not-null="true"/>
+	<property name="idEjercicio" type="java.lang.Integer" column="c_ejercicio" not-null="true"/>
+ </class>
+</hibernate-mapping>

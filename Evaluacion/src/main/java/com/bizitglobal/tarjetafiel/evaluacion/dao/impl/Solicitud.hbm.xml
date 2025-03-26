@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.Solicitud" table="t_vis_eva_solicitudes" >
+	<id name="idSolicitud" type="java.lang.Long" column="c_id_solicitud">
+		<generator class="increment" />
+	</id>
+
+	<property name="caja" type="java.lang.String" column="c_caja" not-null="false" length="10"/>
+
+	<property name="estaImpreso" type="java.lang.String" column="c_esta_impreso" not-null="true" length="1"/>
+
+	<property name="fechaRecepcion" type="java.sql.Timestamp" column="c_fecha_recepcion" not-null="false" length="3594"/>
+
+	<property name="folio" type="java.lang.String" column="c_folio" not-null="false" length="10"/>
+
+	<many-to-one name="estados" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Estados" not-null="true" >
+		<column name="c_id_estado" />
+	</many-to-one>
+
+	<property name="idOperador" type="java.lang.Long" column="c_id_operador" not-null="true" length="2560"/>
+
+	<many-to-one name="promotor" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Promotor" not-null="false" >
+		<column name="c_id_promotor" />
+	</many-to-one>
+
+	<property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="true" length="3594"/>
+	
+	<property name="nroSolicitud" type="java.lang.String" column="c_nro_solicitud" not-null="true" length="8"/>
+
+	<property name="DV" type="java.lang.String" column="c_dv" not-null="true" length="1"/>
+
+	<set name="solicIndividuos" inverse="false" cascade="none"  >
+		<key>
+			<column name="c_id_solicitud" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.SolicitudIndividuo"/>
+	</set>
+	
+	<property name="idTipoSolicitud" type="java.lang.Long" column="C_ID_TIPO_SOLICITUD" not-null="false" length="512" />
+	
+</class>
+</hibernate-mapping>

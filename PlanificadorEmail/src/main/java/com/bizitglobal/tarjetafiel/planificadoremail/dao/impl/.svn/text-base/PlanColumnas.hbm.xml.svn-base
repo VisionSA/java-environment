@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.planificadoremail.negocio.PlanColumnas" table="T_VIS_PLA_PLAN_COLUMNAS" >
+	
+	<cache usage="read-write"/>
+	<id name="idPlanColum" type="java.lang.Long" column="C_ID_PLANCOLUM">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_PLAN_COLUMNAS_ID</param>
+		</generator>
+	</id>
+	
+	<property name="campo" type="java.lang.String" column="C_CAMPO" not-null="true" length="50"/>
+    
+  	<many-to-one name="planProcesoEmail" class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.PlanProcesoEmail" not-null="true" >
+		<column name="C_ID_PLAN" />
+	</many-to-one>
+	
+	<many-to-one name="paramTemplate" class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.ParamTemplate" not-null="true" lazy="false">
+		<column name="C_ID_PARAM_TEMP" />
+	</many-to-one>
+	
+    
+</class>
+</hibernate-mapping>

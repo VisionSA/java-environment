@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.CuotaComprobante" table="t_vis_prov_cuotas_comprobantes"  >
+    <id name="idCuotaComprobante" type="java.lang.Long" column="c_id_cuota_comprobante">
+        <generator class="increment" />
+    </id>
+
+    <property name="fechaVencimiento" type="java.sql.Timestamp" column="c_fecha_vencimiento" not-null="true" length="3594"/>
+    <property name="importe" type="java.lang.Float" column="c_importe" not-null="true" length="10"/>
+    <property name="activo" type="java.lang.Character" column="c_activo" not-null="true" length="1"/>
+
+    <!-- Associations -->
+    <many-to-one name="comprobante" class="com.bizitglobal.tarjetafiel.proveedores.negocio.Comprobante" 
+    			 cascade="all"    >
+       <column name="c_id_comprobante" />
+    </many-to-one>
+
+    <set name="cuotaComprobanteD" inverse="false" cascade="save-update"    >
+        <key>
+            <column name="c_id_cuota_comprobante_d" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.ComprobanteImputado"/>
+    </set>    
+
+    <set name="cuotaComprobanteH" inverse="false" cascade="save-update"    >
+        <key>
+            <column name="c_id_cuota_comprobante_h" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.ComprobanteImputado"/>
+    </set>       
+
+</class>
+</hibernate-mapping>

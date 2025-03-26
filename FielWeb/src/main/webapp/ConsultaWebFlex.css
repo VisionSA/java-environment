@@ -1,0 +1,70 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace advancedDataGridClasses "mx.controls.advancedDataGridClasses.*";
+
+/*global
+{
+	font-family: bauhausm;
+	font-size: 12;
+	color: #061176;
+}*/
+
+@font-face
+{
+	fontFamily: bauhausm;
+	src: url("com/bizit/consulta/web/assets/fonts/bauhausm.TTF");
+	embedAsCFF: true;
+}
+
+@font-face
+{
+	fontFamily: bauhausb;
+	src: url("com/bizit/consulta/web/assets/fonts/bauhausb.TTF");
+	embedAsCFF: true;
+}
+
+s|Application
+{
+	font-family: bauhausm;
+	font-size: 12;
+}
+
+mx|global
+{
+	font-family: bauhausm;
+	textFieldClass: ClassReference("mx.core.UIFTETextField");
+}
+
+mx|Label {
+	textFieldClass: ClassReference("mx.core.UIFTETextField");
+}
+
+mx|DataGrid {
+	defaultDataGridItemRenderer: ClassReference("mx.controls.dataGridClasses.FTEDataGridItemRenderer");
+	font-family: bauhausm;
+}
+
+mx|DateField 
+{ 
+	textInputClass: ClassReference("mx.controls.MXFTETextInput"); 
+	textFieldClass: ClassReference("mx.core.UIFTETextField");
+}
+
+mx|AdvancedDataGrid {
+	defaultDataGridItemRenderer: ClassReference("mx.controls.advancedDataGridClasses.FTEAdvancedDataGridItemRenderer");
+	font-family: bauhausm;
+}
+
+.formItemRequired
+{
+	font-family: bauhausb;
+	font-size: 12;
+}
+
+.labelUserInfo
+{
+	font-family: bauhausb;
+	font-size: 12;
+	color: white;
+}

@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/testing/!svn/ver/793/Presentacion/src/main/java/com/bizitglobal/webapp/servlet
+END
+GenerarTxtLiqComercioServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/testing/!svn/ver/793/Presentacion/src/main/java/com/bizitglobal/webapp/servlet/GenerarTxtLiqComercioServlet.java
+END
+PagoElectronicoServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/testing/!svn/ver/780/Presentacion/src/main/java/com/bizitglobal/webapp/servlet/PagoElectronicoServlet.java
+END
+CalcularRepactacionServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/testing/!svn/ver/789/Presentacion/src/main/java/com/bizitglobal/webapp/servlet/CalcularRepactacionServlet.java
+END
+PlanificadorNotificacionServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/testing/!svn/ver/789/Presentacion/src/main/java/com/bizitglobal/webapp/servlet/PlanificadorNotificacionServlet.java
+END
+CobranzasServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/testing/!svn/ver/704/Presentacion/src/main/java/com/bizitglobal/webapp/servlet/CobranzasServlet.java
+END

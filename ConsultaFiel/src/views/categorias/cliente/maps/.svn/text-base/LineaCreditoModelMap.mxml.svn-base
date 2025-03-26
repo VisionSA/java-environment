@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import managers.LineaCreditoManager;
+			import managers.ClienteManager;
+			import views.categorias.cliente.models.LineaCreditoModel;
+			import views.categorias.cliente.modules.LineaCreditoModule;
+			
+		]]>
+	</mx:Script>
+	
+	<Injectors target="{LineaCreditoModule}">
+   		<ObjectBuilder generator="{LineaCreditoModel}">
+   			<Property targetKey="dispatcher" source="{scope.dispatcher}"/>
+   		</ObjectBuilder>
+   		<PropertyInjector source="{lastReturn}" targetKey="lineaCreditoModel"/>
+   	</Injectors>	
+	
+	<Injectors targets="{[LineaCreditoModel,LineaCreditoModule]}">		
+		<PropertyInjector targetKey="arrayValoresLineaCredito" sourceKey="arrayValoresLineaCredito" source="{LineaCreditoManager}"/>
+		<PropertyInjector source="{ClienteManager}" sourceKey="arrayTitularAdiscionales" targetKey="arrayTitularAdiscionales" />
+	</Injectors> 
+		
+</EventMap>

@@ -1,0 +1,504 @@
+package com.bizitglobal.webapp.servlet;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.bizitglobal.tarjetafiel.cobranzas.dao.EjecucionPlanDao;
+import com.bizitglobal.tarjetafiel.cobranzas.dao.impl.EjecucionPlanDaoImpl;
+import com.bizitglobal.tarjetafiel.cobranzas.exception.EjecucionPlanException;
+import com.bizitglobal.tarjetafiel.cobranzas.exception.PlanException;
+import com.bizitglobal.tarjetafiel.cobranzas.negocio.AccionVersion;
+import com.bizitglobal.tarjetafiel.cobranzas.negocio.AdministradorDePlanes;
+import com.bizitglobal.tarjetafiel.cobranzas.negocio.AsignarAbogado;
+import com.bizitglobal.tarjetafiel.cobranzas.negocio.AsignarCobrador;
+import com.bizitglobal.tarjetafiel.cobranzas.negocio.LiquidacionJudicial;
+import com.bizitglobal.tarjetafiel.cobranzas.negocio.Moroso;
+import com.bizitglobal.tarjetafiel.cobranzas.negocio.Plan;
+import com.bizitglobal.tarjetafiel.cobranzas.negocio.ResultadoEjecucionAccion;
+import com.bizitglobal.tarjetafiel.cobranzas.service.EjecucionPlanService;
+import com.bizitglobal.tarjetafiel.cobranzas.service.PlanService;
+import com.bizitglobal.tarjetafiel.commons.filtros.Filtro;
+import com.bizitglobal.tarjetafiel.evaluacion.service.DiaPagoService;
+import com.bizitglobal.tarjetafiel.evaluacion.service.TelefonosService;
+import com.bizitglobal.tarjetafiel.general.negocio.ParametroSistema;
+import com.bizitglobal.tarjetafiel.general.negocio.Partido;
+import com.bizitglobal.tarjetafiel.general.service.ParametroSistemaService;
+import com.bizitglobal.tarjetafiel.general.service.PartidoService;
+import com.bizitglobal.tarjetafiel.transacciones.exception.ConceptoException;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ClienteLiquidacion;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ClienteTransaccion;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.Colaborador;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.Concepto;
+import com.bizitglobal.tarjetafiel.transacciones.reflection.EjecutarReflection;
+import com.bizitglobal.tarjetafiel.transacciones.service.ClienteTransaccionService;
+import com.bizitglobal.tarjetafiel.transacciones.service.ColaboradorService;
+import com.bizitglobal.tarjetafiel.transacciones.service.ConceptoService;
+import com.bizitglobal.tarjetafiel.transacciones.service.CtaCteClienteService;
+import com.bizitglobal.tarjetafiel.transacciones.service.GestorLiquidacionClienteService;
+
+
+public class CobranzasServlet extends HttpServlet implements
+		javax.servlet.Servlet {
+
+	private static final Logger log = Logger.getLogger(CobranzasServlet.class);
+
+
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		File archivoDeLog;
+		BufferedWriter bufferedWriterLog = null;
+
+		try {
+
+			ApplicationContext appContext = WebApplicationContextUtils
+					.getRequiredWebApplicationContext(getServletContext());
+			PartidoService partidoService = (PartidoService) appContext
+					.getBean("partidoService");
+			ColaboradorService colaboradorService = (ColaboradorService) appContext
+					.getBean("colaboradorService");
+			EjecucionPlanService ejecucionPlanService = (EjecucionPlanService) appContext
+					.getBean("ejecucionPlanService");
+			PlanService planService = (PlanService) appContext
+					.getBean("planService");
+			CtaCteClienteService ctacteClienteService = (CtaCteClienteService) appContext
+					.getBean("ctaCteClienteService");
+			ConceptoService conceptoService = (ConceptoService) appContext
+					.getBean("conceptoService");
+			ClienteTransaccionService clienteTransaccionService = (ClienteTransaccionService) appContext
+					.getBean("clienteTransaccionService");
+			DiaPagoService diaPagoService = (DiaPagoService) appContext
+					.getBean("diaPagoService");
+			TelefonosService telefonosService = (TelefonosService) appContext
+					.getBean("telefonosService");
+			GestorLiquidacionClienteService gestorLiquidacionClienteService = (GestorLiquidacionClienteService) appContext
+					.getBean("gestorLiquidacionClienteService");
+
+			ParametroSistemaService parametroSistemaService = (ParametroSistemaService) appContext.getBean("parametroSistemaService");
+
+			EjecucionPlanDao ejecucionPlanDao = (EjecucionPlanDao) appContext
+					.getBean("ejecucionPlanDao");
+			AdministradorDePlanes administradorPlanes = null;
+			
+			// Lee el parámetro para obtener el monto de gracia de mora
+			ParametroSistema montoGraciaMora = parametroSistemaService.leerParametroSistema(13L);
+			montoGraciaMora.getDetallesParametrosSistema();
+			Double montoGracia = Double.parseDouble(montoGraciaMora.getParametroSistemaDetalle(18L).getValor());
+
+			// Esto del archivo lo borraremos luego, es solo a fines de
+			// controlar inicialmente que cliente entra en mora.
+			Calendar cal = Calendar.getInstance();
+			File archivoClientesIngresanAMora = new File(
+					System.getProperty("catalina.home") + File.separator
+							+ "/webapps/archivos/clientesAMora"
+							+ cal.get(Calendar.MONTH) + cal.get(Calendar.DATE)
+							+ "_" + cal.get(Calendar.HOUR)
+							+ cal.get(Calendar.MINUTE)
+							+ cal.get(Calendar.SECOND) + ".txt");
+			BufferedWriter bufferedWriter = null;
+
+			// Esto archivo crea un log.
+			archivoDeLog = new File(System.getProperty("catalina.home")
+					+ File.separator + "/webapps/archivos/log"
+					+ cal.get(Calendar.MONTH) + cal.get(Calendar.DATE) + "_"
+					+ cal.get(Calendar.HOUR) + cal.get(Calendar.MINUTE)
+					+ cal.get(Calendar.SECOND) + ".txt");
+			bufferedWriterLog = new BufferedWriter(new FileWriter(archivoDeLog));
+
+			// en esta primera etapa, busco los clientes que deben entrar en
+			// mora y les asigno el plan que les corresponde.
+			try {
+				// Construct the BufferedWriter object
+				bufferedWriter = new BufferedWriter(new FileWriter(
+						archivoClientesIngresanAMora));
+
+				administradorPlanes = planService.getAdministradorDePlanes();
+				if (administradorPlanes == null)
+					throw new Exception(
+							"No se pudo leer los planes. Asegurese que hay un plan por defecto y que el mismo haya entrado en vigencia.");
+				List<ClienteLiquidacion> idClientes = ejecucionPlanService
+						.listarIdClientesQueEntranEnMora(montoGracia);
+				Iterator<ClienteLiquidacion> ite = idClientes.iterator();
+				while (ite.hasNext()) {
+					ClienteLiquidacion clienteAProcesar = ite.next();
+					ejecucionPlanService
+							.asociarPlanACliente(clienteAProcesar
+									.getIdCliente(), administradorPlanes
+									.getPlanDelCliente(clienteAProcesar
+											.getIdCliente()));
+					bufferedWriter.write("" + clienteAProcesar.getIdCliente());
+					bufferedWriter.newLine();
+				}
+			} catch (EjecucionPlanException e) {
+				bufferedWriterLog.write("Error:" + e.getMessage());
+				bufferedWriterLog.newLine();
+				throw new Exception("Error");
+			} catch (PlanException e) {
+				// TODO Auto-generated catch block
+				bufferedWriterLog.write("Error:" + e.getMessage());
+				bufferedWriterLog.newLine();
+				throw new Exception("Error");
+			} catch (FileNotFoundException ex) {
+				bufferedWriterLog.write("Error:" + ex.getMessage());
+				bufferedWriterLog.newLine();
+				throw new Exception("Error");
+			} catch (IOException ex) {
+				bufferedWriterLog.write("Error:" + ex.getMessage());
+				bufferedWriterLog.newLine();
+				throw new Exception("Error");
+			} finally {
+				// Close the BufferedWriter
+				try {
+					if (bufferedWriter != null) {
+						bufferedWriter.flush();
+						bufferedWriter.close();
+					}
+				} catch (IOException ex) {
+					ex.printStackTrace();
+					throw new Exception("Error");
+				}
+			}
+
+			// leo los conceptos que se corresponden con cobranzas. Declaro un
+			// hashmap con clave igual al codigo de concepto.
+			HashMap<Long, Concepto> hashDeConceptos = new HashMap<Long, Concepto>();
+
+			ConceptoService conceptosService = (ConceptoService) appContext
+					.getBean("conceptoServiceTarget");
+			Filtro filtroConcepto = new Filtro();
+			filtroConcepto.agregarCampoOperValor("codigoConcepto",
+					Filtro.MAYOR, 299);
+			filtroConcepto.agregarCampoOperValor("codigoConcepto",
+					Filtro.MENOR, 351);
+			List listaConceptosCobranza;
+			try {
+				listaConceptosCobranza = conceptosService
+						.getConcepto(filtroConcepto);
+				Iterator<Concepto> iterConceptos = listaConceptosCobranza
+						.iterator();
+				while (iterConceptos.hasNext()) {
+					Concepto conceptoVar = iterConceptos.next();
+					conceptoVar.armarConcepto();
+					conceptoVar.armarReglaConcepto();
+					hashDeConceptos.put(conceptoVar.getCodigoConcepto(),
+							conceptoVar);
+				}
+			} catch (ConceptoException e1) {
+				bufferedWriterLog.write("Error:" + e1.getMessage());
+				bufferedWriterLog.newLine();
+				throw new Exception("Error");
+			}
+
+			// en esta segunda etapa, recupero los clientes que estan en mora, y
+			// para cada uno, ejecuto las acciones correspondientes.
+			Iterator<Moroso> iter = ejecucionPlanService.getClientesEnMora()
+					.iterator();
+			while (iter.hasNext()) {
+				Moroso cliLi = iter.next();
+
+				Plan planDelCliente = administradorPlanes
+						.getPlanDelCliente(cliLi.getIdCliente());
+				List<AccionVersion> accionesAEjecutar = planDelCliente
+						.getVersionActual().getAccionesXDia()
+						.get(cliLi.getDiasEnMora());
+				if(cliLi.getDiasEnMora()>180 ){
+					accionesAEjecutar = planDelCliente
+							.getVersionActual().getAccionesXDia()
+							.get(182);
+				}
+				if (accionesAEjecutar != null) {
+					Iterator<AccionVersion> iterAcc = accionesAEjecutar
+							.iterator();
+					while (iterAcc.hasNext()) {
+						AccionVersion accV = iterAcc.next();
+						// Ejecutamos la accion pasandole todos los parametros
+						// necesarios.
+
+						// la idea seria que la ejecucion de una accion me
+						// devuelva un objeto ejecucionPlan.
+						// Yo de aca llama al service de ejecucionPlan y lo
+						// grabo.
+						Concepto conAOcupar = null;
+						try {
+							conAOcupar = hashDeConceptos.get(accV
+									.getConceptoCabecera().getCodigoConcepto());
+						} catch (NullPointerException e) {
+							log.info(accV.getAccion().getDescripcion()
+									+ ": no aplica concepto");
+						}
+						ResultadoEjecucionAccion resultadoEjecucionAccion = null;
+
+						if (accV.getAccion().getIdAccion() == 8) {// Asignar Cobrador
+							try {
+								Colaborador colaboradorAOcupar = null;
+								Partido partidoBuscado = null;
+								partidoBuscado = partidoService
+										.getPartidoDelCliente(cliLi
+												.getIdCliente());
+								if (partidoBuscado == null) {
+									partidoBuscado = (Partido) partidoService
+											.getPartido(
+													new Filtro("idPartido",
+															Filtro.IGUAL,
+															new Long(100)))
+											.get(0);
+								}
+								Filtro fil = new Filtro("cobrador.idCobrador",
+										Filtro.IGUAL,
+										partidoBuscado.getIdCobrador());
+								List listaDeCobradores = colaboradorService
+										.getColaborador(fil);
+								colaboradorAOcupar = (Colaborador) listaDeCobradores
+										.get(0);
+								resultadoEjecucionAccion = ((AsignarCobrador) accV
+										.getAccion()).ejecutarAccion(cliLi,
+										accV.getConceptoCabecera(), accV,
+										partidoBuscado, colaboradorAOcupar);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							
+						} else if (accV.getAccion().getIdAccion() == 15) { //Asignar Abogado
+							try {
+								Partido partidoBuscado = null;
+								partidoBuscado = partidoService
+										.getPartidoDelCliente(cliLi
+												.getIdCliente());
+								if (partidoBuscado == null) {
+									partidoBuscado = (Partido) partidoService
+											.getPartido(
+													new Filtro("idPartido",
+															Filtro.IGUAL,
+															new Long(100)))
+											.get(0);
+								}
+								resultadoEjecucionAccion = ((AsignarAbogado) accV
+										.getAccion()).ejecutarAccion(cliLi,
+										accV.getConceptoCabecera(), accV,
+										partidoBuscado, null);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+						} else if (accV.getAccion().getIdAccion() == 17) { // Envio por mail de Mora
+
+							if (!gestorLiquidacionClienteService.enviaResumenImpreso(cliLi.getIdCliente().intValue())
+									&& !gestorLiquidacionClienteService.noPoseeMail(cliLi.getIdCliente().intValue())) {
+								resultadoEjecucionAccion = accV.getAccion()
+										.ejecutarAccion(cliLi,
+												accV.getConceptoCabecera(),
+												accV, conAOcupar, null);
+							}
+
+						} else if (accV.getAccion().getIdAccion() == 18) { // Envio por mail de Mora 30 dias
+
+							if (!gestorLiquidacionClienteService.enviaResumenImpreso(cliLi.getIdCliente().intValue())
+									&& !gestorLiquidacionClienteService.noPoseeMail(cliLi.getIdCliente().intValue())) {
+								resultadoEjecucionAccion = accV.getAccion()
+										.ejecutarAccion(cliLi,
+												accV.getConceptoCabecera(),
+												accV, conAOcupar, null);
+							}
+
+						}
+
+						else if (accV.getAccion().getIdAccion() == 3
+								|| accV.getAccion().getIdAccion() == 14) { // Teledirecto
+																			// y
+																			// LLamadas
+																			// Telefonicas
+																			// Operadores
+
+							if (telefonosService.tieneTelefono(cliLi
+									.getIdCliente())) {
+								resultadoEjecucionAccion = accV.getAccion()
+										.ejecutarAccion(cliLi,
+												accV.getConceptoCabecera(),
+												accV, conAOcupar, null);
+							}
+
+						} else if (accV.getAccion().getIdAccion() == 9) { //Fin etapa cobradores
+							try {
+								Long idParent = ejecucionPlanService
+										.getIdEjecPlanCobradorAsignado(cliLi
+												.getIdCliente());
+								resultadoEjecucionAccion = accV.getAccion()
+										.ejecutarAccion(cliLi,
+												accV.getConceptoCabecera(),
+												accV, idParent, null);
+							} catch (Exception e) {
+								log.error("No hay apertura de cobrador para el cliente: "
+										+ cliLi.getIdCliente());
+								ejecucionPlanService.insertarErrorEjecucion(
+										cliLi.getIdCliente(), new Long(accV
+												.getAccion().getIdAccion()),
+										"AC inexistente");
+							}
+
+						} else if (accV.getAccion().getIdAccion() == 16) { // Liquidacion
+																		   // Judicial
+							try {
+
+								Partido partido = partidoService
+										.getPartidoDelCliente(cliLi
+												.getIdCliente());
+								if (partido == null) {
+									partido = (Partido) partidoService
+											.getPartido(
+													new Filtro("idPartido",
+															Filtro.IGUAL,
+															new Long(100)))
+											.get(0);
+								}
+								/*
+								 * No es necesario enviar el colaborador abogado, ya q el id del mismo se encuentra en el partido si es que fue
+								 * seteado.
+								 */
+								resultadoEjecucionAccion = ((LiquidacionJudicial) accV
+										.getAccion()).ejecutarAccion(cliLi,
+										accV.getConceptoCabecera(), accV,
+										partido, null);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+						} else {
+							resultadoEjecucionAccion = accV.getAccion()
+									.ejecutarAccion(cliLi,
+											accV.getConceptoCabecera(), accV,
+											conAOcupar, null);
+						}
+
+						// para el resultado anterior, recorro el arrayList de
+						// querys ejecutandolas, y luego recorro el array list
+						// de objetos a guardar, guardandolos.
+
+						if (resultadoEjecucionAccion != null) {
+							boolean errorGuardarObjeto = false;
+
+							if (!resultadoEjecucionAccion.getObjetosAGuardar()
+									.isEmpty()) {
+								Iterator<Object> iterObjects = resultadoEjecucionAccion
+										.getObjetosAGuardar().iterator();
+								while (iterObjects.hasNext()) {
+									try {
+										ejecucionPlanService
+												.grabarObjeto(iterObjects
+														.next());
+
+										if (accV.getAccion().getIdAccion() == 2) {
+											if (accV.getEtapaVersion()
+													.getEtapa().getOrden() == 1) {
+												ejecucionPlanService
+														.insertarHistoricoMora(cliLi
+																.getIdCliente());
+											}
+										}
+
+									} catch (EjecucionPlanException e) {
+										e.printStackTrace();
+										errorGuardarObjeto = true;
+									}
+								}
+							}
+
+							if (!errorGuardarObjeto) { /*
+														 * Esto se agrego por el caso de que se ejecute dos veces el proceso de Cobranzas el mismo día
+														 */
+								if (!resultadoEjecucionAccion.getSqlAEjecutar()
+										.isEmpty()) {
+									Iterator<String> iterQuerys = resultadoEjecucionAccion
+											.getSqlAEjecutar().iterator();
+									while (iterQuerys.hasNext()) {
+										try {
+											ejecucionPlanService
+													.ejecutarQuery(iterQuerys
+															.next());
+										} catch (EjecucionPlanException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+									}
+								}
+								if (resultadoEjecucionAccion
+										.isImpactaConcepto()) {
+									HashMap<String, Object> parametros = new HashMap<String, Object>();
+									Long idTransaccion = ctacteClienteService
+											.getSequenciaTransaccion();
+									ClienteTransaccion clienteT = clienteTransaccionService
+											.leerCliente(cliLi.getIdCliente());
+									parametros.put("clienteTransaccion",
+											clienteT);
+									parametros.put("codOperador",
+											new Long(1212));
+									parametros.put("idTransaccion",
+											idTransaccion);
+									parametros.put("diaPago",
+											clienteTransaccionService
+													.getDiaPagoCliente(clienteT
+															.getIdCliente()));
+
+									Concepto concepto = (Concepto) conceptoService
+											.listarTodosEjecucionCobranza(
+													new Filtro(
+															"idConcepto",
+															Filtro.IGUAL,
+															conAOcupar
+																	.getIdConcepto()))
+											.get(0);
+
+									concepto.armarConcepto();
+									concepto.armarReglaConcepto();
+
+									new EjecutarReflection()
+											.ejecutarDetallesConcpeto(
+													concepto,
+													parametros,
+													((EjecucionPlanDaoImpl) ejecucionPlanDao)
+															.getHibernateTemplate());
+
+								}
+
+							}
+
+						}
+
+					}
+				}
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			bufferedWriterLog.write("Error" + e.getMessage());
+			bufferedWriterLog.newLine();
+		} finally {
+			// Close the BufferedWriter
+			try {
+				if (bufferedWriterLog != null) {
+					bufferedWriterLog.flush();
+					bufferedWriterLog.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		System.out.println("TERMINE OK!!!!");
+	}
+}

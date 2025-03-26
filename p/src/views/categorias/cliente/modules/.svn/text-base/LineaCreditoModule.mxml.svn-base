@@ -1,0 +1,1158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleGeneral  xmlns="views.categorias.*" 
+				xmlns:mx="http://www.adobe.com/2006/mxml"
+				creationComplete="{this.calcularValoresLC()}" 
+				width="100%"
+				height="100%" 
+				xmlns:effectClasses="org.efflex.mx.viewStackEffects.effectClasses.*" 
+				paddingBottom="0"
+				paddingLeft="0" 
+				paddingRight="0"  
+				paddingTop="0" 
+				xmlns:date="com.util.components.date.*"
+				xmlns:viewStackEffects="org.efflex.mx.viewStackEffects.*" 
+				xmlns:mate="http://mate.asfusion.com/"
+				xmlns:maps="views.categorias.cliente.maps.*" 
+				xmlns:maps1="maps.*"  
+				xmlns:textInput="com.util.components.textInput.*"
+				xmlns:cliente="views.categorias.cliente.*" xmlns:modules="views.categorias.cliente.modules.*" >
+	
+	
+	<maps1:AgendaModelMap/>
+	<maps:LineaCreditoModelMap /> 
+	<maps:ResumenCtaCteModelMap/>	
+	<maps:PlasticoModelMap/>
+	<mate:Listener  receive="{ this.LimpiarCampos()}" type="limpiarDatosInfo"/>
+	
+	
+	
+	<mx:VBox  horizontalAlign="left" height="100%" width="100%"   paddingBottom="0"
+			  paddingLeft="0" paddingRight="0"  paddingTop="0">
+		<!--<mx:Accordion width="100%" height="100%"   id="accordion"  fillAlphas="[0.0, 0.0, 0.0, 0.0]"> -->
+		
+		<mx:HBox  label="Componentes Linea de Credito" verticalAlign="top" 
+				  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+				  paddingTop="0" width="100%" horizontalGap="0">
+			<mx:VBox  label="Componentes Linea de Credito" verticalAlign="top" 
+					  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					  paddingTop="0" width="20%" verticalGap="0">
+				<mx:HBox  verticalAlign="top" 
+						  horizontalAlign="left" height="24%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+						  paddingTop="0" width="100%" horizontalGap="0">
+					<mx:Panel title="Linea Credito y Disponible" borderThicknessBottom="0" borderThicknessLeft="0"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0"
+							  borderThicknessRight="0" borderThicknessTop="0" width="40%" headerHeight="20" height="100%" verticalGap="-5">
+						
+						<mx:Form width="100%"   paddingTop="0"   textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6"> 
+							<mx:HBox width="100%" height="100%" horizontalGap="0" horizontalAlign="right" verticalAlign="top" verticalGap="-6"
+									 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0">
+								<mx:FormItem label="" styleName="tituloBusquedas" textAlign="left" width="30%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="65" indicatorGap="3" >
+									
+								</mx:FormItem>
+								<mx:FormItem label="Compras" styleName="tituloBusquedas" textAlign="center" width="35%" paddingTop="0"    paddingBottom="0" paddingLeft="20" paddingRight="0" indicatorGap="3" horizontalAlign="center" >
+								</mx:FormItem>
+								<mx:FormItem label="A.Efectivo" styleName="tituloBusquedas" textAlign="right"  width="35%" paddingTop="0"   paddingBottom="0" paddingLeft="20" paddingRight="0" indicatorGap="3" horizontalAlign="right"  >
+								</mx:FormItem>									
+							</mx:HBox>
+						</mx:Form>
+						
+						
+						<mx:Form width="100%" height="100%"  paddingTop="5"   textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6"> 
+							<mx:HBox width="100%" height="100%" horizontalGap="0" horizontalAlign="right" verticalAlign="top" verticalGap="-6"
+									 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0">
+								<mx:FormItem  width="20%" label="Línea:" styleName="tituloBusquedas" textAlign="left"  paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="25" indicatorGap="3" >
+									
+								</mx:FormItem>
+								<mx:FormItem width="40%" label="" styleName="tituloBusquedas" textAlign="right"  paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" horizontalAlign="right" >
+									<!--<mx:Label styleName="lblInfo" text="{currencyFormatter.format(lineaCreditoModel.titular.limiteCredito)}" paddingBottom="0" paddingTop="0" textAlign="right"/>
+									-->
+									<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaLineaCredito.getItemAt(3))}" paddingBottom="0" paddingTop="0" textAlign="right"/>
+									
+								</mx:FormItem>
+								<mx:FormItem width="40%" label="" styleName="tituloBusquedas" textAlign="right"   paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" horizontalAlign="right"  >
+									<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaLineaCredito.getItemAt(0))}" paddingBottom="0" paddingTop="0" textAlign="right" />
+								</mx:FormItem>									
+							</mx:HBox>
+						</mx:Form>
+						
+						
+						<mx:Form width="100%" height="100%" paddingTop="5"   textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6"> 
+							<mx:HBox width="100%" horizontalGap="0" horizontalAlign="right" verticalAlign="top" verticalGap="-6"
+									 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0">
+								<mx:FormItem label="Saldo:" styleName="tituloBusquedas" textAlign="left" width="20%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="25" indicatorGap="3" >
+									
+								</mx:FormItem>
+								<mx:FormItem label="" styleName="tituloBusquedas" textAlign="right" width="40%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3"  horizontalAlign="right">
+									<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaLineaCredito.getItemAt(4))}" paddingBottom="0" paddingTop="0" textAlign="right"/>
+								</mx:FormItem>
+								<mx:FormItem label="" styleName="tituloBusquedas" textAlign="right"  width="40%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" horizontalAlign="right">
+									<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaLineaCredito.getItemAt(1))}" paddingBottom="0" paddingTop="0" textAlign="right"/>
+								</mx:FormItem>									
+							</mx:HBox>
+						</mx:Form>
+						
+						<mx:Form width="100%" height="100%" paddingTop="5"   textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6"> 
+							<mx:HBox width="100%" horizontalGap="0" horizontalAlign="right" verticalAlign="top" verticalGap="-6"
+									 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0">
+								<mx:FormItem label="Saldo Total:" styleName="tituloBusquedas" textAlign="left" width="20%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="25" indicatorGap="3">
+									
+								</mx:FormItem>
+								<mx:FormItem label="" styleName="tituloBusquedas" textAlign="right" width="40%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3"  horizontalAlign="right">
+									<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaLineaCredito.getItemAt(4) + modelo.listaLineaCredito.getItemAt(1))}" paddingBottom="0" paddingTop="0" textAlign="right"/>
+								</mx:FormItem>
+								
+							</mx:HBox>
+						</mx:Form>
+						
+						<mx:Form height="100%" width="100%" paddingTop="5"   textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6"> 
+							<mx:HBox width="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top" verticalGap="-6"
+									 paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
+								<mx:FormItem label="Disponible:" styleName="tituloBusquedas" textAlign="left" width="20%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+									
+								</mx:FormItem>
+								<mx:FormItem label="" styleName="tituloBusquedas" textAlign="right" width="40%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" horizontalAlign="right">
+									<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaLineaCredito.getItemAt(5))}" paddingBottom="0" paddingTop="0" textAlign="right"/>
+								</mx:FormItem>
+								<mx:FormItem label="" styleName="tituloBusquedas" textAlign="right"  width="40%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" horizontalAlign="right">
+									<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaLineaCredito.getItemAt(2))}" paddingBottom="0" paddingTop="0" textAlign="right"/>
+								</mx:FormItem>									
+							</mx:HBox>
+						</mx:Form>
+						
+						
+						
+					</mx:Panel>
+					
+					<mx:VBox height="100%" width="100%">
+						<mx:Panel title="Linea Temporal" borderThicknessBottom="0" borderThicknessLeft="0"
+								  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+								  paddingTop="0"
+								  borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="20" height="70%" verticalGap="-5">
+							<mx:Form height="3%" width="100%" paddingTop="0"   textAlign="left" paddingBottom="0"
+									 paddingLeft="0" paddingRight="0" verticalGap="0"> 
+								<mx:VBox  paddingTop="0"   textAlign="right" paddingBottom="0"
+										  paddingLeft="0" paddingRight="0" verticalGap="0" width="100%" height="100%">	
+									
+									
+									<mx:Label id="lblLineaNoActiva" styleName="lblInfo" text="No Activo" visible="{modelo.listaLineaCreditoTem.length  == 0}"   includeInLayout="{modelo.listaLineaCreditoTem.length  == 0}" color="green" />
+									<mx:Label id="lblLineaActiva" styleName="lblInfo" text="Activo hasta: {dateFormatter.format(LineaCredCompos(modelo.listaLineaCreditoTem.getItemAt(0)).fechaHasta)}" visible="{modelo.listaLineaCreditoTem.length  != 0}" includeInLayout="{modelo.listaLineaCreditoTem.length  != 0}" color="red" />	
+									
+								</mx:VBox>
+							</mx:Form>
+							
+							<mx:Panel title="" borderThicknessBottom="0" borderThicknessLeft="0"
+									  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+									  paddingTop="0" borderThicknessRight="0" borderThicknessTop="0"
+									  width="100%" headerHeight="0" height="100%" verticalGap="-5"
+									  visible="{((applicationModel.operador.permiteLinea  == 'A') ? ((encabezadoClienteModel.titular.habilitadoConsumo == 'H')?true:false):false) }"
+									  includeInLayout="{((applicationModel.operador.permiteLinea  == 'A') ? ((encabezadoClienteModel.titular.habilitadoConsumo == 'H')?true:false):false) }">
+								
+								
+								<mx:Form width="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" 
+										 paddingRight="0" verticalGap="-6" height="100%"> 
+									<mx:VBox width="100%"  horizontalGap="0" horizontalAlign="center" verticalAlign="top" verticalGap="-6"
+											 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0" height="100%">
+										<mx:HBox width="100%"  horizontalGap="0" horizontalAlign="left" verticalAlign="top" verticalGap="-6"
+												 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0" height="80%">
+											<mx:FormItem label="" styleName="tituloBusquedas" paddingBottom="0"
+														 paddingLeft="0" paddingRight="0" 
+														 paddingTop="0" indicatorGap="3" >
+												<mx:TextInput id="txtLinea" width="70" restrict="0-9" textAlign="right" />
+											</mx:FormItem>
+											<mx:ComboBox id="cmbLineaDias"  paddingLeft="10" paddingRight="0" width="60"> 
+												<mx:ArrayCollection>										
+													<mx:Object label="1" />
+													<mx:Object label="2" />
+													<mx:Object label="5" />
+													<mx:Object label="7" />									
+												</mx:ArrayCollection>
+											</mx:ComboBox>
+										</mx:HBox>
+										<mx:HBox paddingBottom="5">
+											<mx:Button label="Grabar" width="70" click="Grabar()"/>
+										</mx:HBox>
+									</mx:VBox>
+								</mx:Form>
+								
+								
+								
+							</mx:Panel>
+							
+							
+						</mx:Panel>
+						
+						<mx:Panel title="Consulta BCRA" borderThicknessBottom="0" borderThicknessLeft="0"
+								  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+								  paddingTop="0" horizontalAlign="center"
+								  borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="20" height="30%">
+							
+							<mx:HBox paddingTop="5">
+								<mx:Button label="Consultar" click="ConsultaBCRA()"/>
+							</mx:HBox>
+							
+						</mx:Panel>
+					</mx:VBox>
+
+					
+				</mx:HBox>
+				
+				
+				<!--<mx:HBox  verticalAlign="top" 
+				horizontalAlign="left" height="3%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+				paddingTop="0" width="100%" horizontalGap="0">
+				
+				
+				
+				<mx:Panel title="" borderThicknessBottom="0" borderThicknessLeft="0"
+				paddingBottom="0" paddingLeft="0" paddingRight="0" 
+				paddingTop="0" borderThicknessRight="0" borderThicknessTop="0"
+				width="100%" headerHeight="0" height="100%" verticalGap="-5">
+				
+				
+				<mx:Form width="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" 
+				paddingRight="0" verticalGap="-6"> 
+				<mx:HBox width="100%"  horizontalGap="0" horizontalAlign="right" verticalAlign="top" verticalGap="-6"
+				paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0">
+				<mx:FormItem label="Linea Temporal    Ingrese Monto:" styleName="tituloBusquedas" paddingBottom="0"
+				paddingLeft="0" paddingRight="0" 
+				paddingTop="0" indicatorGap="3" >
+				<mx:TextInput id="txtLinea" width="90" textAlign="right" />
+				</mx:FormItem>
+				<mx:ComboBox id="cmbLineaDias"  paddingLeft="10" paddingRight="0" width="60"> 
+				<mx:ArrayCollection>										
+				<mx:Object label="Seleccione..." />
+				<mx:Object label="1" />
+				<mx:Object label="2" />
+				<mx:Object label="5" />
+				<mx:Object label="7" />									
+				</mx:ArrayCollection>
+				</mx:ComboBox>
+				<mx:Button label="Grabar" width="70" click="Grabar()"/>
+				</mx:HBox>
+				</mx:Form>
+				</mx:Panel>
+				
+				</mx:HBox>-->
+				
+				
+				
+				<mx:Panel title="Historico de la Linea de Credito" borderThicknessBottom="0" borderThicknessLeft="0"
+						  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+						  paddingTop="0"
+						  borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="20" height="30%" verticalGap="-5">
+					
+					<mx:AdvancedDataGrid id="dgHistLineaCredito" height="100%" dataProvider="{modelo.listaHistLineaCredito}" width="100%"
+										 rowHeight="18" paddingBottom="0" paddingLeft="0" paddingRight="0" sortItemRenderer="{null}"
+										 paddingTop="0">
+						<mx:columns>
+							<mx:AdvancedDataGridColumn headerText="Desde"  width="50" sortable="false">
+								<mx:itemRenderer>
+									<mx:Component>
+										<mx:Label text="{outerDocument.dateFormatter.format(data.fechaDesde)}" textAlign="left"/>
+									</mx:Component>
+								</mx:itemRenderer>
+							</mx:AdvancedDataGridColumn>
+							<mx:AdvancedDataGridColumn headerText="Importe" sortable="false"  width="70" >
+								<mx:itemRenderer>
+									<mx:Component>
+										<mx:Label  text="{outerDocument.currencyFormatter.format(data.importe)}" textAlign="right"/>
+									</mx:Component>
+								</mx:itemRenderer>
+							</mx:AdvancedDataGridColumn>
+							<mx:AdvancedDataGridColumn headerText="Hasta"  width="50" sortable="false">
+								<mx:itemRenderer>
+									<mx:Component>
+										<mx:Label text="{outerDocument.dateFormatter.format(data.fechaHasta)}" textAlign="left"/>
+									</mx:Component>
+								</mx:itemRenderer>
+							</mx:AdvancedDataGridColumn>
+							
+							
+							<mx:AdvancedDataGridColumn headerText="Tipo" dataField="tipo" width="60" textAlign="left" sortable="false"/>
+							<mx:AdvancedDataGridColumn headerText="Operador" sortable="false"  width="70" >
+								<mx:itemRenderer>
+									<mx:Component>
+										<mx:Label  text="{data.nombreOperador}" textAlign="left"/>
+									</mx:Component>
+								</mx:itemRenderer>
+							</mx:AdvancedDataGridColumn>
+							
+							
+							
+						</mx:columns>
+					</mx:AdvancedDataGrid>
+					
+					
+				</mx:Panel>
+				
+				
+				<mx:HBox  verticalAlign="top" 
+						  horizontalAlign="left" height="30%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+						  paddingTop="0" width="100%" horizontalGap="0">
+					
+					<mx:Panel title="Futuros Vencimientos" borderThicknessBottom="0" borderThicknessLeft="0"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0"
+							  borderThicknessRight="0" borderThicknessTop="0" width="50%" headerHeight="20" height="100%" verticalGap="-5">
+						
+						<mx:AdvancedDataGrid id="dgFuturosVencimientos" height="100%" dataProvider="{modelo.clienteSeleccionado.futurosVencimientos}" width="100%"
+											 paddingBottom="0" paddingLeft="0" paddingRight="0"  
+											 paddingTop="0" sortItemRenderer="{null}">
+							<mx:columns>
+								<mx:AdvancedDataGridColumn headerText="Fecha" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label   text="{data.fecha}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Importe" textAlign="right">
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label  text="{outerDocument.currencyFormatter.format(data.monto)}"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>									
+							</mx:columns>
+						</mx:AdvancedDataGrid>	
+					</mx:Panel>	
+					<mx:Panel title="Datos Facturacion" borderThicknessBottom="0" borderThicknessLeft="0"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0"
+							  borderThicknessRight="0" borderThicknessTop="0" width="50%" headerHeight="20" height="100%" verticalGap="-5">
+						
+						<mx:VBox visible="{lineaCreditoModel.arrayTitularAdiscionales.length  != 0}"
+								 includeInLayout="{lineaCreditoModel.arrayTitularAdiscionales.length  != 0}" width="100%" >
+							<mx:Button label="{((encabezadoClienteModel.envioResumen == 'Resumen Impreso')?'Envio Resumen E-Mail':'Envio Resumen Impreso')}"
+									   click="this.admiEnvioResumen()" width="250" textAlign="center"/>
+						</mx:VBox>
+						
+						
+						
+						<mx:Form width="100%" height="90%"  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+								 paddingTop="0"
+								 visible="{((lineaCreditoModel.arrayTitularAdiscionales.length  != 0) ? ((encabezadoClienteModel.envioResumen == 'Resumen Impreso')?true:false):true) }"
+								 includeInLayout="{((lineaCreditoModel.arrayTitularAdiscionales.length  != 0) ? ((encabezadoClienteModel.envioResumen == 'Resumen Impreso')?true:false):true) }">
+							
+							
+							<mx:FormItem label="" styleName="tituloBusquedas" width="100%"  height="90%" >
+								<mx:TextArea id="txtDomicilio" width="100%" height="100%"  text="{modelo.clienteSeleccionado.titular.domicilioResumen}" editable="false" />
+							</mx:FormItem>						
+							
+							
+						</mx:Form>
+						
+						<mx:AdvancedDataGrid designViewDataType="flat" id="adgMail" height="90%"
+											 dataProvider="{lineaCreditoModel.arrayTitularAdiscionales }" width="100%"											 
+											 headerHeight="0" visible="{((lineaCreditoModel.arrayTitularAdiscionales.length  != 0) ? ((encabezadoClienteModel.envioResumen == 'Resumen Impreso')?false:true):false) }"
+											 includeInLayout="{((lineaCreditoModel.arrayTitularAdiscionales.length  != 0) ? ((encabezadoClienteModel.envioResumen == 'Resumen Impreso')?false:true):false) }">
+							<mx:columns>
+								<mx:AdvancedDataGridColumn  >
+									<mx:itemRenderer>
+										<mx:Component>
+											<!--<mx:Label styleName="lblInfo" text="{outerDocument.getEmail(data)}" textAlign="left"/>-->
+											<mx:Label styleName="lblInfo" text="{data.email}" textAlign="left"/>
+											<!--<mx:Label styleName="lblInfo" text="{data.}" textAlign="left"/>-->
+										</mx:Component>
+									</mx:itemRenderer>	
+								</mx:AdvancedDataGridColumn  >
+							</mx:columns>
+						</mx:AdvancedDataGrid>
+						<mx:Form width="100%" height="10%"  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+								 paddingTop="0">
+							
+							
+							<mx:FormItem label="Dia de Cierre:" styleName="tituloBusquedas" width="100%"  height="100%" >
+								<mx:Label styleName="lblInfo" text="{encabezadoClienteModel.titular.diaCierre}" paddingBottom="0" paddingTop="0"/>
+							</mx:FormItem>						
+							
+							
+						</mx:Form>
+						
+					</mx:Panel>	
+					
+				</mx:HBox>
+				
+				
+				<mx:VBox width="100%" height="20%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+						 paddingTop="0">
+					<mx:Panel title="Ultima Revision Linea Credito" borderThicknessBottom="0" borderThicknessLeft="0"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0"
+							  borderThicknessRight="0" borderThicknessTop="0" width="100%" height="60%" headerHeight="20" verticalGap="-5">
+						
+						<mx:Form width="100%" height="100%"  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+								 paddingTop="0" textAlign="center"   >
+							
+							
+							<mx:FormItem label="Fecha:"  styleName="tituloBusquedas" width="100%"  height="100%" horizontalAlign="left" paddingLeft="150"  >
+								<mx:Label styleName="lblInfo" text="{dateFormatter.format(modelo.listaRevisionLinea.getItemAt(0))}"
+										  paddingBottom="0" paddingTop="0"  textAlign="center"  />
+							</mx:FormItem>						
+							
+							
+						</mx:Form>
+					</mx:Panel>
+					
+					<mx:Panel title="Solicitud" borderThicknessBottom="0" borderThicknessLeft="0"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0"
+							  borderThicknessRight="0" borderThicknessTop="0" width="100%" height="40%" headerHeight="20" verticalGap="-5">
+						<mx:VBox height="100%" width="100%" horizontalAlign="center" verticalAlign="middle">
+							<mx:Button label="Imprimir Solicitud" id="btnSolicitud" click="this.verSolicitud()" enabled="true"/>	
+						</mx:VBox>
+					</mx:Panel>
+					
+				</mx:VBox>
+				
+				
+				
+				
+			</mx:VBox>
+			
+			<mx:VBox  label="Agenda - tramites y reclamos" verticalAlign="top" 
+					  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					  paddingTop="0" width="80%">
+				
+				<mx:HBox  label="Resumen de cuenta - hist cobranza y estado" verticalAlign="top" 
+						  horizontalAlign="left" height="40%" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalGap="0" width="100%">
+					
+					
+					
+					<mx:Panel title="Resumenes de Cuentas" borderThicknessBottom="0" borderThicknessLeft="0"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0"
+							  borderThicknessRight="0" borderThicknessTop="0" width="50%" headerHeight="0" height="100%" verticalGap="-5">
+						
+						<mx:VBox width="100%"  horizontalGap="0" horizontalAlign="right" verticalAlign="top" verticalGap="-6"
+								 paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
+							<mx:ApplicationControlBar width="100%" height="7%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" >        		        
+								<mx:Label text="Resumenes Cant liquidaciones" styleName="lblInfoBlanco"/>
+								<mx:TextInput id="txtCantidad" width="60" text="9" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscarLiquidaciones()"/>
+								<mx:Label text="Pago Minimo: {currencyFormatter.format(repactacionModel.pagoMinimo)}" styleName="lblInfoBlanco"/>
+							</mx:ApplicationControlBar>
+						</mx:VBox>
+						
+						<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" 
+											 dataProvider="{resumenCtaClienteModel.arrayLiquidaciones}" width="100%" height="100%" 
+											 paddingBottom="0" paddingLeft="0" paddingRight="0" 
+											 paddingTop="0" rowHeight="18" sortableColumns="false" sortItemRenderer="{null}" >
+							<mx:columns>
+								
+								<mx:AdvancedDataGridColumn headerText="Liq." sortable="false" width="70" paddingLeft="0" paddingRight="0"  >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{outerDocument.dateFormatter.format(data.fechaCierre)}" textAlign="left" />
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Vto" sortable="false" width="70"  >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{outerDocument.dateFormatter.format(data.fechaLiq)}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>			           
+								<mx:AdvancedDataGridColumn headerText="Total" sortable="false" width="85"  >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label  text="{outerDocument.currencyFormatter.format(data.montoTotal)}" textAlign="right"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Pagado" width="85"  >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label  text="{outerDocument.currencyFormatter.format(data.importePagado)}" textAlign="right"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Saldo"  sortable="false" width="85"  >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label  text="{outerDocument.currencyFormatter.format(data.montoTotal-data.importePagado)}" textAlign="right"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Acumula"  sortable="false" width="85"  >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label  text="{outerDocument.currencyFormatter.format(data.acumulado)}" textAlign="right"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Pdf" sortable="false" width="50" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:HBox horizontalScrollPolicy="off" toolTip="{String(data.rutaPdf).replace('webapps','')}">
+												<mx:Script>
+													<![CDATA[
+														import com.tarjetafiel.caja.vo.LiqCliente;
+														
+														import mx.controls.Alert;
+														import mx.events.CloseEvent;
+														
+														public  function abrirPDF(url:String):void {
+															
+															if(data.rutaPdf && data.rutaPdf != "")
+																navigateToURL( new URLRequest( String(data.rutaPdf).replace('webapps','')+".pdf"),'_blank'); 
+														} 
+														
+														
+													]]>
+												</mx:Script>
+												<mx:LinkButton label="Pdf" click="abrirPDF(data.rutaPdf)" rollOverColor="#fd9595" textAlign="left"/>
+											</mx:HBox>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+							</mx:columns>
+						</mx:AdvancedDataGrid>
+					</mx:Panel>	
+					
+					
+					<mx:Panel title="Cuenta Corriente de Resumenes -- EN PRUEBA" width="50%" height="100%"  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0"
+							  borderThicknessRight="0" borderThicknessBottom="0" borderThicknessLeft="0" verticalGap="-5" headerHeight="0">
+						<mx:VBox width="100%"  horizontalGap="0" horizontalAlign="right" verticalAlign="top" verticalGap="-6"
+								 paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
+							<mx:ApplicationControlBar width="100%" height="7%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
+													  horizontalAlign="center" >        		        
+								<mx:Label text="Cuenta Corriente de Resumenes" styleName="lblInfoBlanco" paddingRight="50"  />
+								<mx:Label text="Fecha Desde" styleName="lblInfoBlanco" />
+								<date:DateFiledMultiLan id="fechaDesde1" formatString="DD/MM/YYYY" 
+														selectedDate="{CuentaCorrienteResumenNew(modelo.listaCorrienteResumen.getItemAt(0)).fecha}" />
+								<mx:Button label="Buscar" visible="{((encabezadoClienteModel.titular  != null)?true:false)}"
+										   click="buscarCorrienteResumen(fechaDesde1.selectedDate)"/>
+								
+								
+							</mx:ApplicationControlBar>
+						</mx:VBox>
+						<mx:AdvancedDataGrid id="adgccr" designViewDataType="flat" 
+											 dataProvider="{modelo.listaCorrienteResumen}" width="100%" height="100%" 
+											 paddingBottom="0" paddingLeft="0" paddingRight="0" 
+											 paddingTop="0" rowHeight="18" sortItemRenderer="{null}" >
+							<mx:columns>
+								
+								<mx:AdvancedDataGridColumn headerText="Fecha" sortable="false" width="45">
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{outerDocument.dateFormatter.format(data.fecha)}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Descripcion" sortable="false"  width="100" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{data.descripcion}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>			           
+								<mx:AdvancedDataGridColumn headerText="Debe" sortable="false"  width="60" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label  text="{(((data.debe)==0)?'':outerDocument.currencyFormatter.format(data.debe))}" textAlign="right"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Haber" sortable="false"  width="60" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label  text="{(((data.haber)==0)?'':outerDocument.currencyFormatter.format(data.haber))}" textAlign="right"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Saldo" sortable="false"  width="60" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label  text="{outerDocument.currencyFormatter.format(data.saldo)}" textAlign="right"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								
+							</mx:columns>
+						</mx:AdvancedDataGrid>
+						
+					</mx:Panel>
+					
+					
+				</mx:HBox>
+				
+				<mx:Panel title="Agenda" borderThicknessBottom="0" borderThicknessLeft="0"
+						  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+						  paddingTop="0"
+						  borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="0" height="30%" verticalGap="-5">
+					<mx:HBox width="100%" height="100%"  horizontalGap="0" horizontalAlign="right" verticalAlign="top" verticalGap="-6"
+							 paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
+						
+						
+						<mx:Panel title="Historico de Cobranzas" borderThicknessBottom="0" borderThicknessLeft="0"
+								  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+								  paddingTop="0"
+								  borderThicknessRight="0" borderThicknessTop="0" width="15%" headerHeight="20" height="100%" verticalGap="-5"
+								  >
+							
+							<mx:AdvancedDataGrid id="dgAcciones" height="100%" dataProvider="{modelo.listaHistoricoEstado}" width="100%"
+												 rowHeight="18" designViewDataType="flat" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+												 paddingTop="0" sortItemRenderer="{null}">
+								<mx:columns>
+									<mx:AdvancedDataGridColumn headerText="Fecha"  width="60" sortable="false" >
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:Label text="{outerDocument.dateFormatter.format(data.fechaEstadoCobranza)}" textAlign="left"/>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:AdvancedDataGridColumn>
+									
+									<mx:AdvancedDataGridColumn headerText="Estado" width="60" sortable="false" >
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:Label text="{data.estadoCobranza}" textAlign="left"/>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:AdvancedDataGridColumn>
+									
+								</mx:columns>
+							</mx:AdvancedDataGrid>
+						</mx:Panel>	
+						
+						<mx:Panel title="Historico de Estados" borderThicknessBottom="0" borderThicknessLeft="0"
+								  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+								  paddingTop="0"
+								  borderThicknessRight="0" borderThicknessTop="0" width="15%" headerHeight="20" height="100%" verticalGap="-5">
+							
+							<mx:AdvancedDataGrid id="dgHistEstadosYComercial" dataProvider="{modelo.listaHistoricoComercial}" height="100%" width="100%"
+												 rowHeight="18" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+												 paddingTop="0" designViewDataType="flat" sortItemRenderer="{null}">
+								<mx:columns>
+									
+									<mx:AdvancedDataGridColumn headerText="Fecha" width="60" sortable="false"  >
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:Label text="{outerDocument.dateFormatter.format(data.fechaEstadoComercial)}" textAlign="left"/>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:AdvancedDataGridColumn>
+									<mx:AdvancedDataGridColumn headerText="Estado" dataField="estadoComercial" width="100" textAlign="left" sortable="false" />
+									
+									
+								</mx:columns>
+							</mx:AdvancedDataGrid>	
+						</mx:Panel>
+						
+						
+						<mx:VBox width="70%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top" verticalGap="-6"
+								 paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
+							<mx:ApplicationControlBar width="100%" height="7%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
+													  horizontalAlign="center" >        		        
+								<mx:Label text="AGENDA    " styleName="lblInfoBlanco" paddingRight="50"  />
+								<mx:Label text="Fecha Desde" styleName="lblInfoBlanco" />
+								<date:DateFiledMultiLan id="fechaDesde" formatString="DD/MM/YYYY" />
+								<mx:Button label="Buscar" visible="{((encabezadoClienteModel.titular  != null)?true:false)}"   click="this.agendaModel.buscarEventosCliente(fechaDesde.selectedDate,DateField.stringToDate('25/10/2020', 'DD/MM/YYYY'))"/>
+								<!--<mx:Label text="" styleName="lblInfoBlanco" paddingRight="0" />-->
+								<mx:Button    label="Nuevo Evento" click="this.abrirPopUpAgregarAgenda()"/>
+								
+							</mx:ApplicationControlBar>
+							
+							<mx:AdvancedDataGrid id="adgAgenda" designViewDataType="flat"   
+												 dataProvider="{agendaModel._arrayEventos}" width="100%"  height="100%" rowHeight="18"
+												 paddingBottom="0" paddingLeft="0" paddingRight="0" 
+												 paddingTop="0" sortItemRenderer="{null}">
+								<mx:columns>
+									<mx:AdvancedDataGridColumn headerText="Fecha" width="30" sortable="false" >
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:Label text="{outerDocument.dateFormatter.format(data.evento.fechaEvento)}" textAlign="left"/>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:AdvancedDataGridColumn>
+									
+									
+									<mx:AdvancedDataGridColumn headerText="Descripcion"  width="70"  sortable="false">
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:Label text="{outerDocument.getDescripcionAgenda(data)}" textAlign="left"/>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:AdvancedDataGridColumn>
+									<mx:AdvancedDataGridColumn headerText="Comentario"  width="200" sortable="false">
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:Label text="{outerDocument.getComentarioAgenda(data)}" textAlign="left"/>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:AdvancedDataGridColumn>
+									<mx:AdvancedDataGridColumn headerText="Operador"  width="50" sortable="false">
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:Label text="{outerDocument.getOperadorAgenda(data)}" textAlign="left"/>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:AdvancedDataGridColumn>
+									
+								</mx:columns>
+							</mx:AdvancedDataGrid>	
+							
+						</mx:VBox>
+						
+					</mx:HBox>
+					
+				</mx:Panel>
+				<mx:HBox  label="tramites y reclamos" verticalAlign="top" 
+						  horizontalAlign="left" height="30%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+						  paddingTop="0" width="100%">
+					
+					<mx:Panel title="Tramites" borderThicknessBottom="0" borderThicknessLeft="0"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0"
+							  borderThicknessRight="0" borderThicknessTop="0" width="50%" headerHeight="20" height="100%" verticalGap="-5">
+						
+						
+						
+						<mx:AdvancedDataGrid id="adgTramites" designViewDataType="flat"   
+											 dataProvider="{modelo.listaTramites}" width="100%"  height="100%" rowHeight="18"
+											 paddingBottom="0" paddingLeft="0" paddingRight="0" 
+											 paddingTop="0" sortItemRenderer="{null}">
+							<mx:columns>
+								<mx:AdvancedDataGridColumn headerText="Tramite" dataField="idTramite" width="40" textAlign="left" sortable="false" />
+								<mx:AdvancedDataGridColumn headerText="Titulo" width="80" sortable="false" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{data.titulo}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>							
+								<mx:AdvancedDataGridColumn headerText="Estado" dataField="estado" width="50" textAlign="left" sortable="false" />
+								<mx:AdvancedDataGridColumn headerText="Inicio" width="40" sortable="false" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{outerDocument.dateFormatter.format(data.fechaInicioReal)}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								
+								
+								<mx:AdvancedDataGridColumn headerText="Fin" width="40" sortable="false" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{outerDocument.dateFormatter.format(data.fechaFinReal)}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Operador" width="60" sortable="false" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{data.operador}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								
+							</mx:columns>
+						</mx:AdvancedDataGrid>	
+						
+					</mx:Panel>
+					<mx:Panel title="Reclamos" borderThicknessBottom="0" borderThicknessLeft="0"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0"
+							  borderThicknessRight="0" borderThicknessTop="0" width="50%" headerHeight="20" height="100%" verticalGap="-5">
+						
+						<mx:AdvancedDataGrid id="adgReclamos" designViewDataType="flat"   
+											 dataProvider="{modelo.listaReclamos}" width="100%"  height="100%" rowHeight="18"
+											 paddingBottom="0" paddingLeft="0" paddingRight="0" 
+											 paddingTop="0" sortItemRenderer="{null}">
+							<mx:columns>
+								<mx:AdvancedDataGridColumn headerText="Reclamo" width="30" sortable="false" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{data.idReclamo}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Tipo" width="60" sortable="false" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{data.tipo}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								
+								<mx:AdvancedDataGridColumn headerText="Inicio" width="30" sortable="false" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{outerDocument.dateFormatter.format(data.fechaInicio)}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								
+								<mx:AdvancedDataGridColumn headerText="Fin" width="30" sortable="false" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{outerDocument.dateFormatter.format(data.fechaFin)}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								
+								<mx:AdvancedDataGridColumn headerText="canal" width="30" sortable="false" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{data.canal}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								
+								<mx:AdvancedDataGridColumn headerText="resolucion" width="30" sortable="false" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{data.resolucion}" textAlign="left"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								
+							</mx:columns>
+						</mx:AdvancedDataGrid>	
+						
+					</mx:Panel>
+					
+				</mx:HBox>
+			</mx:VBox>
+		</mx:HBox>  
+		
+	</mx:VBox>
+	
+	
+	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YY"/>
+	<mx:NumberFormatter  id="currencyFormatter"   useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="." decimalSeparatorFrom="," decimalSeparatorTo=","
+						 precision="2"  rounding="nearest" useNegativeSign="false"/>  
+	
+	
+	
+	<mate:Listener  receive="{this.calcularValoresLC()}" type="getValoresLineaCredito"/>
+	<!--<mate:Listener  receive="{this.calcularValoresLC1()}" type="getValoresLineaCredito1"/>-->
+	
+	<maps:RepactacionModelMap/>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.core.mx_internal;
+			import com.tarjetafiel.caja.vo.Eventos;
+			import com.tarjetafiel.caja.vo.LineaCredCompos;
+			import mx.utils.StringUtil;
+			import mx.controls.DateField;
+			import mx.controls.Alert;
+			import com.util.format.FormatUtil;
+			import com.util.components.alert.AlertError;
+			import views.categorias.cliente.models.LineaCreditoModel;
+			import views.categorias.cliente.models.ResumenCtaClienteModel;
+			import views.categorias.cliente.models.EncabezadoClienteModel;
+			import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+			import views.categorias.models.AgendaModel;
+			import com.tarjetafiel.caja.vo.Eventos;
+			import com.tarjetafiel.caja.vo.Operador;
+			import com.tarjetafiel.caja.vo.EventosCliente;
+			import views.categorias.cliente.popup.AgregarAgendaView;
+			import flash.display.DisplayObject;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.modules.ModuleManager;
+			import com.util.components.alert.AlertOk;
+			import com.util.components.alert.AlertYesNo;
+			import mx.events.CloseEvent;
+			import com.tarjetafiel.caja.vo.Email;
+			import models.ApplicationModel;
+			import com.tarjetafiel.caja.vo.CuentaCorrienteResumenNew;
+			import views.categorias.cliente.models.RepactacionModel;
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			
+			public var popUpAgregarAgenda:AgregarAgendaView = new AgregarAgendaView();
+			import com.tarjetafiel.proveedorconexion.event.ClientesGeneralEvent;
+			
+			[Bindable]public var applicationModel:ApplicationModel = new ApplicationModel();
+			[Bindable] public  var agendaModel : AgendaModel;
+			[Bindable] public var arrayValoresLineaCredito:ArrayCollection;
+			[Bindable] public var arrayTitularAdiscionales:ArrayCollection;
+			[Bindable]public var repactacionModel:RepactacionModel;
+			
+			[Bindable] public var lineaCreditoModel:LineaCreditoModel;
+			[Bindable]
+			private var modelo : ModelLocatorGeneral = ModelLocatorGeneral.getInstance();
+			
+			import views.categorias.cliente.models.PlasticosModel;
+			[Bindable]public var plasticosModel:PlasticosModel;
+			
+			[Bindable]  public  var resumenCtaClienteModel:ResumenCtaClienteModel;
+			[Bindable]public var encabezadoClienteModel:EncabezadoClienteModel;
+			
+			import events.ApplicationEvent;
+			import flash.events.IEventDispatcher;
+			
+			public var dispatcher:IEventDispatcher;
+			
+			public function abrirPopUpAgregarAgenda():void{
+				//llamo al popUp agregar mail
+				if (encabezadoClienteModel.titular  != null ) {
+					popUpAgregarAgenda.agendaModel = this.agendaModel;
+					popUpAgregarAgenda.idCliente = lineaCreditoModel.titular.idCliente;
+					PopUpManager.addPopUp(popUpAgregarAgenda,Application.application as  DisplayObject, true);
+					PopUpManager.centerPopUp(popUpAgregarAgenda);	
+				}  
+				else {
+					Alert.show("Debe ingresar cliente, para relizar la consulta");
+				} 
+			}
+			
+			/*
+			public function abrirModuloVerDocumentacion():void{
+			var even:ApplicationEvent = new ApplicationEvent(ApplicationEvent.CAMBIAR_VISTA);
+			even.index = 2;
+			dispatcher.dispatchEvent(even);
+			}
+			*/
+			
+			public function Grabar():void{
+				if (encabezadoClienteModel.titular  != null ) {
+					/* if (Number(this.txtLinea.text) > 0) { */
+					modelo.monto = Number(this.txtLinea.text);
+					modelo.operador = Application.application.parameters.codigoOperador;
+					modelo.cantidadDias = Number(cmbLineaDias.selectedItem.label);
+					new ClientesGeneralEvent(ClientesGeneralEvent.GRABAR_LINEACREDITO_EVENT,null,null).dispatch();
+					/* } else {
+					Alert.show("Importe linea credito temporal debe ser mayor a cero");
+					} */
+				} else {
+					Alert.show("Debe ingresar cliente, para relizar la consulta");
+				}
+			}
+			
+			public function ConsultaBCRA():void{
+				if (encabezadoClienteModel.titular  != null ) {
+					var url:String;
+					var p1:String;
+					var p2:String;
+					var page:String;
+					var array:Array = Application.application.url.split("/");
+					var direccion:String = array[0]+"/"+array[1]+"/"+array[2]+"/"+array[3];
+					
+					p1 = "?cuil=";
+					p1 += encabezadoClienteModel.clienteEncontrado.individuo.cuil;
+					
+					page = "/Presentacion/report/ConsultaBCRA.jrxml";
+					url = page+p1;
+					
+					navigateToURL(new URLRequest(url),'_blank');
+					
+				} else {
+					Alert.show("Debe ingresar cliente, para relizar la consulta");
+				}
+			}
+			
+			
+			public function buscarCorrienteResumen(fecha:Date):void{
+				modelo.fechaResumen = fecha;
+				
+				new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_CORRIENTE_FECHA_EVENT,null,null).dispatch();
+				
+			}
+			
+			
+			public function LimpiarCampos():void{
+				
+				modelo.suPago = 0;
+				modelo.suPago1 = 0;
+				modelo.listaHistoricoComercial.removeAll();
+				modelo.clienteSeleccionado.futurosVencimientos.removeAll();
+				lineaCreditoModel.titular = null;
+				//lineaCreditoModel.titular.individuo.mails = null;
+				encabezadoClienteModel.nombreCliente = null;
+				
+				modelo.listaAccionesCliente.removeAll();
+				modelo.listaHistLineaCredito.removeAll();
+				modelo.listaLineaCredito.removeAll();
+				
+				modelo.listaLineaCreditoTem.removeAll();
+				
+				modelo.listaCorrienteResumen.removeAll();
+				modelo.listaHistoricoEstado.removeAll();
+				modelo.listaRevisionLinea.removeAll();
+				modelo.listaSaldoCuenta.removeAll();
+				modelo.listaReclamos.removeAll();
+				modelo.listaBancoCentral.removeAll();
+				
+				modelo.listaDigitales.removeAll();
+				modelo.listaTramites.removeAll();
+				modelo.pagoMinimo = 0;
+				modelo.importeTotal = 0;
+				modelo.pagoCuenta = 0;
+				modelo.pagoTotal = 0;
+				modelo.deudaFinal = 0;
+				modelo.deuda = 0;
+				
+				modelo.importeTotal1 = 0;
+				modelo.pagoTotal1 = 0;
+				modelo.deudaFinal1 = 0;
+				modelo.deuda1 = 0;
+				
+				encabezadoClienteModel.arrayLineaTemporal.removeAll();
+				encabezadoClienteModel.titular = null;
+				encabezadoClienteModel.clienteEncontrado = null;
+				encabezadoClienteModel.clienteSeleccionado = null;
+				encabezadoClienteModel.cliente = null;
+				
+				modelo.urlDocAdj=null;
+			}
+			
+			
+			public function getEmail(data:Object):String{
+				var mail:Email = data as Email;
+				//var individuo:Email = data as Email;
+				if (data) {
+					//var cliente:ClienteTransaccion = data as ClienteTransaccion;
+					Alert.show("entrooo");
+					var result:String = mail.email == null ? "" : mail.email;
+					return result;	
+				} else {
+					Alert.show("blanco");
+				}
+				return " "; 
+			}
+			
+			
+			public function admiEnvioResumen():void{
+				
+				if (encabezadoClienteModel.titular  != null ) {
+					var mensaje:String=""; 
+					if 	(encabezadoClienteModel.envioResumen == 'Resumen E-Mail') {
+						mensaje = 'Resumen Impreso';
+					}else {
+						mensaje = 'Resumen E-Mail';
+					}
+					
+					AlertYesNo.show("¿Confirma el cambio a " + mensaje + " la forma de envio del resumen del cliente?",function (evt:CloseEvent):void{
+						if(evt.detail == Alert.YES){					
+							envioResumen(Application.application.parameters.codigoOperador);						 
+						}		
+					});			
+					
+				}
+				else {
+					Alert.show("Debe ingresar cliente, para relizar la consulta");
+				}
+			}	
+			
+			
+			/**
+			 * @id 37
+			 * Administrar Envio de resumen
+			 **/	
+			private function envioResumen(operador:Number):void{
+				this.encabezadoClienteModel.realizar_envio_resumen(operador);	
+			}
+			
+			
+			public function calcularValoresLC1():void{
+				lineaCreditoModel.buscarValoresLC();			  
+			}
+			
+			
+			private function getFechaDesdeHistLineaCredito(item:Object):String {
+				return dateFormatter.format(item.fechaDesde);
+			}
+			
+			private function getFechaHastaHistLineaCredito(item:Object):String {
+				return dateFormatter.format(item.fechaHasta);
+			}
+			
+			
+			public function getDescripcionAgenda(data:Object):String {
+				var eventosCliente:EventosCliente = data as EventosCliente;
+				var evento:Eventos = eventosCliente.evento  as Eventos;
+				return evento.descripcion;
+			}
+			
+			
+			public function getOperadorAgenda(data:Object):String {
+				var eventosCliente:EventosCliente = data as EventosCliente;
+				var evento:Eventos = eventosCliente.evento  as Eventos;
+				var operador:Operador = evento.operador  as Operador;	
+				return operador.apellido + ", " + operador.nombre;
+				
+			}
+			
+			
+			public function getComentarioAgenda(data:Object):String {
+				var eventosCliente:EventosCliente = data as EventosCliente;
+				var evento:Eventos = eventosCliente.evento  as Eventos;
+				return evento.comentario;
+			}
+			
+			
+			private function buscarLiquidaciones():void{
+				if (encabezadoClienteModel.titular  != null ) {
+					resumenCtaClienteModel.buscarLiquidaciones(int(txtCantidad.text));
+				} else {
+					Alert.show("Debe ingresar cliente, para relizar la consulta");
+				}
+				
+			}
+			
+			
+			/*  private function buscarEventosCliente(fecha:Date ):void {
+			if (encabezadoClienteModel.titular  != null ) {
+			this.agendaModel.buscarEventosCliente(fecha,DateField.stringToDate('25/10/2020', 'DD/MM/YYYY'));
+			} else {
+			Alert.show("Debe ingresar cliente, para relizar la consulta");
+			}
+			
+			} 
+			*/
+			
+			
+			public function calcularValoresLC():void{
+				this.txtCantidad.text = "9";
+				this.txtLinea.text = "0";
+				this.cmbLineaDias.selectedIndex = 1;
+				if (encabezadoClienteModel.titular  != null ) {
+					resumenCtaClienteModel.buscarLiquidaciones(int(txtCantidad.text)); 
+					agendaModel.buscarTodosEventosCliente(); 
+				}  
+			}
+			
+			
+			public function labelFunctionEvento(data:Object):String{
+				return dateFormatter.format(data.evento.fechaEvento) + " "  
+				data.evento.descripcion + + " "
+				data.evento.comentario;
+			}
+			
+			private function verSolicitud():void{
+				if (encabezadoClienteModel.titular  != null ) {
+					var url:String;
+					var p1:String;
+					var p2:String;
+					var page:String;
+					var array:Array = Application.application.url.split("/");
+					var direccion:String = array[0]+"/"+array[1]+"/"+array[2]+"/"+array[3];
+					
+					p1 = "?c_id_cliente=" + encabezadoClienteModel.titular.getId();		
+					p2 = "&URLImagen=" + direccion+"/img/fiel/cabecera.jpg";
+					
+					page = "/Presentacion/report/Solicitud.jrxml";
+					url = page+p1+p2;
+					
+					navigateToURL(new URLRequest(url),'_blank');
+				}
+				else {
+					Alert.show("Debe ingresar cliente, para relizar la consulta");
+				}
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	
+</ModuleGeneral>
+
+

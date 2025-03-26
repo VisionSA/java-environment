@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ESCAPE)closePopUp()" 
+	close="PopUpManager.removePopUp(this)" layout="vertical" title="Tarjeta de Débito" horizontalAlign="center" 
+	verticalAlign="middle" showCloseButton="true" xmlns:date="com.util.components.date.*" 
+	xmlns:textInput="com.util.components.textInput.*">
+	<mx:Script>
+		<![CDATA[
+			import com.util.components.alert.AlertWarning;
+			import mx.utils.StringUtil;
+			import com.tarjetafiel.caja.vo.BancoPropio;
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.model.TarjetaDebitoModel;
+			import mx.events.CloseEvent;
+			
+			[Bindable]public var tarjetaDebitoModel:TarjetaDebitoModel = ModelLocator.getInstance().tarjetaDebitoModel;
+			
+			private function closePopUp(detalle:int=0):void{				
+				this.dispatchEvent(new CloseEvent(CloseEvent.CLOSE));
+			}
+			
+			private function addMedio():void{
+				
+				if(validate()){				
+					tarjetaDebitoModel.movimMp.monto = Number(txtImporte.text);
+					//Los pagos con Tarjeta de Debito operan con el banco Frances.
+					for each(var bancoProp:BancoPropio in ModelLocator.getInstance().bancoModel.arrayBancosPropios){
+						if(bancoProp.idBancoPropio == 2){
+							tarjetaDebitoModel.movimMp.cheque.bancoPropio = bancoProp;
+							tarjetaDebitoModel.movimMp.cheque.fechaPago = new Date();
+							break;
+						}
+					}
+			
+					if(tarjetaDebitoModel.modificar){
+						tarjetaDebitoModel.modificarMedioPago();
+					} else {
+						tarjetaDebitoModel.addMedioPago();	
+					}
+									
+					closePopUp(0);
+				} else {
+					AlertWarning.show("Debe completar los datos requeridos (*).");
+				}
+			}
+			
+			private function validate():Boolean{
+				return this.txtNroComp.text.length > 0 &&
+					   this.txtImporte.text.length > 0 && Number(this.txtImporte.text) > 0;
+			}
+			
+			private function labelFunctionBancoPropio(data:Object):String{
+				return StringUtil.trim(BancoPropio(data).banco.descripcion) + " - " + BancoPropio(data).numeroCuenta; 
+			}
+		]]>
+	</mx:Script>
+	<mx:Form width="100%" height="100%">
+		<!--<mx:FormItem label="* Banco Propio:" width="100%">
+			<mx:ComboBox width="100%" id="cboBanco" dataProvider="{ModelLocator.getInstance().bancoModel.arrayBancosPropios}"
+				labelFunction="labelFunctionBancoPropio" 
+				selectedItem="{tarjetaDebitoModel.bancoPropio}">
+			</mx:ComboBox>
+		</mx:FormItem>
+		<mx:FormItem label="* Fecha deposito:" width="100%">
+			<date:DateFiledMultiLan id="fechaDeposito" selectedDate="{tarjetaDebitoModel.movimMp.cheque.fechaPago}"
+				change="tarjetaDebitoModel.movimMp.cheque.fechaPago = fechaDeposito.selectedDate"/>
+		</mx:FormItem>-->
+		<mx:FormItem label="* Nro. Comprobante:" width="100%">
+			<mx:TextInput restrict="0-9" maxChars="8" id="txtNroComp" width="100%" 
+				text="{tarjetaDebitoModel.movimMp.cheque.numero}"
+				change="tarjetaDebitoModel.movimMp.cheque.numero = txtNroComp.text"/>
+		</mx:FormItem>
+		<mx:FormItem label="* Importe:" width="100%">
+			<textInput:TextInputMoneda id="txtImporte" 
+				text="{tarjetaDebitoModel.movimMp.monto}" />
+		</mx:FormItem>
+	</mx:Form>
+	<mx:HBox>
+		<mx:Button label="Guardar" click="addMedio()"/>
+		<mx:Button label="Cancelar" click="closePopUp(1)"/>
+	</mx:HBox>
+	
+</mx:TitleWindow>

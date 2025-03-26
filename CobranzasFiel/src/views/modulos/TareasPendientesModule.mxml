@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" 
+	xmlns:components="views.components.*" 
+	creationComplete="init()" height="100%">
+
+
+<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.TareaPendiente;
+			import com.util.Fecha;
+			import com.util.components.alert.AlertError;
+			
+			import events.GenericTareasPendientesEvent;
+			import events.TareasPendientesEvent;
+			
+			import flash.net.navigateToURL;
+			
+			import model.CobranzasModelLocator;
+			import model.TareasPendientesModel;
+			
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.PopUpManager;
+			
+			import views.components.ViewDetalleTarea;
+			public var tareasPendientesModel:TareasPendientesModel;
+			
+			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			[Bindable]
+			private var esReporte : Boolean = false;
+			
+			[Bindable]
+			var vent : IFlexDisplayObject;
+			
+			private function ambasFechasIngresadas(fechaDesde:String,fechaHasta:String): Boolean {
+				return (fechaDesde!="" && fechaHasta!="");
+			}
+			
+			private function ningunaFechaIngresada(fechaDesde:String,fechaHasta:String): Boolean {
+				return (fechaDesde=="" && fechaHasta=="");
+			}
+			
+			
+			private function buscarTareas():void {				
+				
+				if (ambasFechasIngresadas(dfDesde.text,dfHasta.text)){
+					var obj : Object = new Object();
+					obj.isConfirmada = cmboEstado.selectedItem.data;
+					obj.fechaDesde = DateField.stringToDate(dfDesde.text,"DD/MM/YYYY");
+					obj.fechaHasta = DateField.stringToDate(dfHasta.text,"DD/MM/YYYY");					
+					if (rangoFechaValido(obj.fechaDesde as Date,obj.fechaHasta as Date)){
+						
+						new GenericTareasPendientesEvent(GenericTareasPendientesEvent.BUSCAR_TAREAS_EVENT,obj).dispatch();
+					}else {
+						AlertError.show("El rango de fechas\nseleccionado es incorrecto");
+					}
+				}else {
+					if (ningunaFechaIngresada(dfDesde.text,dfHasta.text)){						
+						var obj1 : Object = new Object();
+						obj1.isConfirmada = cmboEstado.selectedItem.data;
+						obj1.fechaDesde = null;
+						obj1.fechaHasta = null;
+						new GenericTareasPendientesEvent(GenericTareasPendientesEvent.BUSCAR_TAREAS_EVENT,obj1).dispatch();
+					}else {
+						AlertError.show("El rango de fechas\nseleccionado es incorrecto");
+					}
+				}
+			}
+			
+			private function seleccionTarea():void {
+				var obj : Object = modelo.listaTareas.getItemAt(dgTareas.selectedIndex);
+				new GenericTareasPendientesEvent(GenericTareasPendientesEvent.SELECCIONAR_TAREA_EVENT,obj).dispatch();
+			}
+			
+			private function getFecha(item:Object, column:DataGridColumn):String {
+				return df.format(item.fecha);
+			}
+			
+			private function verDetalleTarea():void{
+				vent = PopUpManager.createPopUp(Application.application as DisplayObject,ViewDetalleTarea,true);
+				PopUpManager.centerPopUp(vent);
+			}
+			
+			
+			public function confirmarTareaPendiente():void {				
+								
+				new GenericTareasPendientesEvent(GenericTareasPendientesEvent.CONFIRMAR_TAREA_PENDIENTE_EVENT,modelo.tareaSeleccionada).dispatch();
+				
+			}
+			
+			private function init():void{
+				btnImprimirTodos.visible = false;				
+				
+				new GenericTareasPendientesEvent(GenericTareasPendientesEvent.INICIALIZAR_MODULO_TAREAS_EVENT,null).dispatch();
+			}
+			
+			private function rangoFechaValido(fechaDesde:Date,fechaHasta:Date):Boolean{
+				var isOk : Boolean = false;
+				
+				if (fechaDesde<=fechaHasta){
+					isOk = true;
+				}
+				
+				return isOk;
+								
+			}
+			
+			private function abrirPDFImpresion():void {
+				
+				var url : String;
+				
+				if (modelo.tareaSeleccionada.idAccion==8){
+					url = "/archivos/fichasDeCobrador/"+dfFichas.format(modelo.tareaSeleccionada.fecha)+"/ZZ_UNION_DOC"+dfFichas.format(modelo.tareaSeleccionada.fecha)+".pdf";	
+				} else if (modelo.tareaSeleccionada.idAccion==1){
+					url = "/archivos/cartasMorosos/"+dfFichas.format(modelo.tareaSeleccionada.fecha)+"/ZZ_UNION_DOC"+dfFichas.format(modelo.tareaSeleccionada.fecha)+".pdf";
+				} else if (modelo.tareaSeleccionada.idAccion==11) {
+					url = "/archivos/cartasAvisoUrgente/"+dfFichas.format(modelo.tareaSeleccionada.fecha)+"/ZZ_UNION_DOC"+dfFichas.format(modelo.tareaSeleccionada.fecha)+".pdf";
+				} else if (modelo.tareaSeleccionada.idAccion==12) {
+					url = "/archivos/cartasAvisoDocumentado/"+dfFichas.format(modelo.tareaSeleccionada.fecha)+"/ZZ_UNION_DOC"+dfFichas.format(modelo.tareaSeleccionada.fecha)+".pdf";
+				} else if (modelo.tareaSeleccionada.idAccion==13) {
+					url = "/archivos/cartasAvisoPrejudicial/"+dfFichas.format(modelo.tareaSeleccionada.fecha)+"/ZZ_UNION_DOC"+dfFichas.format(modelo.tareaSeleccionada.fecha)+".pdf";
+				} else if (modelo.tareaSeleccionada.idAccion==14) {
+					url = "/archivos/listadoTelefonosMorosos/"+dfFichas.format(modelo.tareaSeleccionada.fecha)+"/LISTADO_TELEFONOS_MOROSOS.pdf";
+				} else if (modelo.tareaSeleccionada.idAccion==15) {
+					url = "/archivos/fichasDeAbogados/"+dfFichas.format(modelo.tareaSeleccionada.fecha)+"/ZZ_UNION_DOC"+dfFichas.format(modelo.tareaSeleccionada.fecha)+".pdf";
+				}				
+				new GenericTareasPendientesEvent(GenericTareasPendientesEvent.ABRIR_PDF_EVENT,url).dispatch();
+			}
+			
+			private function set centrarPopUp(data:Object):void
+			{
+				PopUpManager.centerPopUp(vent);
+			}
+		]]>
+	</mx:Script>
+
+<!--@I5520-->	<mx:Binding source="modelo.listaDetalleTareas" destination="centrarPopUp"/>
+<!--@F5520-->
+	<mx:DateFormatter id="dfFichas" formatString="DD-MM-YYYY"/>
+	<mx:DateFormatter id="df" formatString="DD/MM/YYYY"/>	
+	
+	<mx:Canvas id="canvasFiltro" width="600" borderStyle="solid" borderThickness="2" borderColor="0">
+		<mx:VBox width="100%" horizontalAlign="center">
+			<mx:Label text="Filtro de Búsqueda" fontSize="18" fontWeight="bold"/>
+			<mx:Form id="formFiltro" width="100%" >			
+				
+				<mx:FormItem label="Estado" >
+					<mx:ComboBox id="cmboEstado" dataProvider="{modelo.listaEstadoTarea}" />
+				</mx:FormItem>
+				<mx:FormItem label="Fecha" >
+					<mx:HBox width="100%">
+						<mx:VBox height="100%" horizontalAlign="center">					
+							<mx:Label text="Desde"/>
+							<mx:DateField id="dfDesde" width="120" formatString="DD/MM/YYYY" editable="false"/>
+						</mx:VBox>
+						<mx:VBox height="100%" horizontalAlign="center">					
+							<mx:Label text="Hasta"/>
+							<mx:DateField id="dfHasta" width="120" formatString="DD/MM/YYYY" editable="false"/>
+						</mx:VBox>
+						
+					</mx:HBox>
+				</mx:FormItem>
+				<mx:HBox width="100%" horizontalAlign="right">			
+					<mx:Button id="btnBuscar" label="Buscar" width="120" click="buscarTareas()"/>
+				</mx:HBox>
+			</mx:Form>			
+		</mx:VBox>
+	</mx:Canvas>
+	
+	<mx:Canvas id="canvasContenido" width="600" visible="{modelo.listaTareas != null}">
+		<mx:VBox width="100%" horizontalAlign="center" paddingTop="5">
+			<mx:DataGrid id="dgTareas" dataProvider="{modelo.listaTareas}" width="100%" itemClick="seleccionTarea()" textAlign="center">
+				<mx:columns>
+		           <mx:DataGridColumn dataField="fecha" headerText="Fecha" labelFunction="getFecha" width="90" textAlign="right" />
+		           <mx:DataGridColumn dataField="descripcion" headerText="Descripción" textAlign="center"/>
+		           <mx:DataGridColumn dataField="cantidad" headerText="Cantidad" width="120" textAlign="right"/>
+		        </mx:columns>				
+			</mx:DataGrid>
+			<mx:HBox width="100%" horizontalAlign="right">
+				<mx:Button id="btnImprimirTodos" label="Imprimir" width="120" enabled="{modelo.esReporte}" click="abrirPDFImpresion()" visible="{!modelo.esConfirmable}" includeInLayout="{!modelo.esConfirmable}"/>
+				<mx:Button label="Ver Tarea" width="120" enabled="{modelo.tareaSeleccionada != null}" click="verDetalleTarea()"/>
+				<mx:Button label="Confirmar Tarea" width="120" enabled="{modelo.tareaSeleccionada != null}" click="confirmarTareaPendiente()" visible="{modelo.esConfirmable}" includeInLayout="{modelo.esConfirmable}"/>				
+			</mx:HBox>
+		</mx:VBox>
+		
+	</mx:Canvas>	
+	
+</mx:Module>

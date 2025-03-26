@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><beans xmlns="http://www.springframework.org/schema/beans" xmlns:lang="http://www.springframework.org/schema/lang" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd  http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.0.xsd">
+	<!-- This context holds all the networking: mina -->
+
+	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer" id="customEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="java.net.SocketAddress">
+					<bean class="org.apache.mina.integration.spring.InetSocketAddressEditor"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	   
+	<!-- RTMP Handler -->
+	<bean class="weborb.messaging.WebORBRTMPHandler" id="rtmpHandler">
+		<property name="server" ref="red5.server"/>
+		<property name="statusObjectService" ref="statusObjectService"/>
+	</bean>
+	
+	<bean class="org.red5.server.net.rtmp.RTMPConnManager" id="rtmpMinaConnManager">
+	</bean>
+	
+	<!-- RTMP Mina IO Handler -->
+	<bean class="org.red5.server.net.rtmp.RTMPMinaIoHandler" id="rtmpMinaIoHandler">
+		<property name="handler" ref="rtmpHandler"/>
+		<property name="codecFactory" ref="rtmpCodecFactory"/>
+		<property name="rtmpConnManager" ref="rtmpMinaConnManager"/>
+	</bean>
+	
+	<!-- RTMP Mina Transport -->
+	<bean class="org.red5.server.net.rtmp.RTMPMinaTransport" destroy-method="stop" id="rtmpTransport" init-method="start">
+		<property name="ioHandler" ref="rtmpMinaIoHandler"/>
+		<property name="address" value="0.0.0.0"/>
+		<property name="port" value="1935"/>
+		<property name="receiveBufferSize" value="65536"/>
+		<property name="sendBufferSize" value="271360"/>
+		<property name="eventThreadsCore" value="4"/>
+		<property name="eventThreadsMax" value="8"/>
+		<property name="eventThreadsQueue" value="-1 "/>
+		<property name="eventThreadsKeepalive" value="60"/>
+		<!-- This is the interval at which the sessions are polled for stats. If mina monitoring is not
+				enabled, polling will not occur. -->
+		<property name="jmxPollInterval" value="1000"/>
+		<property name="tcpNoDelay" value="true"/>
+	</bean>
+	
+	<!-- RTMP Mina Connection -->
+	<bean class="org.red5.server.net.rtmp.RTMPMinaConnection" id="rtmpMinaConnection" scope="prototype">
+		<!-- Ping clients every X ms. Set to 0 to disable ghost detection code. -->
+		<property name="pingInterval" value="5000"/>
+		<!-- Disconnect client after X ms of not responding. -->
+		<property name="maxInactivity" value="60000"/>
+		<!-- Max. time in milliseconds to wait for a valid handshake. -->
+		<property name="maxHandshakeTimeout" value="5000"/>
+	</bean>
+	
+	<bean class="org.red5.server.net.rtmp.RTMPConnManager" id="rtmptConnManager">
+	</bean>
+	
+	<!-- RTMPT Handler -->
+	<bean autowire="byType" class="org.red5.server.net.rtmpt.RTMPTHandler" id="rtmptHandler">
+		<property name="codecFactory" ref="rtmpCodecFactory"/>
+	</bean>
+	
+	<!-- Use injection to store RTMPT handler in servlet -->
+	<bean class="org.red5.server.net.rtmpt.RTMPTServlet" id="rtmptServlet">
+		<property name="handler" ref="rtmptHandler"/>
+		<property name="rtmpConnManager" ref="rtmptConnManager"/>
+	</bean>
+	
+	<!-- RTMPT Connection -->
+	<bean class="org.red5.server.net.rtmpt.RTMPTConnection" id="rtmptConnection" scope="prototype">
+		<!-- Ping clients every X ms. Set to 0 to disable ghost detection code. -->
+		<property name="pingInterval" value="5000"/>
+		<!-- Disconnect client after X ms of not responding. -->
+		<property name="maxInactivity" value="60000"/>
+		<!-- Max. time in milliseconds to wait for a valid handshake. -->
+		<property name="maxHandshakeTimeout" value="5000"/>
+	</bean>
+
+</beans>

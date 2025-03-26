@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="SubDiarioResumido_CLIE"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="535"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="URLImagen" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="Fecha_desde" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="Fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<queryString><![CDATA[SELECT C_DESCRIPCION CONCEPTO,
+  (SUM(TOTAL * C_SIGNO) ) TOTAL,
+  SUM(iva    * c_signo) IVA,
+  ((SUM(total* c_signo)) - (SUM(iva* c_signo))) Importe_Neto
+FROM
+  (SELECT cta.c_signo ,
+    TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY') AS FECHA,
+    DET.C_ID_CONCEPTO_DETALLE,
+    det.c_nombre,
+    cta.c_id_liq_cliente,
+    cta.c_id_cliente,
+    (ind.c_nombres
+    || ', '
+    || ind.c_apellido) nombre,
+    con.c_descripcion,
+    con.c_id_concepto,
+    SUM(cta.c_importe) AS Total,
+    (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva,
+    det.c_id_tipo_concepto_det CondIva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) between
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('14/08/2011','DD/MM/YYYY') and to_date('30/08/2011','DD/MM/YYYY')
+  AND cta.c_id_liq_cliente       IS NOT NULL
+  AND con.c_fondos                = 'N'
+  AND (det.c_id_tipo_concepto_det = 10
+  OR det.c_id_tipo_concepto_det   = 11
+  OR det.c_id_tipo_concepto_det   = 9
+  OR det.c_id_tipo_concepto_det   = 8
+  OR det.c_id_tipo_concepto_det   = 2
+  OR det.c_id_tipo_concepto_det   = 3)
+  GROUP BY cta.c_signo, TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY'), DET.C_ID_CONCEPTO_DETALLE, det.c_nombre, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_nombres
+    || ', '
+    || ind.c_apellido), con.c_descripcion, con.c_id_concepto, det.c_id_tipo_concepto_det
+  ORDER BY CON.C_DESCRIPCION ,
+    CTA.C_ID_LIQ_CLIENTE
+  )
+  WHERE C_ID_CONCEPTO_DETALLE NOT IN (23,25,58,59,75,76,724,725)--Intereses y Cargos de Adelanto Efectivo, Refinanciación y Repactación
+GROUP BY C_DESCRIPCION
+UNION
+SELECT C_DESCRIPCION || ' - ' || C_NOMBRE CONCEPTO,
+  (SUM(TOTAL * C_SIGNO) ) TOTAL,
+  SUM(iva    * c_signo) IVA,
+  ((SUM(total* c_signo)) - (SUM(iva* c_signo))) Importe_Neto
+FROM
+  (SELECT cta.c_signo ,
+    TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY') AS FECHA,
+    DET.C_ID_CONCEPTO_DETALLE DETALLE,
+    det.c_nombre,
+    cta.c_id_liq_cliente,
+    cta.c_id_cliente,
+    (ind.c_nombres
+    || ', '
+    || ind.c_apellido) nombre,
+    con.c_descripcion,
+    con.c_id_concepto,
+    SUM(cta.c_importe) AS Total,
+    (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva,
+    det.c_id_tipo_concepto_det CondIva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) between
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('14/08/2011','DD/MM/YYYY') and to_date('30/08/2011','DD/MM/YYYY')
+  AND cta.c_id_liq_cliente       IS NOT NULL
+  AND con.c_fondos                = 'N'
+  AND (det.c_id_tipo_concepto_det = 10
+  OR det.c_id_tipo_concepto_det   = 11
+  OR det.c_id_tipo_concepto_det   = 9
+  OR det.c_id_tipo_concepto_det   = 8
+  OR det.c_id_tipo_concepto_det   = 2
+  OR det.c_id_tipo_concepto_det   = 3)
+  GROUP BY cta.c_signo, TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY'), DET.C_ID_CONCEPTO_DETALLE, det.c_nombre, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_nombres
+    || ', '
+    || ind.c_apellido), con.c_descripcion, con.c_id_concepto, det.c_id_tipo_concepto_det
+  ORDER BY CON.C_DESCRIPCION ,
+    CTA.C_ID_LIQ_CLIENTE
+  )
+  WHERE DETALLE IN (23,25,58,59,75,76)--Intereses y Cargos de Adelanto Efectivo, Refinanciación y Repactación
+GROUP BY C_DESCRIPCION || ' - ' || C_NOMBRE
+UNION
+SELECT C_DESCRIPCION || ' - ' || C_NOMBRE CONCEPTO,
+  (SUM(TOTAL * C_SIGNO) ) TOTAL,
+  SUM(iva    * c_signo) IVA,
+  ((SUM(total* c_signo)) - (SUM(iva* c_signo))) Importe_Neto
+FROM
+  (SELECT cta.c_signo ,
+    TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY') AS FECHA,
+    DET.C_ID_CONCEPTO_DETALLE DETALLE,
+    det.c_nombre,
+    cta.c_id_liq_cliente,
+    cta.c_id_cliente,
+    (ind.c_nombres
+    || ', '
+    || ind.c_apellido) nombre,
+    con.c_descripcion,
+    con.c_id_concepto,
+    SUM(cta.c_importe) AS Total,
+    (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva,
+    det.c_id_tipo_concepto_det CondIva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) between
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('14/08/2011','DD/MM/YYYY') and to_date('30/08/2011','DD/MM/YYYY')
+	--AND cta.c_id_liq_cliente       IS NOT NULL
+  AND con.c_fondos                = 'N'
+  AND (det.c_id_tipo_concepto_det = 10
+  OR det.c_id_tipo_concepto_det   = 11
+  OR det.c_id_tipo_concepto_det   = 9
+  OR det.c_id_tipo_concepto_det   = 8
+  OR det.c_id_tipo_concepto_det   = 2
+  OR det.c_id_tipo_concepto_det   = 3)
+  GROUP BY cta.c_signo, TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY'), DET.C_ID_CONCEPTO_DETALLE, det.c_nombre, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_nombres
+    || ', '
+    || ind.c_apellido), con.c_descripcion, con.c_id_concepto, det.c_id_tipo_concepto_det
+  ORDER BY CON.C_DESCRIPCION ,
+    CTA.C_ID_LIQ_CLIENTE
+  )
+  WHERE DETALLE IN (724,725)--nota debito judicial y IVA nota debito
+GROUP BY C_DESCRIPCION || ' - ' || C_NOMBRE]]></queryString>
+
+	<field name="CONCEPTO" class="java.lang.String"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<field name="IVA" class="java.math.BigDecimal"/>
+	<field name="IMPORTE_NETO" class="java.math.BigDecimal"/>
+
+	<variable name="SUM_IMPORTE_NTO" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_NETO}]]></variableExpression>
+	</variable>
+	<variable name="SUM_IVA" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IVA}]]></variableExpression>
+	</variable>
+	<variable name="SUM_TOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="59"  isSplitAllowed="true" >
+				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="433"
+						y="1"
+						width="100"
+						height="53"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement
+						x="7"
+						y="15"
+						width="291"
+						height="30"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier-Bold" size="16" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[SUBDIARIO IVA VENTAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="44"
+						width="49"
+						height="15"
+						key="staticText-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[CLIENTE]]></text>
+				</staticText>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="22"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="2"
+						width="135"
+						height="15"
+						key="staticText-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Opcion: Resumido]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="276"
+						y="2"
+						width="66"
+						height="15"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<text><![CDATA[Fecha desde:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="342"
+						y="3"
+						width="59"
+						height="14"
+						key="textField-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{Fecha_desde}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="403"
+						y="3"
+						width="66"
+						height="15"
+						key="staticText-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<text><![CDATA[Fecha Hasta:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="469"
+						y="4"
+						width="64"
+						height="14"
+						key="textField-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{Fecha_hasta}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="16"  isSplitAllowed="true" >
+				<rectangle radius="0" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="534"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-1"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="384"
+						y="2"
+						width="46"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[IVA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="430"
+						y="2"
+						width="92"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="269"
+						y="2"
+						width="116"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Importe Nto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="13"
+						y="2"
+						width="255"
+						height="12"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Concepto]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="14"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="11"
+						y="1"
+						width="256"
+						height="13"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="269"
+						y="1"
+						width="115"
+						height="13"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_NETO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="385"
+						y="1"
+						width="44"
+						height="13"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IVA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="430"
+						y="1"
+						width="99"
+						height="13"
+						key="textField-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{TOTAL}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="21"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="309"
+						y="7"
+						width="170"
+						height="13"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Pagina " + $V{PAGE_NUMBER} + " de   "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="478"
+						y="7"
+						width="47"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Courier" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="true" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="84"
+						y="5"
+						width="70"
+						height="16"
+						key="textField-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Bottom">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="7"
+						y="5"
+						width="76"
+						height="16"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Fecha Impresión:]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="405"
+						y="7"
+						width="0"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="16"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="232"
+						y="4"
+						width="36"
+						height="11"
+						key="textField-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Total: "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="269"
+						y="3"
+						width="115"
+						height="13"
+						key="textField-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_IMPORTE_NTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="385"
+						y="3"
+						width="44"
+						height="13"
+						key="textField-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_IVA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="430"
+						y="3"
+						width="99"
+						height="13"
+						key="textField-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_TOTAL}]]></textFieldExpression>
+				</textField>
+			</band>
+		</summary>
+</jasperReport>

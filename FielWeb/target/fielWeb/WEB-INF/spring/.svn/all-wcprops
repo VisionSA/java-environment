@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/fielWeb/WEB-INF/spring
+END
+flex-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/fielWeb/WEB-INF/spring/flex-config.xml
+END
+webmvc-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/fielWeb/WEB-INF/spring/webmvc-config.xml
+END

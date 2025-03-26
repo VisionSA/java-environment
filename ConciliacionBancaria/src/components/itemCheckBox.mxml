@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:CheckBox xmlns:mx="http://www.adobe.com/2006/mxml" change="seleccionar(event)">
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import model.ConciliacionModelLocator;
+			
+			private var estado:Boolean=false; 
+	        override public function set data(value:Object):void {
+            	super.data = value;
+            	this.selected = value.seleccionado;
+	        } 
+	        
+	        private function seleccionar(event:Event):void{
+        	
+        		//El form que contenga el render itemCheckBox, debe tener las propiedades publicas 
+        		//  cabecera:ConciliacionFondoCabecera y btnSeleccionarTodoEstado:Boolean.
+         		var item :Object = parentDocument.cabecera;
+	        	if(parentDocument.btnSeleccionarTodoEstado)
+	        	{
+	            	item.seleccionado = true;
+	            	this.selected = item.seleccionado;
+	         	}else
+	         	{
+	         		item.seleccionado = !estado;
+	         		estado = !estado;
+	         	} 
+	         	
+	        }
+		]]>
+	</mx:Script>
+	
+</mx:CheckBox>

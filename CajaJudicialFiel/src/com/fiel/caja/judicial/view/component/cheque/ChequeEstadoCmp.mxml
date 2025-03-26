@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:FormItem xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			 xmlns:s="library://ns.adobe.com/flex/spark" 
+			 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%"
+			 currentState="{CajaJudicialModelLocator.getInstance().estadoChequeEstado}"
+			 visible.ChequeNuevo="false"
+			 includeInLayout.ChequeNuevo="false"
+			 label="Estado:">
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.Caja;
+			import com.tarjetafiel.caja.vo.Cheque;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:states>
+		<s:State name="ChequeNuevo"/>
+		<s:State name="EstadoValido"/>
+		<s:State name="EstadoInvalido"/>
+	</mx:states>
+	
+	
+	<s:TextInput text="{(data as Cheque).chequeEstado.descripcion}" color.EstadoInvalido="#F62B0F" color.EstadoValido="#38A123" fontWeight="bold" width="100%" editable="false"/>
+	
+</mx:FormItem>

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.Verificador" table="t_vis_eva_verificadores" >
+	<id name="idVerificador" type="java.lang.Long" column="c_id_verificador">
+		<generator class="increment" />
+	</id>
+
+	<property name="apellido" type="java.lang.String" column="c_apellido" not-null="false" length="50"/>
+
+	<many-to-one name="domicilio" class="com.bizitglobal.tarjetafiel.general.negocio.Domicilio" cascade="all" not-null="false" >
+		<column name="c_id_domicilio" />
+	</many-to-one>
+
+	<many-to-one name="email" class="com.bizitglobal.tarjetafiel.general.negocio.Email" cascade="all" not-null="false" >
+		<column name="c_id_email" />
+	</many-to-one>
+
+	<many-to-one name="partido" class="com.bizitglobal.tarjetafiel.general.negocio.Partido" not-null="false" >
+		<column name="c_id_partido" />
+	</many-to-one>
+
+	<property name="nombre" type="java.lang.String" column="c_nombre" not-null="false" length="50"/>
+	
+	<property name="estado" type="java.lang.String" column="c_estado" not-null="false" length="1"/>
+	
+	<property name="fechaBaja" type="java.sql.Timestamp" column="c_fecha_baja" not-null="false" length="3594"/>
+	
+	<set name="verifTelefonos" inverse="false" cascade="all"  >
+		<key>
+			<column name="c_id_verificador" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.VerificadorTelefono"/>
+	</set>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+				keyDown="if(event.keyCode == Keyboard.ESCAPE) PopUpManager.removePopUp(this)"  
+				creationComplete="init()" layout="vertical" 
+				showCloseButton="true" close="PopUpManager.removePopUp(this)" 
+				horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/" 
+				xmlns:ns1="com.util.paginacion.*" 
+				height="350" title="Agregar Telefono" width="400" 
+				resizeEffect="{resize}" verticalScrollPolicy="off" 
+				initialize="init()"  >
+	<mx:VBox>
+		
+		<mx:HBox paddingRight="10" paddingLeft="10" height="100%" width="100%" horizontalAlign="right" verticalAlign="middle" >		
+			<mx:Form width="100%" height="100%"  paddingBottom="0">
+				<mx:FormItem label="TIPO DE TELEFONO:" styleName="tituloBusquedas" width="100%">
+					<mx:ComboBox id="cmbTipoTelefonos" prompt="Seleccione..."
+								 dataProvider="{listaTiposTel}"  labelField="descripcion" 
+								 change="cambioIndexTipoTel(event)"/>
+				</mx:FormItem>
+				<mx:FormItem height="5"/>
+				<mx:FormItem label="CODIGO DE AREA:" styleName="tituloBusquedas" width="100%">
+					<mx:HBox>
+						<mx:FormItem label="0" styleName="formularioNroTel" width="20"/>
+						<mx:TextInput id="txtCodArea" text="" maxChars="4" restrict="0-9"/>
+					</mx:HBox>
+				</mx:FormItem>
+				<mx:FormItem label="NUMERO TELEFONO:" styleName="tituloBusquedas" width="100%">
+					<mx:ViewStack id="StackFormTel" >
+						<mx:HBox id="formCel" width="100%">
+							<mx:FormItem label="15" styleName="formularioNroTel" width="20"/>
+							<mx:TextInput id="txtNumeroCel" maxChars="10" restrict="0-9"/>
+						</mx:HBox>
+						<mx:HBox id="formTel" width="100%">
+							<mx:TextInput id="txtNumero" maxChars="10" restrict="0-9"/>
+						</mx:HBox>
+					</mx:ViewStack>
+				</mx:FormItem>
+				<!--<mx:FormItem label="ES FAX:" styleName="tituloBusquedas" width="100%">
+					<mx:CheckBox id="chbFax" click="checkControl(true)"/>
+				</mx:FormItem>
+				<mx:FormItem label="ES CELULAR:" styleName="tituloBusquedas" width="100%">
+					<mx:CheckBox id="chbCel" click="checkControl(false)"/>
+				</mx:FormItem>-->
+				<mx:FormItem label="HORARIOS:" styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtHorarios" maxChars="50"/>
+				</mx:FormItem>
+				<mx:FormItem label="INTERNO:" styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtInterno" maxChars="5" restrict="0-9"/>
+				</mx:FormItem>
+				<mx:FormItem label="DESCRIPCION:" styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtDescrip" maxChars="50"/>
+				</mx:FormItem>
+				<mx:FormItem label="TIPO NUMERO:" styleName="tituloBusquedas" width="100%">
+					<mx:ComboBox id="cmbTipoTel" prompt="Seleccione..."
+								 dataProvider="{listaComercioModel.arrayTiposTelefono}"  labelField="descripcion"/>
+				</mx:FormItem>
+			</mx:Form>
+		</mx:HBox>
+		
+	</mx:VBox>
+	
+	
+	<mx:VBox width="100%" paddingTop="10" >
+		<mx:HBox width="100%" horizontalAlign="right">	
+			<mx:Button label="Guardar" width="90" click="guardar()" />
+			<mx:Button label="Cancelar" width="90" click="PopUpManager.removePopUp(this)" />
+			<mx:Label width="10"/>
+		</mx:HBox>
+		<mx:Label height="10"/>
+	</mx:VBox>
+	
+	
+	<mx:Resize id="resize"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Telefono;
+			import com.tarjetafiel.caja.vo.TipoTelefono;
+			import com.util.components.alert.AlertOk;
+			
+			import mx.controls.Alert;
+			import mx.effects.Resize;
+			import mx.events.CloseEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ListEvent;
+			import mx.managers.PopUpManager;
+			
+			import views.categorias.comercio.models.ListaComercioModel;
+			
+			[Bindable]public var listaComercioModel:ListaComercioModel;
+			
+			public var idSucEmpresa:Number;
+			
+			private var listaTiposTel:Array = new Array("Celular","Fijo","Fax");
+			
+		    private function init():void {
+				PopUpManager.centerPopUp(this);
+				this.height=95;
+				this.StackFormTel.selectedChild = formCel;
+				this.StackFormTel.selectedChild = formTel;
+			}
+			
+			
+			/**
+			 * @id 3945
+			 * guarda un nuevo telefono
+			 * */
+			public function guardar():void {
+				//creo el objeto mail para guardar
+				if(this.txtCodArea.text && this.cmbTipoTel.selectedIndex != -1)
+				{
+						var tel:Telefono = new Telefono();
+						tel.codArea = this.txtCodArea.text? "0"+this.txtCodArea.text : "";
+						if(listaTiposTel[this.cmbTipoTelefonos.selectedIndex] == "Celular"){
+							tel.nroTlefono = this.txtNumeroCel.text? "15"+this.txtNumeroCel.text : "";
+						}
+						else tel.nroTlefono = this.txtNumero.text? this.txtNumero.text : "";
+							
+						if(listaTiposTel[this.cmbTipoTelefonos.selectedIndex] == "Celular"){
+							tel.esCelular = "S"
+						}
+						else tel.esCelular = "N";
+							
+						if(listaTiposTel[this.cmbTipoTelefonos.selectedIndex] == "Fax"){
+							tel.esFax = "S"
+						}
+						else tel.esFax = "N";
+						
+						//tel.esCelular = this.chbCel.selected? "S" : "N";
+						//tel.esFax = this.chbFax.selected? "S" : "N";
+						tel.horarios = this.txtHorarios.text? this.txtHorarios.text : "";
+						tel.nroInterno = this.txtInterno.text? this.txtInterno.text : "";
+						tel.descripcion = this.txtDescrip.text? this.txtDescrip.text : "";
+							
+						tel.tipo =cmbTipoTel.selectedItem as TipoTelefono;
+							
+						listaComercioModel.agregarTelefono(tel,idSucEmpresa);
+						
+						PopUpManager.removePopUp(this);
+						
+					}else{
+						Alert.show("Debe completar el codigo de area, el numero de telefono y el tipo de telefono");
+				}
+			}
+			
+			/**
+			 * @id 3945
+			 * limpia los datos
+			 * */
+			public function cleanData():void {
+				this.txtCodArea.text = "";
+				this.txtNumero.text = "";
+				//this.chbCel.selected = false;
+				//this.chbFax.selected = false;
+				this.txtNumeroCel.text="";
+				this.txtHorarios.text = "";
+				this.txtInterno.text = "";
+				this.txtDescrip.text = "";
+			}
+			
+			public function setH(num:Number):void{
+				this.height=num;
+			}
+			
+			/**
+			 * @id 3945
+			 * carga los datos del combo si es necesario
+			 * */
+			
+			public function initCombo():void {
+				listaComercioModel.cargarCmbTipoTel();
+			}
+			
+			/**
+			 * @id 3945
+			 * controla que no se puedan seleccionar ambos checks al mismo tiempo
+			 * */
+			/*
+			private function checkControl(clickFax:Boolean):void {
+				if(clickFax){
+					chbCel.selected=false;
+				}else{
+					chbFax.selected=false;
+				}
+			}
+			*/
+			
+
+			
+			protected function cambioIndexTipoTel(event:Event):void
+			{
+				this.height = 350;
+				
+				if(listaTiposTel[event.currentTarget.selectedIndex]=="Celular")
+				{
+					this.StackFormTel.selectedChild = formCel;
+				}
+				else this.StackFormTel.selectedChild = formTel;
+			}
+			
+
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

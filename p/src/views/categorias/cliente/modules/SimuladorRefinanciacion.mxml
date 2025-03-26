@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%"  height="100%"
+		 paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" horizontalGap="0"
+		 xmlns:textInput="com.util.components.textInput.*" 
+		 xmlns:maps="views.categorias.cliente.maps.*"
+		 xmlns:mate="http://mate.asfusion.com/"
+		 >
+	<mate:Listener  receive="{ this.limpiarSimulacion()}" type="limpiarDatosSimulacion"/>
+	<mx:Panel title="Refinanciacion" width="36%" height="100%" verticalGap="0" headerHeight="0"
+			  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"  >
+	
+		<mx:VBox width="100%" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" horizontalGap="0">
+			<mx:ToggleButtonBar itemClick="" textAlign="center">
+				<mx:dataProvider>
+					<mx:Array>
+						<mx:String>Refinanciación</mx:String>
+					</mx:Array>
+				</mx:dataProvider>
+			</mx:ToggleButtonBar>
+						
+	<mx:HBox width="100%" height="25%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" horizontalGap="0">
+		
+		<mx:Panel title="Saldo de la Cuenta" width="40%" height="100%"  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+				  paddingTop="0"
+				  borderThicknessRight="0" borderThicknessBottom="0" borderThicknessLeft="0" verticalGap="5">
+			
+			
+			<mx:Form width="100%" height="100%"    
+					 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" verticalGap="5">
+				
+				
+				<mx:FormItem label="Saldo Facturado" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+							 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+									
+					<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaSaldoCuenta.getItemAt(0))}" paddingTop="0"  
+							  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="50%" fontSize="12" fontWeight="bold" />
+					<!--<mx:HRule width="50%" height="10" strokeColor="#000000" visible="{modelo.listaSaldoCuenta.getItemAt(1)}" includeInLayout="{modelo.listaSaldoCuenta.getItemAt(1)}"/>-->
+
+					
+				</mx:FormItem>
+				<mx:FormItem label="Saldo por Facturar" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+							 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+					<mx:HBox width="100%">
+						<mx:CheckBox selected="{modelo.listaSaldoCuenta.getItemAt(1)}" click="{seleccionPago()}"  id="chk1"    />	
+					<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaSaldoCuenta.getItemAt(1))}" paddingTop="0"  
+							  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="100%" fontSize="12" fontWeight="bold" />
+					</mx:HBox >
+					<!--<mx:HRule width="50%" height="10" strokeColor="#000000" visible="{modelo.listaSaldoCuenta.getItemAt(1)}" includeInLayout="{modelo.listaSaldoCuenta.getItemAt(1)}"/>-->
+				</mx:FormItem>
+				<mx:FormItem label="Saldo a Favor" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+							 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right">
+					<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaSaldoCuenta.getItemAt(2))}" paddingTop="0"  
+							  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="50%" fontSize="12" fontWeight="bold" />
+				</mx:FormItem>
+				<mx:FormItem label="Saldo Total" styleName="tituloBusquedas" width="100%" paddingTop="0" indicatorGap="3" 
+							 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+					
+					<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaSaldoCuenta.getItemAt(3))}" paddingTop="0"  
+							  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="50%" fontSize="12" fontWeight="bold"/>
+					
+						
+				</mx:FormItem>
+				
+				
+			</mx:Form>
+			
+		</mx:Panel>
+		<mx:Panel title="Pagos" width="60%" height="100%"  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+				  paddingTop="0"
+				  borderThicknessRight="0" borderThicknessBottom="0" borderThicknessLeft="0" verticalGap="10">
+			
+			<mx:Form width="100%" height="100%"   
+					 textAlign="right" paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0" verticalGap="10">
+				
+				
+				<!--<mx:FormItem label="Pago Minimo Requerido" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+							 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+					<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.deuda*0.30)}" paddingTop="0"  
+							  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="50%"  />
+				</mx:FormItem>-->
+				<mx:FormItem label="Pago Minimo Requerido" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+							 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+					<mx:Label styleName="lblInfo" text="{currencyFormatter.format(currencyFormatter.format(modelo.deuda*0.30))}" paddingTop="0"  							  
+							  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="50%" fontSize="12" fontWeight="bold"
+							  id="txtPagoMinimoSugerido"/>
+				</mx:FormItem>
+				<!--<mx:FormItem label="Pago a Cuenta" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+					<mx:HBox width="100%">
+						<mx:CheckBox selected="{!modelo.listaSaldoCuenta.getItemAt(1)}" click=""  id="chk2"    />
+					<mx:Label styleName="lblInfo" text="{((modelo.listaSaldoCuenta.getItemAt(0)== 0)?currencyFormatter.format(0):currencyFormatter.format(repactacionModel.pagoCuenta))}" paddingTop="0"  
+							  textAlign="right" id="txtPagoACuenta"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" width="100%" fontSize="12" fontWeight="bold" />
+					</mx:HBox>
+				</mx:FormItem>-->
+				<mx:FormItem styleName="tituloBusquedas" label="Su Pago:" fontSize="12" fontWeight="bold"  width="100%" >
+					<mx:VBox verticalGap="5" width="100%" textAlign="right">
+						<textInput:TextInputMoneda id="txtPagoActual" text="0" fontSize="12" width="100%" fontWeight="bold" textAlign="right"
+												   change="{modelo.susPago(Number(txtPagoActual.text))}"
+												   enter="this.simular(false)"/>
+						
+						<mx:HRule width="100%" height="5" strokeColor="#000000" />
+					</mx:VBox >
+					
+				</mx:FormItem>
+				<mx:FormItem label="Pago Total" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+							 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" visible="false" >
+					<mx:VBox verticalGap="0" width="100%">
+					<mx:Label  styleName="lblInfo" text="{currencyFormatter.format(modelo.pagoTotal)}" paddingTop="0"  
+							  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="100%" fontSize="12" fontWeight="bold" />
+					<mx:HRule width="100%" height="5" strokeColor="#000000"/>
+					</mx:VBox >
+				</mx:FormItem>
+				
+				
+			</mx:Form>
+			
+		</mx:Panel>
+	</mx:HBox>
+		
+			
+			
+		<mx:VBox width="100%" height="75%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" horizontalGap="0" verticalGap="0">
+			
+			<mx:Form width="100%" height="6%"   					 
+					 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" verticalGap="-2">
+				
+				<mx:HBox width="100%" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" horizontalGap="0" >
+					<mx:FormItem label="Saldo Total" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+								 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" visible="false"  >
+						<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.importeTotal)}" paddingTop="0"  
+								  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" fontSize="14"   />
+					</mx:FormItem>
+				<mx:FormItem label="Importe a Refinanciar" styleName="tituloBusquedas" width="100%" paddingTop="0" indicatorGap="3" 
+							 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" >
+					<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.deudaFinal)}" paddingTop="0"  
+							  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" fontSize="14"  />
+				</mx:FormItem>
+				
+				
+				<mx:Button label="Simular" click="this.simular(false)" fontSize="14"/>
+				
+				</mx:HBox>
+				
+			</mx:Form>
+			
+			<mx:HRule width="95%"/>
+			<mx:Label styleName="tituloBusquedas" text="Cuotas"   width="100%" textAlign="center"  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"/>
+			<mx:HRule width="95%"/>
+			<mx:AdvancedDataGrid id="adgCuotas" designViewDataType="flat" width="100%" height="100%"
+				dataProvider="{repactacionModel.arrayRepactaciones}">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Cuota" dataField="nroCuota" fontSize="12" fontWeight="bold" />
+					<mx:AdvancedDataGridColumn headerText="Importe">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{outerDocument.currencyFormatter.format(data.montoCuota)}" textAlign="right" fontSize="12" fontWeight="bold"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Total">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{outerDocument.currencyFormatter.format(data.nroCuota*data.montoCuota)}" textAlign="right" fontSize="12" fontWeight="bold"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+				</mx:columns>
+			</mx:AdvancedDataGrid>		
+		</mx:VBox>	
+	
+	
+	
+			</mx:VBox>
+		
+		
+	</mx:Panel>
+
+	<mx:Panel title="Refinanciacion" width="33%" height="100%" verticalGap="0" headerHeight="0"
+			  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"  >
+		
+		<mx:VBox width="100%" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" horizontalGap="0">
+			<mx:ToggleButtonBar itemClick="" textAlign="center">
+				<mx:dataProvider>
+					<mx:Array>
+						<mx:String>Repactacion</mx:String>
+					</mx:Array>
+				</mx:dataProvider>
+			</mx:ToggleButtonBar>
+			
+			<mx:HBox width="100%" height="25%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" horizontalGap="0">
+				
+				<mx:Panel title="Saldo de la Cuenta" width="50%" height="100%"  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+						  paddingTop="0"
+						  borderThicknessRight="0" borderThicknessBottom="0" borderThicknessLeft="0" verticalGap="10">
+					
+					
+					<mx:Form width="100%" height="100%"    
+							 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" verticalGap="10">
+						
+						
+						<mx:FormItem label="Saldo Facturado" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+									 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+							
+							<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaSaldoCuenta.getItemAt(0))}" paddingTop="0"  
+									  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="50%" fontSize="12" fontWeight="bold" />
+							<!--<mx:HRule width="50%" height="10" strokeColor="#000000" visible="{modelo.listaSaldoCuenta.getItemAt(1)}" includeInLayout="{modelo.listaSaldoCuenta.getItemAt(1)}"/>-->
+							
+							
+						</mx:FormItem>
+						<!--<mx:FormItem label="Saldo por Facturar" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+									 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+							<mx:HBox width="100%">								
+								<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaSaldoCuenta.getItemAt(1))}" paddingTop="0"  
+										  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="100%" fontSize="12" fontWeight="bold" />
+							</mx:HBox >						
+						</mx:FormItem> -->	
+						<mx:FormItem label="Saldo a Favor" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+									 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right">
+							<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaSaldoCuenta.getItemAt(2))}" paddingTop="0"  
+									  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="50%" fontSize="12" fontWeight="bold" />
+						</mx:FormItem>
+						<mx:FormItem label="Saldo Total" styleName="tituloBusquedas" width="100%" paddingTop="0" indicatorGap="3" 
+									 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+							
+							<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.listaSaldoCuenta.getItemAt(3))}" paddingTop="0"  
+									  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="50%" fontSize="12" fontWeight="bold"/>
+							
+							
+						</mx:FormItem>
+						
+						
+					</mx:Form>
+					
+				</mx:Panel>
+				<mx:Panel title="Pagos" width="50%" height="100%"  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+						  paddingTop="0"
+						  borderThicknessRight="0" borderThicknessBottom="0" borderThicknessLeft="0" verticalGap="10">
+					
+					<mx:Form width="100%" height="100%"   
+							 textAlign="right" paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0" verticalGap="10">
+						
+						<mx:FormItem label="Pago Minimo" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+									 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+							<mx:Label styleName="lblInfo" text="{currencyFormatter.format(currencyFormatter.format(repactacionModel.pagoMinimo))}" paddingTop="0"  							  
+									  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="50%" fontSize="12" fontWeight="bold"  />
+						</mx:FormItem>
+						<!--<mx:FormItem label="Pago a Cuenta" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+									 paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" >
+							<mx:Label styleName="lblInfo" text="{currencyFormatter.format(repactacionModel.pagoCuenta)}" paddingTop="0"  
+									  textAlign="right" 
+									  paddingBottom="0" paddingLeft="0" paddingRight="0" width="50%" fontSize="12" fontWeight="bold" />
+						</mx:FormItem>-->
+						<mx:FormItem styleName="tituloBusquedas" label="Su Pago:" fontSize="12" fontWeight="bold" horizontalAlign="right" width="100%"
+									  enabled="{modelo.listaSaldoCuenta.getItemAt(0) > 0}">
+							<mx:VBox verticalGap="2" width="100%">
+								
+								<textInput:TextInputMoneda id="txtPagoActual1" text="0" fontSize="12" width="100%" fontWeight="bold" textAlign="right"
+														   change="{modelo.susPago1(Number(txtPagoActual1.text))}"
+														   enter="this.simular(true)"/>
+								<mx:HRule width="100%" height="5" strokeColor="#000000"/>
+							</mx:VBox >
+							
+						</mx:FormItem>
+						<mx:FormItem label="Pago Total" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+									 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right" visible="false" >
+							<mx:VBox verticalGap="0" width="100%">
+								<mx:Label  styleName="lblInfo" text="{currencyFormatter.format(modelo.pagoTotal1)}" paddingTop="0"  
+										   textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" width="100%" fontSize="12" fontWeight="bold" />
+								<mx:HRule width="100%" height="5" strokeColor="#000000"/>
+							</mx:VBox >
+						</mx:FormItem>
+						
+						
+					</mx:Form>
+					
+				</mx:Panel>
+			</mx:HBox>
+			
+			
+			
+			<mx:VBox width="100%" height="75%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" horizontalGap="0" verticalGap="0">
+				
+				<mx:Form width="100%" height="6%"   					 
+						 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" verticalGap="-2">
+					
+					<mx:HBox width="100%" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" horizontalGap="0">
+						<mx:FormItem label="Saldo Total" styleName="tituloBusquedas" width="100%" paddingTop="0"  indicatorGap="3"
+									 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" visible="false" >
+							<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.importeTotal1)}" paddingTop="0"  
+									  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" fontSize="14"   />
+						</mx:FormItem>
+						<mx:FormItem label="Importe a Repactar" styleName="tituloBusquedas" width="100%" paddingTop="0" indicatorGap="3" 
+									 textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" >
+							<mx:Label styleName="lblInfo" text="{currencyFormatter.format(modelo.deudaFinal1)}" paddingTop="0"  
+									  textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0" fontSize="14"  />
+						</mx:FormItem>
+						
+						
+						<mx:Button label="Simular" click="this.simular(true)" fontSize="14" enabled="{modelo.listaSaldoCuenta.getItemAt(0) > 0}"/>
+						
+					</mx:HBox>
+					
+				</mx:Form>
+				
+				<mx:HRule width="95%"/>
+				<mx:Label styleName="tituloBusquedas" text="Cuotas"   width="100%" textAlign="center"  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"/>
+				<mx:HRule width="95%"/>
+				<mx:AdvancedDataGrid id="adgCuotas1" designViewDataType="flat" width="100%" height="100%"
+									 dataProvider="{repactacionModel.arrayRepactaciones1}">
+					<mx:columns>
+						<mx:AdvancedDataGridColumn headerText="Cuota" dataField="nroCuota" fontSize="12" fontWeight="bold"/>
+						<mx:AdvancedDataGridColumn headerText="Importe">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.currencyFormatter.format(data.montoCuota)}" textAlign="right" fontSize="12" fontWeight="bold"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Total">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.currencyFormatter.format(data.nroCuota*data.montoCuota)}" textAlign="right" fontSize="12" fontWeight="bold"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+					</mx:columns>
+				</mx:AdvancedDataGrid>		
+			</mx:VBox>	
+			
+			
+			
+		</mx:VBox>
+		
+		
+	</mx:Panel>
+
+	<mx:Panel title="Refinanciacion" width="33%" height="100%" verticalGap="0" headerHeight="0"
+			  paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"  >
+		
+		<mx:VBox width="100%" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" horizontalGap="0">
+			<mx:ToggleButtonBar itemClick="" textAlign="center">
+				<mx:dataProvider>
+					<mx:Array>
+						<mx:String>Adelanto Efectivo</mx:String>
+					</mx:Array>
+				</mx:dataProvider>
+			</mx:ToggleButtonBar>
+			
+			<mx:HBox width="100%" horizontalAlign="left" verticalAlign="middle">
+				<mx:Label styleName="lblInfo" text="Importe"/>
+				<textInput:TextInputMoneda id="txtImporte" text="{adelantoEfectivoModel.importe}" enter="this.adelantoEfectivoModel.calcularCuota(Number(txtImporte.text))"/>
+				<mx:Button label="Simular" click="this.adelantoEfectivoModel.calcularCuota(Number(txtImporte.text))"/>
+			</mx:HBox>
+			
+			<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" dataProvider="{adelantoEfectivoModel.cuota}"
+								 height="100%" width="100%" fontSize="12" fontWeight="bold" sortableColumns="false" >
+				<mx:groupedColumns>				
+					<mx:AdvancedDataGridColumnGroup headerText="Solicitado">				
+						<mx:AdvancedDataGridColumn headerText="Cantidad de Cuotas" dataField="cantidadCuota"/>
+						<mx:AdvancedDataGridColumn headerText="Importe de la Cuota">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.currencyFormatter.format(data.capital + data.interes)}" fontSize="12" textAlign="right"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>						
+						<mx:AdvancedDataGridColumn headerText="Importe a financiar">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.currencyFormatter.format(data.cantidadCuota*(data.capital + data.interes))}" fontSize="12" textAlign="right"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+					</mx:AdvancedDataGridColumnGroup>				
+				</mx:groupedColumns>
+			</mx:AdvancedDataGrid>
+		
+		</mx:VBox>
+	</mx:Panel>
+
+	
+
+<mx:NumberFormatter  id="currencyFormatter"   useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="." decimalSeparatorFrom="," decimalSeparatorTo=","
+					 precision="2" rounding="nearest" useNegativeSign="(-)"/> 
+	
+	<maps:RepactacionModelMap/>
+	<maps:AdelantoEfectivoModelMap/>
+	
+	<mx:Script>
+		<![CDATA[
+			import views.categorias.cliente.models.RepactacionModel;
+			import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+			import  mx.events.ItemClickEvent;
+			import mx.controls.Alert;
+			import views.categorias.cliente.models.AdelantoEfectivoModel;
+			import com.util.format.FormatUtil;
+			
+			[Bindable]public var adelantoEfectivoModel:AdelantoEfectivoModel;
+			[Bindable]public var repactacionModel:RepactacionModel;
+			[Bindable]
+			private var modelo : ModelLocatorGeneral = ModelLocatorGeneral.getInstance();
+			
+			
+			
+			public function formatMoneda(obj:Object):String{
+				return FormatUtil.formatMoneda(obj);				
+				
+			}
+			
+			public function formatPorcenaje(obj:Object):String{
+				return FormatUtil.formatPorcentaje(obj);
+			}
+			
+			public function limpiarSimulacion():void{
+				this.txtPagoActual.text = "0";
+				this.txtPagoActual1.text = "0";
+			}
+			
+			
+			
+			public function simular(valor:Boolean):void {
+				
+				
+				
+				if(valor) {
+					
+					if  (modelo.deudaFinal1 > 0) {
+					
+					if (repactacionModel.pagoMinimo <= modelo.pagoTotal1) {
+						this.repactacionModel.simular(valor);
+					} else {
+						repactacionModel.arrayRepactaciones1.removeAll();
+						
+						Alert.show("Repactacion: El Pago Total debe ser mayor o igual que el Pago Minimo ");
+					}} else {
+						repactacionModel.arrayRepactaciones1.removeAll();
+						
+						Alert.show("Repactacion: El Pago Total es superior o igual al monto adeudado   ");
+					}
+					
+				} else {
+					
+					if  (modelo.deudaFinal > 0) {
+					
+					this.repactacionModel.simular(valor);
+				} else {
+				
+					repactacionModel.arrayRepactaciones.removeAll();
+					
+					Alert.show("Refinanciacion: El Pago Total es superior o igual al monto adeudado   ");
+				}
+			}
+			}
+			
+			
+			public function seleccionPago():void {
+				
+				if(chk1.selected) {
+					modelo.deuda = modelo.deuda +  Number(modelo.listaSaldoCuenta.getItemAt(1)) ;
+					modelo.susPago(modelo.suPago);
+				} else {
+					modelo.deuda = modelo.deuda -  Number(modelo.listaSaldoCuenta.getItemAt(1));
+					
+					modelo.susPago(modelo.suPago);
+				}
+				
+				repactacionModel.arrayRepactaciones.removeAll();
+				
+				
+			}
+			
+			/* private function handleCard(evt:ItemClickEvent):void {
+				repactacionModel.arrayRepactaciones.removeAll();
+				
+				if  (evt.currentTarget.selectedValue == "REP") {					
+					modelo.deuda = Number(modelo.listaSaldoCuenta.getItemAt(0));
+					modelo.susPago(Number(txtPagoActual.text),Number(txtPagoACuenta.text));
+					
+				} else { 
+					if(chk1.selected) {
+					modelo.deuda = Number(modelo.listaSaldoCuenta.getItemAt(3));
+					} else {
+						modelo.deuda = Number(modelo.listaSaldoCuenta.getItemAt(0));
+					}
+					modelo.susPago(Number(txtPagoActual.text),Number(txtPagoACuenta.text));
+					
+				}
+			} */
+			
+			
+			
+			
+			/* public function importePagoTotal():Number {
+				
+				
+				if(repactacionModel.pagoNoFacturado) {
+					repactacionModel.deuda = repactacionModel.deuda +  Number(txtSaldoFacturar.text) ;
+					repactacionModel.suPago = (Number(txtPagoActual.text));
+				} else {
+					repactacionModel.deuda = repactacionModel.deuda -  Number(txtSaldoFacturar.text);
+					repactacionModel.suPago= (Number(txtPagoActual.text));
+				}
+				
+				return repactacionModel.importeTotal;
+			} */
+			
+		]]>
+	</mx:Script>
+	
+</mx:HBox>

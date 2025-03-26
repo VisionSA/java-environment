@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--@I3820-->
+<s:Button xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		 <![CDATA[
+			 import spark.components.Label;
+			 [SkinPart]
+			public var fastAccess:Label = new Label();
+			 
+			 private var _command:String;
+			 private var commandChanged:Boolean;
+			 
+			 public function get command():String
+			 {
+				 return _command;
+			 }
+			 
+			 public function set command(value:String):void
+			 {
+				 _command = value;
+				 commandChanged = true;
+				 invalidateProperties();
+			 }
+			 
+			 override protected function commitProperties():void
+			 {
+				 super.commitProperties();
+				 
+				 if(commandChanged)
+				 {
+					 commandChanged = false;
+					 fastAccess.text = command;
+				 }
+				 
+			 }
+			 
+			 override protected function partAdded(partName:String, instance:Object):void
+			 {
+				 super.partAdded(partName, instance);
+				 if(instance == fastAccess)
+				 {
+					 fastAccess.text = _command;
+				 }
+				 
+			 }
+		]]> 
+	</fx:Script>
+</s:Button>
+<!--@F3820-->

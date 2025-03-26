@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" creationComplete="this.setFocusGrilla()" 
+	xmlns="views.categorias.*" show="this.obtenerDetalleMovimiento()" horizontalAlign="center" verticalGap="6" 
+	verticalAlign="top" xmlns:cliente="views.categorias.cliente.*">
+         
+         
+         <mx:HBox width="100%">
+         	    <mx:Text   text="{ctaCteClienteModel.movimientoCtaCteSeleccionado.idTransaccion}"  styleName="lblInfoBlanco"/>
+         	    <mx:Text   text="{ctaCteClienteModel.movimientoCtaCteSeleccionado.fechaReal}"  styleName="lblInfoBlanco"/>
+         	    <mx:Text   text="{currencyFormatter.format(ctaCteClienteModel.movimientoCtaCteSeleccionado.importeCuota)}"  styleName="lblInfoBlanco"/>
+         	    <mx:Text   text="{ctaCteClienteModel.movimientoCtaCteSeleccionado.sucDescripcion}"  styleName="lblInfoBlanco"/>
+         </mx:HBox>
+         
+      <mx:AdvancedDataGrid sortableColumns="false" id="adg1" designViewDataType="flat" keyDown="this.pressKey(event)"  doubleClickEnabled="true"   doubleClick="this.cambiarVistaComposicion()"  dataProvider="{ctaCteClienteModel.arrayMovientoCtaCteDetalles}" height="100%" width="100%">
+					<mx:columns>
+					     <mx:AdvancedDataGridColumn headerText="Id Detalle concepto" dataField="idConceptoDetalle"/>
+					     <mx:AdvancedDataGridColumn headerText="Descripcion" dataField="descripcionConceptoDetalle"/>
+						 <mx:AdvancedDataGridColumn headerText="Imp. Cuota" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.currencyFormatter.format(data.importeCuota)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			        </mx:columns>
+		</mx:AdvancedDataGrid>
+		
+		<mx:CurrencyFormatter  id="currencyFormatter" currencySymbol="$"  useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="."
+		 rounding="nearest" precision="2" decimalSeparatorFrom="," decimalSeparatorTo=","    alignSymbol="left"/>  
+		
+<mx:Script>
+	<![CDATA[
+		import com.tarjetafiel.caja.vo.MovimientoCtaCteDetalle;
+		import mx.controls.Alert;
+		import views.categorias.cliente.models.CtaCteClienteModel; 
+	   [Bindable]public var  ctaCteClienteModel:CtaCteClienteModel;  
+		
+		private function obtenerDetalleMovimiento():void{
+		    ctaCteClienteModel.buscarDetallesMovimiento();    		
+		}
+		
+	   public  function cambiarVistaComposicion():void{
+	 	  	if(adg1.selectedItem){
+	 	  		ctaCteClienteModel.detalleMovimientoCtaCteSeleccionado = MovimientoCtaCteDetalle(adg1.selectedItem);
+		   		ctaCteClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaComposicionCtaCte"));
+		   	}	
+	    }
+		
+		private function pressKey(event:KeyboardEvent):void{
+			if(event.keyCode == Keyboard.ENTER){
+				if(adg1.selectedItem != null){
+					this.cambiarVistaComposicion()
+				}
+			}
+		}
+		
+		public function setFocusGrilla():void{
+			if(this.adg1){
+				this.adg1.setFocus();
+			}
+		} 
+		
+	]]>
+</mx:Script>
+			
+	
+</mx:VBox>
+

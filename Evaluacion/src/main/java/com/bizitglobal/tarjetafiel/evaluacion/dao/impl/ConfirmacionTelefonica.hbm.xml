@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.ConfirmacionTelefonica" table="t_vis_eva_conf_telefonicas" >
+	<id name="idConfTelefonica" type="java.lang.Long" column="c_id_conf_telefonica">
+		<generator class="increment" />
+	</id>
+
+	<property name="correcDatEmp" type="java.lang.String" column="c_correc_dat_emp" not-null="false" length="1"/>
+
+	<property name="correcDatPers" type="java.lang.String" column="c_correc_dat_pers" not-null="false" length="1"/>
+
+	<property name="correcDomicilio" type="java.lang.String" column="c_correc_domicilio" not-null="false" length="1"/>
+
+	<property name="correcFecIng" type="java.lang.String" column="c_correc_fec_ing" not-null="false" length="1"/>
+
+	<property name="correcIngresos" type="java.lang.String" column="c_correc_ingresos" not-null="false" length="1"/>
+
+	<property name="esLaboral" type="java.lang.String" column="c_es_laboral" not-null="false" length="1"/>
+
+	<property name="idOperador" type="java.lang.Long" column="c_id_operador" not-null="false" length="2560"/>
+
+	<many-to-one name="solicitudIndividuo" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.SolicitudIndividuo" not-null="false" >
+		<column name="c_id_solic_individuo" />
+	</many-to-one>
+
+	<property name="observacion" type="java.lang.String" column="c_observacion" not-null="false" length="255"/>
+
+	<property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="false" length="3594"/>
+
+</class>
+</hibernate-mapping>

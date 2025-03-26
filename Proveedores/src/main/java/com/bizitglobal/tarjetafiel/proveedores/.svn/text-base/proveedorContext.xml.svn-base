@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+                       "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+ <!-- ================================================================================================ 
+ ========================         DEFINICION DE DAOS DEL MODULO         ========================= 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.DocumentoAdjuntoDaoHibernateImpl" id="documentoAdjuntoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.AsientoContableDaoHibernateImpl" id="asientoContableDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.ComprobanteDaoHibernateImpl" id="comprobanteDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.ComprobanteImputadoDaoHibernateImpl" id="comprobanteImputadoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.ProveedorFormaPagoDaoHibernateImpl" id="proveedorFormaPagoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.CuotaComprobanteDaoHibernateImpl" id="cuotaComprobanteDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.GrupoDaoHibernateImpl" id="grupoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.ProveedorDaoHibernateImpl" id="proveedorDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.RelacionDaoHibernateImpl" id="relacionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.TipoVencimientoDaoHibernateImpl" id="tipoVtoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.ImpuestoDaoHibernateImpl" id="impuestoDaoTest">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.RetencionDaoHibernateImpl" id="retencionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.ExclusionDaoHibernateImpl" id="exclusionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.ProveedorCategoriaDaoHibernateImpl" id="proveedorCategoriaDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.IndividuoDaoHibernateImpl" id="individuoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.reportes.ReporteProvSP" id="proveedorReporteDao">
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.ProveedorCtaCteDaoImpl" id="proveedorCtaCteDao">
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.ProveedorSICOREDaoImpl" id="proveedorSICOREDao">
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+  <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.SubDiarioIvaDaoHibernateImpl" id="subDiarioIvaDao">
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.dao.impl.ProveedorCuotaComprobantesDaoHibernateImpl" id="proveedorCuotaComprobantesDao">
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+  <!-- ================================================================================================ 
+ ===========================  DEFINICION DE DOCUMENTOADJUNTO SERVICE  =========================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.DocumentoAdjuntoServiceImpl" id="documentoAdjuntoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="documentoAdjuntoDao" ref="documentoAdjuntoDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="documentoAdjuntoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.DocumentoAdjuntoService</value>
+  </property>
+  <property name="target">
+   <ref bean="documentoAdjuntoServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- ================================================================================================ 
+ ===========================  DEFINICION DE ASIENTO CONTABLE SERVICE  =========================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.AsientoContableServiceImpl" id="asientoContableServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="asientoContableDao" ref="asientoContableDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="asientoContableService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.AsientoContableService</value>
+  </property>
+  <property name="target">
+   <ref bean="asientoContableServiceTarget"/>
+  </property>
+ </bean>
+ <!-- ================================================================================================ 
+ =========================  DEFINICION DE COMPROBANTE IMPUTADO SERVICE  ========================= 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.ComprobanteImputadoServiceImpl" id="comprobanteImputadoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="comprobanteImputadoDao" ref="comprobanteImputadoDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="comprobanteImputadoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.ComprobanteImputadoService</value>
+  </property>
+  <property name="target">
+   <ref bean="comprobanteImputadoServiceTarget"/>
+  </property>
+ </bean>
+ <!-- ================================================================================================ 
+ =========================  DEFINICION DE PROVEEDOR FORMA PAGO SERVICE  ========================= 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.ProveedorFormaPagoServiceImpl" id="proveedorFormaPagoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="proveedorFormaPagoDao" ref="proveedorFormaPagoDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="proveedorFormaPagoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.ProveedorFormaPagoService</value>
+  </property>
+  <property name="target">
+   <ref bean="proveedorFormaPagoServiceTarget"/>
+  </property>
+ </bean>
+ <!-- ================================================================================================ 
+ ===============================  DEFINICION DE COMPROBANTE SERVICE  ============================ 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.ComprobanteServiceImpl" id="comprobanteServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="comprobanteDao" ref="comprobanteDao"/>
+  <property name="cuotaComprobanteDao" ref="cuotaComprobanteDao"/>
+  <property name="comprobanteImputadoDao" ref="comprobanteImputadoDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="comprobanteService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.ComprobanteService</value>
+  </property>
+  <property name="target">
+   <ref bean="comprobanteServiceTarget"/>
+  </property>
+ </bean>
+ <!-- ================================================================================================ 
+ =============================  DEFINICION DE CUOTA COMPROBANTE SERVICE  ======================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.CuotaComprobanteServiceImpl" id="cuotaComprobanteServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="cuotaComprobanteDao" ref="cuotaComprobanteDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="cuotaComprobanteService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.CuotaComprobanteService</value>
+  </property>
+  <property name="target">
+   <ref bean="cuotaComprobanteServiceTarget"/>
+  </property>
+ </bean>
+ <!-- ================================================================================================ 
+ ==================================  DEFINICION DE GRUPO SERVICE  =============================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.GrupoServiceImpl" id="grupoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="grupoDao" ref="grupoDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="grupoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.GrupoService</value>
+  </property>
+  <property name="target">
+   <ref bean="grupoServiceTarget"/>
+  </property>
+ </bean>
+ <!-- ================================================================================================ 
+ ================================  DEFINICION DE PROVEEDOR SERVICE  ============================= 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.ProveedorServiceImpl" id="proveedorServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="proveedorDao" ref="proveedorDao"/>
+  <property name="proveedorCategoriaDao" ref="proveedorCategoriaDao"/>
+  <property name="retencionDao" ref="retencionDao"/>
+  <property name="individuoDao" ref="individuoDao"/>
+  <property name="exclusionDao" ref="exclusionDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="proveedorService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.ProveedorService</value>
+  </property>
+  <property name="target">
+   <ref bean="proveedorServiceTarget"/>
+  </property>
+ </bean>
+ <!-- ================================================================================================ 
+ =============================  DEFINICION DE TIPO VENCIMIENTO SERVICE  ========================= 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.TipoVencimientoServiceImpl" id="tipoVtoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="tipoVtoDao" ref="tipoVtoDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="tipoVtoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.TipoVencimientoService</value>
+  </property>
+  <property name="target">
+   <ref bean="tipoVtoServiceTarget"/>
+  </property>
+ </bean>
+  <!-- ================================================================================================ 
+ ===============           DEFINICION DE SUB DIARIO IVA SERVICE            ============== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.SubDiarioIvaServiceImpl" id="subDiarioIvaServiceTarget">
+  <property name="subDiarioIvaDao" ref="subDiarioIvaDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="subDiarioIvaService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.SubDiarioIvaService</value>
+  </property>
+  <property name="target">
+   <ref bean="subDiarioIvaServiceTarget"/>
+  </property>
+ </bean>
+ <!-- ================================================================================================ 
+ ==============================  DEFINICION DE CTA CTE DE PROVEEDORES  ========================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.ProveedorCtaCteServiceImpl" id="proveedorCtaCteServiceTarget">
+  <property name="proveedorCtaCteDao" ref="proveedorCtaCteDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="proveedorCtaCteService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.ProveedorCtaCteService</value>
+  </property>
+  <property name="target">
+   <ref bean="proveedorCtaCteServiceTarget"/>
+  </property>
+ </bean>
+ <!-- ================================================================================================ 
+ ==============================  DEFINICION DE CTA CTE DE PROVEEDORES  ========================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.proveedores.service.impl.ProveedorSICOREServiceImpl" id="proveedorSICOREServiceTarget">
+  <property name="proveedorSICOREDao" ref="proveedorSICOREDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="proveedorSICOREService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.proveedores.service.ProveedorSICOREService</value>
+  </property>
+  <property name="target">
+   <ref bean="proveedorSICOREServiceTarget"/>
+  </property>
+ </bean>
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE PROVEEDORES CUOTA COMPROBANTES SERVICE           ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="proveedorCuotaComprobantesServiceTarget" class="com.bizitglobal.tarjetafiel.proveedores.service.impl.ProveedorCuotaComprobantesServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="proveedorCuotaComprobantesDao" ref="proveedorCuotaComprobantesDao"/>
+</bean>
+
+<bean id = "proveedorCuotaComprobantesService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.proveedores.service.ProveedorCuotaComprobantesService</value>
+</property>
+
+<property name = "target">
+<ref bean = "proveedorCuotaComprobantesServiceTarget"/>
+</property>
+</bean>
+
+</beans>
+
+
+
+
+

@@ -1,0 +1,422 @@
+.navbar-navbar-default{
+    background-color:#0057ff;
+    font-family: 'fira code', monospace;
+    color:white;
+    font-size: 0.1px;
+    height: 20px;
+    content:center
+   }
+   .navbar-brand{
+    padding-top: 0px;
+    padding-bottom: 6px;
+   }
+  
+  .ocultar{
+    display: none;
+   }
+  
+  .v-card__title{
+    height: 49px;
+   } 
+  
+  .ocultar{
+    display: none;
+   }
+  .fila1{
+    height: 1px;
+  }
+   
+  .achicar{
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    margin-top: 0;
+    height: 30px;
+   }
+ 
+  .v-form{
+    width:100%;
+    height:100px; 
+    padding-bottom: 22px;
+   }
+  
+  .v-subheader{
+    height: 30px;
+    padding-left: 8px;
+    padding-right: 0px;
+    width: 85px;
+   }
+  
+  .v-slide-group__content.v-tabs-bar__content{
+    height:100%;
+    width: 100%;
+   }
+  
+  .v-slide-group__wrapper{
+    height:100%;
+    width: 100%;
+   }
+  /* botones */
+  .row.botones{
+    padding-left: 32px;
+    height: 6px;
+    padding-bottom: 10px;
+    padding-top: 5px;
+   }
+  
+  #cod_comercio, #CUIT, #razon_social,#Nn_fantasia,#grupo,#generico,#estado{
+    height: 20px;
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    margin-top: 0;
+    /* width: 100%; */
+   }
+  
+   #razon_socialTab,#Nn_fantasiaTab,#domicilioTab,#domicilioCalle,#domicilioNumeracion,#domicilioOrientacion,#domicilioManzana,#domicilioMonoblock,
+   #domicilioPiso,#domicilioDepartamentoCasa,#domicilioArea,#domicilioBarrio,#domicilioLocalidad,#domicilioPartido,#domicilioCodigoPostal,#domicilioGenerico,
+   #domicilioDepartamento,#domicilioProvincia,#telefonoTab,#paginaWebTab,#emailTab,#rubroTab,#actividadTab,#idComercioTab,#fechaAltaTab,#fechaBajaTab, #genericoTab{
+    height: 20px;
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    margin-top: 0;
+    /* width: 100%; */
+   }
+
+  #cod_comercio1,#CUIT1,#razon_social1,#Nn_fantasia1,#grupo1,#estado1,#input-30,#input-32,#input-34 {
+    height: 20px;
+    padding-top: 3px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    margin-top: 0;
+    width: 100%;
+   }
+  
+  .row{
+    height: 30px;
+    width: 160%;
+    padding-left: 30px;
+    
+   }
+
+  .v-slide-group__content,.v-tab, .v-dialog{
+   width: 100%;
+   }
+
+  .navbar-brand mr-1 text-white{
+    padding-top: 0%;
+   }
+
+    #input-9,#input-11,#input-13,#input-15
+    {  
+    height: 20px;
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    margin-top: 0;
+    width: 100%;
+    }
+
+    .container{
+      margin-left: 0px;
+      margin-right: 0px;
+    }
+
+    .v-input{
+      padding-top: 0px;
+      width: 100%;
+    }
+    /* ocultar flechas de input type number */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
+    input[type=number] { -moz-appearance:textfield; }
+
+    .contenedorTarjeta{
+      width: 90%;
+      height: 100%;
+    }
+
+    .contenedor{
+      width: 90%;
+      height: 100%;
+      padding-top: 10px;
+      padding-bottom: 35px;
+    }
+
+    .tarjeta1 , .tarjeta2 , .tarjeta3,.tarjeta4{
+     width: 15%;
+     height: 100px;
+    }
+
+    .col{
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+  
+    }
+    .col.col-4{
+      background-color: white;
+    }
+    .col-1,.col-2{
+      height: 10px;
+      width: 20px !important;
+    }
+
+    .contenedorTabs{
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-top: 0px;
+    }
+
+    .row1, .row2, .row3{    
+    padding-left: 20px;
+    }
+
+    #colorAzul{
+      background-color: #0057ff;
+      width: 200px;
+    }
+    /* letras blancas de las tablas */
+    .theme--light.v-data-table>.v-data-table__wrapper>table>thead>tr>th{
+      color:white ;
+    }
+
+    /* .v-data-table__wrapper{
+      margin-top: 22px;
+      height: 400px;
+    } */
+
+    body, html{
+      overflow: hidden;
+    }
+
+    /* contenido cinta busqueda */
+        .v-application--wrap{
+      width: 100%;
+      height: 100%;
+
+        }
+
+    .texto-centrado{
+      margin-bottom: 0px !important;
+    }
+
+    #v-item-group {
+      display:hidden
+    }
+    /* contenido tabs */
+    .v-window__container{
+      /* background-color: red; */
+      background-color: white;
+    }
+    
+    .theme--light.v-subheader{
+      color: black;
+    }
+
+    input{
+      font-size: 11px !important;
+      color: blue !important;
+       }
+
+    #fila{
+      padding-top: 0px;
+    }
+
+    .v-tabs{
+    height: 26px !important;
+    }
+
+    .cuitSubheader{
+      width: 38px;
+    }
+
+    .grupoSubheader{
+      width: 45px;
+    }
+
+    /* .razonInput{
+      width: 400px;
+    } */
+
+    .codSubheader{
+      width: 76px;
+    }
+
+    .codSubheaderInput{
+      width: 50px;
+    }
+
+    .cuitSubheaderInput{
+      width: 80px;
+    }
+
+    .estadoSubheaderInput{
+      width: 60px;
+    }
+
+    .genericoSubheader{
+      width: 63px;
+    }
+
+    .estadoSubheader{
+      width: 43px;
+    }
+
+    .filaCinta{
+     width: 100%;
+     padding-left: 20px;
+     padding-top: 15px;
+     padding-bottom: 0px;
+    }
+
+    .filaCinta1{
+      width: 100%;
+      padding-left: 20px;
+      margin-top: 0px;
+     }
+
+     /* #genericoTab{
+     padding-top: 0px;
+     padding-bottom: 0px;
+     height: 20px
+     } */
+
+     .v-data-table-header{
+     background-color: #0057ff;
+     border-left: solid 0.5px rgba(0,0,0,.12) !important;
+     }
+
+     .v-data-table__wrapper{
+     border: solid 0.5px rgba(0,0,0,.12) !important;
+     }
+
+     tbody{
+      border-top: solid 0.5px rgba(0,0,0,.12) !important;
+     }
+
+     .text-start{
+       border: solid 0.5px rgba(0,0,0,.12) !important;   
+       padding-left: 2px !important;
+       padding-right: 0px !important;
+       height: 11px !important;
+       font-size: 0.60rem !important;
+       color: blue
+     }
+
+     .derecha{
+       padding-top: 0px;
+       margin-left: 140px;
+       padding-left: 420px;
+       padding-right: 400px;
+     }
+
+     .text-left{
+       margin-bottom: 0px !important;
+     }
+
+     p{
+       font-size: 10px;
+     }
+
+     .v-data-table{
+      padding-bottom: 10px;
+     }
+
+     .container{
+      padding-top: 0px;
+     }
+
+     .v-tabs-slider{
+      background-color: red;
+     }
+
+    tbody th:nth-child(even) {
+      background-color: #ffffff
+    }
+    tbody th:nth-child(odd) {
+      background-color: #ffffff
+    }
+    
+    tbody tr:nth-child(odd) {
+      background-color: #d0d0d0
+    }
+     
+    tbody tr:nth-child(even) {
+      background-color: transparent
+    }
+
+    div.v-tab{
+      font-size: 10px!important;
+    }
+
+    html{
+      /* font-size: 1.02rem!important; */
+      text-transform: uppercase !important;
+      /* text-transform: uppercase transforma texto en mayusculas */
+    }
+
+    .busquedas{
+      padding-top: 100px;
+    }
+
+    #fecha , #botonNuevoEvento {
+      padding-left: 10px;
+    }
+
+    .fecha,.descripcion,.comentarios,.operador,#fecha,#descripcion,#comentarios,#operador{
+      padding-top: 10px;
+      padding-bottom: 0px;
+    }
+
+    .v-card__text{
+      padding-top: 10px;
+     }
+
+    #agendatexto {
+      /* background-color: red; */
+      margin-top: 30px;
+    }
+
+    #fecha{
+      background-color: #d0d0d0;
+      padding-top: 0px;
+      padding-left: 0px;
+    }
+
+    #fechatexto{
+      margin-left: 30px;
+    }
+
+    .v-data-table__empty-wrapper{
+     text-transform: uppercase !important;
+    }
+
+    .justify-end{
+      background-color: white !important;
+    }
+
+    .v-card__actions{
+      padding: 0px;
+    }
+
+    #paginacion{
+      background-color: white;
+    }
+
+    .v-data-footer__select{
+      margin-left:430px !important
+    }

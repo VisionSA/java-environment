@@ -1,0 +1,1992 @@
+<?xml version="1.0"?>
+<!DOCTYPE faces-config PUBLIC "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN"
+                              "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+<faces-config>
+<!-- ******************* DEFINICION DE BEANS ******************* -->
+ <application>
+	 <locale-config>
+		<default-locale>es</default-locale>
+		<supported-locale>es</supported-locale>
+		<supported-locale>es_ES</supported-locale>
+	</locale-config>
+ </application>
+ 
+ 
+<converter>
+  <converter-id>rellenoUno</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.RellenoUno</converter-class>
+</converter>
+ 
+<converter>
+  <converter-id>rellenoDos</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.RellenoDos</converter-class>
+</converter>
+
+<converter>
+  <converter-id>dosDecimales</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.TwoDecimal</converter-class>
+</converter>
+
+<converter>
+  <converter-id>moneyConverter</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.MoneyConverter</converter-class>
+</converter>
+
+<converter>
+  <converter-id>quitarPrefijoCero4</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.QuitarPrefijoCero4</converter-class>
+</converter>
+ 
+<converter>
+  <converter-id>quitarPrefijoCero5</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.QuitarPrefijoCero4</converter-class>
+</converter>
+  
+<converter>
+  <converter-id>quitarPrefijoCero6</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.QuitarPrefijoCero6</converter-class>
+</converter>
+ 
+<converter>
+  <converter-id>quitarPrefijoCero8</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.QuitarPrefijoCero8</converter-class>
+</converter>
+
+<converter>
+  <converter-id>quitarPrefijoCero13</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.QuitarPrefijoCero13</converter-class>
+</converter>
+
+<converter>
+  <converter-id>quitarPrefijoCero15</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.QuitarPrefijoCero15</converter-class>
+</converter>
+
+<converter>
+  <converter-id>quitarPrefijoCero2</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.QuitarPrefijoCero2</converter-class>
+</converter>
+ 
+<converter>
+  <converter-id>fechaCuponConverter</converter-id>
+  <converter-class>com.bizitglobal.webapp.faces.converter.FechaCuponConverter</converter-class>
+</converter>
+
+ 
+<managed-bean>
+  <managed-bean-name>InfoSistemaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.InfoSistemaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+ 
+<managed-bean>
+  <managed-bean-name>CierreCuentaClienteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.CierreCuentaClienteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+  <managed-bean-name>CierreCuentaSaldoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.CierreCuentaSaldoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+  <managed-bean-name>ReemplazoPlasticoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ReemplazoPlasticoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+  <managed-bean-name>TramoRetencionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.impuestos.TramoRetencionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+  <managed-bean-name>RetencionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.impuestos.RetencionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+  <managed-bean-name>ExclusionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.impuestos.ExclusionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+  <managed-bean-name>IndividuoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.impuestos.IndividuoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+  <managed-bean-name>AplicableBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.impuestos.AplicableBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ImpuestoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.impuestos.ImpuestoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>JurisdiccionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.impuestos.JurisdiccionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>TipoImpuestoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.impuestos.TipoImpuestoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>MenuBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.util.MenuBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>TipoTareaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.workflow.TipoTareaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>TareaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.workflow.TareaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ProcesoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.workflow.ProcesoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ReporteTramitePorProcesoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.workflow.ReporteTramitePorProcesoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ReporteTramitePorClienteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.workflow.ReporteTramitePorClienteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ReporteProveedorCtaCteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.ReporteProveedorCtaCteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ReporteProveedorCompSaldosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.ReporteProveedorCompSaldosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>AuditoriaDeComprobantesBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.AuditoriaDeComprobantesBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>TransaccionadorBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.TransaccionadorBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>bindingScheduleHandler</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.BindingScheduleExampleHandler</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>export</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.exportar.Export</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>Tabla</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.Tabla</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>SessionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.SessionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ScrollBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.util.ScrollBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ErrorBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.error.ErrorBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>OperadorBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.operador.OperadorBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>treeBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.operador.TreeModelBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>TreeListenerBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.listener.TreeListener</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>PermisoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.operador.PermisoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ParametroBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.parametro.ParametroBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>LoginBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.login.LoginBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>BancoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.banco.BancoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>IndividuoEvaluacionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.IndividuoEvaluacionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>EvaluacionReglasBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.EvaluacionReglasBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>InformeParticularBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.InformeParticularBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>InformeLaboralBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.InformeLaboralBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>CliActualizaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.CliActualizaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+ <managed-bean-name>SolicitudesWebBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.SolicitudesWebBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ComprobanteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.ComprobanteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ImputacionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.ImputacionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>OrdenPagoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.OrdenPagoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>Generador</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.util.GeneradorPermisos</managed-bean-class>
+  <managed-bean-scope>request</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ProveedorBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.ProveedorBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>BuscarProveedorBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.BuscarProveedorBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>FormaDePagoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.FormaDePagoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>DomicilioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.DomicilioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>TelefonoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.TelefonoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+  <managed-bean>
+  <managed-bean-name>AtributoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.workflow.AtributoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>FlujosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.workflow.FlujosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>VerificadorEvaluacionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.VerificadorEvaluacionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>PromotorEvaluacionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.PromotorEvaluacionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>globalOptions</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.util.GlobalOptions</managed-bean-class>
+  <managed-bean-scope>application</managed-bean-scope>
+  <managed-property>
+   <property-name>pageLayout</property-name>
+   <value>classic</value>
+  </managed-property>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>EscritorioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.workflow.EscritorioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>EmpresaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.EmpresaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>TramitesBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.workflow.TramitesBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>FormularioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.workflow.FormularioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ProveedorCtaCteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.ProveedorCtaCteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>SolicitudesBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.SolicitudesBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ModificacionEstructuraCuentaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.ModificacionEstructuraCuentaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>CliClienteBeanModificacionCuenta</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.CliClienteBeanModificacionCuenta</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>PlanCuentaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.PlanCuentaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>EjercicioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.EjercicioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>AsientosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.AsientosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>CentroCostosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.CentroCostosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ImportacionAsientosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.ImportacionAsientosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>LibroMayorBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.LibroMayorBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>OrigenBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.OrigenBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>HomeBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.HomeBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ArbolBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.ArbolBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ReporteContabilidadLibroDiarioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.ReporteContabilidadLibroDiarioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>LibroMayorMensualizadoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.LibroMayorMensualizadoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ReporteContabilidadBalanceBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.ReporteContabilidadBalanceBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ReporteContabilidadPlanCuentasBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.ReporteContabilidadPlanCuentasBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ReporteContabilidadSumasYSaldosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.ReporteContabilidadSumasYSaldosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>InformesBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.informes.InformesBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>CarteraComercioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.informes.CarteraComercioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>CarteraClientesBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.contabilidad.informes.CarteraClientesBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+ <managed-bean-name>PromotorProductividadBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.PromotorProductividadBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <!-- GENERADOS POR EL GENERADOR -->
+ <managed-bean>
+  <managed-bean-name>CliClienteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.CliClienteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>CliCambioLimBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.evaluacion.CliCambioLimBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>BarrioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.BarrioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>FormaPagoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.FormaPagoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>LocalidadBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.LocalidadBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>MonedaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.MonedaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>NoLaborableBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.NoLaborableBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>PaisBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.PaisBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>PartidoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.PartidoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>PropietarioViviendaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.PropietarioViviendaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ProvinciaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.ProvinciaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>SucursalBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.SucursalBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>TipoDomicilioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.TipoDomicilioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>EsquemaReglaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.EsquemaReglaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>GrupoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.proveedores.GrupoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>DocumentoAdjuntoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.DocumentoAdjuntoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ImpresoraBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.general.ImpresoraBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <!-- FINAL 
+ TRANSACCION -->
+ <managed-bean>
+  <managed-bean-name>ArchivoDebitoConfBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ArchivoDebitoConfBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>CodComercioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.CodComercioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>CodigoAutorizacionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.CodigoAutorizacionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ClienteConceptoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ClienteConceptoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ComercioFormaPagoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ComercioFormaPagoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ComercioListaPrecioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ComercioListaPrecioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ConceptoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ConceptoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+  <managed-bean>
+  <managed-bean-name>GenerarArchivosCDBCRABean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.GenerarArchivosCDBCRABean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ReclamosBCRABean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ReclamosBCRABean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+ <managed-bean-name>FinanciamientoBCRABean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.FinanciamientoBCRABean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+  <managed-bean>
+ <managed-bean-name>AfipRICompraVentaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.AfipRICompraVentaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ConceptoDetalleBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ConceptoDetalleBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ConceptoDetalleReglaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ConceptoDetalleReglaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ComercioConceptoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ComercioConceptoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ConceptoDetalleTargetBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ConceptoDetalleTargetBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>CtaCteComercioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.CtaCteComercioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ColaboradorBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ColaboradorBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+  <managed-bean>
+  <managed-bean-name>InformeNosisBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.InformeNosisBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ClearingBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ClearingBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>LiqClienteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.LiqClienteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ListaPrecioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ListaPrecioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ListaPlasticosEmbozadoraBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ListaPlasticosEmbozadoraBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>LineaCreditoClienteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.LineaCreditoClienteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ListaPrecioFielPopupBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ListaPrecioFielPopupBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>LoteComercioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.LoteComercioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>OrigenConceptoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.OrigenConceptoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>OrigenenBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.OrigenenBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>PlasticoClienteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.PlasticoClienteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ProductosFielBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ProductosFielBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>TransaccionBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.TransaccionBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>CtaCteClienteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.CtaCteClienteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ClienteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ClienteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>IndividuoPopupBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.popup.IndividuoPopupBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ConceptosPopupBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.popup.ConceptosPopupBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ConciliacionCuponesBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ConciliacionCuponesBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>LiquidacionComerciosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.LiquidacionComerciosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ 
+ </managed-bean>
+  <managed-bean>
+  <managed-bean-name>LiquidacionComerciosParticularBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.LiquidacionComerciosParticularBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>LiquidacionComerciosCeroParticularBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.LiquidacionComerciosCeroParticularBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>LiquidacionClientesBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.LiquidacionClientesBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>GestionarClientesBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.GestionarClientesBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>PagoFacilBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.PagoFacilBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>RevertirPagoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.RevertirPagoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>RetencionComercioSICOREBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.RetencionComercioSICOREBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>RetencionIngresosBrutosLoteHogarBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.RetencionIngresosBrutosLoteHogarBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>InformesYLibrosImpositivosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.InformesYLibrosImpositivosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>GenerarArchivosAfipBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.GenerarArchivosAfipBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+ <managed-bean-name>VerificadoresBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.VerificadoresBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ItemsNoConciliadosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ItemsNoConciliadosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ControlConsistenciaComercioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ControlConsistenciaComercioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>TransaccionesNoLiquidadasComercioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.TransaccionesNoLiquidadasComercioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>ConstanciaRetComerciosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ConstanciaRetComerciosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>GeneracionArchLiqComBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.GeneracionArchLiqComBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>LibrosEImpuestosSellosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.LibrosEImpuestosSellosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>CambioDiaCierreClienteBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.CambioDiaCierreClienteBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean> 
+
+ <managed-bean>
+  <managed-bean-name>NotaDebitoJudicialBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.NotaDebitoJudicialBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>VisitarComerciosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.VisitarComerciosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+  <managed-bean-name>AcreditacionesBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.AcreditacionesBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+	<managed-bean-name>RenovacionPlasticosBean</managed-bean-name>
+	<managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.RenovacionPlasticosBean</managed-bean-class>
+	<managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+ <managed-bean>
+	<managed-bean-name>LiquidarSaldo0Bean</managed-bean-name>
+	<managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.LiquidarSaldo0Bean</managed-bean-class>
+	<managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+
+<managed-bean>
+	<managed-bean-name>EmbozadoLotesPlasticosBean</managed-bean-name>
+	<managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.EmbozadoLotesPlasticosBean</managed-bean-class>
+	<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+<managed-bean>
+	<managed-bean-name>AdministrarPlasticoLoteBean</managed-bean-name>
+	<managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.AdministrarPlasticoLoteBean</managed-bean-class>
+	<managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+ <!-- FONDOS -->
+ <managed-bean>
+  <managed-bean-name>CajaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.CajaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>MovimientoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.MovimientoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>BancoPropioBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.BancoPropioBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ChequeraBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.ChequeraBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>AperturaCajaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.AperturaCajaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>LibroMayorFondosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.LibroMayorFondosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ChequeBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.ChequeBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>AdminChequeBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.AdminChequeBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ConceptoFondoBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.ConceptoFondoBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>InterbankingBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.InterbankingBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ListarInterbankingBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.ListarInterbankingBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>FondosSaldosBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.FondosSaldosBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ConciliacionBancariaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.fondos.ConciliacionBancariaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>AutorizacionTelefonicaBean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.AutorizacionTelefonicaBean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <managed-bean>
+  <managed-bean-name>ConsultaBCRABean</managed-bean-name>
+  <managed-bean-class>com.bizitglobal.webapp.faces.beans.transacciones.ConsultaBCRABean</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ 
+ <!-- ALTA PARAMETROS -->
+ <navigation-rule>
+  <from-view-id>/tarjetafiel/parametro/altaParametro.jsp</from-view-id>
+  <navigation-case>
+   <from-outcome>parametroOk</from-outcome>
+   <to-view-id>/tarjetafiel/parametro/ok.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>alta_falla</from-outcome>
+   <to-view-id>/tarjetafiel/parametro/falla.jsp</to-view-id>
+  </navigation-case>
+ </navigation-rule>
+ <!-- FINAL 
+ ALTA BANCOS -->
+ <navigation-rule>
+  <from-view-id>/tarjetafiel/banco/altaBanco.jsp</from-view-id>
+  <navigation-case>
+   <from-outcome>bancoOk</from-outcome>
+   <to-view-id>/tarjetafiel/banco/ok.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>altaFallaBD</from-outcome>
+   <to-view-id>/tarjetafiel/banco/altaFalla.jsp</to-view-id>
+  </navigation-case>
+ </navigation-rule>
+ <!-- LOGIN -->
+ <navigation-rule>
+  <from-view-id>/login.jsp</from-view-id>
+  <navigation-case>
+   <from-outcome>ingreso</from-outcome>
+   <to-view-id>/inicio.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>falla_ingreso</from-outcome>
+   <to-view-id>/login.jsp</to-view-id>
+  </navigation-case>
+ </navigation-rule>
+ <!-- COMPROBANTES -->
+ <navigation-rule>
+  <from-view-id>/tarjetafiel/proveedores/comprobantes/altaComprobantes.jsp</from-view-id>
+ </navigation-rule>
+ <!-- GENERALES -->
+ <navigation-rule>
+  <from-view-id>*</from-view-id>
+  <navigation-case>
+   <from-outcome>inicio</from-outcome>
+   <to-view-id>/inicio.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>inicio_</from-outcome>
+   <to-view-id>/inicio_.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>login</from-outcome>
+   <to-view-id>/login.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+<!--@I4503-->   <from-outcome>infoSistema</from-outcome>
+   <to-view-id>/tarjetafiel/infoSistema.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+<!--@F4503-->   <from-outcome>listadoOperadores</from-outcome>
+   <to-view-id>/tarjetafiel/operador/listadoOperadores.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listadoParametros</from-outcome>
+   <to-view-id>/tarjetafiel/parametro/listadoParametros.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>otorgarPermisos</from-outcome>
+   <to-view-id>/tarjetafiel/permiso/otorgarPermisos.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>altaOperadores</from-outcome>
+   <to-view-id>/tarjetafiel/operador/altaOperador.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>fallaGeneral</from-outcome>
+   <to-view-id>/tarjetafiel/fallaGeneral.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>altaParametros</from-outcome>
+   <to-view-id>/tarjetafiel/parametro/altaParametro.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>altaBancos</from-outcome>
+   <to-view-id>/tarjetafiel/banco/altaBanco.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>editarBanco</from-outcome>
+   <to-view-id>/tarjetafiel/banco/editarBanco.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>editarParametro</from-outcome>
+   <to-view-id>/tarjetafiel/parametro/editarParametro.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listadoBancos</from-outcome>
+   <to-view-id>/tarjetafiel/banco/listadoBancos.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>altaComprobantes</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/comprobantes/altaComprobantes.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>imputarComprobantes</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/imputaciones/imputaciones.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>altaProveedores</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/altaProveedor.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listarProveedores</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/listarProveedores.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amEmpresa</from-outcome>
+   <to-view-id>/tarjetafiel/general/amEmpresa.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listarImpresora</from-outcome>
+   <to-view-id>/tarjetafiel/general/listarImpresora.jsp</to-view-id>
+  </navigation-case>
+  <!-- PROVEEDORES CTA CTE -->
+  <navigation-case>
+   <from-outcome>listarCtaCte</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/listarCtaCte.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listarComprobantes</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/comprobantes/listarComprobantes.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>altaComprobanteOP</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/comprobantes/altaComprobanteOP.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteProveedoresCtaCte</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorCtaCte.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>ctePendientesInicializar</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorCtePendientesImputar.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>cteVencidosPorVencer</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorCteVencidosPorVencer.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteProveedoresComSaldo</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorCompSaldo.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteAuditoriaDeComprobantes</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/AuditoriaDeComprobantes.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>transaccionador</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/Transaccionador.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteComprobantesIngresados</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorCompIngresados.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteComprobantesPendientesDeImputar</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorCompPendImputar.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteRetencionesPracticadas</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorRetencionesPracticadas.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteProveedoresNominas</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorNominas.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteRankingDeProveedores</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorRanking.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteProveedoresSubdiarioIVA</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorSubDiarioIVA.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>proveedorSaldo</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorSaldo.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>proveedorSICORE</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/reportes/proveedorArchivoSICORE.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>calendarioDePagos</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/calendario/calendarioPagos.jsp</to-view-id>
+  </navigation-case>
+  <!-- WORKFLOW -->
+  <navigation-case>
+   <from-outcome>amProcesos</from-outcome>
+   <to-view-id>/workflow/procesos/amProcesos.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amTipoTareas</from-outcome>
+   <to-view-id>/workflow/tareas/amTipoTareas.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amTareas</from-outcome>
+   <to-view-id>/workflow/tareas/amTareas.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amListarTareas</from-outcome>
+   <to-view-id>/workflow/tareas/listarTareas.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amFlujos</from-outcome>
+   <to-view-id>/workflow/flujos/amFlujos.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>escritorio</from-outcome>
+   <to-view-id>/workflow/escritorios/escritorio.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>adminTramites</from-outcome>
+   <to-view-id>/workflow/escritorios/adminTramites.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>altaIndividuo</from-outcome>
+   <to-view-id>/tarjetafiel/impuestos/individuos/altaIndividuo.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>altaRetencion</from-outcome>
+   <to-view-id>/tarjetafiel/impuestos/retenciones/altaRetencion.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amTramites</from-outcome>
+   <to-view-id>/workflow/tramites/amTramites.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>informeTramitesPorProceso</from-outcome>
+   <to-view-id>/workflow/reportes/informeTramitesPorProceso.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>informeTramitesPorCliente</from-outcome>
+   <to-view-id>/workflow/reportes/informeTramitesPorCliente.jsp</to-view-id>
+  </navigation-case>  
+  <!-- EVALUACION -->
+  <navigation-case>
+   <from-outcome>listarSolicitudes</from-outcome>
+   <to-view-id>/tarjetafiel/evaluacion/lstSolicitudes.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listarIndividuos</from-outcome>
+   <to-view-id>/tarjetafiel/evaluacion/listarIndividuos.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amIndividuo</from-outcome>
+   <to-view-id>/tarjetafiel/evaluacion/amIndividuo.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>generarSolicitudes</from-outcome>
+   <to-view-id>/tarjetafiel/evaluacion/Solicitudes.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>telefonoPopup</from-outcome>
+   <to-view-id>/tarjetafiel/general/telefono/telefonoPopup.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amPromotores</from-outcome>
+   <to-view-id>/tarjetafiel/evaluacion/amPromotores.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>SolicitudesWeb</from-outcome>
+   <to-view-id>/tarjetafiel/evaluacion/SolicitudesWeb.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amVerificadores</from-outcome>
+   <to-view-id>/tarjetafiel/evaluacion/amVerificadores.jsp</to-view-id>
+  </navigation-case>
+  <!-- CONTABILIDAD -->
+  <navigation-case>
+   <from-outcome>planCuenta</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/planCuenta.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amCentroCostos</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/amCentroCostos.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listarCentroCostos</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/listarCentroCostos.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>libroMayor</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/libroMayor.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amOrigen</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/amOrigen.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listarOrigen</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/listarOrigen.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>gestionarEjercicio</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/gestionarEjercicio.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>lstAsientos</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/lstAsientos.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>balance</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/reportes/balance.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteContabilidadLibroDiario</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/reportes/contabilidadLibroDiario.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteContabilidadLibroMayor</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/reportes/contabilidadLibroMayor.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>contabilidadLibroMayorMensualizado</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/reportes/contabilidadLibroMayorMensualizado.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>sumasYSaldos</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/reportes/contabilidadSumasYSaldos.jsp</to-view-id>
+  </navigation-case>
+  <!--  GENERADOS POR EL GENERADOR -->
+  <navigation-case>
+   <from-outcome>amBarrio</from-outcome>
+   <to-view-id>/tarjetafiel/general/amBarrio.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amFormaPago</from-outcome>
+   <to-view-id>/tarjetafiel/general/amFormaPago.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amLocalidad</from-outcome>
+   <to-view-id>/tarjetafiel/general/amLocalidad.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amMoneda</from-outcome>
+   <to-view-id>/tarjetafiel/general/amMoneda.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amNoLaborable</from-outcome>
+   <to-view-id>/tarjetafiel/general/amNoLaborable.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amPais</from-outcome>
+   <to-view-id>/tarjetafiel/general/amPais.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amPartido</from-outcome>
+   <to-view-id>/tarjetafiel/general/amPartido.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amPropVivienda</from-outcome>
+   <to-view-id>/tarjetafiel/general/amPropVivienda.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amProvincia</from-outcome>
+   <to-view-id>/tarjetafiel/general/amProvincia.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amSucursal</from-outcome>
+   <to-view-id>/tarjetafiel/general/amSucursal.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amTipoDomicilio</from-outcome>
+   <to-view-id>/tarjetafiel/general/amTipoDomicilio.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amEsqReglas</from-outcome>
+   <to-view-id>/tarjetafiel/general/amEsqReglas.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amAplicable</from-outcome>
+   <to-view-id>/tarjetafiel/impuestos/amAplicable.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amImpuesto</from-outcome>
+   <to-view-id>/tarjetafiel/impuestos/amImpuesto.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amJurisdiccion</from-outcome>
+   <to-view-id>/tarjetafiel/impuestos/amJurisdiccion.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amTipoImpuesto</from-outcome>
+   <to-view-id>/tarjetafiel/impuestos/amTipoImpuesto.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amGrupo</from-outcome>
+   <to-view-id>/tarjetafiel/proveedores/amGrupo.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amImpresora</from-outcome>
+   <to-view-id>/tarjetafiel/general/amImpresora.jsp</to-view-id>
+  </navigation-case>
+ </navigation-rule>
+ 
+ 
+ <!-- NAVEGAVILIDAD TRANSACCION -->
+ <navigation-rule>
+  
+  <navigation-case>
+   <from-outcome>amArchivoDebitoConf</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amArchivoDebitoConf.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amCodComercio</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amCodComercio.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amCodigoAutorizacion</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amCodigoAutorizacion.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amClienteConcepto</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amClienteConcepto.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amComercioFormaPago</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amComercioFormaPago.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amComercioListaPrecio</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amComercioListaPrecio.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amConcepto</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amConcepto.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amConceptoDetalle</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amConceptoDetalle.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amConceptoDetalleRegla</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amConceptoDetalleRegla.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amComercioConcepto</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amComercioConcepto.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amConceptoDetalleTarget</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amConceptoDetalleTarget.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amCtaCteComercio</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amCtaCteComercio.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amColaborador</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amColaborador.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amFormaPago</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amFormaPago.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amLiqCliente</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amLiqCliente.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amLiqComercio</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amLiqComercio.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amListaPrecio</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amListaPrecio.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>listarPlasticosEmbozadora</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/listarPlasticosEmbozadora.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>lineaCreditoCliente</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/lineaCreditoCliente.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amLoteComercio</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amLoteComercio.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amOrigenConcepto</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amOrigenConcepto.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amOrigenen</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amOrigenen.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amPlasticoCliente</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amPlasticoCliente.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amCtaCteCliente</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amCtaCteCliente.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amCliente</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/amCliente.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>listarCliente</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/listarCliente.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>conciliacionCupones</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/conciliacionCupones.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>informeNosis</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/informeNosis.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>informesClearing</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/informesClearing.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>liquidacionComercios</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/liquidacionComercios.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>liquidacionParticularComercios</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/liquidacionParticularComercios.jsp</to-view-id>
+  </navigation-case>
+   
+  <navigation-case>
+   <from-outcome>liquidacionParticularCeroComercios</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/liquidacionParticularCeroComercios.jsp</to-view-id>
+  </navigation-case>
+   
+  <navigation-case>
+   <from-outcome>liquidacionClientes</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/liquidacionClientes.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>gestionarClientes</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/gestionarClientes.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>productosFiel</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/productosFiel.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>pagoFacil</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/pagoFacil.jsp</to-view-id>
+  </navigation-case>
+  
+   <navigation-case>
+   <from-outcome>revertirPago</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/revertirPago.jsp</to-view-id>
+  </navigation-case>
+  
+   <navigation-case>
+   <from-outcome>informesYLibrosImpositivos</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/informesYLibrosImpositivos.jsp</to-view-id>
+  </navigation-case>
+  
+   <navigation-case>
+   <from-outcome>generacionArchLiqCome</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/generacionArchLiqComercio.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>librosEImpuestosSellos</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/librosEImpuestosSellos.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>retencionComercioSICORE</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/retencionComercioSIC.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>retencionIngresosBrutosLoteHogar</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/retencionIngresosBrutosLoteHogar.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>generarArchivosAfip</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/generarArchivoAfip.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>cdBancoCentral</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/generarCdBCRA.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>reclamosBCRA</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/reclamosBCRA.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>financiamientoBCRA</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/financiamientoBCRA.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>afipRICompraVenta</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/afipRICompraVenta.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>itemsNoConciliados</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/itemsNoConciliados.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>controlConsistenciaComercio</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/controlConsistenciaComercio.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>transaccionesNoLiquidadasComercio</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/transaccionesNoLiquidadasComercio.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>generacionConstanciaRetencionComercio</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/generacionConstanciaRetencionComercio.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>notaDebitoJudicialManual</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/notaDebitoJudicialManual.jsp</to-view-id>
+  </navigation-case>    
+  
+  <navigation-case>
+   <from-outcome>autorizacionTelefonica</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/autorizacionTelefonica.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>consultaBCRA</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/consultaBCRA.jsp</to-view-id>
+  </navigation-case>
+  
+  
+   <!-- FONDOS -->
+  <navigation-case>
+   <from-outcome>amCaja</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/amCaja.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listarCaja</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/listarCaja.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amBancoPropio</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/amBancoPropio.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listarBancoPropio</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/listarBancoPropio.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amMovimiento</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/amMovimiento.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>amChequera</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/amChequera.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listarChequera</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/listarChequera.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>aperturaCaja</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/aperturaCaja.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>libroMayorFondos</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/libroMayorFondos.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>listarAperturaCaja</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/listarAperturaCaja.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>reporteFondosLibroMayor</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/reportes/fondosLibroMayor.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>fondosMovCaja</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/reportes/fondosMovCaja.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+  <from-outcome>generarListadoVerificadores</from-outcome>
+   <to-view-id>/tarjetafiel/transacciones/reportes/generarListadoVerificadores.jsp</to-view-id>
+  </navigation-case>
+  
+  <navigation-case>
+   <from-outcome>amConceptoFondo</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/amConceptoFondo.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>generarInterbanking</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/generarInterbanking.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>listarInterbanking</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/listarInterbanking.jsp</to-view-id>
+  </navigation-case>
+   <navigation-case>
+   <from-outcome>fondosSaldos</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/reportes/fondosSaldos.jsp</to-view-id>
+  </navigation-case>
+  <navigation-case>
+   <from-outcome>conciliacionBancaria</from-outcome>
+   <to-view-id>/tarjetafiel/fondos/conciliacionBancaria.jsp</to-view-id>
+  </navigation-case>
+ <navigation-case>
+   <from-outcome>resumenLiquidacionesClientes</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/informes/resumenLiquidacionesClientes.jsp</to-view-id>
+ </navigation-case>
+  <navigation-case>
+   <from-outcome>carteraComercio</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/informes/carteraComercio.jsp</to-view-id>
+ </navigation-case>
+ <navigation-case>
+   <from-outcome>carteraClientes</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/informes/carteraClientes.jsp</to-view-id>
+ </navigation-case>
+ <navigation-case>
+   <from-outcome>resumenLiquidacionesComercios</from-outcome>
+   <to-view-id>/tarjetafiel/contabilidad/informes/resumenLiquidacionesComercios.jsp</to-view-id>
+ </navigation-case>
+ <navigation-case>
+	<from-outcome>generalConceptos</from-outcome>
+	<to-view-id>/tarjetafiel/contabilidad/informes/generalConceptos.jsp</to-view-id>
+ </navigation-case>
+ <navigation-case>
+	<from-outcome>revisarConsumosComercios</from-outcome>
+	<to-view-id>/tarjetafiel/contabilidad/informes/revisarConsumosComercios.jsp</to-view-id>
+ </navigation-case>
+
+ <navigation-case>
+	<from-outcome>listarLineasCreditos</from-outcome>
+	<to-view-id>/tarjetafiel/contabilidad/informes/listarLineasCreditos.jsp</to-view-id>
+ </navigation-case>
+ 
+ <navigation-case>
+	<from-outcome>listarConsumoAdelantoEfectivo</from-outcome>
+	<to-view-id>/tarjetafiel/contabilidad/informes/listarConsumoAdelantoEfectivo.jsp</to-view-id>
+ </navigation-case>
+
+ <navigation-case>
+	<from-outcome>listarPagosComercios</from-outcome>
+	<to-view-id>/tarjetafiel/contabilidad/informes/listarPagosComercios.jsp</to-view-id>
+ </navigation-case>
+ <navigation-case>
+			<from-outcome>listarAcreditaciones</from-outcome>
+			<to-view-id>/tarjetafiel/fondos/listarAcreditaciones.jsp</to-view-id>
+ </navigation-case>
+ <navigation-case>
+			<from-outcome>listarAcreditacionesLotes</from-outcome>
+			<to-view-id>/tarjetafiel/fondos/listarAcreditacionesLotes.jsp</to-view-id>
+ </navigation-case>
+ <navigation-case>
+			<from-outcome>detalleConceptoMensualCuota</from-outcome>
+			<to-view-id>/tarjetafiel/contabilidad/informes/conceptosClientesMeses.jsp</to-view-id>
+ </navigation-case>
+ <navigation-case>
+			<from-outcome>listarPromotorProductividad</from-outcome>
+			<to-view-id>/tarjetafiel/evaluacion/listarProductividadPromotores.jsp</to-view-id>
+ </navigation-case>
+ 
+ 
+
+ <navigation-case>
+			<from-outcome>renovacionPlasticosCliente</from-outcome>
+			<to-view-id>/tarjetafiel/transacciones/renovarPlasticosCliente.jsp</to-view-id>
+ </navigation-case>
+ 
+ <navigation-case>
+			<from-outcome>listarVisitasComercios</from-outcome>
+			<to-view-id>/tarjetafiel/transacciones/listarVisitasComercios.jsp</to-view-id>
+ </navigation-case>
+
+ 
+  <navigation-case>
+			<from-outcome>liquidarSaldo0</from-outcome>
+			<to-view-id>/tarjetafiel/transacciones/liquidarSaldo0.jsp</to-view-id>
+ </navigation-case>
+
+
+  <navigation-case>
+			<from-outcome>embozadoLotesPlasticos</from-outcome>
+			<to-view-id>/tarjetafiel/transacciones/embozadoLotesPlasticos.jsp</to-view-id>
+ </navigation-case>
+ 
+ <navigation-case>
+			<from-outcome>tratarPlasticosDeLotes</from-outcome>
+			<to-view-id>/tarjetafiel/transacciones/tratarPlasticosDeLotes.jsp</to-view-id>
+ </navigation-case>
+
+<navigation-case>
+			<from-outcome>administrarPlasticoLote</from-outcome>
+			<to-view-id>/tarjetafiel/transacciones/administrarPlasticoLote.jsp</to-view-id>
+</navigation-case>
+
+<navigation-case>
+			<from-outcome>listarCarteraClientesOca</from-outcome>
+			<to-view-id>/tarjetafiel/transacciones/listarCarteraClientesOca.jsp</to-view-id>
+</navigation-case>
+ 
+  <!-- FINAL -->
+ </navigation-rule>
+ <!-- ******************* DEFINICION DE BEANS ******************* -->
+ <application>
+  <locale-config>
+   <default-locale>es</default-locale>
+   <supported-locale>es</supported-locale>
+   <supported-locale>es_ES</supported-locale>
+  </locale-config>
+ </application>
+</faces-config>

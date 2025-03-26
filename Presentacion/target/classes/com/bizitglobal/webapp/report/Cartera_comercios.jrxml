@@ -1,0 +1,398 @@
+﻿<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Cartera_comercios"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="1190"
+		 pageHeight="2834611"
+		 columnWidth="1190"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true" />
+	<property name="net.sf.jasperreports.export.xls.wrap.text" value="false" />
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true" />
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false" />
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.bizitglobal.webapp.faces.beans.util.*" />
+	<import value="net.sf.jasperreports.engine.design.JasperDesign" />
+
+	<parameter name="fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<queryString><![CDATA[select cod.c_codigo_posnet,sucemp.c_descripcion nombre_fantasia,emp.c_cuit,emp.c_razon_social, 
+ ctacte_comercio*(-1) ctacte_comercio, 
+ composicion_saldo*(-1) composicion_saldo, 
+ ctacte_contable*(-1) ctacte_contable, 
+ $P{fecha_hasta} fecha_consulta 
+ from 
+ (select comercio.c_id_cod_comercio,comercio.c_id_sucursal, 
+sum(ctacte_comercio) ctacte_comercio, 
+sum(composicion_saldo) composicion_saldo, 
+sum(ctacte_contable) ctacte_contable 
+ from 
+ ((SELECT  
+cod.c_id_cod_comercio,cod.c_id_sucursal, 
+NVL(sum(cta.c_importe * decode(co.c_id_concepto, 131, -1 ,162, -1 ,128, -1 ,cta.c_signo)) ,0) ctacte_comercio, 
+0 composicion_saldo, 
+  0 ctacte_contable     
+ FROM t_vis_tra_cod_comercios  cod            
+	left JOIN t_vis_tra_ctacte_comercios cta ON (cta.c_id_cod_comercio= cod.c_id_cod_comercio)  and 
+   trunc(cta.c_timestamp) <= $P{fecha_hasta} 
+  inner JOIN t_vis_tra_conceptos_detalle de ON(cta.c_id_concepto_detalle= de.c_id_concepto_detalle)  
+  inner JOIN t_vis_tra_conceptos co on (de.c_id_concepto=co.c_id_concepto) and co.c_id_concepto not in (158,128,130,131,190,54,162) 
+  group by cod.c_id_cod_comercio,cod.c_id_sucursal 
+  
+ union 
+  
+ SELECT  
+cod.c_id_cod_comercio,cod.c_id_sucursal, 
+  NVL(sum(cta.c_importe * decode(co.c_id_concepto, 131, -1 ,162, -1 ,128, -1 ,cta.c_signo)) ,0) ctacte_comercio, 
+0 composicion_saldo, 
+  0 ctacte_contable  
+   
+ FROM t_vis_tra_cod_comercios  cod            
+	left JOIN t_vis_tra_ctacte_comercios cta ON (cta.c_id_cod_comercio= cod.c_id_cod_comercio)  and 
+   trunc(cta.c_fecha_facturacion) <= $P{fecha_hasta} 
+  inner JOIN t_vis_tra_conceptos_detalle de ON(cta.c_id_concepto_detalle= de.c_id_concepto_detalle)  
+  inner JOIN t_vis_tra_conceptos co on (de.c_id_concepto=co.c_id_concepto) and  co.c_id_concepto in (158,128,130,131,190,54,162) 
+  group by cod.c_id_cod_comercio,cod.c_id_sucursal) 
+   
+  union 
+   
+  (  
+ SELECT  
+cod.c_id_cod_comercio,cod.c_id_sucursal, 
+ 0 ctacte_comercio, 
+NVL(sum(cta.c_importe * decode(co.c_id_concepto, 131, -1 ,162, -1 ,128, -1 ,cta.c_signo)) ,0) composicion_saldo, 
+  0 ctacte_contable  
+   
+ FROM t_vis_tra_cod_comercios  cod            
+	left JOIN t_vis_tra_ctacte_comercios cta ON (cta.c_id_cod_comercio= cod.c_id_cod_comercio)  and 
+   trunc(cta.c_fecha_facturacion) <= $P{fecha_hasta} 
+  left JOIN t_vis_tra_conceptos_detalle de ON(cta.c_id_concepto_detalle= de.c_id_concepto_detalle)  
+  left JOIN t_vis_tra_conceptos co on (de.c_id_concepto=co.c_id_concepto)  
+  group by cod.c_id_cod_comercio,cod.c_id_sucursal) 
+ 
+ 
+union  
+ 
+(SELECT  
+cod.c_id_cod_comercio,cod.c_id_sucursal, 
+0 ctacte_comercio, 
+0 composicion_saldo, 
+  NVL(sum(cta.c_importe * decode(co.c_id_concepto, 131, -1 ,162, -1 ,128, -1 ,cta.c_signo)) ,0) ctacte_contable  
+   
+ FROM t_vis_tra_cod_comercios  cod            
+	left JOIN t_vis_tra_ctacte_comercios cta ON (cta.c_id_cod_comercio= cod.c_id_cod_comercio)  and 
+   trunc(cta.c_timestamp) <= $P{fecha_hasta} 
+  inner JOIN t_vis_tra_conceptos_detalle de ON(cta.c_id_concepto_detalle= de.c_id_concepto_detalle) and de.c_id_concepto_detalle in (17,359) 
+  inner JOIN t_vis_tra_conceptos co on (de.c_id_concepto=co.c_id_concepto)  
+  group by cod.c_id_cod_comercio,cod.c_id_sucursal 
+  
+ union 
+  
+ SELECT  
+cod.c_id_cod_comercio,cod.c_id_sucursal, 
+  0 ctacte_comercio, 
+0 composicion_saldo, 
+  NVL(sum(cta.c_importe * decode(co.c_id_concepto, 131, -1 ,162, -1 ,128, -1 ,cta.c_signo)) ,0) ctacte_contable  
+   
+ FROM t_vis_tra_cod_comercios  cod            
+	left JOIN t_vis_tra_ctacte_comercios cta ON (cta.c_id_cod_comercio= cod.c_id_cod_comercio)  and 
+   trunc(cta.c_fecha_facturacion) <= $P{fecha_hasta}
+  inner JOIN t_vis_tra_conceptos_detalle de ON(cta.c_id_concepto_detalle= de.c_id_concepto_detalle) and de.c_id_concepto_detalle not in (17,359) 
+  inner JOIN t_vis_tra_conceptos co on (de.c_id_concepto=co.c_id_concepto)  
+  group by cod.c_id_cod_comercio,cod.c_id_sucursal)) comercio 
+  group by comercio.c_id_cod_comercio,comercio.c_id_sucursal) datos 
+  inner join t_vis_tra_cod_comercios cod on cod.c_id_cod_comercio = datos.c_id_cod_comercio 
+  inner join t_vis_gen_suc_empresas sucemp on datos.c_id_sucursal = sucemp.c_id_sucursal 
+  inner join t_vis_gen_empresas  emp on emp.c_id_empresa = sucemp.c_id_empresa 
+  order by to_number(cod.c_codigo_posnet,99999)]]></queryString>
+
+	<field name="C_CODIGO_POSNET" class="java.lang.Integer"/>
+	<field name="NOMBRE_FANTASIA" class="java.lang.String"/>
+	<field name="C_CUIT" class="java.math.BigDecimal"/>
+	<field name="C_RAZON_SOCIAL" class="java.lang.String"/>
+	<field name="CTACTE_COMERCIO" class="java.math.BigDecimal"/>
+	<field name="COMPOSICION_SALDO" class="java.math.BigDecimal"/>
+	<field name="CTACTE_CONTABLE" class="java.math.BigDecimal"/>
+	<field name="FECHA_CONSULTA" class="java.util.Date"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="15"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="85"
+						y="0"
+						width="238"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Nombre Fantasía]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="0"
+						width="85"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Código Posnet]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="323"
+						y="0"
+						width="99"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[CUIT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="422"
+						y="0"
+						width="289"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Razón Social]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="711"
+						y="0"
+						width="109"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Saldo Cta. Cte.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="820"
+						y="0"
+						width="119"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Comp. de Saldo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="939"
+						y="0"
+						width="151"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Saldo Contable]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="1090"
+						y="0"
+						width="100"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Fecha Consulta]]></text>
+				</staticText>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="85"
+						height="15"
+						key="textField"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{C_CODIGO_POSNET}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="85"
+						y="0"
+						width="238"
+						height="15"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBRE_FANTASIA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="323"
+						y="0"
+						width="99"
+						height="15"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{C_CUIT}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="422"
+						y="0"
+						width="289"
+						height="15"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{C_RAZON_SOCIAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="711"
+						y="0"
+						width="109"
+						height="15"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{CTACTE_COMERCIO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="820"
+						y="0"
+						width="119"
+						height="15"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{COMPOSICION_SALDO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="939"
+						y="0"
+						width="151"
+						height="15"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{CTACTE_CONTABLE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="1090"
+						y="0"
+						width="100"
+						height="15"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{FECHA_CONSULTA}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

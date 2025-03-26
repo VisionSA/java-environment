@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="350" alpha="0.5" styleName="VboxBlock">	
+	<mx:Label styleName="lblInfoInit" text="Procesando" fontFamily="Arial" fontSize="12" fontWeight="bold" textAlign="center"/>
+	<mx:ProgressBar label=" " indeterminate="true" themeColor="#00009F" height="15" borderColor="#005D9E"/>
+</mx:VBox>

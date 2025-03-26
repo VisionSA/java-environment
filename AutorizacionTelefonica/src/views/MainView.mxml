@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:views="views.*"  horizontalAlign="center" verticalAlign="top" xmlns:mate="http://mate.asfusion.com/">
+	
+	<mx:HBox alpha="1.0" height="82" styleName="top" width="100%">
+	<mx:HBox width="203"  height="100%" horizontalAlign="left" styleName="logo">
+	</mx:HBox>			
+	<mx:HBox width="100%" height="100%" styleName="topDerecha">		
+	</mx:HBox>		
+	</mx:HBox>
+	
+	<mate:Listener type="verCodigoAutorizacion" receive="viewStackVistas.selectedIndex = 1" />
+	<mate:Listener type="verCargaDatos" receive="viewStackVistas.selectedIndex = 0"/>
+	
+	<mx:ViewStack id="viewStackVistas" width="100%" height="100%">
+		<mx:HBox width="100%" height="100%" verticalAlign="top" horizontalCenter="center">
+	
+	    	<views:CargaDatosView height="100%" width="100%"/>
+	    
+			<views:MostrarDatosView height="100%" width="100%"/>
+
+			<!--views:ClienteView height="100%"/>-->
+	    
+			<!--views:ComercioView height="100%"/>-->
+		</mx:HBox>
+		<views:CodigoAutorizacionView/>
+		<!--<views:SimuladorView  height="100%"/>-->		
+	</mx:ViewStack>
+	
+
+	
+	
+</mx:VBox>

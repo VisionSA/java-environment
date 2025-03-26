@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.FormaPagoValor" table="T_VIS_FON_FORMAS_PAGO_VALORES" >
+	<id name="idFormaPagoValor" type="java.lang.Long" column="C_ID_FORMA_PAGO_VALOR">
+		<generator class="increment" />
+	</id>
+	
+	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="true" length="100"/>
+	
+	<property name="multiplo" type="java.lang.Double" column="C_MULTIPLO" not-null="false"/>
+
+   <many-to-one name="formaPago" class="com.bizitglobal.tarjetafiel.general.negocio.FormaPago" not-null="false" >
+		<column name="C_ID_FORMA_PAGO" />
+	</many-to-one>
+   	
+</class>
+</hibernate-mapping>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalAlign="middle">
+	<mx:Label text="Código Posnet:" styleName="lblInfoCaja"/>
+	<mx:TextInput restrict="0-9" id="txtCuentaComercio" width="130" enter="manager.buscarCliente(txtCuentaComercio.text)"/>				
+	<mx:Label textAlign="left" styleName="labelAzulMediano" color="#C50000" fontWeight="bold" fontSize="16"/>				
+	<mx:Button label="Buscar Comercio" />
+	
+	<mx:Script>
+		<![CDATA[
+			[Bindable]public var manager:Manager;		
+		]]>
+	</mx:Script>
+</mx:HBox>

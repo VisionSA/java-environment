@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ESCAPE)closePopUp()" 
+	close="PopUpManager.removePopUp(this)" layout="vertical" title="Deposito Bancario" horizontalAlign="center" 
+	verticalAlign="middle" showCloseButton="true" xmlns:date="com.util.components.date.*" 
+	xmlns:textInput="com.util.components.textInput.*">
+	<mx:Script>
+		<![CDATA[
+			import com.util.components.alert.AlertWarning;
+			import mx.utils.StringUtil;
+			import com.tarjetafiel.caja.vo.BancoPropio;
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.model.DepositoBancarioModel;
+			import mx.events.CloseEvent;
+			
+			[Bindable]public var depositoBancarioModel:DepositoBancarioModel = ModelLocator.getInstance().depositoBancarioModel;
+			
+			private function closePopUp(detalle:int=0):void{				
+				this.dispatchEvent(new CloseEvent(CloseEvent.CLOSE));
+			}
+			
+			private function addMedio():void{
+				
+				if(validate()){				
+					depositoBancarioModel.movimMp.monto = Number(txtImporte.text);
+					depositoBancarioModel.movimMp.cheque.bancoPropio = BancoPropio(cboBanco.selectedItem);
+				
+					if(depositoBancarioModel.modificar){
+						depositoBancarioModel.modificarMedioPago();
+					} else {
+						depositoBancarioModel.addMedioPago();	
+					}
+									
+					closePopUp(0);
+				} else {
+					AlertWarning.show("Debe completar los datos requeridos (*).");
+				}
+			}
+			
+			private function validate():Boolean{
+				return this.cboBanco.selectedItem != null &&
+					   this.fechaDeposito.selectedDate != null &&
+					   this.txtNroComp.text.length > 0 &&
+					   this.txtImporte.text.length > 0 && Number(this.txtImporte.text) > 0;
+			}
+			
+			private function labelFunctionBancoPropio(data:Object):String{
+				return StringUtil.trim(BancoPropio(data).banco.descripcion) + " - " + BancoPropio(data).numeroCuenta; 
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Form width="100%" height="100%">
+		<mx:FormItem label="* Banco Propio:" width="100%">
+			<mx:ComboBox width="100%" id="cboBanco" dataProvider="{ModelLocator.getInstance().bancoModel.arrayBancosPropios}"
+				labelFunction="labelFunctionBancoPropio" 
+				selectedItem="{depositoBancarioModel.bancoPropio}">
+			</mx:ComboBox>
+		</mx:FormItem>
+		<mx:FormItem label="* Fecha deposito:" width="100%">
+			<date:DateFiledMultiLan id="fechaDeposito" selectedDate="{depositoBancarioModel.movimMp.cheque.fechaPago}"
+				change="depositoBancarioModel.movimMp.cheque.fechaPago = fechaDeposito.selectedDate"/>
+		</mx:FormItem>
+		<mx:FormItem label="* Nro. Comprobante:" width="100%">
+			<mx:TextInput restrict="0-9" maxChars="10" id="txtNroComp" width="100%" 
+				text="{depositoBancarioModel.movimMp.cheque.numero}"
+				change="depositoBancarioModel.movimMp.cheque.numero = txtNroComp.text"/>
+		</mx:FormItem>
+		<mx:FormItem label="* Importe:" width="100%">
+			<textInput:TextInputMoneda id="txtImporte" 
+				text="{depositoBancarioModel.movimMp.monto}" />
+		</mx:FormItem>
+	</mx:Form>
+	<mx:HBox>
+		<mx:Button label="Guardar" click="addMedio()"/>
+		<mx:Button label="Cancelar" click="closePopUp(1)"/>
+	</mx:HBox>
+	
+</mx:TitleWindow>

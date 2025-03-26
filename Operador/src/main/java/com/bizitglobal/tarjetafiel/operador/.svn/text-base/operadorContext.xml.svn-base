@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+ <!-- Catalog DAO Definition: Hibernate implementation -->
+ <bean class="com.bizitglobal.tarjetafiel.operador.dao.impl.OperadorDaoHibernateImpl" id="operadorDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean class="com.bizitglobal.tarjetafiel.operador.dao.impl.PermisoDaoHibernateImpl" id="permisoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean class="com.bizitglobal.tarjetafiel.operador.dao.impl.RolDaoHibernateImpl" id="rolDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>  
+ 
+ <bean class="com.bizitglobal.tarjetafiel.operador.dao.impl.MenuItemRelacionDaoHibernateImpl" id="menuItemRelacionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>  
+ 
+ <bean class="com.bizitglobal.tarjetafiel.operador.dao.impl.MenuItemDaoHibernateImpl" id="menuItemDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>   
+ 
+ <bean class="com.bizitglobal.tarjetafiel.operador.dao.impl.RolMenuItemDaoHibernateImpl" id="rolMenuItemDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>    
+ 
+ <bean class="com.bizitglobal.tarjetafiel.operador.dao.impl.PaginaDaoHibernateImpl" id="paginaDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>     
+ 
+ <bean class="com.bizitglobal.tarjetafiel.operador.dao.impl.RolPaginaPermisoDaoHibernateImpl" id="rolPaginaPermisoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>    
+ 
+ 	<!-- ************************* DEFINICION DE BEAN AOP ************************* -->
+	<bean id = "operadorServiceTarget" class = "com.bizitglobal.tarjetafiel.operador.service.impl.OperadorServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="operadorDao" ref="operadorDao"/>
+ 	</bean>
+
+    <bean id = "operadorService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.operador.service.OperadorService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "operadorServiceTarget"/>
+        </property>
+    </bean>
+    
+    
+	<bean id = "permisoServiceTarget" class = "com.bizitglobal.tarjetafiel.operador.service.impl.PermisoServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="permisoDao" ref="permisoDao"/>
+ 	</bean>
+
+    <bean id = "permisoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.operador.service.PermisoService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "permisoServiceTarget"/>
+        </property>
+    </bean>
+    
+    
+	<bean id = "rolServiceTarget" class = "com.bizitglobal.tarjetafiel.operador.service.impl.RolServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="rolDao" ref="rolDao"/>
+ 	</bean>
+
+    <bean id = "rolService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.operador.service.RolService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "rolServiceTarget"/>
+        </property>
+    </bean>    
+    
+    <bean id = "menuItemRelacionServiceTarget" class = "com.bizitglobal.tarjetafiel.operador.service.impl.MenuItemRelacionServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="menuItemRelacionDao" ref="menuItemRelacionDao"/>
+ 	</bean>
+
+    <bean id = "menuItemRelacionService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.operador.service.MenuItemRelacionService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "menuItemRelacionServiceTarget"/>
+        </property>
+    </bean>    
+    
+	<bean id = "rolPaginaPermisoServiceTarget" class = "com.bizitglobal.tarjetafiel.operador.service.impl.RolPaginaPermisoServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="rolPaginaPermisoDao" ref="rolPaginaPermisoDao"/>
+ 	</bean>
+
+    <bean id = "rolPaginaPermisoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.operador.service.RolPaginaPermisoService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "rolPaginaPermisoServiceTarget"/>
+        </property>
+    </bean>        
+    
+	<bean id = "menuItemServiceTarget" class = "com.bizitglobal.tarjetafiel.operador.service.impl.MenuItemServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="menuItemDao" ref="menuItemDao"/>
+ 	</bean>
+
+    <bean id = "menuItemService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.operador.service.MenuItemService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "menuItemServiceTarget"/>
+        </property>
+    </bean>            
+    
+	<bean id = "rolMenuItemServiceTarget" class = "com.bizitglobal.tarjetafiel.operador.service.impl.RolMenuItemServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="rolMenuItemDao" ref="rolMenuItemDao"/>
+ 	</bean>
+
+    <bean id = "rolMenuItemService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.operador.service.RolMenuItemService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "rolMenuItemServiceTarget"/>
+        </property>
+    </bean>                
+    
+	<bean id = "paginaServiceTarget" class = "com.bizitglobal.tarjetafiel.operador.service.impl.PaginaServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="paginaDao" ref="paginaDao"/>
+ 	</bean>
+
+    <bean id = "paginaService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.operador.service.PaginaService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "paginaServiceTarget"/>
+        </property>
+    </bean>                    
+
+</beans>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="this.onCreationComplete()" 
+	keyUp="keyPress(event)" resize="startRezise()"  verticalScrollPolicy="off" horizontalScrollPolicy="off"
+	alpha="1.0" xmlns:view="com.tarjetafiel.caja.view.*" width="100%" styleName="hboxBusquedas">
+	<mx:HBox width="100%" verticalAlign="middle">
+		<mx:Label text="Busqueda de Clientes" styleName="tituloBusquedas"/>
+	</mx:HBox>
+	<mx:LinkBar dataProvider="view" />		
+	<mx:ViewStack id="view" width="100%" height="100%">
+		<mx:HBox width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}" id="paramPlastico" horizontalAlign="left" verticalAlign="middle" label="Por Cuenta">				
+			<mx:Label text="Nro. Cuenta " styleName="lblInfo"/>
+			<mx:TextInput id="txtCuenta" restrict="0-9" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()" 
+				styleName="textInputFiltroBusqueda"/>
+		</mx:HBox>	
+		<mx:HBox width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}" id="otrosParam" label="Otros parametros" horizontalAlign="left" verticalAlign="middle">
+			
+			<mx:Label text="D.N.I. " styleName="lblInfo"/>
+			<mx:TextInput id="txtDni" restrict="0-9" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()" 
+				styleName="textInputFiltroBusqueda"/>
+			<mx:Label text="C.U.I.L/C.U.I.T: " styleName="lblInfo"/>
+			<mx:TextInput id="txtCuit" restrict="0-9" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()" 
+				styleName="textInputFiltroBusqueda"/>
+			<mx:Label text="Apellido: " styleName="lblInfo"/>
+			<mx:TextInput id="txtApellido" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"
+				styleName="textInputFiltroBusqueda"/>			
+			<mx:Label text="Nombre: " styleName="lblInfo"/>
+			<mx:TextInput id="txtNombre" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"
+				styleName="textInputFiltroBusqueda"/>
+		</mx:HBox>			
+	</mx:ViewStack>	
+	<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+		<mx:LinkButton label="Limpiar Busqueda" styleName="busqueda2" click="limpiarBusqueda()"/>
+		<mx:LinkButton label="Buscar Clientes" click="this.buscar()" styleName="busqueda2"/>			
+	</mx:HBox>
+		
+	<mx:Fade id="fadeOut" alphaFrom="1.0" alphaTo="0.0" duration="300"/>
+	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0" duration="300"/>
+	<mx:Script>
+		<![CDATA[
+			import com.util.components.alert.AlertWarning;
+			import com.tarjetafiel.caja.model.ClienteModel;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.util.paginacion.Paginador;
+			import com.tarjetafiel.caja.event.ClientesEvent;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+						
+			private var paginador:Paginador;
+			
+			private function onCreationComplete():void{
+				this.paginador = new Paginador();											
+			}
+			
+			public function limpiarBusqueda():void{				
+				
+				
+				if(txtApellido){
+					txtApellido.text = "";
+					txtCuit.text = "";
+					txtDni.text = "";
+					txtNombre.text = "";	
+				}
+				
+				if(txtCuenta){
+					txtCuenta.text = "";
+				}
+				
+				if(txtDni && view.selectedIndex == 1){
+					txtDni.setFocus();
+				} else if(txtCuenta){
+					txtCuenta.setFocus();
+				}
+					
+			}
+			
+			public function buscar():void{				
+				this.paginador.cantidadRegistros = 10;
+				this.paginador.pagina = 0;	
+				this.paginador.cantidadPaginas = 0;				
+				 													
+				var buscarPor:String = ClienteModel.OTROS_PARAM;
+				if(this.view.selectedChild == this.paramPlastico){
+					if(this.txtCuenta.text.length == 0){
+						AlertWarning.show("Debe ingresar un número de cuenta");
+						return;
+					}
+					buscarPor = ClienteModel.CUENTA;
+					ModelLocator.getInstance().clienteSeleccionado.armarFiltro(null,null, null, null,null,txtCuenta.text);
+				} else {
+					
+					var textobusqueda:String = txtApellido.text + txtCuit.text + txtDni.text + txtNombre.text;
+					if(textobusqueda.length == txtNombre.length && textobusqueda.length != 0){
+							AlertWarning.show("No se permite buscar un cliente solo por el nombre");
+							return;
+					}
+					if(textobusqueda.length < 4){
+						
+						var mensaje:String = "";
+						
+						mensaje += "Debe ingresar 4 caracteres como mínimo para la busqueda por Apellido o\n";							
+						mensaje += "4 digitos como mínimo para la busqueda por Cuit o\n";							
+						mensaje += "4 digitos como mínimo para la busqueda por Dni\n";							
+
+						AlertWarning.show(mensaje);
+						return;
+					} 
+					
+					
+										
+					ModelLocator.getInstance().clienteSeleccionado.armarFiltro(null,this.txtApellido.text, this.txtCuit.text, this.txtDni.text,txtNombre.text);
+				}
+				
+				ModelLocator.getInstance().adelantoEfectivoModel.cuota.removeAll();
+				ModelLocator.getInstance().adelantoEfectivoModel.importe = 0;
+				ModelLocator.getInstance().liqClienteModel.resetLiquidaciones();
+				
+				ModelLocator.getInstance().clienteSeleccionado.buscar(paginador, buscarPor);
+			}
+						
+			private function startRezise():void{
+				if(this.height>0 && this.view.selectedChild == otrosParam){					
+					this.txtCuenta.setFocus();													
+				}
+			}
+			
+			private function keyPress(evt:KeyboardEvent):void {
+				if (evt.keyCode == Keyboard.F7){					
+					this.buscar();		
+				}
+			}
+			
+		]]>
+	</mx:Script>
+</mx:VBox>

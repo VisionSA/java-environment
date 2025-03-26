@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+	<class name="com.bizitglobal.tarjetafiel.operador.negocio.Permiso" table="t_vis_seg_permisos" lazy="false">
+	    <id name="id" column="c_id_permiso" type="java.lang.Integer">
+	        <generator class="assigned" />
+	    </id>
+	
+	    <property name="nombre" type="java.lang.String" column="c_nombre" length="100"/>
+	    
+	    <property name="descripcion" type="java.lang.String" column="c_descripcion" length="100"/>
+
+	</class>
+</hibernate-mapping>

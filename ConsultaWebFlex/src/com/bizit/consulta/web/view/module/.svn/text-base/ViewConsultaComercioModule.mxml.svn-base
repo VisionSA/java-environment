@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="100%" height="100%">
+	<fx:Script>
+		<![CDATA[
+			import com.bizit.consulta.web.model.FielWebModelLocator;
+			import com.bizit.consulta.web.utils.ManejadorMensajes;
+			import com.bizit.consulta.web.utils.ManejadorPantallas;
+			import com.bizit.consulta.web.vo.SetDataVo;
+			
+			import mx.events.MenuEvent;
+			import mx.events.ModuleEvent;
+
+			[Bindable]
+			private var modelo : FielWebModelLocator = FielWebModelLocator.getInstance();
+			
+			protected function menubar1_itemClickHandler(evt:MenuEvent):void
+			{
+				if (moduloCom.data != evt.item.@data){
+					ManejadorPantallas.mostrarProgressBar();
+					moduloCom.unloadModule();
+					moduloCom.removeAllChildren();
+					moduloCom.url = FielWebModelLocator.PATH_COMERCIO_MODULES+evt.item.@module;             	
+					moduloCom.data = evt.item.@data;	
+					moduloCom.loadModule();
+				}	
+			}
+			
+			[Inspectable]
+			public function unloadContentModule():void
+			{
+				moduloCom.unloadModule();
+				moduloCom.removeAllChildren();
+				moduloCom.data = null;
+				moduloCom.url = "";
+				moduloCom.validateNow();
+			}
+
+
+			protected function moduloCom_readyHandler(event:ModuleEvent):void
+			{
+				new SetDataVo("mlComercio", moduloCom).guardarValor();
+				ManejadorPantallas.cerrarProgressBar();
+			}
+
+
+			protected function moduloCom_errorHandler(event:ModuleEvent):void
+			{
+				ManejadorMensajes.mostrarMensajeError("Error al cargar el modulo");
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<fx:XML id="xmlMenu" source="menuConsultaComercio.xml"/>
+	</fx:Declarations>
+	
+	<s:Group id="sgCont" width="100%" height="100%">
+		<s:VGroup id="vgCont" width="100%" height="100%">
+			<mx:MenuBar width="100%" dataProvider="{xmlMenu}" labelField="@label" showRoot="false" itemClick="menubar1_itemClickHandler(event)"/>
+			
+			<mx:ModuleLoader id="moduloCom" width="100%" height="100%"
+							 ready="moduloCom_readyHandler(event)"
+							 error="moduloCom_errorHandler(event)"/>
+		</s:VGroup>
+	</s:Group>
+	
+</mx:Module>

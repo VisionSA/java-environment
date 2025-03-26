@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+ <!-- ================================================================================================ -->
+ <!-- ========================         DEFINICION DE DAOS DEL MODULO         ========================= -->
+ <!-- ================================================================================================ -->
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.ActividadDaoHibernateImpl" id="actividadDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.AplicableDaoHibernateImpl" id="aplicableDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.CategoriaDaoHibernateImpl" id="categoriaDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.ExclusionDaoHibernateImpl" id="exclusionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.ImpuestoDaoHibernateImpl" id="impuestoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.ImpuestosIndividuoDaoHibernateImpl" id="impuestosIndividuoDao">
+   <property name="hibernateTemplate">
+     <ref bean="hibernateTemplate"/>
+   </property>
+ </bean>  
+ 
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.TipoImpuestoDaoHibernateImpl" id="tipoImpuestoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>   
+ 
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.IndividuoDaoHibernateImpl" id="individuoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.JurisTipoImpuestoDaoHibernateImpl" id="jurisTipoImpuestoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.RetencionDaoHibernateImpl" id="retencionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>  
+ 
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.TramosRetencionDaoHibernateImpl" id="tramosRetencionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>   
+ 
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.JurisdiccionActividadDaoHibernateImpl" id="jurisdiccionActividadDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>    
+
+ <bean class="com.bizitglobal.tarjetafiel.impuestos.dao.impl.JurisdiccionDaoHibernateImpl" id="jurisdiccionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>  
+ 
+ <!-- ================================================================================================ -->
+ <!-- ===============================  DEFINICION DE ACTIVIDAD SERVICE  ============================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "actividadServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.ActividadServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="actividadDao" ref="actividadDao"/>
+ 	</bean>
+
+    <bean id = "actividadService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.ActividadService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "actividadServiceTarget"/>
+        </property>
+    </bean>
+    
+ <!-- ================================================================================================ -->
+ <!-- ===============================  DEFINICION DE APLICABLE SERVICE  ============================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "aplicableServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.AplicableServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="aplicableDao" ref="aplicableDao"/>
+ 	</bean>
+
+    <bean id = "aplicableService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.AplicableService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "aplicableServiceTarget"/>
+        </property>
+    </bean>    
+
+
+ <!-- ================================================================================================ -->
+ <!-- ===============================  DEFINICION DE CATEGORIA SERVICE  ============================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "categoriaServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.CategoriaServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="categoriaDao" ref="categoriaDao"/>
+ 	</bean>
+
+    <bean id = "categoriaService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.CategoriaService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "categoriaServiceTarget"/>
+        </property>
+    </bean>
+ 
+ <!-- ================================================================================================ -->
+ <!-- ==============================  DEFINICION DE EXCLUSION SERVICE  =============================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "exclusionServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.ExclusionServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="exclusionDao" ref="exclusionDao"/>
+ 	</bean>
+
+    <bean id = "exclusionService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.ExclusionService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "exclusionServiceTarget"/>
+        </property>
+    </bean>
+
+ <!-- ================================================================================================ -->
+ <!-- ===============================  DEFINICION DE IMPUESTO SERVICE  =============================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "impuestoServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.ImpuestoServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="impuestoDao" ref="impuestoDao"/>
+ 	</bean>
+
+    <bean id = "impuestoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.ImpuestoService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "impuestoServiceTarget"/>
+        </property>
+    </bean>
+ 
+ <!-- ================================================================================================ -->
+ <!-- ===============================  DEFINICION DE TIPO IMPUESTO SERVICE  =============================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "tipoImpuestoServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.TipoImpuestoServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="tipoImpuestoDao" ref="tipoImpuestoDao"/>
+ 	</bean>
+
+    <bean id = "tipoImpuestoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.TipoImpuestoService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "tipoImpuestoServiceTarget"/>
+        </property>
+    </bean> 
+ 
+ <!-- ================================================================================================ -->
+ <!-- ===============================  DEFINICION DE INDIVIDUO SERVICE  =============================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "individuoServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.IndividuoServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="individuoDao" ref="individuoDao"/>
+ 	</bean>
+
+    <bean id = "individuoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.IndividuoService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "individuoServiceTarget"/>
+        </property>
+    </bean>
+    
+ <!-- ================================================================================================ -->
+ <!-- ===============================  DEFINICION DE JURISTIPOIMPUESTO SERVICE  =============================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "jurisTipoImpuestoServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.JurisTipoImpuestoServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="jurisTipoImpuestoDao" ref="jurisTipoImpuestoDao"/>
+ 	</bean>
+
+    <bean id = "jurisTipoImpuestoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.JurisTipoImpuestoService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "jurisTipoImpuestoServiceTarget"/>
+        </property>
+    </bean>
+    
+    
+    
+ <!-- ================================================================================================ -->
+ <!-- ===============================  DEFINICION DE IMPUESTOSINDIVIDUO  SERVICE  =============================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "impuestosIndividuoServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.ImpuestosIndividuoServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="impuestosIndividuoDao" ref="impuestosIndividuoDao"/>
+ 	</bean>
+
+    <bean id = "impuestosIndividuoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.ImpuestosIndividuoService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "impuestosIndividuoServiceTarget"/>
+        </property>
+    </bean>    
+
+ <!-- ================================================================================================ -->
+ <!-- ===============================  DEFINICION DE RETENCION SERVICE  ============================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "retencionServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.RetencionServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="retencionDao" ref="retencionDao"/>
+ 	</bean>
+
+    <bean id = "retencionService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.RetencionService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "retencionServiceTarget"/>
+        </property>
+    </bean>
+
+ <!-- ================================================================================================ -->
+ <!-- ============================  DEFINICION DE TRAMOS RETENCION SERVICE  ========================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "tramosRetencionServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.TramosRetencionServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="tramosRetencionDao" ref="tramosRetencionDao"/>
+ 	</bean>
+
+    <bean id = "tramosRetencionService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.TramosRetencionService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "tramosRetencionServiceTarget"/>
+        </property>
+    </bean>
+    
+ <!-- ================================================================================================ -->
+ <!-- ============================  DEFINICION DE JURISDICCION ACTIVIDAD SERVICE  ========================== -->
+ <!-- ================================================================================================ -->
+	<bean id = "jurisdiccionActividadServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.JurisdiccionActividadServiceImpl">
+	 	<property name="transactionManager" ref="myTxManager"/>
+		<property name="jurisdiccionActividadDao" ref="jurisdiccionActividadDao"/>
+ 	</bean>
+
+    <bean id = "jurisdiccionActividadService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+        <property name = "proxyInterfaces">
+            <value>com.bizitglobal.tarjetafiel.impuestos.service.JurisdiccionActividadService</value>
+        </property>
+
+        <property name = "target">
+            <ref bean = "jurisdiccionActividadServiceTarget"/>
+        </property>
+    </bean>    
+    
+    <!-- ================================================================================================ -->
+	<!-- ===============================  DEFINICION DE JURISDICCION SERVICE  ============================== -->
+	<!-- ================================================================================================ -->
+	<bean id = "jurisdiccionServiceTarget" class = "com.bizitglobal.tarjetafiel.impuestos.service.impl.JurisdiccionServiceImpl">
+	<property name="transactionManager" ref="myTxManager"/>
+	<property name="jurisdiccionDao" ref="jurisdiccionDao"/>
+	</bean>
+	
+	<bean id = "jurisdiccionService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+	<property name = "proxyInterfaces">
+	<value>com.bizitglobal.tarjetafiel.impuestos.service.JurisdiccionService</value>
+	</property>
+	
+	<property name = "target">
+	<ref bean = "jurisdiccionServiceTarget"/>
+	</property>
+	</bean>
+</beans>

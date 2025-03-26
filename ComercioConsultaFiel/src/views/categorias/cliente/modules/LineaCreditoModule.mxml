@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleGeneral  xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{this.calcularValoresLC()}" width="100%" height="100%" xmlns:effectClasses="org.efflex.mx.viewStackEffects.effectClasses.*" xmlns:viewStackEffects="org.efflex.mx.viewStackEffects.*" xmlns:mate="http://mate.asfusion.com/" xmlns:maps="views.categorias.cliente.maps.*" xmlns:textInput="com.util.components.textInput.*">
+<mx:VBox  horizontalAlign="center" height="100%" width="100%" visible="{lineaCreditoModel.mostrarPanel}">
+	<mx:Accordion width="100%" height="100%"   id="accordion"  fillAlphas="[0.0, 0.0, 0.0, 0.0]"> 
+		<mx:VBox  label="Componentes Linea de Credito" verticalAlign="top" 
+			horizontalAlign="center" height="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" 
+			paddingTop="10" width="100%">		  				
+				<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+					<mx:Label text="Linea Crédito" styleName="textInputNegroMediano"/>
+					<mx:HRule width="100%"/>
+				</mx:HBox>
+				<mx:HBox  horizontalAlign="center" verticalAlign="middle">									
+				    <mx:HBox verticalAlign="middle" horizontalAlign="center">				    					   
+				    	<mx:Label text="Línea de crédito total: " styleName="lblInfo"/>
+						<textInput:TextInputMoneda editable="false" text="{FormatUtil.formatMoneda(lineaCreditoModel.titular.limiteCredito)}" styleName="textInputAzulMediano"/>
+					</mx:HBox>
+					<mx:HBox verticalAlign="middle" horizontalAlign="center">										
+						<mx:Label text="Saldo en línea: " styleName="lblInfo"/>
+						<textInput:TextInputMoneda enabled="false" editable="false" text="{lineaCreditoModel.titular.saldoLinea}" styleName="textInputAzulMediano" disabledColor="#0006FF"/>
+					</mx:HBox>
+					<mx:HBox verticalAlign="middle" horizontalAlign="center">										
+						<mx:Label text="Disponible: " styleName="lblInfo"/>
+						<textInput:TextInputMoneda editable="false" styleName="textInputRojoMediano" text="{FormatUtil.formatMoneda(lineaCreditoModel.disponible)}"/>
+					</mx:HBox>
+				</mx:HBox>	
+				<mx:Spacer height="10"/>
+				<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+					<mx:Label text="Adelanto Efectivo" styleName="textInputNegroMediano"/>
+					<mx:HRule width="100%"/>
+				</mx:HBox>
+				<mx:HBox  horizontalAlign="center" verticalAlign="middle">									
+				    <mx:HBox verticalAlign="middle" horizontalAlign="center">				    					   
+				    	<mx:Label text="Línea de crédito Adelanto: " styleName="lblInfo"/>
+				    <textInput:TextInputMoneda editable="false" text="{FormatUtil.formatMoneda(lineaCreditoModel.lineaCreditoAdelanto)}" styleName="textInputAzulMediano"/>
+				    </mx:HBox>
+					<mx:HBox verticalAlign="middle" horizontalAlign="center">										
+						<mx:Label text="Saldo en línea Adelanto: " styleName="lblInfo"/>
+						<textInput:TextInputMoneda editable="false" text="{FormatUtil.formatMoneda(lineaCreditoModel.saldoLineaAdelanto)}" styleName="textInputAzulMediano"/>
+					</mx:HBox>
+					<mx:HBox verticalAlign="middle" horizontalAlign="center">										
+						<mx:Label text="Disponible Adelanto: " styleName="lblInfo"/>
+						<textInput:TextInputMoneda editable="false" styleName="textInputRojoMediano" text="{FormatUtil.formatMoneda(lineaCreditoModel.disponibleAdelanto)}"/>
+					</mx:HBox>
+				</mx:HBox>
+				<mx:Spacer height="10"/>		  			
+				<mx:HRule width="100%"/>
+			<mx:AdvancedDataGrid id="adg1" designViewDataType="flat"  width="100%" height="100%">
+					<mx:columns>
+						<mx:AdvancedDataGridColumn headerText="Componente L.C. 1" dataField="col1"/>
+						<mx:AdvancedDataGridColumn headerText="Componente L.C. 2" dataField="col2"/>
+						<mx:AdvancedDataGridColumn headerText="Componente L.C. 3" dataField="col3"/>
+						<mx:AdvancedDataGridColumn headerText="Componente L.C. 3" dataField="col3"/>
+					</mx:columns>
+		 </mx:AdvancedDataGrid>
+		</mx:VBox>		    
+	    <!--mx:VBox  label="Puntualidad">
+		  <mx:HBox    backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%">
+				<mx:HBox>
+					<mx:Label text="sdsd"/>
+					<mx:Label text="sdsd"/>
+					<mx:Label text="sdsd"/>
+					<mx:Label text="sdsd"/>
+					<mx:Label text="sdsd"/>
+				</mx:HBox>
+			</mx:HBox>	
+	    </mx:VBox-->
+   </mx:Accordion>
+</mx:VBox>	
+
+<maps:LineaCreditoModelMap />
+<mate:Listener  receive="{this.calcularValoresLC()}" type="getValoresLineaCredito"/>
+
+<mx:Script>
+	<![CDATA[
+		import mx.controls.Alert;
+	    import com.util.format.FormatUtil;
+        import com.util.components.alert.AlertError;
+		import views.categorias.cliente.models.LineaCreditoModel;
+	      [Bindable] public var lineaCreditoModel:LineaCreditoModel;
+	      
+		 public function calcularValoresLC():void{
+	    	  lineaCreditoModel.buscarValoresLC();
+		 }
+	   
+		
+	]]>
+</mx:Script>
+	
+</ModuleGeneral>

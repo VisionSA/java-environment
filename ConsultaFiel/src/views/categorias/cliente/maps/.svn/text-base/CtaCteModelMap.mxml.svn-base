@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import managers.ClienteManager;
+			import views.categorias.cliente.models.CtaCteClienteModel;
+			import views.categorias.cliente.ComposicionDetalleCtaCteView;
+			import views.categorias.cliente.DetalleCtaCteView;
+			import views.categorias.cliente.ResumidoCtaCteView;
+			import views.categorias.cliente.ResumidoComposicionSaldoView;
+			import views.categorias.cliente.modules.CtaCteClienteModule;
+			import views.categorias.cliente.modules.ComposicionSaldoClienteModule;
+			
+		]]>
+	</mx:Script>
+	<Injectors targets="{[CtaCteClienteModule,ResumidoCtaCteView,DetalleCtaCteView,ComposicionDetalleCtaCteView,ResumidoComposicionSaldoView,ComposicionSaldoClienteModule]}">
+		<ObjectBuilder generator="{CtaCteClienteModel}">
+		 <Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="ctaCteClienteModel"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="saldoAnterior" sourceKey="saldoAnteriorCtaCte" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayMovientosCtaCteResumen" sourceKey="arrayMovientosCtaCteResumen" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayMovientoComercioDetalles" sourceKey="arrayMovientoComercioDetalles" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayMovientoComercioDetallesCom" sourceKey="arrayMovientoComercioDetallesCom" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayMovientoPendiente" sourceKey="arrayMovientoPendiente" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayMovientoPendienteComp" sourceKey="arrayMovientoPendienteComp" source="{ClienteManager}"/>
+	</Injectors>
+	
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="movTransaccionCliCom" sourceKey="movTransaccionCliCom" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="movTransaccionCliComCompos" sourceKey="movTransaccionCliComCompos" source="{ClienteManager}"/>
+	</Injectors>
+	
+	
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayMovientoCtaCteDetalles" sourceKey="arrayMovientoCtaCteDetalles" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayMovientoComposDetalles" sourceKey="arrayMovientoComposDetalles" source="{ClienteManager}"/>
+	</Injectors>
+	
+	
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayComposicionDetalleCtaCte" sourceKey="arrayComposicionDetalleCtaCte" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="arrayComposicionDetalleCtaCteCom" sourceKey="arrayComposicionDetalleCtaCteCom" source="{ClienteManager}"/>
+	</Injectors>
+	
+	
+</EventMap>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+	<class name="com.bizitglobal.tarjetafiel.operador.negocio.Pagina" table="t_vis_seg_paginas" lazy="false">
+	    <id name="idPagina" column="c_id_pagina" type="java.lang.Long">
+	        <generator class="assigned" />
+	    </id>
+	
+	    <property name="pagina" type="java.lang.String" column="c_pagina" length="100"/>
+	    
+	</class>
+</hibernate-mapping>

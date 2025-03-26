@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel title="Carga de Datos"  xmlns:mx="http://www.adobe.com/2006/mxml" resizeEffect="{resizeEff}" horizontalAlign="center" verticalAlign="top" width="514" xmlns:mate="http://mate.asfusion.com/" xmlns:managers="com.yahoo.astra.mx.managers.*" xmlns:textInput="com.util.components.textInput.*">
+      <mx:Button width="100%" label="Nueva Autorización" click="simuladorViewModel.importeCuota = 0,clienteViewModel.dispatcher.dispatchEvent(new Event('inicializar'))" fillAlphas="[1.0, 1.0]" fillColors="[#136CB3, #B2D1E9, #C8C8C8, #C8C8C8]" color="#FBFBFB"/>
+      <managers:AutoCompleteManager 
+		id="autoCompleteMgr" 
+		targets="{[txtTar2b,txtTar3,txtTar4]}"
+		shareData="true" autoSave="true" />
+ 	   <mx:HBox width="100%" horizontalAlign="center" verticalAlign="top" >
+ 	      <mx:HBox width="50%" styleName="plastico" height="116" horizontalAlign="center" verticalAlign="bottom" horizontalGap="5">
+		 	 <mx:HBox width="204" verticalAlign="middle" horizontalAlign="center"  height="28">
+		 	 	<mx:TextInput width="38" id="txtTar1" text="5049" textAlign="center" editable="false" borderStyle="none"/>
+		 	 	<mx:TextInput width="24" id="txtTar2" textAlign="center" text="06" editable="false"  borderStyle="none"/>
+		 	 	<mx:TextInput width="24" id="txtTar2b" maxChars="2" restrict="0-9" keyUp="pasarFocoATxtTar3()"  borderStyle="none"/>
+		 	 	<mx:TextInput width="38" id="txtTar3" maxChars="4" restrict="0-9" keyUp="pasarFocoATxtTar4()"  borderStyle="none"/>
+		 	 	<mx:TextInput width="38" id="txtTar4" maxChars="4" restrict="0-9" keyUp="pasarFocoATxtCvv()"  borderStyle="none"/>
+		 	 </mx:HBox>
+	      </mx:HBox>
+         <mx:VBox width="50%" height="120" horizontalAlign="center">
+			    <mx:HBox  verticalAlign="middle" horizontalAlign="center">
+			       <mx:Label text="CVV:"/>
+				   <mx:TextInput width="32" id="txtCvv" maxChars="3" restrict="0-9" keyUp="pasarFocoABusquedaCliente()" creationComplete="this.pasarFocoATxtTar2b()"/>
+			    </mx:HBox>
+			   	<!-- <mx:LinkButton id="clienteBusqLink" label="Buscar Cliente" click="buscarCliente()" keyDown="keyPressCliente(event)"/>-->
+			   	<mx:Button id="clienteBusqLink" label="Buscar Cliente" click="buscarCliente()" keyDown="keyPressCliente(event)"/>
+			   	<mx:HBox  verticalAlign="middle" horizontalAlign="center">
+			       	<mx:Label text="Vencimiento:" />
+			         <!--	<mx:Label    text="{outerDocument.dateFormatter.format(clienteViewModel.plasticoCliente.vigenciaHastaFlex)}"     width="40" id="txtFe" />-->
+			        <mx:Label    text="{this.getDate(clienteViewModel.plasticoCliente.vigenciaHastaFlex)}"     id="txtFe" />
+			    </mx:HBox>
+			   	<mx:HBox  verticalAlign="middle" horizontalAlign="center">
+			        <mx:Label text="Estado:"/>
+			    	<mx:Label    text="{clienteViewModel.plasticoCliente.estadoPlastico.descripcion}"   textAlign="center" width="108"/>
+			    </mx:HBox>
+	      </mx:VBox>
+        </mx:HBox>
+	 	<mx:HBox width="339" verticalAlign="middle" horizontalAlign="center" visible="{clienteViewModel.mostrarBusquedaComercio}">
+		  <mx:Label text="Cod. Comercio:"/>
+		  <mx:TextInput width="40" id="txtCodigo" maxChars="4" restrict="0-9" keyDown="pasarFocoABusquedaComercio(event)"/>
+        </mx:HBox>
+    <mx:HBox width="339" verticalAlign="middle" horizontalAlign="center" visible="{clienteViewModel.mostrarBusquedaComercio}">
+    	<mx:LinkButton  id="comercioBusqLink" label="Obtener Comercio" click="buscarComercio()"  keyDown="keyPress(event)" />
+	    <mx:LinkButton  id="titularBusqLink" label="Buscar Comercio" click="buscarComercioPopup()"  keyDown="keyPress(event)" />
+	 </mx:HBox>   
+    <mx:Label text="*El comercio no tiene ninguna lista de precio asociada" horizontalCenter="true" width="100%" color="#E63214"  visible="{comercioViewModel.mostrarMsjListaPrecioVacia}"/>
+    <!--  <mx:List  id="lst1"  width="80%" doubleClickEnabled="true"
+      dataProvider="{comercioViewModel.comercio.comercioListaPrecioSet}"/>
+     -->
+    <mx:AdvancedDataGrid id="adg1" click="pasarFocoATxtMonto()" designViewDataType="flat"  width="80%" selectedIndex="0"  change="this.changeListaPrecio()" keyDown="keyPressListaPrecio(event)" focusIn="this.setearListaPrecio()" dataProvider="{comercioViewModel.comercio.comercioListaPrecioSet}" visible="{comercioViewModel.mostrarPanelComercio}"  height="101">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Listas de Precio del Comercio"   dataField="descripcion"/>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	<mx:Label  id ="lblCuotasDisponibles" text="{simuladorViewModel.cuotasDisponibles}" horizontalCenter="true" width="100%" color="#2292B7"/>
+	<mx:HBox width="50%" horizontalAlign="center" verticalAlign="middle" visible="{comercioViewModel.mostrarConsumo}">
+	   	<mx:Label text="Monto" />
+		<textInput:TextInputMoneda presicion="2" width="110" id="txtMonto"  text="{simuladorViewModel.monto}" keyDown="pasarFocoATxtCuota(event)"/>
+		<mx:Label text="Cantidad de Cuotas"  alpha="1.0"/>
+		<mx:TextInput width="88" id="txtCuotas" maxChars="2" restrict="0-9" keyDown="accionCantCuotas(event)"   text="{simuladorViewModel.cantidadCuotaSeleccionada}" />
+	</mx:HBox>
+	
+	<mx:HBox  width="352" horizontalAlign="right" verticalAlign="middle" visible="{comercioViewModel.mostrarCupon}">
+		<mx:Label id="lblCupon" text="Nro de Cupon" />
+		<mx:TextInput   width="89" id="txtNroCupon"  keyDown="accionNroCupon(event)"/>
+	</mx:HBox>
+	
+	<mx:HBox width="50%" horizontalAlign="center" verticalAlign="middle" visible="{comercioViewModel.mostrarConsumo}">
+		<mx:LinkButton id="aceptarLink" label="Aceptar consumo" click="confirmar()" />
+	</mx:HBox>
+	
+	<mx:HBox width="50%" horizontalAlign="center" verticalAlign="middle" visible="{comercioViewModel.mostrarConsumo}">
+		<mx:LinkButton id="simuilarLink" label="Simular cuotas" click="simular()"  keyDown="keyPressSimular(event)"/>
+	</mx:HBox>
+	
+	<mx:Resize id="resizeEff"/>
+	
+	<mate:Listener receive="{txtCodigo.setFocus()}" type="focusCodComercio"/>	
+	<mate:Listener receive="{this.inicializar()}" type="inicializar"/>
+	<mx:DateFormatter id="dateFormatter" formatString="dd/mm/yyyy"/>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.DateField;
+			import views.popup.MotivoNoConsumoView;
+			import com.util.collections.StringTokenizer;
+			import com.util.collections.IIterator;
+			import mx.events.CloseEvent;
+			import com.util.components.alert.AlertWarning;
+			import com.tarjetafiel.caja.vo.Cuota;
+			import views.popup.ConfirmacionConsumoView;
+			import views.popup.BusquedaComercioView;
+			import mx.collections.ArrayCollection;
+			import mx.effects.easing.Sine;
+			import views.models.SimuladorViewModel;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import views.popup.SimuladorView;
+			import views.models.ClienteViewModel;
+			import mx.controls.Alert;
+			import events.SimuladorEvent;
+			import com.tarjetafiel.caja.vo.ListaPrecio;
+			import views.models.ComercioViewModel;			
+		
+		[Bindable]public var comercioViewModel:ComercioViewModel;
+		[Bindable]public var clienteViewModel:ClienteViewModel;
+		[Bindable]public var simuladorViewModel:SimuladorViewModel
+		
+		public var popUpSimular:SimuladorView = new SimuladorView();
+		public var popUpBusquedaComercio:BusquedaComercioView= new BusquedaComercioView();
+		public var popUpConfirmar:ConfirmacionConsumoView= new ConfirmacionConsumoView();
+	    public var popUpMotivoNoConsumo:MotivoNoConsumoView= new MotivoNoConsumoView();
+		
+		private function buscarComercio():void{
+			txtNroCupon.text= ""; 
+			var codigoPosnet:String = txtCodigo.text;
+			this.comercioViewModel.buscarPorCodComercio(codigoPosnet);
+			comercioViewModel.dispatcher.dispatchEvent(new SimuladorEvent(SimuladorEvent.DISABLED_SIMULADOR));
+			comercioViewModel.mostrarConsumo=false;
+			adg1.setFocus();
+			simuladorViewModel.cuotasDisponibles="";
+		}
+		
+	
+		
+		public function keyPress(evt:KeyboardEvent):void{
+			if(evt.keyCode == Keyboard.ENTER){
+				buscarComercio();
+			}
+		}
+		
+		
+		public function keyPressCliente(evt:KeyboardEvent):void{
+			if(evt.keyCode == Keyboard.ENTER){
+				buscarCliente();
+			}
+		}
+		
+		
+		public function keyPressSimular(evt:KeyboardEvent):void{
+			if(evt.keyCode == Keyboard.ENTER){
+				simular();
+			}
+		}
+		
+		
+		private function pasarFocoATxtTar2b():void{
+			txtTar2b.setFocus();
+		}
+		
+		/*private function pasarFocoATxtMonto(evt:KeyboardEvent):void{
+		  if(evt.keyCode == Keyboard.ENTER)
+			txtMonto.setFocus();
+		}*/
+		
+		
+	
+	   
+		private function pasarFocoATxtCuota(evt:KeyboardEvent):void{
+			if(evt.keyCode == Keyboard.ENTER){
+				txtCuotas.setFocus();
+			}
+		}
+		private function accionCantCuotas(evt:KeyboardEvent):void{
+			if(evt.keyCode == Keyboard.ENTER){
+				if(txtNroCupon.visible)
+				     txtNroCupon.setFocus();
+				 else{
+				 	aceptarLink.setFocus(); 
+				    confirmar();
+				 }
+		   }
+		}
+		
+		private function accionNroCupon(evt:KeyboardEvent):void{
+			if(evt.keyCode == Keyboard.ENTER){
+				 	aceptarLink.setFocus(); 
+				    confirmar();
+				 }
+		}
+		
+		
+		private function pasarFocoABusquedaComercio(evt:KeyboardEvent):void{
+			if(evt.keyCode == Keyboard.ENTER){
+				comercioBusqLink.setFocus();
+				buscarComercio();
+			}	
+		}	
+		
+		
+		private function pasarFocoATxtTar3():void{
+			if(txtTar2b.text.length==2){
+				txtTar3.setFocus();
+			}
+		}
+		
+		
+		private function pasarFocoATxtTar4():void{
+			if(txtTar3.text.length==4){
+				txtTar4.setFocus();
+			}
+		}
+        
+        private function pasarFocoATxtCvv():void{
+			if(txtTar4.text.length==4){
+				txtCvv.setFocus();
+			}
+		}
+		
+		private function pasarFocoABusquedaCliente():void{
+			if(txtCvv.text.length==3){
+				clienteBusqLink.setFocus();
+			}
+		}		
+		
+		private function pasarFocoACodComercio():void{
+	       txtCodigo.setFocus();		
+		}
+		
+		
+		
+		
+		private function buscarCliente():void{
+			var plastico:String = txtTar1.text + txtTar2.text +txtTar2b.text + txtTar3.text + txtTar4.text;
+			var cvv:String = txtCvv.text;
+			this.clienteViewModel.buscarPorPlastico(plastico, cvv,Application.application as DisplayObject);
+			pasarFocoACodComercio();
+			
+		}
+		
+		
+		
+		private function buscarTitular():void{
+			var id:Number=1;
+			this.clienteViewModel.buscarPorID(id);
+		}
+		
+		
+	    
+	    private function pasarFocoATxtMonto() : void{
+	    	if(adg1.selectedItem)
+	    	    txtMonto.setFocus();
+	    }
+	    
+	    
+	    private  function changeListaPrecio(): void{
+	     	comercioViewModel.listaPrecioSelected = adg1.selectedItem as ListaPrecio;
+	 	}
+	    	
+		private  function setearListaPrecio(): void{
+			comercioViewModel.listaPrecioSelected = adg1.selectedItem as ListaPrecio;
+			if(comercioViewModel.listaPrecioSize ==1)
+			  txtMonto.setFocus();
+       }
+       
+       public function keyPressListaPrecio(evt:KeyboardEvent):void{
+			if(evt.keyCode == Keyboard.ENTER){
+				 comercioViewModel.listaPrecioSelected = adg1.selectedItem as ListaPrecio;
+				 txtMonto.setFocus();
+			}
+		}
+
+       
+		
+		private function mostrarCupon():void{
+			if(comercioViewModel.mostrarCupon){
+				lblCupon.visible=true;
+				txtNroCupon.visible=true;
+				txtNroCupon.setFocus();
+			}else{
+				lblCupon.visible=false;
+				txtNroCupon.visible=false;
+				
+			}
+		}
+		
+		
+		private function simular():void {
+			if(comercioViewModel.listaPrecioSelected){
+				simuladorViewModel.arrayCuotas = new ArrayCollection(); 
+				simuladorViewModel.monto = Number(txtMonto.text);
+				PopUpManager.addPopUp(popUpSimular,Application.application as DisplayObject, true);
+	        	PopUpManager.centerPopUp(popUpSimular);
+	        }	
+	        else   Alert.show("Debe seleccionar una Lista de Precio","Error");
+	    }
+	    
+	    private function buscarComercioPopup():void {
+				PopUpManager.addPopUp(popUpBusquedaComercio,Application.application as DisplayObject, true);
+	        	PopUpManager.centerPopUp(popUpBusquedaComercio);
+	    }
+	    
+	    private function cuotaEncontrada():Boolean{
+	          var cuotas : String =  lblCuotasDisponibles.text.substring(22,lblCuotasDisponibles.text.length-2);
+	          var it:IIterator;
+	          var encontrado:Boolean  =  false; 
+              it = StringTokenizer.createIterator(cuotas,"-");
+              while ( it.hasNext() )
+              { if( it.next() == txtCuotas.text){
+                   encontrado=  true;
+                   break; 	
+                }
+               }
+	          return encontrado;
+	    }
+	    
+	    
+	     private function confirmar():void {
+	     	   var monto:Number = Number(txtMonto.text);
+	     	   var cantCuotas:Number = Number(txtCuotas.text);
+			   if(Number(simuladorViewModel.disponible) - monto >= 0){
+			   	    if(txtMonto.text != "0"){  
+			   	       if(cuotaEncontrada()){
+				  		 this.simuladorViewModel.cantidadCuotaSeleccionada=cantCuotas;
+				  		 this.simuladorViewModel.monto=monto;
+				  		 if(comercioViewModel.mostrarCupon) {
+				  		 	if(txtCodigo.text !="")
+				  		 	    comercioViewModel.comercio.nroCupon = txtNroCupon.text;
+				  		 	 else      AlertWarning.show("El nro de cupon es un dato requerido ",function (evt:CloseEvent):void{
+	                   		             txtCuotas.setFocus();},"Error"); 
+				  		 }
+				  		  PopUpManager.addPopUp(popUpConfirmar,Application.application as DisplayObject, true);
+	        	          PopUpManager.centerPopUp(popUpConfirmar);
+	        	          popUpConfirmar.btnAceptar.setFocus();
+	        	      }
+	        	      else   AlertWarning.show("La cantidad de cuotas no se correponde con niguna de las disponibles en la  lista de precio seleccionada ",function (evt:CloseEvent):void{
+	                   		txtCuotas.setFocus();},"Error"); 
+	        	    } else  AlertWarning.show("El monto debe ser mayor a  cero",function (evt:CloseEvent):void{
+	                   		txtMonto.setFocus();},"Error");   
+	        	         
+	        	 } 		
+				 else {
+				 	    AlertWarning.show("Saldo insuficiente",function (evt:CloseEvent):void{
+	                   	txtMonto.setFocus();},"Error");
+				 }  
+		 }
+		 
+		    private  function  abrirpopup(){
+		    	      
+		    }	
+		    
+		    private  function inicializar():void{
+		      txtCvv.text="";
+		      txtCuotas.text="";
+		      txtCodigo.text="";
+		      txtFe.text="";
+		      txtMonto.text="";
+		      txtNroCupon.text="";
+		      txtTar2b.text="";
+		      txtTar3.text="";
+		      txtTar4.text="";
+		      lblCuotasDisponibles.text="";
+		    }
+		    
+		    private function getDate(fecha:Date):String{
+		       	var fechaString:String = DateField.dateToString(fecha, "DD/MM/YYYY");
+		    	return fechaString;		       	
+		    }
+		    
+		    
+		    	 
+		]]>
+	</mx:Script>
+	
+	
+	</mx:Panel>

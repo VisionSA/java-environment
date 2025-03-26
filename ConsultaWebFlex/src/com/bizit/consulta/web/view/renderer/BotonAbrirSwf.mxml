@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" creationComplete="itemrenderer1_creationCompleteHandler(event)">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.bizit.consulta.web.entity.PermisoWeb;
+			import com.bizit.consulta.web.utils.ManejadorPantallas;
+			
+			import mx.events.FlexEvent;
+
+			
+			[Bindable]
+			private var permiso : PermisoWeb = null;
+			
+			protected function button1_clickHandler(event:MouseEvent):void {
+				
+				ManejadorPantallas.getAplicacion().moduleLoader.unloadModule();
+				ManejadorPantallas.getAplicacion().moduleLoader.removeAllChildren();				
+				
+				ManejadorPantallas.getAplicacion().moduleLoader.url = permiso.swf;
+				ManejadorPantallas.getAplicacion().moduleLoader.loadModule();
+			}
+
+
+			protected function itemrenderer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				permiso = data as PermisoWeb;
+			}
+
+		]]>
+	</fx:Script>
+	
+	
+	<s:Button label="{permiso.nombre}" click="button1_clickHandler(event)" width="100%"/>
+	
+</s:ItemRenderer>

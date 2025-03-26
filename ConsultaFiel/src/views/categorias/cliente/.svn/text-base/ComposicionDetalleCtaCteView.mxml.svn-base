@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox   xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"   horizontalAlign="center" verticalAlign="top" show="this.obtenerComposicionDetalle()">
+       	<mx:AdvancedDataGrid sortableColumns="false" id="adg1" designViewDataType="flat"  doubleClickEnabled="true"   doubleClick="this.cambiarVistaResumen()"  dataProvider="{ctaCteClienteModel.arrayComposicionDetalleCtaCte}" width="100%" height="100%">
+					<mx:columns>
+					     <mx:AdvancedDataGridColumn  headerText="N° Cuota" dataField="nroCuota" />
+					     <mx:AdvancedDataGridColumn headerText="Fecha Fact." >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.dateFormatter.format(data.fechaFacturacion)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+						
+						<mx:AdvancedDataGridColumn headerText="Imp. Cuota"  >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.currencyFormatter.format(data.importeCuota)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            <mx:AdvancedDataGridColumn headerText="Estado" dataField="estado"/>
+					    <mx:AdvancedDataGridColumn headerText="Nro Liq" dataField="idLiqCliente"/>
+			         </mx:columns>
+		</mx:AdvancedDataGrid>
+       	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+	<mx:CurrencyFormatter  id="currencyFormatter" currencySymbol="$"  useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="."
+		 rounding="nearest" precision="2" decimalSeparatorFrom="," decimalSeparatorTo=","    alignSymbol="left"/>  
+        
+    
+  
+<mx:Script>
+	<![CDATA[
+		import mx.effects.easing.Back;
+		import com.tarjetafiel.caja.vo.MovimientoCtaCte;
+		import mx.controls.Alert;
+		import views.categorias.cliente.models.CtaCteClienteModel;
+		     [Bindable]public var  ctaCteClienteModel:CtaCteClienteModel;  
+		     public var primero: Boolean=true; 
+		     public var acumulado:  Number=0;
+		     
+		   /*  public function getSaldo(valor:Number):Number
+		     {  if(!primero){
+		     	   acumulado+= valor;
+		        } else{
+		          acumulado = ctaCteClienteModel.saldo+ valor;
+		     	  primero= false;
+		        }
+		          
+		      return acumulado;     	
+		     }*/
+		     
+		     public  function cambiarVistaResumen():void{
+		     /*	var movim : MovimientoCtaCte = MovimientoCtaCte(adg1.selectedItem);
+		     	ctaCteClienteModel.movimientoCtaCteSeleccionado = movim; 
+		     	ctaCteClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaDetalle"));*/	
+		     }
+		     
+		
+            private function obtenerComposicionDetalle():void{
+		      ctaCteClienteModel.buscarComposicionDetalle();    		
+		   }
+		    
+		   public function setFocusGrilla():void{
+			if(this.adg1){
+				this.adg1.setFocus();
+			}
+		} 
+		     
+		
+	]]>
+</mx:Script>
+
+	
+</mx:VBox>

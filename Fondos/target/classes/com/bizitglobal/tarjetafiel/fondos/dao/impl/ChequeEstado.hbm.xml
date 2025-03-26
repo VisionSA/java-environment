@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.ChequeEstado" table="T_VIS_FON_CHEQUES_ESTADOS" >
+	<id name="idChequeEstado" type="java.lang.Long" column="C_ID_CHEQUE_ESTADO">
+		<generator class="increment" />
+	</id>
+	
+	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="true" length="40"/>
+	<property name="tipo" type="java.lang.Character" column="C_TIPO" not-null="true" />
+	
+</class>
+</hibernate-mapping>

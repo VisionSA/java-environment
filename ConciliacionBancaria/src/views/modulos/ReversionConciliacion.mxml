@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--@I3918--><mx:Module xmlns:mx="http://www.adobe.com/2006/mxml"
+	layout="vertical" width="100%" height="100%" creationComplete="init()"
+	horizontalAlign="center" xmlns:date="com.util.components.date.*" xmlns:binding="com.asfusion.mate.utils.binding.*">
+<!--@F3918-->	<mx:Script>
+		<![CDATA[
+			import mx.formatters.DateFormatter;
+		]]>
+	</mx:Script>
+	
+	<mx:Style source="assets/styles/main.css"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.utils.StringUtil;
+			import com.util.components.alert.AlertError;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.events.DataGridEvent;
+			import mx.core.FlexSprite;
+			import mx.rpc.events.ResultEvent;
+			import business.ConciliacionFondoCabecera;
+			import mx.collections.ArrayCollection;
+			import events.ConciliacionFondoCabeceraEvent;
+			import events.ConciliacionFondoEvent;
+			import business.MovimientoConciliable;
+			import com.tarjetafiel.caja.vo.BancoPropio;
+			import events.MovimientoConciliableEvent;
+			import flash.sampler.NewObjectSample;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.controls.DateField;
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import events.ExtractoBancarioEvent;
+			import model.ConciliacionModelLocator;
+			import model.PaginacionSearchModelLocator;
+			[Bindable]
+			private var modelo : ConciliacionModelLocator = ConciliacionModelLocator.getInstance();
+			
+			
+			private var numPage:int = 0;
+            [Bindable]
+		    public  var pageSize:int = 10;
+			public var cabecera:ConciliacionFondoCabecera;
+			public var btnSeleccionarTodoEstado:Boolean;
+			
+/*@I3918*/			private var setearPrimeraPagina:Boolean = false;
+			
+/*@F3918*/			private function init():void {
+				
+				var filtro:Filtro = new Filtro();
+				filtro.agregarCampoOperValor("habilitado",Filtro.LIKEXS,"S");
+				new ExtractoBancarioEvent(ExtractoBancarioEvent.BUSCAR_BANCOS_PROPIOS_EVENT,filtro).dispatch();
+				PaginacionSearchModelLocator.getInstanceReversion().cantPorPagina = pageSize;
+				dgConciliacionFondoCabecera.addEventListener(ListEvent.ITEM_ROLL_OVER,pasarParametros);
+				modelo.btnSeleccionarTodoSel=false;
+			}
+			private function pasarParametros(event:ListEvent):void{
+				cabecera = modelo.listaCabeceraReversion.getItemAt(event.rowIndex)as ConciliacionFondoCabecera;
+				btnSeleccionarTodoEstado = modelo.btnSeleccionarTodoSel;
+			}
+			
+/*@I3918*/			private function buscarConciliados():void 
+			{				
+				if(fechaHastaDt.selectedDate.getTime() > fechaDesdeDt.selectedDate.getTime())
+				{
+					buscarParaReversion(0,pageSize);
+					setearPrimeraPagina = true;
+				}
+				else
+				{
+					AlertError.show("Las fecha hasta no debe ser mayor que la fecha desde");
+				}
+/*@F3918*/			}
+			
+			private function buscarParaReversion(firstResult:int, maxResults:int):void
+			{
+				var cab:ConciliacionFondoCabecera = new ConciliacionFondoCabecera();
+				cab.tipoFecha = int(tipoFechaCBox.selectedItem.data); //from combo tipo fecha.
+/*@I3918*/				cab.numeroOperacion = txtNumero.text;
+/*@F3918*/				cab.importeTotalConciliado = Number(txtImporte.text==''?'0':txtImporte.text);
+				cab.fechaDesde = DateField.stringToDate(fechaDesdeDt.text, "DD/MM/YYYY");
+				cab.fechaHasta = DateField.stringToDate(fechaHastaDt.text, "DD/MM/YYYY");
+				cab.idBancoPropio = bancoPropioCBox.selectedItem.idBancoPropio;
+				cab.conciliado = "S";
+				if(firstResult == 0)
+					new ConciliacionFondoCabeceraEvent(ConciliacionFondoCabeceraEvent.BUSCAR_CANTIDAD_PAGINAS_REVERSION,cab).dispatch();
+					
+				cab.firstResult = firstResult * pageSize;
+				cab.maxResults = maxResults;
+				new ConciliacionFondoCabeceraEvent(ConciliacionFondoCabeceraEvent.TRAER_CONCILIADOS_FONDOS_CABECERA_EVENT,cab).dispatch();
+			}
+			
+			private function seleccionCabeceraConciliado():void {
+				var filtro:Filtro = new Filtro();
+				filtro.agregarCampoOperValor("conciliacionFondoCabecera.idCabeceraConciliacion",Filtro.IGUAL,dgConciliacionFondoCabecera.selectedItem.idCabeceraConciliacion);
+				new ConciliacionFondoEvent(ConciliacionFondoEvent.TRAER_CONCILIACION_FONDOS_EVENT,filtro).dispatch();
+			}
+			
+			private function keySeleccionCabeceraConciliado(event:Event):void {
+				var filtro:Filtro = new Filtro();				
+				//filtro.agregarCampoOperValor("conciliacionFondoCabecera.idCabeceraConciliacion",Filtro.IGUAL,dgCabeceraConciliacion.selectedItem.idCabeceraConciliacion);
+				//new ConciliacionFondoEvent(ConciliacionFondoEvent.TRAER_CONCILIACION_FONDOS_EVENT,filtro).dispatch();
+			}
+			
+			private function getFechaConfirmacion(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaConfirmacion);
+			}
+			
+			private function getFechaGeneral(item:Object, column:DataGridColumn):String {
+				var fecha:String = "";
+				if(item.contenedor != null){
+					fecha = df.format(item.contenedor.fechaGeneral);
+				}
+				return fecha;
+			}
+			
+			private function revertirConciliados():void{
+				if(!modelo.btnSeleccionarTodoSel)
+				{
+					var listRevertir:ArrayCollection = new ArrayCollection();
+					var listSeleccionados:ArrayCollection = modelo.listaCabeceraReversion;
+					for(var i:String in listSeleccionados){
+						if(listSeleccionados[i].seleccionado){
+							listRevertir.addItem(listSeleccionados[i]);
+						}
+					}
+					if(listRevertir.length>0)
+					{
+						new ConciliacionFondoEvent(ConciliacionFondoEvent.REVERTIR_CONCILIACION_CABECERA_EVENT,listRevertir, null, null).dispatch();	
+					}
+				}else
+				{
+					var filtro:Filtro = new Filtro();
+					filtro.agregarCampoOperValor("bancoPropio.idBancoPropio",Filtro.IGUAL,bancoPropioCBox.selectedItem.idBancoPropio);
+					filtro.agregarCampoOperValor("conciliado",Filtro.LIKEXS,"S");
+					new ConciliacionFondoEvent(ConciliacionFondoEvent.REVERTIR_TODOS_CONCILIACION_CABECERA_EVENT,null, filtro, null).dispatch();
+					btnSeleccionarTodosApariencia();
+				}
+				
+							
+			}
+			
+			public function getFechaItem(item:Object, column:DataGridColumn):String {
+				var fecha:String = "";
+				if(item.contenedor != null){
+					fecha = df.format(item.contenedor.fechaItem);
+				}
+				return fecha;
+			}
+			
+			/******* FILTRO MOVMIENTO CONCILIABLE *****/
+			 private function filterData():void
+			{
+				//txtImporte.text.length == 0 && 
+				if (txtDescripcion.text.length == 0)
+				{
+					modelo.listaCabeceraReversion.filterFunction = null;
+					modelo.listaCabeceraReversion.refresh(); 
+				}
+				else
+				{
+					modelo.listaCabeceraReversion.filterFunction = userFilterGeneral;
+					modelo.listaCabeceraReversion.refresh();
+				}
+			}
+			
+			private function userFilterGeneral(item:ConciliacionFondoCabecera):Boolean
+			{
+				var matchImporte:Boolean = true;
+				var matchDescripcion:Boolean = true;
+				/*if(txtImporte.text.length != 0)
+				{
+					matchImporte = false;
+					matchImporte = userFilterImporte(item);
+				}*/
+				
+				if(txtDescripcion.text.length !=0)
+				{
+					matchDescripcion = false;
+					matchDescripcion = userFilter(item);
+				}
+				
+				return matchImporte && matchDescripcion;
+			}
+			
+			/*private function userFilterImporte(item:ConciliacionFondoCabecera):Boolean
+            {
+				//var tmp:String;
+				var match:Boolean = false;
+				var value:String = new String();				
+				var properties:Array = new Array();
+				properties.push("dgConciliacionDetalle.importe");
+				for each(var property:String in properties)
+				{
+					value = item[property].toString().toLowerCase();
+					match = (value.indexOf(txtImporte.text.toLowerCase(), 0) > -1);
+					if (match)
+					{
+						break;
+					}
+				}	
+				return match;
+            }*/
+            
+            
+			private function userFilter(item:ConciliacionFondoCabecera):Boolean
+            {
+				//var tmp:String;
+				var match:Boolean = false;
+				var value:String = new String();				
+				var properties:Array = new Array();
+				properties.push("comentario");
+				for each(var property:String in properties)
+				{
+					if(item[property] != null){
+						value = item[property].toString().toLowerCase();
+						match = (value.indexOf(txtDescripcion.text.toLowerCase(), 0) > -1);
+						if (match)
+						{
+							break;
+						}
+					}
+				}				
+				return match;
+            } 
+            
+            
+            private function getFechaGeneracionCabecera(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaGeneracion);
+			}
+			/*******FIN FILTRO MOVMIENTO CONCILIABLE*****/
+			
+			public function formatearNumero(item:Object, column:DataGridColumn):String{
+				return numberFormat.format(item.importe).toString();
+			}
+			
+			private function navigatePage(event:Event):void{
+			 	if(event.currentTarget.selectedItem){
+			 		PaginacionSearchModelLocator.getInstanceReversion().nexPag = true; 
+			 		var maxPag:int = PaginacionSearchModelLocator.getInstanceReversion().numPage;
+/*@I3918*/			 		var pagina:int = int(event.currentTarget.selectedItem.label)-1;		
+/*@F3918*/			 		buscarParaReversion(pagina,pageSize);
+			        if(pagina == maxPag ){ 
+				    	PaginacionSearchModelLocator.getInstanceReversion().nexPag = false; 
+				    }	
+			    }			 	
+			 }
+			 
+			 private function navigatePageNex():void{		
+			 	var maxPag:int = PaginacionSearchModelLocator.getInstanceReversion().numPage;
+			    var pagina:int = int(pageNav.selectedItem.data);
+			    if(PaginacionSearchModelLocator.getInstanceReversion().nexPag && PaginacionSearchModelLocator.getInstanceReversion().numPage != 1){
+				    buscarParaReversion(pagina,pageSize);
+				    pageNav.selectedIndex  = (int(pageNav.selectedIndex) + 1);
+				    if(pagina == maxPag ){ 
+				    	PaginacionSearchModelLocator.getInstanceReversion().nexPag = false; 
+				    }	
+			    }
+			 }
+			 private function navigatePagePrevious():void{
+			 	if(pageNav.selectedItem.data > 1){	 
+			 	   var pagina:int = int(pageNav.selectedItem.data) -2;
+			 	   buscarParaReversion(pagina,pageSize);			       
+			       pageNav.selectedIndex  = (int(pageNav.selectedIndex) - 1);    
+			       PaginacionSearchModelLocator.getInstanceReversion().nexPag = true;		       
+			    }
+			 }
+			 
+			 private function seleccionarTodo():void{
+				
+				var listSeleccionados:ArrayCollection = dgConciliacionFondoCabecera.dataProvider as ArrayCollection;
+				
+				if(listSeleccionados!=null && listSeleccionados.length>0)
+				{
+					for(var i:String in listSeleccionados){
+						listSeleccionados[i].seleccionado = !listSeleccionados[i].seleccionado;
+					}
+					btnSeleccionarTodosApariencia();
+				} 
+			}
+			private function btnSeleccionarTodosApariencia():void
+			{
+				modelo.btnSeleccionarTodoSel = !modelo.btnSeleccionarTodoSel;
+				if(modelo.btnSeleccionarTodoSel)
+				{
+					btnSeleccionarTodo.setStyle("color", 0x0174DF);
+					btnSeleccionarTodo.setStyle("borderColor", 0x00388B);
+					btnSeleccionarTodo.setStyle("borderAlpha", 1);
+/*@I3918*/					btnSeleccionarTodo2.setStyle("color", 0x0174DF);
+					btnSeleccionarTodo2.setStyle("borderColor", 0x00388B);
+					btnSeleccionarTodo2.setStyle("borderAlpha", 1);
+/*@F3918*/					
+				} 
+				else
+				{ 
+					btnSeleccionarTodo.setStyle("color", 0x000000);
+					btnSeleccionarTodo.setStyle("borderColor", 0xBDBDBD);
+					btnSeleccionarTodo.setStyle("borderAlpha", 0.5);
+/*@I3918*/					btnSeleccionarTodo2.setStyle("color", 0x000000);
+					btnSeleccionarTodo2.setStyle("borderColor", 0xBDBDBD);
+					btnSeleccionarTodo2.setStyle("borderAlpha", 0.5);
+/*@F3918*/				}	
+				
+			}
+			
+/*@I3918*/			/* public function mostraInfoBanco():void {
+				var bcoPropioSel:BancoPropio = bancoPropioCBox.selectedItem as BancoPropio;
+				//lblInfoBanco.text =  bcoPropioSel.banco.descripcion;
+			} */
+/*@F3918*/			public function set actualizarLista(value:Boolean):void
+			{
+				if(value)
+				{
+					buscarParaReversion(0,pageSize);
+					modelo.refreshListRevertidos = false;
+				} 
+				
+			}
+			
+/*@I3918*/			public function comboLabel(item:Object):String
+			{
+				if (item != null)
+				{
+/*@I4239*/					return StringUtil.trim(BancoPropio(item).numeroCuenta) + " - " + StringUtil.trim(BancoPropio(item).banco.descripcion);
+				}
+				else
+				{
+					return "";
+				}
+			}
+			
+/*@I4239*/
+/*@F4239*/
+			
+			protected function pageNav_dataChangeHandler(event:FlexEvent):void
+			{
+				//Alert.show("hola");
+			}
+			
+			public function set selectComboFirstPage(value:ArrayCollection):void
+			{
+				if (value != null && value.length > 0 && setearPrimeraPagina)
+				{
+					pageNav.selectedIndex = 0;
+					setearPrimeraPagina = false;
+				}
+			}				
+/*@F3918*/			
+		]]>
+	</mx:Script>
+	<mx:Binding source="modelo.refreshListRevertidos" destination="actualizarLista"/>
+<!--@I3918-->	<mx:Binding source="modelo.listaCabeceraReversion" destination="selectComboFirstPage"/>
+<!--@F3918-->	<mx:DateFormatter id="df" formatString="DD/MM/YYYY"/>
+	<mx:NumberFormatter id="numberFormat" precision="2" />
+	<mx:Canvas id="canvasContenido">
+		<mx:VBox width="100%" horizontalAlign="center" paddingTop="5">
+			<mx:HBox>
+				<mx:Form>
+<!--@I3918-->					<mx:HBox width="100%">
+						<mx:FormItem label="Cuenta:">
+							<mx:ComboBox id="bancoPropioCBox" dataProvider="{modelo.listaBancoPropio}" labelFunction="comboLabel" />
+						</mx:FormItem>
+						<!--<mx:FormItem width="150">
+							<mx:Label id="lblInfoBanco" text="DE SAN JUAN S.A." fontSize="12" fontWeight="bold"/>
+						</mx:FormItem>-->
+<!--@I3918-->						<mx:HBox width="100%"/>
+<!--@3918-->						<mx:FormItem label="Tipo de Fecha:">
+							<mx:ComboBox id="tipoFechaCBox">
+								<mx:ArrayCollection>
+									<mx:Object label="Conciliación" data="1"/>						    	
+									<mx:Object label="Movimiento" data="2"/>
+									<mx:Object label="Extracto" data="3"/>
+								</mx:ArrayCollection>
+							</mx:ComboBox>
+						</mx:FormItem>
+					</mx:HBox>
+<!--@I3918-->					<mx:HBox>
+						<mx:FormItem label="Número:">
+							<mx:TextInput id="txtNumero" restrict="0-9" maxChars="15"/>
+						</mx:FormItem>
+						<mx:FormItem label="Importe:">
+							<mx:TextInput id="txtImporte" restrict="0-9." maxChars="12"/>
+						</mx:FormItem>
+<!--@F3918-->					</mx:HBox>
+					<mx:HBox width="100%">
+						<mx:FormItem label="Fecha Desde:">
+							<date:DateFiledMultiLan id="fechaDesdeDt" formatString="DD/MM/YYYY" selectedDate="{new Date()}"/>
+						</mx:FormItem>
+						<mx:FormItem label="Fecha Hasta:">
+							<date:DateFiledMultiLan id="fechaHastaDt" formatString="DD/MM/YYYY" selectedDate="{new Date()}"/>
+						</mx:FormItem>
+						<mx:Spacer width="100%"/>
+						<mx:Button id="buscarBtn" label="Buscar" click="buscarConciliados()"/>
+					</mx:HBox>								
+				</mx:Form>
+			</mx:HBox>
+			<mx:HBox  width="100%" >
+				
+			</mx:HBox>
+			<mx:VBox>
+				<mx:ApplicationControlBar width="100%" verticalAlign="middle">
+					<mx:HBox width="100%">
+						<mx:FormItem label="Filtrar comentario" styleName="frmItmBusqueda">
+							<mx:TextInput id="txtDescripcion" width="300" change="{filterData()}" valueCommit="{filterData()}" />
+						</mx:FormItem>
+					</mx:HBox>
+				</mx:ApplicationControlBar>
+				<mx:HBox  width="100%" horizontalAlign="left">
+					<mx:VBox width="20%" >
+						<mx:Button id="btnSeleccionarTodo" label="Seleccionar Todo" click="seleccionarTodo()" />		
+					</mx:VBox>
+					<!--<mx:FormItem  width="230" horizontalAlign="right" label="Comentario: " >
+						<mx:TextInput id="txtDescripcion" width="300" change="{filterData()}" valueCommit="{filterData()}" />
+					</mx:FormItem>-->
+					<mx:HBox width="80%" horizontalAlign="center">  
+					     <mx:Label text="    Pagina" fontWeight="bold" width="70"/>
+					     <mx:Image toolTip="Anterior" click="{navigatePagePrevious()}" id="imgPrevious" source="assets/images/anterior.png" />
+					     <mx:ComboBox id="pageNav" change="{navigatePage(event)}" dataProvider="{PaginacionSearchModelLocator.getInstanceReversion().paginas}" 
+									  selectedIndex="{(PaginacionSearchModelLocator.getInstanceReversion().numPage-1)}" 
+									  styleName="comboBoxPopup" height="18" dataChange="pageNav_dataChangeHandler(event)"/>
+					     <mx:Image toolTip="Siguiente" click="{navigatePageNex()}" id="imgNex" source="assets/images/siguiente.png" />
+					     <mx:Label text="de" fontWeight="bold"/>
+					     <mx:Label text="{PaginacionSearchModelLocator.getInstanceReversion().numPage}" fontWeight="bold"/>
+			        </mx:HBox>
+					<mx:Button id="revertirBtn" label="Revertir" click="revertirConciliados()"/>
+				</mx:HBox>
+				
+				<mx:HBox width="100%" horizontalAlign="center" verticalAlign="top">
+					<mx:DataGrid id="dgConciliacionFondoCabecera" dataProvider="{modelo.listaCabeceraReversion}" width="100%" textAlign="center">
+						<mx:columns>
+					   <mx:DataGridColumn id="cSeleccionar" dataField="seleccionado" itemRenderer="components.itemCheckBox" headerText="" width="30" textAlign="center" />
+					   <mx:DataGridColumn dataField="idCabeceraConciliacion" headerText="Id" textAlign="center" width="50"/>
+			           <mx:DataGridColumn dataField="fechaGeneracion" headerText="Fecha Generacion" labelFunction="getFechaGeneracionCabecera"  textAlign="center" width="115"/>
+			           <mx:DataGridColumn dataField="comentario" headerText="Comentario" textAlign="center" width="300"/>
+			           <mx:DataGridColumn headerText="Conciliacion" textAlign="center" width="620" >
+						  	<mx:itemRenderer>
+					  		<mx:Component>
+					  		
+					  			<mx:HBox width="100%" horizontalAlign="center">
+					  				<mx:DataGrid dataProvider="{data.conciliacionFondosFlex}" width="580" textAlign="center" height="80" >
+										<mx:columns>
+								           <mx:DataGridColumn dataField="tipo" headerText="Tipo"  textAlign="left" width="30"/>
+								           <mx:DataGridColumn dataField="contenedor.fechaItem" headerText="Fecha" labelFunction="outerDocument.getFechaItem" textAlign="center" width="70"/>
+								           <mx:DataGridColumn dataField="contenedor.nroIdentifica" headerText="Nro" textAlign="center" width="70"/>
+								           <mx:DataGridColumn dataField="contenedor.descripcionGen" headerText="Descripción"  textAlign="left" width="200" />
+								           <mx:DataGridColumn dataField="contenedor.debe" headerText="Debe" textAlign="right" width="70"/>
+								           <mx:DataGridColumn dataField="contenedor.haber" headerText="Haber" textAlign="right" width="70"/>
+									  
+								        </mx:columns>
+									</mx:DataGrid>
+					  				
+					  			</mx:HBox>
+					  		</mx:Component>
+					  	</mx:itemRenderer>
+						  </mx:DataGridColumn>
+				        </mx:columns>
+					</mx:DataGrid>
+					<!--<mx:Button id="revertirBtn" label="Revertir" click="revertirConciliados()"/>-->
+				</mx:HBox>
+				<mx:HBox width="100%" >
+					<mx:Button id="btnSeleccionarTodo2" label="Seleccionar Todo" click="seleccionarTodo()" />
+					<mx:Spacer width="100%"/>
+					<mx:Button id="revertirBtn2" label="Revertir" click="revertirConciliados()"/>
+<!--@F3918-->				</mx:HBox>
+			</mx:VBox>			
+		</mx:VBox>
+	</mx:Canvas>
+	
+</mx:Module>

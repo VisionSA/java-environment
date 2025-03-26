@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.Clearing" table="t_vis_eva_clearings" >
+	<id name="idClearing" type="java.lang.Long" column="c_id_clearing">
+		<generator class="increment" />
+	</id>
+
+	<property name="afecActiComerc" type="java.lang.Integer" column="c_afec_acti_comerc" not-null="false" length="4"/>
+
+	<property name="afecActiEntfin" type="java.lang.Integer" column="c_afec_acti_entfin" not-null="false" length="4"/>
+
+	<property name="afecCancelComerc" type="java.lang.Integer" column="c_afec_cancel_comerc" not-null="false" length="4"/>
+
+	<property name="afecCancelEntfin" type="java.lang.Integer" column="c_afec_cancel_entfin" not-null="false" length="4"/>
+
+	<property name="correcDatosLab" type="java.lang.String" column="c_correc_datos_lab" not-null="false" length="1"/>
+
+	<property name="correcDniCuit" type="java.lang.String" column="c_correc_dni_cuit" not-null="false" length="1"/>
+
+	<property name="correcDomicilio" type="java.lang.String" column="c_correc_domicilio" not-null="false" length="1"/>
+
+	<property name="correcFecNac" type="java.lang.String" column="c_correc_fec_nac" not-null="false" length="1"/>
+
+	<property name="correcNombre" type="java.lang.String" column="c_correc_nombre" not-null="false" length="1"/>
+
+	<property name="idOperador" type="java.lang.Long" column="c_id_operador" not-null="false" length="2560"/>
+
+	<many-to-one name="solicitudIndividuo" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.SolicitudIndividuo" not-null="false" >
+		<column name="c_id_solic_individuo" />
+	</many-to-one>
+
+	<many-to-one name="tipoClearing" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.TipoClearing" not-null="false" >
+		<column name="c_id_tipo_clearing" />
+	</many-to-one>
+
+	<property name="observacion" type="java.lang.String" column="c_observacion" not-null="false" length="255"/>
+
+	<property name="situaAnteBcra" type="java.lang.Integer" column="c_situa_ante_bcra" not-null="false" length="4"/>
+
+	<property name="tieneChkRech" type="java.lang.String" column="c_tiene_chk_rech" not-null="false" length="1"/>
+
+	<property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="false" length="3594"/>
+
+</class>
+</hibernate-mapping>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleGeneral xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+			   xmlns:modules="views.categorias.cliente.modules.*" xmlns:viewStackEffects="org.efflex.mx.viewStackEffects.*"
+			   xmlns:maps="views.categorias.cliente.maps.*"
+			   xmlns:textInput="com.util.components.textInput.*"
+			   paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" verticalGap="0">
+	
+	<mx:HBox width="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" verticalGap="0">
+	<mx:ToggleButtonBar dataProvider="view" horizontalAlign="left" visible="false" includeInLayout="false"/>	
+	</mx:HBox>
+	
+	<mx:ViewStack width="100%" height="100%" id="view" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" verticalGap="0">
+		<!--<modules:SimuladorAdelantoEfectivo showEffect="efecto" hideEffect="efecto" label="Adelanto en Efectivo"/>-->
+		<modules:SimuladorRefinanciacion showEffect="efecto" hideEffect="efecto" label=""
+										 width="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" verticalGap="0"/>		
+	</mx:ViewStack>
+	
+	<viewStackEffects:Slide id="efecto"/>
+	
+
+	
+	
+	
+	
+</ModuleGeneral>

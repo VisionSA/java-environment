@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" xmlns:textInput="com.util.components.textInput.*" creationComplete="onCreationComplete()">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import com.tarjetafiel.caja.vo.Cheque;
+			import com.tarjetafiel.caja.event.ChequeEvent;
+			import com.tarjetafiel.caja.model.ChequeModel;
+			import com.tarjetafiel.caja.event.DescargaValoresEvent;
+			import com.tarjetafiel.caja.model.DescargaDeValoresModel;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			
+			[Bindable]public var cajaMp:CajaMP;
+			[Bindable]public var descargaValoresModel:DescargaDeValoresModel = ModelLocator.getInstance().descargaValoresModel;
+			[Bindable]public var chequeModel:ChequeModel = ModelLocator.getInstance().chequeModel;
+			 
+			private function onCreationComplete():void{
+				if(cajaMp.formaPago.idFormaPago == 2){
+					currentState = "cheque";
+				} else {
+					currentState = "otro";
+				}							
+				ModelLocator.getInstance().descargaValoresModel.addEventListener(DescargaValoresEvent.NUEVO_RETIRO,resetCajaMp);
+				descargaValoresModel.addCajaMp(cajaMp);
+				new ChequeEvent(ChequeEvent.LIST_CHEQUES_EN_CAJA).dispatch();
+			}
+			
+			private function resetCajaMp(evt:DescargaValoresEvent):void{
+				if(cajaMp.formaPago.idFormaPago != 2){
+					cajaMp.importeRetiro = 0;				
+					txtImporteRetiro.text = "0";	
+				} else {
+					chequeModel.chequesDescargados.removeAll();
+					chequeModel.chequesEnCajaList.removeAll();						
+					new ChequeEvent(ChequeEvent.LIST_CHEQUES_EN_CAJA).dispatch();
+				}				
+			}
+		
+		]]>
+	</mx:Script>
+			
+	<mx:HRule width="100%"/>
+	<mx:states>
+		<mx:State name="cheque">
+			<mx:AddChild>
+				<mx:HBox>
+					<mx:VBox>
+						<mx:Label styleName="tituloBusquedas" text="Cheques en caja"/>
+						<mx:AdvancedDataGrid id="dgEnCaja" dragEnabled="true" dragMoveEnabled="true" dropEnabled="true" allowDragSelection="true" allowMultipleSelection="true" doubleClickEnabled="true" doubleClick="chequeModel.pasarChequeADescargado(dgEnCaja.selectedItem as Cheque)" designViewDataType="flat" dataProvider="{chequeModel.chequesEnCajaList}">
+							<mx:columns>
+								<mx:AdvancedDataGridColumn headerText="Nro" dataField="numero"/>
+								<mx:AdvancedDataGridColumn headerText="Banco" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{data.banco.descripcion}"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Tipo" dataField="tipo"/>
+								<mx:AdvancedDataGridColumn headerText="Importe" dataField="importe" formatter="{currencyFormatter}"/>
+							</mx:columns>
+						</mx:AdvancedDataGrid>
+					</mx:VBox>	
+					<mx:VBox verticalAlign="middle" horizontalAlign="center" height="100%">
+						<mx:Button label=">>" click="chequeModel.pasarTodosChequesDescargado()"/>
+						<mx:Button label="&lt;&lt;" click="chequeModel.pasarTodosChequesEnCaja()"/>
+					</mx:VBox>
+					<mx:VBox>
+						<mx:Label styleName="tituloBusquedas" text="Cheques Descargados"/>
+						<mx:AdvancedDataGrid id="dgDescargados" dragEnabled="true" dragMoveEnabled="true" dropEnabled="true" allowDragSelection="true" allowMultipleSelection="true" doubleClickEnabled="true" 
+							doubleClick="chequeModel.pasarChequeACaja(dgDescargados.selectedItem as Cheque)" 
+							designViewDataType="flat" dataProvider="{chequeModel.chequesDescargados}">
+							<mx:columns>
+								<mx:AdvancedDataGridColumn headerText="Nro" dataField="numero"/>
+								<mx:AdvancedDataGridColumn headerText="Banco" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:Label text="{data.banco.descripcion}"/>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+								<mx:AdvancedDataGridColumn headerText="Tipo" dataField="tipo"/>
+								<mx:AdvancedDataGridColumn headerText="Importe" dataField="importe" formatter="{currencyFormatter}"/>
+							</mx:columns>
+						</mx:AdvancedDataGrid>
+					</mx:VBox>
+				</mx:HBox>
+			</mx:AddChild>
+			<mx:SetStyle name="horizontalAlign" value="center"/>
+			<mx:SetStyle name="verticalAlign" value="middle"/>
+		</mx:State>
+		<mx:State name="otro">
+			<mx:AddChild>
+				<mx:VBox verticalAlign="middle" horizontalAlign="center" width="100%">
+					<mx:Form >
+						<mx:FormItem label="{cajaMp.formaPago.descripcion}">
+							<textInput:TextInputMoneda text="0" change="cajaMp.importeRetiro = Number(txtImporteRetiro.text)" id="txtImporteRetiro"/>	
+						</mx:FormItem>		
+					</mx:Form>	
+				</mx:VBox>			
+			</mx:AddChild>			
+		</mx:State>
+	</mx:states>
+	<mx:HRule width="100%"/>
+	<mx:CurrencyFormatter id="currencyFormatter" precision="2" rounding="nearest" currencySymbol="$"/>
+</mx:VBox>

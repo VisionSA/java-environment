@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/service
+END
+PermisoWebService.class
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/service/PermisoWebService.class
+END
+ComercioService.class
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/service/ComercioService.class
+END
+UsuarioWebException.class
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/service/UsuarioWebException.class
+END
+UsuarioWebService.class
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/service/UsuarioWebService.class
+END
+UsuarioComercioWebService.class
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/service/UsuarioComercioWebService.class
+END
+UsuarioPermisoService.class
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/service/UsuarioPermisoService.class
+END
+EmailService.class
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/service/EmailService.class
+END

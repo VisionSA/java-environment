@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"  
+				close="PopUpManager.removePopUp(this)" 
+				layout="vertical" 
+				title="Editar Reclamos Clientes" 
+				xmlns:date="com.util.components.date.*" 
+				horizontalAlign="center" 
+				verticalAlign="middle" 
+				showCloseButton="true" 
+				width="1024" height="680"
+	creationComplete="noVisbleResolucion()">
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Operador;
+			import com.util.components.alert.AlertOk;
+			
+			import models.ApplicationModel;
+			
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import vo.ReclamoCabecera;
+			import vo.ReclamoCanales;
+			import vo.ReclamoDetalle;
+			import vo.ReclamoEstados;
+			import vo.ReclamoFormaResolucion;
+			import vo.ReclamoIndividuo;
+			import vo.ReclamoTipos;
+			
+			[Bindable]public var manager:Manager;
+			[Bindable]public var applicationModel:ApplicationModel;
+			
+			private var popUpUpload:UploadArchivo = new UploadArchivo();
+			
+			/* [Bindable]private var _tipoArchivo:String = "PF"; */
+			
+			/* [Bindable]private var _tipoArchivo:String = "";
+			
+			[Bindable]private var url:String;
+			
+			[Bindable]public var extensionFiltro;
+			 
+			[Bindable]public var nombreFiltro; */
+			
+			/* private function uploadComplete():void{
+				AlertOk.show('El archivo se subio con éxito',closePopUp);
+				
+			} */
+			
+			private function getUserLogin1(item:Object, column:AdvancedDataGridColumn) {
+				return item.idOperador.apellido;
+			}
+			
+			private function uploadNuevoArchivo():void{
+				/* Estas dos primeras sentencias se agregaron para que el paginador 
+				no sea nulo y refersque los cobros externos cuando termine de hacer el upload 
+				de dichos archivos */
+				
+				
+				popUpUpload.manager = this.manager;
+				PopUpManager.addPopUp(popUpUpload,this,true);
+				PopUpManager.centerPopUp(popUpUpload);
+				
+				
+				
+				/* popUpUpload.tipoArchivo = "PF"; */
+			}
+			
+			
+			private function noVisbleResolucion():void{
+				formResolucion.visible = false;
+				popUpUpload.nombreFiltro = 'Archivo Adjuntar'
+				popUpUpload.extensionFiltro = '*.900'
+				formItemResolucion.visible = false;
+				cmbResolucion.visible = false;
+				
+			}
+			
+			private function closePopUp ():void{
+				 /* if (uploadComp.fileName.substring(0,2))   comentado por carlos */
+				/* if(_tipoArchivo == "PF"){
+					manager.listAllArchivos();	
+				} else {
+					manager.listAllArchivosFarmacia();
+				} */
+				/* la linea de abajo descomentada */
+				/* AlertOk.show(' closePopUp '); */				 
+				   manager.listAllArchivos(manager.fechaFarmaciaDesde);  
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function salirPopUp ():void{
+				/* if (uploadComp.fileName.substring(0,2))   comentado por carlos */
+				/* if(_tipoArchivo == "PF"){
+				manager.listAllArchivos();	
+				} else {
+				manager.listAllArchivosFarmacia();
+				} */
+				/* la linea de abajo descomentada */
+				/* AlertOk.show(' closePopUp '); */	 
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			private function grabarReclamoDetalle():void{
+				var reclamoDetalle:ReclamoDetalle = new ReclamoDetalle();
+				var reclamoFormaResolucion:ReclamoFormaResolucion = new ReclamoFormaResolucion();
+				var reclamoEstado:ReclamoEstados = new ReclamoEstados(); 
+				var operador:Operador = new Operador;
+				
+				if(validar()) {
+				
+				reclamoEstado.reclamoEstado = this.cmbEstado.selectedItem.reclamoEstado;
+				reclamoEstado.descripcion = this.cmbEstado.selectedItem.descripcion;
+				
+				if (this.cmbResolucion.visible) {
+					reclamoFormaResolucion.reclamoFormaResolucion = this.cmbResolucion.selectedItem.reclamoFormaResolucion;
+					reclamoFormaResolucion.descripcion = this.cmbResolucion.selectedItem.descripcion;
+					
+					manager.buscaReclamoCabecera.reclamoFormaResolucion = reclamoFormaResolucion;
+					
+				}
+				
+				
+				//reclamoDetalle.reclamoCabecera = manager.buscaReclamoCabecera;
+				reclamoDetalle.fecha = new Date();
+				reclamoDetalle.reclamoEstados = reclamoEstado;
+				
+				
+				
+				operador = operador = applicationModel.operador;
+				reclamoDetalle.idOperador = operador;
+				reclamoDetalle.observacion = txtDescripcion.text;
+				
+				var subject:String;
+				var msq:String;
+				var msq1:String;
+				subject = "Tarjeta Fiel – Respuesta a Consulta/Reclamo";
+				
+				msq = "Sr/a: "+ manager.buscaReclamoCabecera.reclamoIndividuo.apynomDeclarante + "\n\n"+
+					"Es grato dirigirnos a usted con la finalidad de hacerle llegar la resolución  de su consulta/reclamo registrado vía : "+ manager.buscaReclamoCabecera.reclamoCanales.descripcion+"\n"+ 
+					",bajo numero de Reclamo : "+ manager.buscaReclamoCabecera.idReclamo  +" , referido a : " + manager.buscaReclamoCabecera.reclamoTipos.descripcion +".\n"+
+					"La forma de resolucion del reclamo fue : "+ reclamoFormaResolucion.descripcion +".\n"+
+					"A continuación le copiamos la resolución adoptada:\n"+
+					reclamoDetalle.observacion+".\n"+
+					"Operador que realizó la resolución de la consulta/reclamo : "+ applicationModel.operador.apellido +" "+ applicationModel.operador.nombre + "\n\n"+				
+					"Lo invitamos a visitar nuestra página web www.tarjetafiel.com en donde encontrará información sobre nuestros productos.\n\n"+
+					"SERVICIO DE ATENCIÓN AL USUARIO DE SERVICIOS FINANCIEROS\n"+
+					"BCRA Comunicación A5388\n\n"+
+					"Estimado cliente:\n"+
+					"TARJETA FIEL pone a su disposiciónel Servicio de Atención al Usuario de Servicios Financieros, a \n"+
+					"través del cual Ud. podrá dirigir sus consultas y reclamos.\n\n"+
+					"Responsables designados para atender sus consultas y reclamos: \n\n"+
+					"Responsable Titular: Gustavo Savall \n"+
+					"Correo Postal: Mendoza 360 Sur – San Juan\n"+
+					"Teléfono: (264) 429-3400\n"+
+					"Fax: (264) 429-3414\n"+
+					"Correo Electrónico: gsavall@tarjetafiel.com\n\n"+
+					"Responsable Suplente: Maximiliano Erostarbe\n"+
+					"Correo Postal: Mendoza 360 Sur – San Juan\n"+
+					"Teléfono: (264) 429-3400\n"+
+					"Fax: (264) 429-3414\n"+
+					"Correo Electrónico: merostarbe@tarjetafiel.com\n\n"+
+					"Canales de Comunicación para efectuar sus consultas o reclamos:\n"+
+					"Teléfono: 0-810-222-3400, de Lunes a Sábados de 8:30 a 22:00\n"+
+					"Correo Electrónico: gsavall@tarjetafiel.com\n"+
+					"Página Web: www.tarjetafiel.com\n"+
+					"Correo Postal: Mendoza 360 Sur – 5400 San Juan\n"+
+					"Fax: (264) 429-3414\n"+
+					"En forma personal en cualquiera de nuestras sucursales, en los horarios habilitados.\n\n"+					
+					"Sus consultas y reclamos serán respondidos y resueltos definitivamente en el plazo máximo de 20\n "+
+					"(veinte) días hábiles.\n"+
+					"Ante la falta de respuesta o disconformidad con las resoluciones adoptadas, usted podrá efectuar\n"+
+					"la denuncia ante el Banco Central de la República Argentina.\n"+							
+					"El Banco Central de la República Argentina dispone de un Centro de Atención al Usuario de \n" +
+					"Servicios Financieros, que se podrá contactar ingresando a www.usuariosfinancieros.gob.ar"
+
+				
+				
+				var nuevoImporte:Number = null;
+				if (txtImporte.text != "") {
+					nuevoImporte = Number(this.txtImporte.text);
+				}	
+				
+				manager.updateReclamo(manager.buscaReclamoCabecera,reclamoDetalle,subject,msq,nuevoImporte);
+				
+				closePopUp();
+				}
+			
+			}
+			
+			protected function txtValue_changeHandler(event:Event):void 
+			{ 
+				var reg:RegExp = /^[0-9]*\.?[0-9]{0,2}/g;  
+				var parts:Array = reg.exec(txtImporte.text); 
+				
+				if (parts && parts[0]){ 
+					txtImporte.text = parts[0]; 
+				} 
+			} 
+			
+			private function validar():Boolean{
+				
+				if (cmbEstado.selectedIndex == -1) {
+					AlertOk.show("Estado no ingresada",function (evt:CloseEvent):void{
+						
+						cmbEstado.setFocus();
+						
+					})
+					return false;
+				} 
+				
+				if (cmbResolucion.visible && cmbResolucion.selectedIndex == -1) {
+					AlertOk.show("Forma de Resolucion no ingresada",function (evt:CloseEvent):void{
+						
+						cmbResolucion.setFocus();
+						
+					})
+					
+					return false;
+				}
+				
+				if (txtDescripcion.text == "") {
+					AlertOk.show("Descipcion ingresada",function (evt:CloseEvent):void{
+						
+						txtDescripcion.setFocus();
+						
+					})
+					return false;
+				}
+				
+				return true;
+				
+			}
+			
+			
+			
+            
+			private function buscarResolucion(event:Event):void {
+				/* myLabel.text = "You selected: " +  ComboBox(event.target).selectedItem.label;
+				myData.text = "Data: " +  ComboBox(event.target).selectedItem.data; */
+				if (ComboBox(event.target).selectedItem.reclamoEstado == 3) {
+					manager.procesarListaReclamoResolucion();
+				} else {
+					this.cmbResolucion.selectedItem.reclamoEstado = 1;
+				}
+					
+				
+				
+			}  
+
+			
+			
+			
+		]]>
+	</mx:Script>
+	<!--<mx:HBox width="100%" horizontalAlign="center">
+			<mx:Label text="Subir Archivo "/>						
+		</mx:HBox>-->
+	
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormat"/>
+	<mx:NumberFormatter id="numberFormatter" precision="2" />
+	
+	<mx:HBox id="vboxNuevoEvento"  label="Modificar Evento" width="100%" height="100%" horizontalAlign="center">
+		<mx:VBox backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%" height="100%" verticalGap="0" horizontalAlign="left" paddingTop="0">
+			
+			
+			<mx:Panel title="Datos Interesado" label="Datos Interesado" width="100%"  height="15%" >
+
+				<mx:HBox backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%" height="50%" verticalGap="0" horizontalAlign="left" paddingTop="0">
+					
+					<mx:Form width="33.33%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+						<mx:FormItem label="Nº Reclamo: " styleName="tituloBusquedas" width="100%"  height="100%" textAlign="left" >
+							<mx:TextInput id="txtNroReclamo"  text="{manager.buscaReclamoCabecera.idReclamo}" editable="false" width="100%"/>
+						</mx:FormItem>										
+					</mx:Form>	
+					
+					<mx:Form width="33.33%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+						<mx:FormItem label="DNI: " styleName="tituloBusquedas" width="100%"  height="100%" textAlign="left" >
+							<mx:TextInput id="txtDNI"  text="{manager.buscaReclamoCabecera.reclamoIndividuo.documentoInteresado}" editable="false" width="100%"/>
+						</mx:FormItem>										
+					</mx:Form>	
+					
+					
+					
+					<mx:Form width="33.33%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+						<mx:FormItem label="Nº Cliente: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+							<mx:TextInput id="txtCliente" text="{manager.buscaReclamoCabecera.reclamoIndividuo.clienteInteresado}" editable="false" width="100%"/>
+						</mx:FormItem>										
+					</mx:Form>
+
+				</mx:HBox>
+				
+				<mx:HBox backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%" height="50%" verticalGap="0" horizontalAlign="left" paddingTop="2">
+					<mx:Form width="66.66%"   paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+						<mx:FormItem label="Apellido Nombre: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+							<mx:TextInput id="txtApellidoNom" width="100%" textAlign="left"   text="{manager.buscaReclamoCabecera.reclamoIndividuo.apynomInteresado}" editable="false"/>
+						</mx:FormItem>											
+					</mx:Form>
+					
+					<mx:Form width="25%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+						<mx:FormItem label="Fecha Reclamo: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+							<mx:TextInput id="txtFechaReclamo" text="{dateFormat.format(manager.buscaReclamoCabecera.fechaReclamo)}" editable="false" width="100%"/>
+						</mx:FormItem>										
+					</mx:Form>
+				</mx:HBox>
+
+			</mx:Panel>
+			
+			
+			
+			<mx:Panel title="Datos Declarante" label="Datos Declarante" width="100%"  height="100%" >
+
+				<mx:VBox backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%" height="100%" verticalGap="0" horizontalAlign="left" paddingTop="2" paddingRight="32" paddingBottom="2">
+					<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="2">
+						
+						<mx:Form width="20%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="36" paddingRight="0"> 
+							<mx:FormItem label="DNI: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+								<mx:TextInput id="txtDniDec"  text="{manager.buscaReclamoCabecera.reclamoIndividuo.documentoDeclarante}" editable="false" width="100%"/>
+							</mx:FormItem>										
+						</mx:Form>
+						
+						<mx:Form width="20%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Nº Cliente: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+								<mx:TextInput id="txtCliDec"  text="{manager.buscaReclamoCabecera.reclamoIndividuo.clienteDeclarante}" editable="false" width="100%"/>
+							</mx:FormItem>										
+						</mx:Form>
+						
+						
+						<mx:Form width="60%"   paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Apellido Nombre: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+								<mx:TextInput id="txtApellidoDecl" text="{manager.buscaReclamoCabecera.reclamoIndividuo.apynomDeclarante}" editable="false" width="100%"/>
+							</mx:FormItem>											
+						</mx:Form>
+					</mx:HBox>
+					<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="2">
+						
+						<mx:Form width="70%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="27" paddingRight="0"> 
+							<mx:FormItem label="Calle: " styleName="tituloBusquedas"  width="100%">
+								<mx:TextInput id="txtCalle" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.calle}" editable="false" />
+							</mx:FormItem>									
+						</mx:Form>				
+						<mx:Form width="15%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Nro: " styleName="tituloBusquedas"  width="100%">
+								<mx:TextInput id="txtNro" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.numero}" editable="false"/>
+							</mx:FormItem>								
+						</mx:Form>				
+						<mx:Form width="15%"   paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Orientacion: " styleName="tituloBusquedas"  width="100%">
+								<mx:TextInput id="txtOrientacion" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.orientacion}" editable="false" />
+							</mx:FormItem>											
+						</mx:Form>
+					</mx:HBox>
+					<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="2">				
+						<mx:Form width="30%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="4" paddingRight="0"> 
+							<mx:FormItem label="Manzana: " styleName="tituloBusquedas"  width="100%">
+								<mx:TextInput id="txtManzana" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.manzana}" editable="false"/>
+							</mx:FormItem>									
+						</mx:Form>				
+						<mx:Form width="30%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Area Sector: " styleName="tituloBusquedas"  width="100%">
+								<mx:TextInput id="txtAreaSector" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.areaSector}" editable="false" />
+							</mx:FormItem>								
+						</mx:Form>				
+						<mx:Form width="20%"   paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Piso: " styleName="tituloBusquedas"  width="100%">
+								<mx:TextInput id="txtPiso" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.piso}" editable="false"/>
+							</mx:FormItem>											
+						</mx:Form>
+						<mx:Form width="20%"   paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Depto: " styleName="tituloBusquedas"  width="100%">
+								<mx:TextInput id="txtDepto" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.dpto}" editable="false"/>
+							</mx:FormItem>											
+						</mx:Form>
+					</mx:HBox>
+					<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="2">				
+						<mx:Form width="50%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="2" paddingRight="0">  
+							<mx:FormItem label="Provincia: " styleName="tituloBusquedas"  width="100%" >
+								<mx:TextInput id="txtProvincia" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.provincia.nombre}" editable="false" />								
+							</mx:FormItem>	
+						</mx:Form>			
+						<mx:Form width="50%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0">  
+							<mx:FormItem label="Departamento: " styleName="tituloBusquedas"  width="100%" >
+								<mx:TextInput id="txtDepartamento" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.departamento.descripcion}" editable="false" />								
+							</mx:FormItem>	
+						</mx:Form>							
+					</mx:HBox>
+					<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="2">				
+						<mx:Form width="35%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0">  
+							<mx:FormItem label="Localidad: " styleName="tituloBusquedas"  width="100%" >
+								<mx:TextInput id="txtLocalidad" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.localidad.nombre}" editable="false" />								
+							</mx:FormItem>	
+						</mx:Form>
+						<mx:Form width="65%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0">  
+							<mx:FormItem label="Barrio: " styleName="tituloBusquedas"  width="100%" >
+								<mx:TextInput id="txtBarrio" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.barrio.descripcion}" editable="false" />								
+							</mx:FormItem>	
+						</mx:Form>
+						<mx:Form width="20%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Codigo Postal: " styleName="tituloBusquedas"  width="100%">
+								<mx:TextInput id="txtCodigoPostal" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.codigoPostal}" editable="false" />
+							</mx:FormItem>							
+						</mx:Form>
+					</mx:HBox>
+					<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="10">
+						<mx:Form width="35%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="6" paddingRight="0"> 
+							<mx:FormItem label="Telefono: " styleName="tituloBusquedas"  width="100%">
+								<mx:TextInput id="txtTelefono" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.telefono}" editable="false"/>
+							</mx:FormItem>							
+						</mx:Form>
+						<mx:Form width="65%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Mail: " styleName="tituloBusquedas"  width="100%">
+								<mx:TextInput id="txtMail" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoIndividuo.mail}" editable="false"/>
+							</mx:FormItem>						
+						</mx:Form>
+					</mx:HBox>
+					
+					<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="0">
+						<mx:Form width="70%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="13" paddingRight="0">  
+							<mx:FormItem label="Tipo de reclamo: " styleName="tituloBusquedas"  width="100%" >
+								<mx:TextInput id="txtReclamo" width="100%" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoTipos.descripcion}" editable="false"/>
+								
+							</mx:FormItem>									
+						</mx:Form>	
+						
+						<mx:Form width="30%"  paddingTop="0"   textAlign="right" paddingBottom="0" paddingLeft="0" paddingRight="0">  
+							<mx:FormItem label="Importe: " styleName="tituloBusquedas"  width="100%" >
+								<mx:TextInput width="100%" textAlign="right" id="txtImporte" text="{(isNaN(manager.buscaReclamoCabecera.reclamoIndividuo.importe))? '':numberFormatter.format(manager.buscaReclamoCabecera.reclamoIndividuo.importe)}" change="txtValue_changeHandler(event)" restrict="0-9/."/>
+							</mx:FormItem>									
+						</mx:Form>
+					</mx:HBox>
+					
+					<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="0">
+						<mx:Form width="70%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="50" paddingRight="0">  
+							<mx:FormItem label="Operador: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+								<mx:TextInput id="txtOperador" textAlign="left" text="{applicationModel.operador.apellido},{applicationModel.operador.nombre}" editable="false" width="100%"/>
+							</mx:FormItem>								
+						</mx:Form>
+						
+						<mx:Form width="30%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Fecha Instancia: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+								<mx:TextInput id="txtFechaInstancia" textAlign="left" text="{dateFormat.format(new Date())}" editable="false" width="100%"/>
+							</mx:FormItem>										
+						</mx:Form>	
+					</mx:HBox>
+					
+					<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="8">
+						<mx:Form width="50%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Sucursal Reclamo: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+								<mx:TextInput id="txtSucursalReclamo" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoSucursal.descripcion}" editable="false" width="100%"/>
+							</mx:FormItem>										
+						</mx:Form>
+						<mx:Form width="50%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+							<mx:FormItem label="Sucursal Destino: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+								<mx:TextInput id="txtSucursalDestino" textAlign="left" text="{manager.buscaReclamoCabecera.reclamoSucursalDestino.descripcion}" editable="false" width="100%"/>
+							</mx:FormItem>										
+						</mx:Form>
+					</mx:HBox>
+					<mx:HBox  width="100%" height="35%"   paddingTop="0"   textAlign="left" paddingBottom="8">
+						<mx:AdvancedDataGrid id="adg1" designViewDataType="flat"  dataProvider="{manager.listarReclamoDoc}"  width="80%" height="100%">						
+							<mx:columns>
+								<mx:AdvancedDataGridColumn headerText="Fecha" dataField="fecha" formatter="{dateFormat}" textAlign="left" width="100"/>
+								<mx:AdvancedDataGridColumn headerText="Operador" labelFunction="getUserLogin1" textAlign="left" width="150"/>								
+								<mx:AdvancedDataGridColumn headerText="Archivos Adjuntos" width="400" >
+									<mx:itemRenderer>
+										<mx:Component>
+											<mx:HBox horizontalScrollPolicy="off" toolTip="{String(data.ruta).replace('webapps','')}">
+												<mx:Script>
+													<![CDATA[
+														import mx.controls.Alert;
+														import mx.core.Application;
+														import mx.events.CloseEvent;
+														
+														public  function abrirPDF(url:String):void {
+															
+															if(data.ruta && data.ruta != "") {
+																var array:Array = Application.application.url.split("/");
+																var barras:String;
+																barras = "//";
+																//Alert.show( "/" +array[2] +String(data.ruta));
+																//navigateToURL( new URLRequest(array[0]+"/"+"/"+array[2]+"data.ruta"),"_blank"); 
+																navigateToURL( new URLRequest(array[0]+barras+array[2]+String(data.ruta).replace('.pdf','')+".pdf"),'_blank'); 
+															}
+															
+														} 
+														
+														
+													]]>
+												</mx:Script>
+												<mx:LinkButton label="{String(data.ruta).replace('webapps','')}" click="abrirPDF(data.ruta)" rollOverColor="#fd9595"/>
+											</mx:HBox>
+										</mx:Component>
+									</mx:itemRenderer>
+								</mx:AdvancedDataGridColumn>
+							</mx:columns>
+						</mx:AdvancedDataGrid>
+						<mx:Button label="Adjuntar Documentación" click="uploadNuevoArchivo()"  width="15%"  />
+					</mx:HBox>
+					<mx:HBox width="100%" height="10%"   paddingTop="0"   horizontalAlign="center" verticalAlign="middle" paddingBottom="2" horizontalGap="100" >
+						<mx:Form width="40%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0">  
+							<mx:FormItem label="Estado Reclamo: " styleName="tituloBusquedas"  width="100%" >
+								<mx:ComboBox id="cmbEstado" prompt="Seleccione..."  labelField="descripcion"
+											 dataProvider="{manager.ListReclamoEstados}"  width="100%" close="buscarResolucion(event)"/>								
+							</mx:FormItem>									
+						</mx:Form>
+						<mx:Form width="40%"  paddingTop="0"  textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" visible="{cmbEstado.selectedItem.reclamoEstado == 3}" id="formResolucion">  
+							<mx:FormItem label="Forma Resolucion: " styleName="tituloBusquedas"  width="100%" visible="{cmbEstado.selectedItem.reclamoEstado == 3}" id="formItemResolucion">
+								<mx:ComboBox id="cmbResolucion" prompt="Seleccione..."  labelField="descripcion"
+											 dataProvider="{manager.ListReclamoResolucion}"  width="100%" visible="{cmbEstado.selectedItem.reclamoEstado == 3 }" />								
+							</mx:FormItem>									
+						</mx:Form>
+						
+						
+					</mx:HBox>
+					<mx:HBox  width="100%" height="30%"   paddingTop="0"   textAlign="left" paddingBottom="8">
+						<mx:Form width="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" height="100%"> 
+							<mx:FormItem label="Descripcion: " styleName="tituloBusquedas"  width="100%" height="100%">
+								<mx:TextArea id="txtDescripcion" width="100%" textAlign="left" height="100%" />
+							</mx:FormItem>							
+						</mx:Form>	
+					</mx:HBox>
+					<mx:HBox  width="100%" height="10%"   paddingTop="0"   horizontalAlign="center" verticalAlign="middle" paddingBottom="0" horizontalGap="100" >
+						<mx:Button label="Grabar"  click="grabarReclamoDetalle()" width="100"/>
+						<mx:Button label="Salir" click="salirPopUp()" width="100"/>
+					</mx:HBox>
+					
+					
+				</mx:VBox> 
+				
+			</mx:Panel>
+		</mx:VBox>
+	</mx:HBox>
+	
+</mx:TitleWindow>

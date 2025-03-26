@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ESCAPE) removePopUp()" 
+				creationComplete="init()" layout="vertical" showCloseButton="true" close="PopUpManager.removePopUp(this)"
+				horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/" xmlns:ns1="com.util.paginacion.*" height="400"
+				title="Agregar Telefono" width="450">
+	
+	<mx:VBox paddingTop="10">
+		<mx:HBox  paddingRight="0" paddingLeft="0" height="100%" width="100%" horizontalAlign="right" verticalAlign="middle" >
+			<mx:Form width="100%" height="100%"  paddingBottom="0">
+				<mx:FormItem label="Apellido y Nombre: " styleName="tituloBusquedas" width="100%">
+					<mx:Label id="txtEmailModificar"  text="{apellidoNombre}" styleName="lblInfo"/>					
+				</mx:FormItem>
+				<mx:FormItem label="CODIGO DE AREA:" styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtCodArea" maxChars="6" restrict="0-9"/>
+				</mx:FormItem>
+				<mx:FormItem label="NUMERO TELEFONO:" styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtNumero" maxChars="20" restrict="0-9"/>
+				</mx:FormItem>
+				<mx:FormItem label="ES FAX:" styleName="tituloBusquedas" width="100%">
+<!--@I3945-->					<mx:CheckBox id="chbFax" click="checkControl(true)"/>
+<!--@F3945-->				</mx:FormItem>
+				<mx:FormItem label="ES CELULAR:" styleName="tituloBusquedas" width="100%">
+<!--@I3945-->					<mx:CheckBox id="chbCel" click="checkControl(false)"/>
+<!--@F3945-->				</mx:FormItem>
+				<mx:FormItem label="HORARIOS:" styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtHorarios" maxChars="50"/>
+				</mx:FormItem>
+				<mx:FormItem label="INTERNO:" styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtInterno" maxChars="5" restrict="0-9"/>
+				</mx:FormItem>
+				<mx:FormItem label="DESCRIPCION:" styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtDescrip" maxChars="50"/>
+				</mx:FormItem>
+				<mx:FormItem label="TIPO NUMERO:" styleName="tituloBusquedas" width="100%">
+					<mx:ComboBox id="cmbTipoTel" initialize="{initCombo();}" prompt="Seleccione..."
+								 dataProvider="{generalClienteModel.arrayTiposTelefono}"  labelField="descripcion"/>
+				</mx:FormItem>
+			</mx:Form>
+		</mx:HBox>
+	</mx:VBox>
+	<mx:VBox width="100%" paddingTop="10">
+		<mx:HBox width="100%" horizontalAlign="center">	
+			<mx:Button label="Guardar" width="90" click="guardar()"/>
+			<mx:Button label="Salir" width="90" click="removePopUp()"/>
+		</mx:HBox>
+	</mx:VBox>
+		
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.tarjetafiel.caja.vo.Telefono;
+			import com.tarjetafiel.caja.vo.TipoTelefono;
+			import com.util.components.alert.AlertOk;
+			
+			import events.ClienteEvent;
+			
+			import managers.ClienteManager;
+			
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+			
+			import views.categorias.cliente.models.GeneralClienteModel;
+			
+			[Bindable]public var generalClienteModel:GeneralClienteModel;
+			
+			public var idIndividuo:Number;
+			[Bindable]public var apellidoNombre:String;
+			
+			
+			
+		    private function init():void {
+				this.txtCodArea.setFocus();
+			}
+			
+			public function removePopUp():void{
+				//popUpVisible = false;
+				cleanData();
+				PopUpManager.removePopUp(this);
+			}
+			/**
+			 * @id 3945
+			 * guarda un nuevo telefono
+			 * */
+			public function guardar():void {
+				//creo el objeto mail para guardar
+				if(this.txtCodArea.text && this.txtNumero.text && this.cmbTipoTel.selectedIndex != -1)
+				{
+					var tel:Telefono = new Telefono();
+					tel.codArea = this.txtCodArea.text? this.txtCodArea.text : "";
+					tel.nroTlefono = this.txtNumero.text? this.txtNumero.text : "";
+					tel.esCelular = this.chbCel.selected? "S" : "N";
+					tel.esFax = this.chbFax.selected? "S" : "N";
+					tel.horarios = this.txtHorarios.text? this.txtHorarios.text : "";
+					tel.nroInterno = this.txtInterno.text? this.txtInterno.text : "";
+					tel.descripcion = this.txtDescrip.text? this.txtDescrip.text : "";
+					
+					tel.tipo = cmbTipoTel.selectedItem as TipoTelefono;
+					
+					generalClienteModel.agregarTelefono(tel,idIndividuo);
+					this.removePopUp();
+				}else{
+					Alert.show("Debe completar el codigo de area, el numero de telefono y el tipo de telefono");
+				}
+			}
+			/**
+			 * @id 3945
+			 * limpia los datos
+			 * */
+			private function cleanData():void {
+				this.txtCodArea.text = "";
+				this.txtNumero.text = "";
+				this.chbCel.selected = false;
+				this.chbFax.selected = false;
+				this.txtHorarios.text = "";
+				this.txtInterno.text = "";
+				this.txtDescrip.text = "";
+			}
+			/**
+			 * @id 3945
+			 * carga los datos del combo si es necesario
+			 * */
+			private function initCombo():void {
+				generalClienteModel.cargarCmbTipoTel();
+			}
+			/**
+			 * @id 3945
+			 * controla que no se puedan seleccionar ambos checks al mismo tiempo
+			 * */
+			private function checkControl(clickFax:Boolean):void {
+				if(clickFax){
+					chbCel.selected=false;
+				}else{
+					chbFax.selected=false;
+				}
+			}
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

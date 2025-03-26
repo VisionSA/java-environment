@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%">
+	<mx:Script>
+		<![CDATA[
+			import mx.utils.ObjectUtil;
+			import events.GenericPlanEvent;
+			import model.CobranzasModelLocator;
+			import mx.core.Application;
+			import mx.controls.Alert;
+			import mx.modules.ModuleManager;
+			import com.util.modules.ManagerModules;
+			import mx.modules.IModuleInfo;
+			import events.BarraMenuEvent;
+			import mx.events.MenuEvent;
+			import mx.events.ListEvent;			
+			
+			private var moduloCargado : IModuleInfo;
+			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			private function clickMenu(evt:MenuEvent):void{				
+
+				if (Application.application.modulo.data != evt.item.@data){
+					Application.application.modulo.unloadModule();
+					Application.application.modulo.removeAllChildren();
+                	Application.application.modulo.url = evt.item.@nameModule;             	
+                	Application.application.modulo.data = evt.item.@data;
+                	
+                	modelo.moduloSeleccionado = new Object();
+                	modelo.moduloSeleccionado.url = evt.item.@nameModule;
+                	modelo.moduloSeleccionado.data = evt.item.@data;
+                	
+                	
+                	if (ObjectUtil.toString(Application.application.modulo.data=="2")){
+                		new GenericPlanEvent(GenericPlanEvent.INICIALIZAR_MODULO_PLAN_EVENT,null).dispatch();
+                	}
+                	
+                	Application.application.modulo.loadModule();
+                	
+				}				
+				
+			}
+		]]>
+	</mx:Script>
+	<mx:ApplicationControlBar width="100%">
+		<mx:MenuBar dataProvider="{menu}" showRoot="false" labelField="@label" itemClick="clickMenu(event)" width="100%"/>
+	</mx:ApplicationControlBar>
+	
+	
+
+	
+	<mx:XML xmlns="" id="menu">
+		<Menu>
+			<node label="Planes" >
+				<node label="Planes de Cobranza" nameModule="views/modulos/PlanModule.swf" data="0"/>
+			</node>
+			<node label="Tareas" >
+				<node label="Listado de Tareas" nameModule="views/modulos/TareasPendientesModule.swf" data="1"/>
+			</node>
+			
+			<node label="Cobradores" >
+				<node label="Administrar Recibos" nameModule="views/modulos/ABMRecibosModule.swf" data="2"/>
+				<node label="Cobradores por Partido" nameModule="views/modulos/AsignacionCobradoresModule.swf" data="3"/>
+				<node label="Informe Cobros Cobradores" nameModule="views/modulos/InformeCobroCobradoresModule.swf" data="4"/>
+			</node>
+			
+			<node label="Abogados" >
+				<node label="Abogados por Partido" nameModule="views/modulos/AbogadosXPartidoModule.swf" data="3"/>
+			</node>
+			
+			
+		</Menu>
+	</mx:XML>
+</mx:VBox>

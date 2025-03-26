@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" layout="absolute"
+		   initialize="module1_initializeHandler(event)" 
+		   xmlns:textInput="com.util.components.textInput.*"
+		   width="750" height="450">
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.event.CajaJudicialEvent;
+			import com.fiel.caja.judicial.event.ChequeEvent;
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.fiel.caja.judicial.view.component.arqueoCaja.FormaPagoChequeComponent;
+			import com.fiel.caja.judicial.view.component.arqueoCaja.ItemDetalleCierreCaja;
+			import com.fiel.caja.judicial.view.component.arqueoCaja.ItemDetalleTotales;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			import com.tarjetafiel.proveedorconexion.business.ConstantesFormaPago;
+			import com.tarjetafiel.proveedorconexion.vo.SetDataVo;
+			
+			import mx.controls.Alert;
+			import mx.controls.HRule;
+			import mx.events.FlexEvent;
+			import mx.utils.ObjectUtil;
+			
+			import spark.components.NavigatorContent;
+			
+			[Bindable]
+			private var modelo:CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			private var loader:Loader = new Loader;
+			
+			private function onLnkInfoClick(event:MouseEvent):void
+			{
+				accordion.selectedIndex = vgInfo.getChildIndex(event.target.parent as DisplayObject);
+			}
+			
+			private function onLnkDiferenciaClick(event:MouseEvent):void
+			{
+				accordion.selectedIndex = vgInfo.getChildIndex(event.target.parent as DisplayObject);
+			}
+			
+			protected function module1_initializeHandler(event:FlexEvent):void
+			{
+				new CajaJudicialEvent(CajaJudicialEvent.BUSCAR_MEDIO_DE_PAGO_CAJA_DESCARGA_VALORES, modelo.cajaApertura).dispatch(); 
+				new CajaJudicialEvent(CajaJudicialEvent.BUSCAR_FORMA_DE_PAGO_VALORES).dispatch();
+				new ChequeEvent(ChequeEvent.LIST_CHEQUES_EN_CAJA, modelo.cajaApertura.caja.lugar).dispatch();
+				new SetDataVo(modelo, "mostrarDiferencia",false).guardarValor();
+			}
+			
+			private function onFault(e:IOErrorEvent):void
+			{
+				Alert.show(ObjectUtil.toString(e));
+			}
+			
+			private function set refreshComponent(value:Object):void
+			{
+				accordion.removeAllChildren();
+				for each (var mp:CajaMP in modelo.arrMediosPagoDescargaValores)
+				{
+					var navContent:NavigatorContent = new NavigatorContent();
+					navContent.percentHeight = 100;
+					navContent.percentWidth = 100;
+					navContent.label = mp.planCuentaDos.titulo
+					if (mp.formaPago.idFormaPago != ConstantesFormaPago.CHEQUE)
+					{
+						var view:ItemDetalleCierreCaja = new ItemDetalleCierreCaja();
+						view.cajaMp = mp;
+						view.percentHeight = 100;
+						view.percentWidth = 100;
+						/* view.visible = mp.formaPago.idFormaPago != ConstantesMediosDePago.CHEQUE;
+						view.includeInLayout = view.visible; */
+						view.setStyle("verticalAlign","middle");
+						view.setStyle("horizontalAlign","center");
+						navContent.addElement(view);
+					}
+					else
+					{
+						var chView:FormaPagoChequeComponent = new FormaPagoChequeComponent;
+						chView.cajaMp = mp;
+						navContent.addElement(chView);						
+					}
+					
+					accordion.addChild(navContent);
+				}	
+				
+				vgInfo.removeAllElements();
+				for each (var navCont:NavigatorContent in accordion.getChildren())
+				{
+					if (navCont.getElementAt(0) is ItemDetalleCierreCaja)
+					{
+						var element:ItemDetalleCierreCaja = navCont.getElementAt(0) as ItemDetalleCierreCaja;
+						var cmp:ItemDetalleTotales = new ItemDetalleTotales;
+						cmp.cajaCierre = element.cajaCierre;
+						cmp.cajaMp = element.cajaMp;
+						cmp.lnkTotal.addEventListener(MouseEvent.CLICK, onLnkInfoClick);
+						cmp.lnkDiferencia.addEventListener(MouseEvent.CLICK, onLnkDiferenciaClick);
+						vgInfo.addElement(cmp);
+						var hRule:HRule = new HRule();
+						hRule.percentWidth = 95;
+						/* if (accordion.getElementIndex(navCont) != accordion.numChildren - 1)
+						{ */
+						//vgInfo.addElement(hRule);
+						//}
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Binding source="modelo.arrMediosPagoDescargaValores" destination="refreshComponent"/>
+	<s:HGroup width="100%" height="100%" paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2">
+		<!--Lateral Izquierdo-->
+		<s:VGroup verticalAlign="middle" horizontalAlign="center" width="30%" height="100%">
+			<s:Label styleName="tituloBusquedas" text="Totales" fontSize="17" fontFamily="Georgia" textDecoration="underline"/>
+			<s:VGroup id="vgInfo" width="100%" verticalAlign="middle" horizontalAlign="center" 
+					  height="100%">				
+			</s:VGroup>	
+		</s:VGroup>
+		<!--Fin Lateral Izquierdo-->
+		
+		<!--Lateral Derecho -->
+		<s:VGroup width="70%" height="100%">			
+			<s:ButtonBar dataProvider="{accordion}" width="100%"/>		
+			<mx:ViewStack id="accordion" width="100%" height="100%"/>
+		</s:VGroup>
+		<!--Fin Lateral Derecho -->
+	</s:HGroup>
+</mx:Module>

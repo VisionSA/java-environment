@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Menu>
+	<node label="Cajas">
+		<!-- <node label="Descarga de valores" id="0" module="VistaDescargaValoresModule.swf" state="DescargaValores"/>
+		<node label="Cierre de Caja" id="1" module="VistaCierreCajaModule.swf" state="CierreCajaX"/>-->
+		<node label="Impresoras" module="VistaImpresorasModule.swf" id="2" state="Base"/>
+	</node>
+</Menu>

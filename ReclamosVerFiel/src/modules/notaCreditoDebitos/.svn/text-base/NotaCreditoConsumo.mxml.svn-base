@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="100%" height="100%" xmlns:date="com.util.components.date.*" xmlns:notaCreditoDebitos="modules.notaCreditoDebitos.*">
+	<mx:ApplicationControlBar width="100%" >		
+		<mx:VBox width="100%" resizeEffect="{resizeEff}">
+			<notaCreditoDebitos:BusquedaCliente variasBusquedas="true"/>
+			<mx:HRule width="100%"/>
+			<mx:HBox visible="{manager.busquedaConsumosVisible}" includeInLayout="{manager.busquedaConsumosVisible}" horizontalAlign="left" verticalAlign="middle">
+				<mx:Label text="Fecha Desde:" styleName="lblInfoCaja"/>
+				<date:DateFiledMultiLan id="dateDesde" selectedDate="{Fecha.quitarDias(new Date(),30)}"/>
+				<mx:Label text="Fecha Hasta:" styleName="lblInfoCaja"/>
+				<date:DateFiledMultiLan id="dateHasta" selectedDate="{new Date()}"/>
+				<mx:Label text="Estado:" styleName="lblInfoCaja"/>
+				<mx:ComboBox id="cboEstado">
+			      <mx:ArrayCollection>
+			         <mx:Object label="TODOS" data="TODOS"/>
+			         <mx:Object label="Consiliados" data="C"/>
+			         <mx:Object label="Pendientes" data="P"/>
+			      </mx:ArrayCollection>
+			    </mx:ComboBox>			
+				<mx:Button label="{manager.labelBotonBusquedaCtaCte}" click="{manager.buscarConsumos(dateDesde.selectedDate,dateHasta.selectedDate,cboEstado.selectedItem.data)}"/>
+			</mx:HBox>			
+		</mx:VBox>		
+	</mx:ApplicationControlBar>
+	<mx:HBox label="" horizontalAlign="center" verticalAlign="top">	          		         
+		<mx:Panel title="Datos Personales" borderThicknessBottom="0" borderThicknessLeft="0" borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="20" height="100%">
+			<mx:VBox backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%" height="100%" verticalGap="0" horizontalAlign="center">
+				<mx:HBox>
+					<mx:Form width="100%" height="100%"  paddingBottom="0"> 
+						<mx:FormItem label="Fecha Nacimiento: " styleName="tituloBusquedas" width="100%">
+							<mx:Label text="123" styleName="lblInfo"/>
+						</mx:FormItem>
+						<mx:FormItem label="Edad: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+						<mx:FormItem label="Sexo: " styleName="tituloBusquedas"   width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+						<mx:FormItem label="Fecha alta Fiel: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+						<mx:FormItem label="Promotor: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+					</mx:Form>
+					<mx:Form width="100%" height="100%"  paddingBottom="0"> 
+						<mx:FormItem label="Calle: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+						<mx:FormItem label="Barrio: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+						<mx:FormItem label="Nro: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+						<mx:FormItem label="Localidad: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+						<mx:FormItem label="Piso: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+						<mx:FormItem label="Provincia: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+						<mx:FormItem label="Dpto: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+						<mx:FormItem label="Monoblock: " styleName="tituloBusquedas"  width="100%">
+							<mx:Label styleName="lblInfo" text="123"/>
+						</mx:FormItem>
+					</mx:Form>
+				</mx:HBox>
+				<mx:HBox width="100%">
+					<mx:Label text="Teléfonos" styleName="tituloBusquedas"/>	
+				</mx:HBox>
+				<!--<mx:DataGrid height="120" dataProvider="" width="90%">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Nro telefono" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label styleName="lblInfo" text=""/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:DataGridColumn>
+						<mx:DataGridColumn headerText="Horario: " dataField="horarios"/>
+						<mx:DataGridColumn>
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label styleName="lblInfo" text=""/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:DataGridColumn>
+						<mx:DataGridColumn headerText="Nro Interno: " dataField="nroInterno"/>
+					</mx:columns>
+				</mx:DataGrid>-->
+				<!--generalClienteModel.cliente.individuo.telefonos-->
+				<!--@I3945-->			
+				<mx:HBox width="90%" horizontalAlign="right">	
+					<!--@I3945-->							<mx:Button label="Agregar Telefono" width="10%" />
+				<!--@F3945-->						</mx:HBox>
+				<mx:HBox width="100%">
+					<mx:Label text="E-Mail" styleName="tituloBusquedas"/>	
+				</mx:HBox>
+				<!--<mx:DataGrid height="80" dataProvider="" width="90%">
+					<mx:columns>
+						<mx:DataGridColumn headerText="E-Mail">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label styleName="lblInfo" text=""/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:DataGridColumn>
+						<mx:DataGridColumn headerText="Descripcion" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label styleName="lblInfo" text=""/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:DataGridColumn>
+					</mx:columns>
+				</mx:DataGrid>-->
+				<mx:HBox width="90%" horizontalAlign="right" paddingBottom="10">
+					<!--@I3945-->							<mx:Button label="Agregar E-Mail" width="10%" click=""/>
+				<!--@F3945-->						</mx:HBox>
+			</mx:VBox>
+			<!--generalClienteModel.cliente.individuo.email-->
+			
+			<!--@F3945-->				  
+		</mx:Panel>		 
+	</mx:HBox>
+	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+	<mx:CurrencyFormatter id="currFormat" currencySymbol="$" rounding="nearest" precision="2"/>	
+	
+	<mx:Resize id="resizeEff"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import models.ApplicationModel;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import com.util.Fecha;
+			
+			[Bindable]public var manager:Manager;			
+			
+			private var popUpAnuPago:PopUpClienteDestinoAnuPago = new PopUpClienteDestinoAnuPago();
+			
+			
+			public function realizarNc(data:Object):void{
+				manager.soloPagos = false;
+				manager.realizarNCConsumo(data);	
+			}
+			
+			public function getColor(data:Object):uint{
+				return 0xFF0000;
+			}
+			
+			public function getEstadoImpacto(item:Object,column:AdvancedDataGridColumn):String {
+				
+				switch(item[column.dataField].toString()){
+					case "C": return "Conciliado";
+							  break;
+					case "P": return "Pendiente";
+							  break;
+					case "X": return "Rechazo Automático";
+							  break;
+					case "R": return "Rechazado";
+							  break;
+					default: return "";
+				}
+			}
+			
+			private function myStyleFunction(data:Object, column:AdvancedDataGridColumn):Object{
+				switch(data[column.dataField].toString()){
+					case "C": return {color:0x70c823};
+							  break;
+					case "P": return {color:0xFF0000};
+							  break;
+					case "X": return {color:0x000000};
+							  break;
+					case "R": return {color:0x000000};
+							  break;
+					default: return {color:0x000000};
+				}				
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:Module>

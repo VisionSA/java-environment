@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--@I3820--><s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"			   
+			   creationComplete="titlewindow1_creationCompleteHandler(event)"			   
+			   title="Medios de Pago"
+			   close="titlewindow1_closeHandler(event)"
+			   resize="titlewindow1_resizeHandler(event)" xmlns:textInput="com.util.components.textInput.*"
+			   keyUp="components_keyUpHandler(event)">
+<!--@F3820-->	<s:layout> 
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<!--<s:states>
+		<s:State name="SinMedios"/>
+		<s:State name="ConMedios" enterState="state1_enterStateHandler(event)"/>
+	</s:states>-->
+	
+	<fx:Script>
+
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.fiel.caja.judicial.view.component.cheque.VistaAgregarCheque;
+			import com.fiel.caja.judicial.view.component.deposito.VistaAgregarDeposito;
+			import com.fiel.caja.judicial.view.renderer.DepositoRenderer;
+			import com.fiel.caja.judicial.view.renderer.chequeItemRenderer;
+			import com.tarjetafiel.caja.vo.Cheque;
+			import com.tarjetafiel.caja.vo.ClienteMovimientosMP;
+			import com.tarjetafiel.caja.vo.FormaPago;
+			import com.tarjetafiel.caja.vo.MovimientoMP;
+			import com.tarjetafiel.caja.vo.SumadorMediosPago;
+			import com.tarjetafiel.proveedorconexion.business.ConstantesFormaPago;
+			import com.tarjetafiel.proveedorconexion.util.FuncionesUtiles;
+			import com.tarjetafiel.proveedorconexion.vo.SetDataVo;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			
+			import skin.BotonAceptarSkin;
+			import skin.BotonAgregarSkin;
+			import skin.BotonBorrarSkin;
+			
+			import spark.components.TextInput;
+			
+			import utils.ManejadorPantallas;
+			
+			[Bindable]
+			private var modelo : CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			[Bindable]
+			private var mementoListaMP : ArrayCollection = null;
+			
+			[Bindable]
+			private var mementoSumador : SumadorMediosPago = null;
+				
+			
+			private function cerrarPopUp():void{
+				ManejadorPantallas.cerrarPop(this);
+				//modelo.estadoActualVAgPago = ConstantesEstados.ESTADO_VAP_SIN_MEDIOS;
+			}
+
+
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{	
+				//Esto debe cambiar mas adelante para cuando se agreguen medios para varios clientes				
+				new SetDataVo(modelo,"listaCheques",new ArrayCollection()).guardarValor();
+				new SetDataVo(modelo,"listaDepositos",new ArrayCollection()).guardarValor();
+				obtenerMediosYaAgregados();
+				modelo.listaMovimientosMP = new ArrayCollection();
+/*@I3820*/				inptEfectivo.setFocus();
+			}
+
+			private function obtenerMediosYaAgregados():void{
+				
+				for each(var mp:MovimientoMP in modelo.listaMovimientosMP){
+					switch(mp.formaPago.idFormaPago){
+						case ConstantesFormaPago.EFECTIVO://Efectivo
+							inptEfectivo.text = mp.monto.toString();							
+							break;
+						case ConstantesFormaPago.CHEQUE://Cheques							
+							modelo.listaCheques.addItem(mp.cheque);							
+							break;
+						case ConstantesFormaPago.TICKET://Tickets
+							inptTickets.text = mp.monto.toString();
+							
+							break;
+						case ConstantesFormaPago.DEPOSITO_BANCARIO://Deposito Bancario
+							modelo.listaDepositos.addItem(mp.cheque);							
+							break;
+					}
+				}
+				
+				//modelo.sumador.restar(modelo.cliMovSelected.sumador);				
+				
+				guardarEstadoActualMP();
+				
+				inicializarCliente();
+				
+			}
+			
+			private function guardarEstadoActualMP():void{
+				mementoListaMP = modelo.listaMovimientosMP;
+				mementoSumador = modelo.sumador;
+			}
+			
+			private function inicializarCliente():void{
+				modelo.sumador = new SumadorMediosPago();				
+				modelo.listaMovimientosMP = new ArrayCollection();
+			}
+			
+
+			protected function btnAgregarCheque_clickHandler(event:MouseEvent):void
+			{
+				ManejadorPantallas.crearPopUp(ManejadorPantallas.getAplicacion() as DisplayObject,VistaAgregarCheque);
+			}
+
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				volverEstadoAnterior();				
+				cerrarPopUp();
+			}
+
+			private function volverEstadoAnterior():void{
+				//Cliente
+				modelo.listaMovimientosMP = mementoListaMP;
+				modelo.sumador = mementoSumador;
+				
+				//Totatales
+				//modelo.sumador.sumar(modelo.cliMovSelected.sumador);
+				
+			}			
+
+			protected function titlewindow1_resizeHandler(event:ResizeEvent):void
+			{
+				ManejadorPantallas.centrarPopUp(this);
+			}
+
+
+			protected function btnAgregarDeposito_clickHandler(event:MouseEvent):void
+			{
+				ManejadorPantallas.crearPopUp(ManejadorPantallas.getAplicacion() as DisplayObject,VistaAgregarDeposito);
+			}
+
+
+			protected function btnBorrarDeposito_clickHandler(event:MouseEvent):void
+			{
+				modelo.listaDepositos.removeItemAt(listDeposito.selectedIndex);
+			}
+
+
+			protected function btnBorrarCheque_clickHandler(event:MouseEvent):void
+			{
+				modelo.listaCheques.removeItemAt(listCheques.selectedIndex);
+			}
+
+
+			protected function btnAceptar_clickHandler(event:MouseEvent):void
+			{
+				agregarEfectivo();
+				agregarTickets();
+				agregarCheques(modelo.listaCheques,FuncionesUtiles.obtenerFormaPago(modelo.listaMediosPagoCaja,ConstantesFormaPago.CHEQUE));
+				agregarCheques(modelo.listaDepositos,FuncionesUtiles.obtenerFormaPago(modelo.listaMediosPagoCaja,ConstantesFormaPago.DEPOSITO_BANCARIO));
+				modelo.listaClientesJudiciales.refresh();
+				cerrarPopUp();
+			}
+			
+			private function agregarEfectivo():void{
+				if (Number(inptEfectivo.text)>0){
+					var mp : MovimientoMP = new MovimientoMP();
+					mp.formaPago = FuncionesUtiles.obtenerFormaPago(modelo.listaMediosPagoCaja,ConstantesFormaPago.EFECTIVO);
+					mp.monto = Number(inptEfectivo.text);
+					modelo.listaMovimientosMP.addItem(mp);					
+					modelo.sumador.sumaEfectivo += mp.monto;
+				}
+			}
+			
+			private function agregarTickets():void{
+				if (Number(inptTickets.text)>0){
+					var mp : MovimientoMP = new MovimientoMP();
+					mp.formaPago = FuncionesUtiles.obtenerFormaPago(modelo.listaMediosPagoCaja,ConstantesFormaPago.TICKET);
+					mp.monto = Number(inptTickets.text);
+					modelo.listaMovimientosMP.addItem(mp);					
+					modelo.sumador.sumaTickets += mp.monto;
+				}
+			}
+			
+			private function agregarCheques(lista:ArrayCollection,formaPago:FormaPago):void{
+				for each (var ch:Cheque in lista){
+					var mp : MovimientoMP = new MovimientoMP();
+					mp.cheque = ch;
+					mp.formaPago = formaPago;
+					mp.monto = ch.importe;
+					modelo.listaMovimientosMP.addItem(mp);
+					if (formaPago.idFormaPago == ConstantesFormaPago.CHEQUE){
+						modelo.sumador.sumaCheques += mp.monto;						
+					}else {
+						modelo.sumador.sumaDepositos += mp.monto;						
+					}
+				}
+			}
+			
+/*@I3820*/			/**
+		 	* Función para detectar cuando se presiona una tecla para método abreviado en la ventana
+		 	* **/	
+			protected function components_keyUpHandler(event:KeyboardEvent):void
+			{
+				switch(event.keyCode)
+				{
+					//Setea los nuevos valores y cierra el popUp
+					case Keyboard.ENTER:
+					{
+						btnAceptar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						break;
+					}
+						//Sale de la ventana
+					case Keyboard.ESCAPE:
+					{
+						cerrarPopUp();
+						event.stopPropagation();
+						break;
+					}
+						
+					default :
+					{
+						break;
+					}
+				}
+			}
+			
+			/**
+			 * Escucha cuando se presiona una tecla sobre los inputs moneda
+			 * **/
+			protected function inpts_keyUpHandler(event:KeyboardEvent):void
+			{
+				if (event.keyCode == Keyboard.ENTER)
+				{
+					//Pasa el foco al siguiente componente
+					focusManager.getNextFocusManagerComponent().setFocus();
+					event.stopPropagation();
+				}
+			}
+			
+			/**
+			 * Escucha cuando se presiona una tecla sobre los botones
+			 * **/
+			protected function btns_keyUpHandler(event:KeyboardEvent):void
+			{
+				if (event.keyCode == Keyboard.ENTER)
+				{
+					Button(event.target).dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+					event.stopPropagation();
+				}
+			}
+/*@F3820*/
+
+
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>	
+	<s:VGroup paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+		<s:HGroup includeInLayout="{modelo.mediosPosibles.efectivo}" visible="{modelo.mediosPosibles.efectivo}">
+			<s:Label text="Efectivo:" width="80" textAlign="right"/>
+<!--@I3820-->			<textInput:TextInputMoneda id="inptEfectivo" textAlign="right" width="130" text="0" keyUp="inpts_keyUpHandler(event)"/>			
+<!--@F3820-->		</s:HGroup>
+		<s:HGroup includeInLayout="{modelo.mediosPosibles.tickets}" visible="{modelo.mediosPosibles.tickets}">
+			<s:Label text="Tickets:" width="80" textAlign="right"/>
+<!--@I3820-->			<textInput:TextInputMoneda id="inptTickets" textAlign="right" width="130" text="0" keyUp="inpts_keyUpHandler(event)"/>			
+<!--@F3820-->		</s:HGroup>
+		<s:VGroup includeInLayout="{modelo.mediosPosibles.cheques}" visible="{modelo.mediosPosibles.cheques}" horizontalAlign="right" minWidth="380" minHeight="140" width="100%">
+			<s:HGroup width="100%" height="100%">
+				<s:Label text="Cheques:" width="80" textAlign="right"/>
+<!--@I3820-->				<s:List id="listCheques" dataProvider="{modelo.listaCheques}" itemRenderer="com.fiel.caja.judicial.view.renderer.chequeItemRenderer" 
+						width="100%" height="100%" keyUp="inpts_keyUpHandler(event)">
+<!--@F3820-->					<s:layout>
+						<s:TileLayout requestedColumnCount="4"
+									  requestedRowCount="1"/>
+					</s:layout>
+				</s:List>	
+			</s:HGroup>
+			<s:HGroup width="100%" horizontalAlign="right">
+<!--@I3820-->				<s:Button id="btnAgregarCheque" label="Agregar" width="100" 
+							click="btnAgregarCheque_clickHandler(event)" skinClass="skin.BotonAgregarSkin"
+							keyUp="btns_keyUpHandler(event)"/>
+				<s:Button id="btnBorrarCheque" label="Borrar" width="100" enabled="{listCheques.selectedItem!=null}" 
+						  click="btnBorrarCheque_clickHandler(event)" skinClass="skin.BotonBorrarSkin"
+						  keyUp="btns_keyUpHandler(event)"/>
+<!--@F3820-->			</s:HGroup>
+		</s:VGroup>
+		<s:VGroup includeInLayout="{modelo.mediosPosibles.depositos}" visible="{modelo.mediosPosibles.depositos}" horizontalAlign="right" minWidth="380" minHeight="140" width="100%">
+			<s:HGroup width="100%" height="100%">
+				<s:Label text="Depósito:" width="80" textAlign="right"/>
+<!--@I3820-->				<s:List id="listDeposito" dataProvider="{modelo.listaDepositos}" itemRenderer="com.fiel.caja.judicial.view.renderer.DepositoRenderer" 
+						width="100%" height="100%" keyUp="inpts_keyUpHandler(event)">
+<!--@F3820-->					<s:layout>
+						<s:TileLayout requestedColumnCount="4"
+									  requestedRowCount="1"/>
+					</s:layout>
+				</s:List>		
+			</s:HGroup>
+			<s:HGroup width="100%" horizontalAlign="right">
+<!--@I3820-->				<s:Button id="btnAgregarDeposito" label="Agregar" width="100" 
+						  click="btnAgregarDeposito_clickHandler(event)" skinClass="skin.BotonAgregarSkin"
+						  keyUp="btns_keyUpHandler(event)"/>
+				<s:Button id="btnBorrarDeposito" label="Borrar" width="100" enabled="{listDeposito.selectedItem != null}" 
+						  click="btnBorrarDeposito_clickHandler(event)" skinClass="skin.BotonBorrarSkin"
+						  keyUp="btns_keyUpHandler(event)"/>
+<!--@F3820-->			</s:HGroup>
+		</s:VGroup>
+	</s:VGroup>
+	
+	<s:controlBarContent>
+		<s:Rect width="100%"/>			
+		<s:Button id="btnAceptar" label="Aceptar" click="btnAceptar_clickHandler(event)" skinClass="skin.BotonAceptarSkin"/>		
+	</s:controlBarContent>
+</s:TitleWindow>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VboxComun xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="init()" width="100%" height="25%"  xmlns:ns1="com.dougmccune.containers.*" xmlns:maps="views.categorias.maps.*" xmlns:mate="http://mate.asfusion.com/" xmlns:maps1="views.categorias.comercio.maps.*" xmlns:managers="com.yahoo.astra.mx.managers.*">
+  
+  <managers:AutoCompleteManager 
+		id="autoCompleteMgr" 
+		targets="{[txtCuit1,txtRazonSocial,txtCodigoComercio,txtNombreComercio]}"
+		shareData="true" autoSave="true" />
+		
+	<mx:HBox width="100%" height="100%" horizontalGap="0">
+		  <mx:VBox height="100%" width="474" horizontalGap="0">
+		 	<ns1:HAccordion id="accordion"  width="473" height="100%" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #FFFFFF]">
+         		<mx:VBox label="CUIT" width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+                     <mx:HBox width="70%" paddingLeft="10" paddingTop="10" height="100%" horizontalAlign="center" verticalAlign="middle">
+					  <mx:Label text="CUIT: " styleName="lblInfo"/>
+<!--@I4223-->            		  <mx:TextInput width="100%" change="valor = txtCuit1.text" id="txtCuit1" textAlign="center" restrict="0-9" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+<!--@F4223-->			 	    </mx:HBox>	
+                </mx:VBox>
+         		<mx:VBox label="Razon Social" width="100%" height="100%" paddingLeft="10" paddingRight="10">
+                    <mx:HBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+                    	<mx:Label text="Razon Social: " styleName="lblInfo"/>
+<!--@I4223-->                    	<mx:TextInput id="txtRazonSocial"  width="70%" textAlign="center"  restrict="A-Z,a-z" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+<!--@F4223-->                    </mx:HBox>
+                </mx:VBox>
+                
+                <mx:VBox label="Codigo Comercio" id="fff" width="100%" height="100%" paddingLeft="10" paddingRight="10">
+                    <mx:HBox  width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" id="paramCodigoComercio">
+					  <mx:Label text="Codigo Comercio: " styleName="lblInfo"/>
+            		  <mx:TextInput id="txtCodigoComercio" change="valor = txtCodigoComercio.text" width="70%" restrict="0-9" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+				    </mx:HBox>	
+                </mx:VBox>
+                
+                <mx:VBox label="Nombre Comercio" id="ccc" width="100%" height="100%" paddingLeft="10" paddingRight="10" >
+                    <mx:HBox  width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" >
+					  <mx:Label text="Nombre Comercio: " styleName="lblInfo"/>
+            		  <mx:TextInput id="txtNombreComercio" change="valor = txtNombreComercio.text" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()" width="70%"/>
+				    </mx:HBox>	
+                </mx:VBox>
+                                
+         	</ns1:HAccordion> 
+		 </mx:VBox>
+		 
+		 <mx:VRule height="100%" />
+		 
+		 <mx:VBox height="100%" verticalAlign="middle" horizontalAlign="center" backgroundColor="#FFFFFF" paddingLeft="10" paddingRight="10">
+		 	<mx:Button label="Buscar" click="this.buscar()" width="100%"/>
+		 	<mx:Button label="Limpiar Filtro" />
+		 </mx:VBox>		
+				 
+		<mx:VRule height="100%" />		 
+		
+		<mx:ViewStack width="100%" height="100%" backgroundColor="#FFFFFF" selectedIndex="1">
+		    <mx:HBox width="100%" height="100%" verticalAlign="middle" horizontalAlign="left">
+			    <mx:Form paddingBottom="0" paddingLeft="0" paddingTop="0" paddingRight="0" width="100%">
+			        <mx:FormItem label="CUIT:" styleName="tituloBusquedas" horizontalAlign="left" width="100%">
+						<mx:Label styleName="lblInfo" width="100%" text="{listaComercioModel.empresa.cuit}"/>
+					</mx:FormItem>
+					<mx:FormItem label="Razon Social:" styleName="tituloBusquedas" width="100%">
+						<mx:Label styleName="lblInfo"  width="100%" text="{listaComercioModel.empresa.razonSocial}"/>
+					</mx:FormItem>
+				</mx:Form>
+			</mx:HBox>
+			<mx:HBox width="100%" height="100%" verticalAlign="middle" horizontalAlign="left">				
+				<mx:Form paddingBottom="0" paddingLeft="0" paddingTop="0" paddingRight="0" width="350">
+					<mx:FormItem label="CUIT:" styleName="tituloBusquedas" horizontalAlign="left" width="100%">
+							<mx:Label styleName="lblInfo" width="100%" text="{listaComercioModel.comercio.sucEmpresa.empresa.cuit}"/>
+						
+						</mx:FormItem>
+						<mx:FormItem label="Razon Social:" styleName="tituloBusquedas" width="100%">
+							<mx:Label styleName="lblInfo"  width="100%" text="{listaComercioModel.comercio.sucEmpresa.empresa.razonSocial}"/>
+<!--@F5092-->	  		<mx:Button label="Reporte Comercio" enabled="{(listaComercioModel.comercio != null) ?  true  : false}" click="this.reporteComercio()" width="20%" />
+						</mx:FormItem>
+				</mx:Form>
+				<mx:Form paddingBottom="0" styleName="tituloBusquedas" paddingLeft="0" paddingRight="0" paddingTop="0" width="100%" height="100%">
+					<mx:FormItem label="Codigo:" styleName="tituloBusquedas" width="100%">
+							<mx:Label styleName="lblInfo"  width="100%" text="{listaComercioModel.comercio.idCodComercio}"/>
+						</mx:FormItem>
+				        <mx:FormItem label="Codigo Posnet:" styleName="tituloBusquedas" horizontalAlign="left" width="100%">
+							<mx:Label styleName="lblInfo" width="100%" text="{listaComercioModel.comercio.codigoPosnet}"/>
+						</mx:FormItem>
+						<mx:FormItem label="Sucursal:" styleName="tituloBusquedas" width="100%">
+							<mx:Label styleName="lblInfo" text="{listaComercioModel.comercio.sucEmpresa.descripcion}"  width="100%"/>
+						</mx:FormItem>
+						<mx:FormItem label="Empresa:" styleName="tituloBusquedas" width="100%">
+							<mx:Label styleName="lblInfo"  width="100%" text="{listaComercioModel.comercio.sucEmpresa.empresa.razonSocial}"/>
+						</mx:FormItem>
+				</mx:Form>
+			
+			</mx:HBox>
+		</mx:ViewStack>
+	</mx:HBox>
+	
+	<maps1:ListaComercioEventMap/>
+	
+	<mate:Listener type="loadPopUpEvent" receive="loadPopUp()"/>
+	<mate:Listener type="changedEmpresa" receive="PopUpManager.removePopUp(popupListaComercios),popupListaComercios.load = false"/>
+	
+	<mate:Listener  receive="{ this.autoCompleteMgr.removeAll()}" type="limpiarCache"/>
+	
+<mx:Script>
+	<![CDATA[
+		import managers.ComercioManager;
+		import events.ComercioManagerEvent;
+		import events.ComercioEvent;
+		import com.util.components.alert.AlertWarning;
+		import mx.core.Application;
+		import mx.managers.PopUpManager;
+		import views.categorias.comercio.popup.ListaComercioView;
+		import views.categorias.comercio.models.ListaComercioModel;
+		import managers.ClienteManager;
+		import views.categorias.cliente.models.EncabezadoClienteModel;
+		import mx.core.UIComponentDescriptor;
+		import mx.messaging.channels.StreamingAMFChannel;
+		import mx.controls.Alert;
+		import com.util.paginacion.Paginador;
+		import mx.containers.Accordion;
+		import com.util.components.alert.AlertOk;
+
+		 [Embed(systemFont='Arial', fontWeight="bold", fontName='accordionHeader', mimeType='application/x-font')] 
+		 private var font1:Class;
+
+	
+	        [Bindable]private var paginador:Paginador;
+            [Bindable]public var listaComercioModel:ListaComercioModel;
+			
+			private var popupListaComercios:ListaComercioView = new ListaComercioView();
+			
+			private var buscarPor:String = "";
+			
+			private var valor:String = "";
+					
+			private function init():void{
+				this.paginador = new Paginador();				
+				buscarPor = "cuit";						
+			}
+			
+/* @I5092 */	public function reporteComercio():void{
+				 listaComercioModel.reporteComercio(listaComercioModel.comercio.sucEmpresa.empresa.cuit.toString()); 
+				
+/* @F5092 */			}
+			public function buscar():void{				
+				
+				paginador.cantidadRegistros = 10;
+				paginador.cantidadPaginas = 0;
+				paginador.pagina = 0;
+				paginador.result = new Array();
+				
+				
+				
+				switch(accordion.selectedIndex){
+					case 0:
+						buscarPor = "cuit";
+						valor = txtCuit1.text;
+						listaComercioModel.buscarEmpresa = true;	
+						listaComercioModel.tipoBusqueda = ComercioManager.BUSQ_POR_CUIL;				
+					break;
+					case 1:
+						buscarPor = "razonSocial";
+						valor = txtRazonSocial == null ? "" : txtRazonSocial.text;
+						listaComercioModel.buscarEmpresa = true;
+						listaComercioModel.tipoBusqueda = ComercioManager.BUSQ_POR_RAZON_SOCIAL;
+					break;
+					case 2:
+						buscarPor = "codigoPosnet";
+						valor = txtCodigoComercio == null ? "" : txtCodigoComercio.text;
+						listaComercioModel.buscarEmpresa = false;
+						listaComercioModel.tipoBusqueda = ComercioManager.BUSQ_POR_COD_COMERCIO;
+					break;
+					case 3:
+						buscarPor = "sucEmpresa.descripcion";
+						valor = txtNombreComercio == null ? "" : txtNombreComercio.text;
+						listaComercioModel.buscarEmpresa = false;
+						listaComercioModel.tipoBusqueda = ComercioManager.BUSQ_POR_NOMBRE_COMERCIO;
+					break;
+				}
+			
+				if(buscarPor == null || valor.length == 0){
+					AlertWarning.show("Debe ingresar un parametro de busqueda");
+					return;
+				}
+				
+				listaComercioModel.buscarComercio(buscarPor, valor.toUpperCase(),paginador);
+			}
+			
+		public function loadPopUp():void{
+			if(popupListaComercios.load == false){
+				PopUpManager.addPopUp(popupListaComercios,Application.application as DisplayObject,true);
+				PopUpManager.centerPopUp(popupListaComercios);
+				popupListaComercios.paginador.paginacionCompleta(listaComercioModel.paginador);
+				popupListaComercios.load = true;
+			}
+		}
+				
+	]]>
+</mx:Script> 
+</VboxComun>

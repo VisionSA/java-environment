@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import managers.ClienteManager;
+			import views.categorias.cliente.models.ResumenCtaClienteModel;
+			import views.categorias.cliente.DetalleLiquidacionCteView;
+			import views.categorias.cliente.ResumidoLiquidacionCteView;
+			import views.categorias.cliente.modules.ResumenCtaClienteModule;
+			import views.categorias.cliente.modules.LineaCreditoModule;
+		
+		]]>
+	</mx:Script>
+	<Injectors targets="{[ResumenCtaClienteModule,ResumidoLiquidacionCteView,DetalleLiquidacionCteView,LineaCreditoModule]}">
+		<ObjectBuilder generator="{ResumenCtaClienteModel}">
+		 <Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="resumenCtaClienteModel"/>
+	</Injectors>
+	
+	<Injectors target="{ResumenCtaClienteModel}">		
+		<PropertyInjector targetKey="arrayLiquidaciones" sourceKey="arrayLiquidaciones" source="{ClienteManager}"/>
+	</Injectors>
+   	
+   	<Injectors target="{ResumenCtaClienteModel}">		
+		<PropertyInjector targetKey="arrayDetallesLiquidaciones" sourceKey="arrayDetallesLiquidaciones" source="{ClienteManager}"/>
+	</Injectors>
+</EventMap>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/spark" minHeight="600" minWidth="955" xmlns:business="com.bizit.consulta.web.business.*" xmlns:controller="com.bizit.consulta.web.controller.*">
+
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.getDefinitionByName;
+			import flash.utils.getQualifiedClassName;
+			
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			
+			protected function entityList_doubleClickHandler(event:MouseEvent):void
+			{	
+				if (entityList.selectedItem == undefined) {
+					return;
+				}
+				var selectedEntity:String = entityList.selectedItem;
+				var selectedEntityPackage:String = selectedEntity.toLowerCase();
+				var viewClass:Class = getDefinitionByName("com.bizit.consulta.web.presentation."+selectedEntityPackage+"::"+selectedEntity+"View") as Class;
+				if (viewClass != null) {
+					var newView:UIComponent = UIComponent(new viewClass());
+					newView.name = "entityListView";
+					newView["remotingChannels"] = service.remotingChannels;
+					if (mainGroup.getChildByName("entityListView") != null) {
+						mainGroup.removeElementAt(1);
+					}
+					mainGroup.addElement(newView);
+				} else {
+					Alert.show("No view found for the selected entity.", "View Unavailable");
+				}
+			}
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<s:ArrayList id="entities">
+		<fx:String>UsuarioWeb</fx:String>
+        <fx:String>PermisoWeb</fx:String>
+        <fx:String>UsuarioPermisoWeb</fx:String>
+        </s:ArrayList>
+		
+		<business:Service id="service" />
+		
+		<controller:FielWebController id="controller" />
+		
+	</fx:Declarations>
+	
+	<s:Group height="100%" id="mainGroup" width="100%">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		
+		<s:Panel height="100%" id="entityPanel" title="Entity List">
+			<s:List dataProvider="{entities}" doubleClick="entityList_doubleClickHandler(event)" doubleClickEnabled="true" height="100%" id="entityList" toolTip="Double-Click the selected Entity" width="100%"/>
+		</s:Panel>
+	</s:Group>
+		
+</s:Application>

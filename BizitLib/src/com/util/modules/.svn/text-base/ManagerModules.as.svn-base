@@ -1,0 +1,147 @@
+package com.util.modules
+{
+	import com.util.block.ControlBlock;
+	
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	
+	import flexmdi.containers.MDICanvas;
+	
+	import mx.containers.Panel;
+	import mx.containers.TitleWindow;
+	import mx.controls.Alert;
+	import mx.controls.ProgressBar;
+	import mx.core.Application;
+	import mx.core.IContainer;
+	import mx.events.ModuleEvent;
+	import mx.managers.PopUpManager;
+	import mx.modules.IModuleInfo;
+	import mx.modules.Module;
+	import mx.modules.ModuleManager;
+	
+	[Event (name="loadComplete",type="flash.events.Event")]
+	
+	
+	public class ManagerModules extends EventDispatcher
+	{
+		private var mi:IModuleInfo;
+		
+		private static var arrayModulesLoaded:Object = new Object();
+		
+		public static var ventanasAbiertas:VentanasAbiertasModel = new VentanasAbiertasModel(); 
+		
+		private static var managerModules:ManagerModules;			
+		
+		public static function getInstance():ManagerModules
+		{
+			if(managerModules == null){
+				managerModules = new ManagerModules();
+			}	
+			
+			return managerModules;
+		}
+		
+		public function loadModule(contenedor:IContainer, idModulo:String, titulo:String="", parametro:Object=null,pb:ProgressBar=null):void {		
+						
+			mi = ModuleManager.getModule(idModulo);
+			mi.data = new Object();
+			mi.data["titulo"] = titulo;
+			mi.data["contenedor"] = contenedor;
+			mi.data["idModulo"] = idModulo; 			
+			mi.data["parametro"] = parametro;
+			
+			if(mi.loaded){
+				addModule(mi);				
+			} else {
+
+				mi.addEventListener(ModuleEvent.READY, onModuleLoaded, false, 0, true);
+				mi.addEventListener(ModuleEvent.ERROR, onModuleError, false, 0, true);
+				
+				if(pb){
+					mi.addEventListener(ModuleEvent.PROGRESS, progress);
+					mi.data["pb"] = pb;
+				}
+				ControlBlock.getInstance().add();
+				mi.load();	
+			}
+			
+			
+			
+		}
+		
+		private function progress(evt:ModuleEvent):void{
+			var pb:ProgressBar = evt.module.data.pb as ProgressBar;
+			pb.setProgress(evt.bytesLoaded,evt.bytesTotal);
+		}
+		
+		public function onModuleLoaded(e:ModuleEvent):void {
+			e.module.removeEventListener(ModuleEvent.READY, onModuleLoaded);
+			e.module.removeEventListener(ModuleEvent.ERROR, onModuleError);
+			e.module.removeEventListener(ModuleEvent.PROGRESS, progress);
+			
+			addModule(e.module)
+				
+		}
+ 
+ 		public function addModule(info:IModuleInfo):void{
+ 			
+ 			var _modulo:Object = info.factory.create();
+ 			
+ 			if(_modulo is IModulo) {
+				
+				if(info.data.parametro != null) IModulo(_modulo).setParametro(info.data.parametro);
+				
+				IModulo(_modulo).execute();
+				
+			}
+			
+			var contendor:IContainer = info.data.contenedor as IContainer;
+				 	
+			if(contendor is MDICanvas) {																				
+				var windows:MdiWindows = new MdiWindows();
+				windows.percentHeight = 100;
+				windows.percentWidth = 	100;				
+				windows.title = info.data.titulo;					
+				windows.addChild(DisplayObject(_modulo));											
+				MDICanvas(contendor).windowManager.addCenter(windows);	
+				windows.width = Module(_modulo).width +50;
+				windows.height = Module(_modulo).height +50;			
+				windows.maximize();
+				windows.x = 0;
+				windows.y = 0;					
+				ventanasAbiertas.array[info.data.idModulo] = windows;
+			}else if(contendor is mx.containers.Panel){				
+				contendor.percentHeight = 100;
+				contendor.percentWidth = 100;
+				mx.containers.TitleWindow(contendor).title = info.data.titulo;
+				contendor.addChild(_modulo as DisplayObject);				
+				PopUpManager.addPopUp(contendor,Application.application as DisplayObject,true);
+				PopUpManager.centerPopUp(contendor);
+				ventanasAbiertas.array[info.data.idModulo] = contendor;
+			}else {				
+				
+				contendor.percentHeight = 100;
+				contendor.percentWidth = 100;
+				contendor.addChild(_modulo as DisplayObject);
+				
+			}		
+			
+			ControlBlock.getInstance().remove();
+			Module(_modulo).setFocus();
+			
+			dispatchEvent(new Event("loadComplete"));
+			
+ 		}
+ 
+		private function onModuleError(e:ModuleEvent):void {				
+			e.module.removeEventListener(ModuleEvent.READY, onModuleLoaded);
+			e.module.removeEventListener(ModuleEvent.ERROR, onModuleError);
+	 		Alert.okLabel = "Aceptar";
+	 		Alert.show("Error al cargar el módulo " + e.module.url + ": " + e.errorText,"Error");
+	 		ControlBlock.getInstance().remove();
+		}
+
+
+	}
+}

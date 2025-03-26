@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import managers.ClienteManager;
+			import views.categorias.cliente.modules.GeneralClienteModule;
+			import views.categorias.cliente.models.GeneralClienteModel;
+		]]>
+	</mx:Script>
+    
+    <Injectors target="{GeneralClienteModule}">
+		<ObjectBuilder generator="{GeneralClienteModel}" >
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="generalClienteModel"/>
+	</Injectors>
+	
+	
+
+	<Injectors targets="{[GeneralClienteModel]}">		
+		<PropertyInjector targetKey="cliente" sourceKey="cliente" source="{ClienteManager}"/>
+	</Injectors>
+	
+</EventMap>

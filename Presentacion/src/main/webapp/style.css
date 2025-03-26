@@ -1,0 +1,157 @@
+Application {
+	background-color: #9a9a9a;
+	backgroundGradientAlphas: 1.0, 1.0;
+	backgroundGradientColors: #747474, #747474;	
+}
+
+.vboxContainer {
+	backgroundColor: #B3B3B3;
+	horizontalAlign: center;	
+}
+
+.menuPrincipal {     
+      backgroundColor: #ffffff;
+      fillColors: #ffffff, #ffffff;
+      rollOverColor: #000099;
+      color: #0b333c;
+      textRollOverColor: #ffffff;
+      textSelectedColor: #ffffff;
+      themeColor: #000074;
+	  showEffect: Resize;	     
+}
+
+.hboxInfoPrincipal {
+	backgroundAlpha: 1.0;
+	backgroundColor: #002292;
+	horizontalAlign: center;
+	
+}
+Label.lblInfoInit
+{
+	color: #FFFFFF;
+}
+TextInput.txtInfoInit
+{
+	borderStyle: none;
+	textAlign: center;
+	paddingTop: 3;
+	paddingBottom: 3;
+}
+VBox.VboxBlock
+{
+	backgroundAlpha: 0.64;
+	backgroundColor: #698FD5;
+	horizontalAlign: center;
+	paddingBottom: 5;
+	paddingTop: 5;
+	verticalAlign: middle;
+}
+
+MDIWindow{
+	titleStyleName: "titleMdiWindows";
+}
+
+.titleMdiWindows{
+	color: #FFFFFF;
+	font-size: 12;	
+}
+Panel
+{
+	borderColor: #7789BC;
+	horizontalAlign: center;
+	paddingBottom: 10;
+	paddingLeft: 10;
+	paddingRight: 10;
+	paddingTop: 10;
+	verticalAlign: middle;
+	titleStyleName: "titleMdiWindows";
+	backgroundColor: #D2D2D2;
+	border-alpha: 0.8;
+	
+}
+
+TitleWindow
+{
+	borderColor: #7789BC;
+	horizontalAlign: center;
+	paddingBottom: 10;
+	paddingLeft: 10;
+	paddingRight: 10;
+	paddingTop: 10;
+	verticalAlign: middle;
+	titleStyleName: "titleMdiWindows";
+	backgroundColor: #D2D2D2;
+	border-alpha: 0.8;
+	
+}
+
+
+Label.clienteSeleccionado
+{
+	color: #FFFFFF;
+	fontWeight: bold;
+	fontFamily: Arial;
+	fontSize: 14;
+	fontStyle: italic;
+	text-align: center;	
+}
+
+Alert{
+	background-color: #0045A4;
+	border-color: #0045A4;
+	border-alpha: 0.75;
+	background-alpha: 0.75;
+}
+
+Panel.popUpError
+{
+	backgroundAlpha: 1.0;	
+	horizontalAlign: center;
+	paddingBottom: 10;
+	paddingLeft: 10;
+	paddingRight: 10;
+	paddingTop: 10;
+	verticalAlign: top;
+	title-style-name: "titleMdiWindows";
+	borderColor: #0045A4;
+	border-alpha: 0.7;	
+}
+
+.titlepopUpError{
+	color: #FFFFFF;
+	font-size: 12;	
+	fontWeight: bold;
+	
+}
+
+LinkBar {
+   color: #ff6600;
+   disabledColor: #00ffff;
+}
+Label.titulos
+{
+	fontSize: 14;
+	fontStyle: italic;
+	fontWeight: bold;	
+	textAlign: center;
+}
+Label.tituloBusquedas
+{
+	color: #FFFFFF;
+	fontSize: 13;
+	fontStyle: normal;
+	fontWeight: bold;
+	textDecoration: normal;
+}
+Text.text15Bold
+{
+	color: #000000;
+	fontSize: 15;
+	fontWeight: bold;
+	fontStyle: normal;
+}
+Button.boton
+{
+	color: #E8102F;
+	cornerRadius: 17;
+}

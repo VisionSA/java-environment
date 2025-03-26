@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="ReclamosInicioComercio"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="v_id_reclamo" isForPrompting="true" class="java.lang.Integer"/>
+	<queryString><![CDATA[select to_char(c.c_id_reclamo,'000000') idReclamo,c.c_id_fecha_alta,t.c_descripcion AS desc_tipo_reclamo,d.c_descripcion AS c_canal,
+       g.c_apellido_interesado,
+       dom.c_calle_nombre ||' '|| dom.c_calle_numero ||' '|| DECODE(dom.c_orientacion,'-','', trim(dom.c_orientacion) || ' ')||
+       DECODE(trim(dom.c_manzana), NULL, '', 'Manzana: ' || trim(dom.c_manzana) ||  ' '  ) ||
+       DECODE(trim(dom.c_area_sector), NULL, '', 'Area: ' || trim(dom.c_area_sector) ||  ' '  ) ||
+    DECODE(dom.c_piso, NULL, '', 'Piso: ' || trim(dom.c_piso) || ' '  ) ||
+  DECODE(dom.c_depto, NULL, '', 'Depto: ' ||  trim(dom.c_depto) || ' ' ) || 
+ DECODE(bar.c_descripcion, NULL, '','-','', 'Barrio: ' || trim(bar.c_descripcion))  DOMICILIO,   
+ DECODE(trim(loc.c_nombre),'-','', trim(loc.c_nombre) || ' ') || DECODE(trim(par.c_descripcion), '-', '',   trim(par.c_descripcion)  )  descripcion,
+dom.c_codigo_postal || ' ' || prov.c_nombre provincia
+  from t_vis_reclamo_c c
+  inner join t_vis_reclamo_individuo g on g.c_id_reclamo_individuo=c.c_id_reclamo_individuo
+  inner join t_vis_reclamo_canal d on d.c_id_Canal=c.c_id_canal
+  inner join t_vis_reclamo_tipo_c t on t.c_id_tipo_reclamo=c.c_id_tipo_Reclamo 
+  inner join t_vis_tra_cod_comercios cod on cod.c_codigo_posnet = g.c_cliente_interesado
+  inner join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cod.c_id_sucursal
+inner join t_vis_gen_empresas emp on emp.c_id_empresa = suc.c_id_empresa
+inner join t_vis_gen_domicilios dom on dom.c_id_domicilio = suc.c_id_domicilio
+  inner join  t_vis_gen_localidades loc on dom.c_id_localidad = loc.c_id_localidad 
+  inner join  t_vis_gen_partidos par on loc.c_id_partido = par.c_id_partido 
+  inner join  t_vis_gen_provincias prov on loc.c_id_provincia = prov.c_id_provincia
+  inner join  t_vis_gen_barrios bar on dom.c_id_barrio = bar.c_id_barrio
+  where c.c_id_reclamo=$P{v_id_reclamo}]]></queryString>
+
+	<field name="IDRECLAMO" class="java.lang.String"/>
+	<field name="C_ID_FECHA_ALTA" class="java.sql.Timestamp"/>
+	<field name="DESC_TIPO_RECLAMO" class="java.lang.String"/>
+	<field name="C_CANAL" class="java.lang.String"/>
+	<field name="C_APELLIDO_INTERESADO" class="java.lang.String"/>
+	<field name="DOMICILIO" class="java.lang.String"/>
+	<field name="DESCRIPCION" class="java.lang.String"/>
+	<field name="PROVINCIA" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="505"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="279"
+						y="423"
+						width="246"
+						height="63"
+						key="staticText-9"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[Atentamente
+Servicio de Atención al Usuario Financiero
+TARJETA FIEL]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="6"
+						y="197"
+						width="518"
+						height="32"
+						key="textField-1"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Al respecto, nos encontramos tomando las acciones pertinentes. Nuestro personal especializado evaluará su reclamo. El mismo será solucionado a la brevedad. El número otorgado para su seguimiento es : " + $F{IDRECLAMO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="5"
+						y="150"
+						width="513"
+						height="48"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Es grato dirigirnos a usted con la finalidad de hacerle llegar nuestro cordial saludo y a la vez manifestarle que hemos tomado conocimiento de su consulta/reclamo registrado vía: " .concat($F{C_CANAL}.concat( ", referido a: " .concat($F{DESC_TIPO_RECLAMO}.concat("."))))]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="6"
+						y="222"
+						width="450"
+						height="31"
+						key="staticText-11"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[con el cual usted podrá en todo momento consultar por el progreso del mismo.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="243"
+						width="505"
+						height="91"
+						key="staticText-12"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Lo invitamos a visitar nuestra página web www.tarjetafiel.com en donde encontrará información sobre nuestros productos.
+
+Asimismo le recordamos el número telefónico de nuestro centro de atención al cliente 0810-222-3400.
+
+]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="85"
+						width="255"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-5"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PROVINCIA}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="45"
+						width="255"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="11" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{C_APELLIDO_INTERESADO}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="59"
+						width="324"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DOMICILIO}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="73"
+						width="300"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-8"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DESCRIPCION}.toUpperCase()]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

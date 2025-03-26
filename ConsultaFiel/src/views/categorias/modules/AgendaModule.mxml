@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<VboxComun xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" 
+			   width="100%" height="100%" xmlns:date="com.util.components.date.*" 
+			   xmlns:maps="maps.*" xmlns:mate="http://mate.asfusion.com/"
+			   creationComplete="onComplete()" label="Agenda">
+	<mx:DateFormatter id="formateador" formatString="DD/MM/YYYY" />
+	<mx:Script>
+		<![CDATA[
+			//			import com.tarjetafiel.caja.vo.EventosCliente;
+			import com.tarjetafiel.caja.vo.Operador;
+			
+			import mx.charts.DateTimeAxis;
+			import mx.charts.chartClasses.DateRangeUtilities;
+			import mx.controls.Alert;
+			import mx.controls.DateChooser;
+			import mx.controls.DateField;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.core.Application;
+			import mx.formatters.DateBase;
+			import mx.utils.ObjectUtil;
+			
+			import views.categorias.models.AgendaModel;
+			
+			[Embed(source="imgfiel/eventos.png")]
+			private var view1:Class;
+			
+			[Embed(source="imgfiel/nvoEvento.png")]
+			private var view2:Class;
+			
+			[Bindable]
+			private var viewIcons:Array = [view1,view2];
+			
+			[Bindable] public  var agendaModel : AgendaModel;
+			
+			private function onComplete():void{
+				var date:Date = new Date();
+				fechaDesde.selectedDate = new Date(date.fullYear,date.month,1);
+				fechaHasta.selectedDate = new Date(date.fullYear,date.month + 1,1);
+				/*@I4053*/				agendaModel.initComboOperadores();
+			/*@F4053*/			}
+			
+			
+			public function modificarEvento():void{				
+				agendaModel.evento = this.adg1.selectedItem;
+				vboxNuevoEvento.width = 400;
+				panelEdit.title = 'Modificar Evento';
+				/*@I4053*/				setDefaultOperator();
+			/*@F4053*/			}
+			
+			public function eliminarEvento():void{
+				vboxNuevoEvento.width = 0;
+				agendaModel.evento = this.adg1.selectedItem;
+				agendaModel.removeEvento();
+			}
+			
+			private function nuevoEvento():void{
+				this.agendaModel.nuevoEvento();
+				vboxNuevoEvento.width = 400;
+				/*@I4053*/				this.chckbAlerta.selected = false;
+				this.cmbOperadores.enabled = false;
+				setDefaultOperator();
+			/*@F4053*/			}
+			
+			/*@I4053*/			private function chckbAlertaClick():void{
+				/*@I4053*/				setDefaultOperator();
+				if(this.chckbAlerta.selected){
+					this.cmbOperadores.enabled = true;
+					this.agendaModel.evento.evento.idOperadorAsignado = Operador(cmbOperadores.selectedItem).codigo;
+				/*@F4053*/				}else{
+					this.agendaModel.evento.evento.idOperadorAsignado = null;
+					this.cmbOperadores.enabled = false;
+				}
+			}
+			private function cmbOperadoresChange():void{
+				if(this.chckbAlerta.selected){
+					this.agendaModel.evento.evento.idOperadorAsignado = Operador(cmbOperadores.selectedItem).codigo;
+				}
+			}
+			private function setDefaultOperator():void{
+				var idOperadorAsigTemp:Number;
+				if(this.agendaModel.evento && this.agendaModel.evento.evento.idOperadorAsignado){
+					idOperadorAsigTemp = this.agendaModel.evento.evento.idOperadorAsignado;
+				}else{
+					idOperadorAsigTemp = Application.application.parameters.codigoOperador;
+				}
+				
+				if(this.agendaModel.arrayOperadores && this.agendaModel.arrayOperadores.length > 0){
+					for each (var element:Operador in this.agendaModel.arrayOperadores)
+					{
+						if(element.codigo == idOperadorAsigTemp)
+						{
+							cmbOperadores.selectedItem = element;
+							break;
+						}
+					}
+				}else{
+					this.agendaModel.evento.evento.idOperadorAsignado = null;
+				}
+			}
+			/*@F4053*/			
+			public function labelFunctionEvento(data:Object):String{
+				
+				/*@I4053*/				return '<FONT FACE="Verdana" SIZE="12" COLOR="#FF0000" LETTERSPACING="0" KERNING="0"><B>'+dateFormatter.format(data.evento.fechaEvento)+'</B></FONT></P>' 
+					+ '\n' + 
+					'<FONT FACE="Verdana" SIZE="12" COLOR="#FF0000" LETTERSPACING="0" KERNING="0"><B>'+data.evento.descripcion+'</B></FONT></P>'
+					+ '\n' + 
+					data.evento.comentario;
+			/*@F4053*/			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Resize id="resize"/>
+	<maps:AgendaModelMap/>
+	<mate:Listener  receive="{ this.agendaModel.verificarMostrarAgenda()}" type="verificarMostrarAgenda"/>
+	<mx:HBox  horizontalAlign="center" height="100%" width="100%" backgroundColor="#F8F2F2" visible="{agendaModel.mostrarPanel}"  verticalAlign="middle">
+		
+		<mx:HBox horizontalGap="0" height="100%" width="100%">
+			<mx:VBox label="Eventos" width="100%" height="100%" horizontalAlign="center">
+				<mx:Panel width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" title="Eventos">
+					<mx:HRule width="100%"/>
+					<mx:HBox >
+						<mx:Label text="Fecha Desde"/>
+						<date:DateFiledMultiLan id="fechaDesde" formatString="DD/MM/YYYY" />
+						<mx:Label text="Fecha Hasta"/>
+						<date:DateFiledMultiLan id="fechaHasta"  formatString="DD/MM/YYYY" />
+						<mx:Button label="Buscar"   click="this.agendaModel.buscarEventos(fechaDesde.selectedDate,fechaHasta.selectedDate)"/>
+					</mx:HBox>
+					<mx:HRule width="100%"/>
+					<mx:AdvancedDataGrid id="adg1" designViewDataType="flat"   
+										 dataProvider="{agendaModel._arrayEventos}" width="100%"  height="100%">
+						<mx:columns>
+							<mx:AdvancedDataGridColumn headerText="Comentario" width="500" >
+								<mx:itemRenderer>
+									<mx:Component>
+										<mx:TextArea height="100" htmlText="{outerDocument.labelFunctionEvento(data)}" editable="false"/>
+									</mx:Component>
+								</mx:itemRenderer>
+							</mx:AdvancedDataGridColumn>
+						</mx:columns>
+					</mx:AdvancedDataGrid>
+					<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="right">
+						<mx:Button label="Nuevo Evento" click="nuevoEvento(),panelEdit.title = 'Nuevo Evento'"/>	
+					</mx:HBox>
+				</mx:Panel>
+			</mx:VBox>
+			<mx:HBox id="vboxNuevoEvento" resizeEffect="{resize}" label="Agregar Evento" width="0" height="100%" horizontalAlign="center">
+				<mx:Panel width="100%" height="100%" id="panelEdit" layout="vertical" horizontalAlign="center" verticalAlign="middle">
+					<mx:VBox width="100%" height="100%">
+						<mx:Form  width="299">
+							<mx:HBox>
+								<mx:Label text="Fecha Evento"/>
+								<!--@I4053-->					         <date:DateFiledMultiLan id="fechaEvento" editable="false" selectedDate="{agendaModel.evento.evento.fechaEvento}"  change="this.agendaModel.evento.evento.fechaEvento = fechaEvento.selectedDate" formatString="DD/MM/YYYY" />      	
+							<!--@F4053-->					     </mx:HBox>
+							<mx:HBox>
+								<mx:Label text="Descripcion"/>
+								<mx:TextInput id="txtDescripcion" text="{agendaModel.evento.evento.descripcion}" change="agendaModel.evento.evento.descripcion = txtDescripcion.text"/>  	
+							</mx:HBox>
+							<!--@I4053-->						 <mx:HBox>
+																	 <mx:Label text="Alerta"/>
+																	 <!--@I4053-->							 <mx:CheckBox id="chckbAlerta" click="{chckbAlertaClick();}"/>
+																	 <!--@F4053-->							 <mx:Label text="Operador"/>
+																	 <mx:ComboBox id="cmbOperadores" prompt="Seleccione..." change="{cmbOperadoresChange();}" enabled="false"
+																				  dataProvider="{agendaModel.arrayOperadores}" labelField="username" />
+																 </mx:HBox>
+						<!--@F4053-->					</mx:Form>
+						<mx:VBox height="100%" width="100%">
+							<mx:Label text="Comenarios" fontStyle="italic"  />  
+							<mx:RichTextEditor id="txtComentarios" htmlText="{agendaModel.evento.evento.comentario}" borderThicknessTop="0" width="100%" height="100%">
+								
+							</mx:RichTextEditor>
+						</mx:VBox>
+					</mx:VBox>
+					<mx:HBox>
+						<mx:Button label="Guardar" click="this.agendaModel.guardarEvento(txtComentarios.htmlText),vboxNuevoEvento.width = 0"/>
+						<mx:Button label="Cancelar" click="vboxNuevoEvento.width = 0"/>					
+					</mx:HBox>					
+				</mx:Panel>
+			</mx:HBox>
+		</mx:HBox>
+		
+	</mx:HBox>
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+	
+	
+</VboxComun>

@@ -1,0 +1,230 @@
+package com.bizitglobal.tarjetafiel.commons.util;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+/*@I4877*/import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+/*@F4877*/import java.util.Calendar;
+import java.io.FileOutputStream;
+import org.apache.log4j.Logger;
+import java.io.InputStream;
+
+
+public class Archivo {
+	private static final Logger log = Logger.getLogger(Archivo.class);
+	public static final String archivosDeProveedores= "proveedores/docAdjuntos";
+	public static final String archivosDeIndividuos= "individuos/docAdjuntos";
+	public static final String archivosDeIndividuosNuevos= "individuos/docAdjuntosNuevos";
+	public static final String archivosDeContabilidad = "contabilidad/docAdjuntos";
+	public static final String archivosDeTransacciones = "transacciones/docAdjuntos";
+	public static final String archivosListasDePrecios = "listasDePrecios/docAdjuntos";
+/*@I4629*/	public static final String archivosDeCierreCuentaCliente = "cierreCuentaCliente/docAdjuntos";
+/*@F4629*/		
+
+private static Calendar calendar;
+	
+	/* Los archivos se grabaran en la ubicacion [key]/[prop.getProperties(directorioArchivos)]/[directorioInmediato]/[nombreArchivo]
+	*  donde [key] = el valor de la variable de sistema catalina.home
+	*        [prop.getProperties(directorioArchivos)] = directorio definido en el archivo Contexto.properties
+	*        [directorioInmediato] = directorio pasado por parametro al metodo, dando flexibilidad en la estructura
+	*        [nombreArchivo] = secrea en funcion de la fecha y el tamaño del archivo.
+	*/
+	
+	public static void crearDirectorio(String path) {
+		File archivo = new File(path);
+		if (!archivo.exists()) {
+			archivo.mkdir();
+			log.info("Se ha creado el directorio: "+ path);
+		}
+		
+	}
+	
+	/**
+	 * Este metodo recorre el path pasado por parametro y crea la estructura de carpetas existentes en el.
+	 * @deprecated use crearEstructuraDirectoriosCompleta en cambio de este metodo
+	 */
+	public static void crearEstructuraDirectorios(String path) {
+		String aux = "";
+		for (int i = 0; i<path.length(); i++) {
+			char charcito = path.charAt(i);
+			if (charcito=='/'||charcito=='\\'&& i!=0) {
+				crearDirectorio(aux);
+			}
+			aux = aux + charcito;
+		}
+		crearDirectorio(aux);
+	}
+	
+	/**
+	 * @id: 4655
+	 * Method: crearEstructuraDirectoriosCompleta
+	 * Description: Crea estructura de directorios completa (Reemplaza a crearEstructuraDirectorios)  
+	 * @param path
+	 */
+	public static void crearEstructuraDirectoriosCompleta(String path){
+		File archivo = new File(path);
+		archivo.mkdirs();
+	}
+	
+	public static String grabarArchivo(InputStream in, String name, int maxUploadFile, String directorioInmediato){ 
+		try {
+			calendar = Calendar.getInstance();
+			String nameImage = calendar.getTime().getTime() + "-" + name;
+			String key;
+			key = "catalina.home";
+			key = System.getProperty(key);
+			log.info(key +"/webapps/contexto.properties");
+			PropertieFile prop = new PropertieFile(key + "/webapps/contexto.properties");
+            
+			File file = new File(key +"/" + prop.getProperties("directorioArchivos") + "/" + directorioInmediato + "/" + nameImage);
+			log.info("Ejecutando Guardar el archivo");
+			if (directorioInmediato!=null && directorioInmediato.compareTo("")!=0) {
+				String pa = key +"/" + prop.getProperties("directorioArchivos")+ "/" + directorioInmediato;
+                crearEstructuraDirectorios(pa);		
+			}
+			BufferedInputStream inputStream = new BufferedInputStream(in);
+			BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
+			log.info("Tamaño Archivo: " + maxUploadFile);
+			byte[] buffer = new byte[maxUploadFile];
+			int count = 0;
+			while ((count = inputStream.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, count);
+			}
+			
+			log.info("Cerramos los buffer de input y ouput Stream.");
+			inputStream.close();
+			outputStream.close();
+			
+			return nameImage;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "No grabo";
+		}
+	}
+	
+	
+	public static String grabarArchivoEco(InputStream in, String name, int maxUploadFile){ 
+		try {
+			String directorioInmediato = "eco";
+			String key;
+			key = "catalina.home";
+			key = System.getProperty(key);
+			log.info(key +"/webapps/contexto.properties");
+			PropertieFile prop = new PropertieFile(key + "/webapps/contexto.properties");
+            
+			File file = new File(key +"/" + prop.getProperties("directorioArchivos") + "/" + directorioInmediato + "/" + name);
+			log.info("Ejecutando Guardar el archivo");
+			if (directorioInmediato!=null && directorioInmediato.compareTo("")!=0) {
+				String pa = key +"/" + prop.getProperties("directorioArchivos")+ "/" + directorioInmediato;
+                crearEstructuraDirectorios(pa);		
+			}
+			BufferedInputStream inputStream = new BufferedInputStream(in);
+			BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
+			log.info("Tamaño Archivo: " + maxUploadFile);
+			byte[] buffer = new byte[maxUploadFile];
+			int count = 0;
+			while ((count = inputStream.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, count);
+			}
+			
+			log.info("Cerramos los buffer de input y ouput Stream.");
+			inputStream.close();
+			outputStream.close();
+			String ruta = key +"/" + prop.getProperties("directorioArchivos") + "/" + directorioInmediato + "/" + name;
+			return ruta;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "No grabo";
+		}
+	}
+	
+	
+	
+	/**
+	 * Este método graba una liquidacion de clientes, en el directorio asignado que ha sido configurado en el contexto.properties
+	 * @param in El archivo a guardar
+	 * @param name El nombre del archivo a guardar
+	 * @param maxUploadFile Tamaño maximo archivo.
+	 * */
+	public static String grabarLiquidaciones(InputStream in, String name, int maxUploadFile) { 
+		try {
+			String key;
+			key = "catalina.home";
+			key = System.getProperty(key);
+			log.info(key +"/webapps/contexto.properties");
+			PropertieFile prop = new PropertieFile(key + "/webapps/contexto.properties");
+            
+			File file = new File(key +"/" + prop.getProperties("directorioLiquidacionesClientes") + "/" + name);
+			String pa = key +"/" + prop.getProperties("directorioLiquidacionesClientes");
+            crearEstructuraDirectorios(pa);		
+			
+            
+            BufferedInputStream inputStream = new BufferedInputStream(in);
+			BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
+			log.info("Tamaño Archivo: " + maxUploadFile);
+			byte[] buffer = new byte[maxUploadFile];
+			int count = 0;
+			while ((count = inputStream.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, count);
+			}
+			
+			log.info("Cerramos los buffer de input y ouput Stream.");
+			inputStream.close();
+			outputStream.close();
+			
+			return name;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "No grabo";
+		}
+	}
+/*@I4877*/	
+	/**
+	 * Este método auxiliar que elimina el contenido (subdirectorios y archivos) de un directorio en forma recursiva
+	 * */
+	private static void RecursionBorrarDirectorio (File directorio){
+		  File [] ficheros = directorio.listFiles();  
+		  for (int i=0;i<ficheros.length;i++){
+			  if (ficheros[i].isDirectory()){
+				  RecursionBorrarDirectorio(ficheros[i]);
+			  }
+			  else{
+				  ficheros[i].delete();
+			  }
+		  }
+	}
+	
+	/**
+	 * Este método principal que elimina el directorio y todo su contenido
+	 * */
+	public static void borrarDirectorio(String sdir){
+		File fdir = new File(sdir);
+		RecursionBorrarDirectorio(fdir);
+		fdir.delete();
+	}
+	
+	/**
+	 * Este método copia un archivo
+	 * @param origen ruta completa del archivo a copiar (origen = directorio_absoluto1/nombre_archivo1)
+	 * @param destino ruta completa de la copia (destino = directorio_absoluto2/nombre_archivo2)
+	 * */
+	public static void copiarArchivo(String origen, String destino) throws IOException{
+		InputStream in = new FileInputStream(origen);
+		OutputStream out = new FileOutputStream(destino);
+		
+		byte[] buf = new byte[1024];
+		int len;
+		
+		while ((len = in.read(buf)) > 0) {
+			out.write(buf, 0, len);
+		}  
+		in.close();
+		out.close();
+	}
+/*@F4877*/	
+}

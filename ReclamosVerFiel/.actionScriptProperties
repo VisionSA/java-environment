@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<actionScriptProperties analytics="false" mainApplicationPath="ReclamosVerFiel.mxml" projectUUID="09be57a5-d90d-4b54-816a-6f0716b57124" version="6">
+  <compiler additionalCompilerArguments="-locale en_US -services config\services-config-server.xml" autoRSLOrdering="false" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderLocation="DOCUMENTS/Presentacion/src/main/webapp" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+    <compilerSourcePath/>
+    <libraryPath defaultLinkType="1">
+      <libraryPathEntry kind="4" path=""/>
+      <libraryPathEntry kind="1" linkType="1" path="libs"/>
+      <libraryPathEntry kind="3" linkType="1" path="/FielLib/bin/FielLib.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/BizitLib/bin/BizitLib.swc" useDefaultLinkType="false"/>
+    </libraryPath>
+    <sourceAttachmentPath/>
+  </compiler>
+  <applications>
+    <application path="ReclamosVerFiel.mxml"/>
+  </applications>
+  <modules>
+    <module application="src/ProcesaPagoFacil.mxml" destPath="modules/pagofacil/ProcesarPagoFacilModule.swf" optimize="false" sourcePath="src/modules/pagofacil/ProcesarPagoFacilModule.mxml"/>
+    <module application="src/ReclamosVerFiel.mxml" destPath="modules/notaCreditoDebitos/NotaCreditoConsumo.swf" optimize="true" sourcePath="src/modules/notaCreditoDebitos/NotaCreditoConsumo.mxml"/>
+    <module application="src/ProcesaPagoFacil.mxml" destPath="modules/pagofacil/ProcesarPagoFarmacia.swf" optimize="false" sourcePath="src/modules/pagofacil/ProcesarPagoFarmacia.mxml"/>
+    <module application="src/ReclamosVerFiel.mxml" destPath="modules/notaCreditoDebitos/NotaCreditoDebitoConIva.swf" optimize="true" sourcePath="src/modules/notaCreditoDebitos/NotaCreditoDebitoConIva.mxml"/>
+    <module application="src/ReclamosVerFiel.mxml" destPath="modules/notaCreditoDebitos/NotaDebitoPago.swf" optimize="true" sourcePath="src/modules/notaCreditoDebitos/NotaDebitoPago.mxml"/>
+  </modules>
+  <buildCSSFiles/>
+</actionScriptProperties>

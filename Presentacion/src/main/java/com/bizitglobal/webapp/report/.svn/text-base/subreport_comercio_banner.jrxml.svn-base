@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="subreport_comercio_banner"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="595"
+		 pageHeight="142"
+		 columnWidth="478"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="cod_comercio" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[select distinct  nvl(codc.c_codigo_posnet,'0') c_codigo_posnet
+    from t_vis_gen_empresas emp
+    inner join t_vis_gen_suc_empresas suc on suc.c_id_empresa = emp.c_id_empresa
+    inner join t_vis_tra_cod_comercios codc on codc.c_id_sucursal=suc.c_id_sucursal
+    inner join t_vis_tra_comercios_lista_prec coml on coml.c_id_cod_comercio=codc.c_id_cod_comercio and coml.c_fecha_baja is null
+    inner join t_vis_tra_lista_precios lp on lp.c_id_listaprecios=  coml.c_id_listaprecios 
+    inner join t_vis_tra_lista_precios_ver LPVER on lpver.c_id_lista_precio= lp.c_id_listaprecios
+    INNER JOIN t_vis_tra_lista_precios_item LPITE ON lpite.c_id_lista_precio_version=lpver.c_id_lista_precio_version
+    INNER JOIN t_vis_gen_domicilios DOM ON dom.c_id_domicilio= suc.c_id_domicilio
+    inner join t_vis_gen_localidades loc on loc.c_id_localidad= dom.c_id_localidad
+    where codc.c_estado='H' AND  coml.c_id_listaprecios in(34,241) and codc.c_codigo_posnet=$P{cod_comercio}]]></queryString>
+
+	<field name="C_CODIGO_POSNET" class="java.lang.String"/>
+
+		<background>
+			<band height="142"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="142"  isSplitAllowed="true" >
+				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="0"
+						width="515"
+						height="142"
+						key="image-1"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA["http://192.168.0.7:8080/Presentacion/img/fiel/banner_comercio.jpg"]]></imageExpression>
+				</image>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

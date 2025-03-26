@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" layout="vertical" width="100%" height="100%"
+		   currentState="{modelo.estadoBuscarLiqComercio}" 
+		   xmlns:customComponent="com.bizit.consulta.web.view.customComponent.*"
+		   initialize="module_initializeHandler(event)" xmlns:comercio="com.bizit.consulta.web.view.module.comercio.*">
+
+	
+	
+	<fx:Declarations>
+		<mx:DateValidator id="vFechaValidator" source="{dfFechaFiel}" property="selectedDate"
+						  required="true" requiredFieldError="La fecha desde es obligatoria"/>
+		<mx:CurrencyFormatter id="cfMonedaFormatter" alignSymbol="left" currencySymbol="$" 
+							  decimalSeparatorFrom="." decimalSeparatorTo=","
+							  thousandsSeparatorFrom="" thousandsSeparatorTo="."
+							  precision="2" useNegativeSign="true" useThousandsSeparator="true"/>
+		<mx:DateFormatter id="dfFechaFormatter" formatString="DD/MM/YYYY"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.bizit.consulta.web.event.ComercioEvent;
+			import com.bizit.consulta.web.model.FielWebModelLocator;
+			import com.bizit.consulta.web.utils.ConstantesEstados;
+			import com.bizit.consulta.web.utils.ManejadorMensajes;
+			import com.bizit.consulta.web.utils.ManejadorPantallas;
+			import com.bizit.consulta.web.view.module.ViewConsultaComercioModule;
+			import com.bizit.consulta.web.view.renderer.ArchivosPdfLiquidacionRenderer;
+			import com.bizit.consulta.web.vo.SetDataVo;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ValidationResultEvent;
+			
+			[Bindable]
+			private var modelo:FielWebModelLocator = FielWebModelLocator.getInstance();
+			
+			private var effectDuration:int = 4000;
+			
+			private var nombreArchivoPdf:String = null;
+			
+			private var nombreArchivoTxt:String = null;
+			
+			protected function btnBuscarLiq_clickHandler(event:MouseEvent):void
+			{
+				if (filtroValido())
+				{
+					ManejadorPantallas.mostrarProgressBar();
+					new ComercioEvent(ComercioEvent.BUSCAR_LIQ_COMERCIO_EVENT, dfFechaFiel.selectedDate).dispatch();
+				}
+			}
+			
+			private function filtroValido():Boolean
+			{
+				var resEv:ValidationResultEvent = vFechaValidator.validate();
+				if (resEv.type == ValidationResultEvent.INVALID )
+				{
+					return false;
+				}
+				return true;
+			}
+			
+			protected function sttResultados_enterStateHandler(event:FlexEvent):void
+			{
+				dgLiquidacionesCom.invalidateDisplayList();
+				dgLiquidacionesCom.validateNow();
+			}
+			
+			private function grid_labelFunc_Number(item:Object, column:AdvancedDataGridColumn):String 
+			{
+				var formatted:String = cfMonedaFormatter.format(item[column.dataField]);
+				return formatted;
+			}
+			
+			private function grid_labelFunc_Si_No(item:Object, column:AdvancedDataGridColumn):String 
+			{
+				if (String(item[column.dataField]).toUpperCase() == 'N')
+				{
+					return "No";
+				}
+				else
+				{
+					return "SI";
+				}
+			}
+			
+			private function grid_labelFunc_Periodos(item:Object, column:AdvancedDataGridColumn):String 
+			{
+				return dfFechaFormatter.format(item.perDesde) + " - " + dfFechaFormatter.format(item.perHasta);
+			}
+			
+/*@I4148*/			private function grid_labelFunc_FechaLiq(item:Object, column:AdvancedDataGridColumn):String 
+			{
+				return dfFechaFormatter.format(item.fechaLiq);
+			} 
+			
+/*@F4148*/			
+			protected function sttGuardar_enterStateHandler(event:FlexEvent):void
+			{
+				ManejadorMensajes.mostrarMensajeOkCancel("¿Desea guardar el archivo " + this.nombreArchivoPdf + "?", doActionPdf);			
+			}
+			
+			
+			private function doActionPdf(eventObj:CloseEvent):void
+			{
+				if (eventObj.detail==Alert.OK)
+				{
+					var pdfFile:FileReference = new FileReference();
+					pdfFile.save(modelo.byteArrayPdf, nombreArchivoPdf + ".pdf");
+				}
+			}
+			
+			public function setNombreArchivoPdf(nombre:String):void
+			{
+				if (nombre != null)
+				{
+					this.nombreArchivoPdf = nombre.substr(nombre.lastIndexOf("/")+1, nombre.length - (nombre.lastIndexOf("/")+1));
+				}
+			}
+			
+			public function setNombreArchivoTxt(liquidacion:String):void
+			{
+				if (liquidacion != null)
+				{
+					this.nombreArchivoTxt = liquidacion;
+				}
+			}
+			
+			private function doActionTxt(eventObj:CloseEvent):void
+			{
+				if (eventObj.detail==Alert.OK)
+				{
+					var txtFile:FileReference = new FileReference();
+					txtFile.save(modelo.byteArrayTxt, "Liquidacion_" + nombreArchivoTxt + ".txt");
+				}
+			}
+			
+			private function btnCerrar_clickHandler(event:MouseEvent):void
+			{
+				new SetDataVo("listaLiqComercios", new ArrayCollection()).guardarValor();
+				ArrayCollection(dgLiquidacionesCom.dataProvider).refresh();
+				dgLiquidacionesCom.invalidateDisplayList();
+				dgLiquidacionesCom.validateNow();
+				dfFechaFiel.selectedDate = null;
+				new SetDataVo("estadoBuscarLiqComercio", ConstantesEstados.BUSCAR_LIQ_COMERCIO_STATE).guardarValor();
+				ViewConsultaComercioModule(parentDocument).unloadContentModule();
+			}
+			
+			protected function sttGuardarTxt_enterStateHandler(event:FlexEvent):void
+			{
+				ManejadorMensajes.mostrarMensajeOkCancel("¿Desea guardar el archivo txt de la liquidación Nº " + nombreArchivoTxt  + "?", doActionTxt);
+			}
+			
+			protected function module_initializeHandler(event:FlexEvent):void
+			{
+				new SetDataVo("estadoBuscarLiqComercio", ConstantesEstados.BUSCAR_LIQ_COMERCIO_STATE).guardarValor();
+			}
+			
+			private function ordenarPeriodo(obj1:Object, obj2:Object):int
+			{
+				var d1:Number = (new Date(Date.parse(obj1.perDesde))).getTime();
+				var d2:Number = (new Date(Date.parse(obj2.perDesde))).getTime();
+				if(d1 < d2) {
+					return -1;
+				} else if(d1 == d2) {
+					return 0;
+				}
+				return 1;
+			}
+			
+			public function ordenarMontoGen(field:String):Function
+			{
+				return function(obj1:Object, obj2:Object):int
+				{
+					return ordenarMontos(obj1[field], obj2[field]);
+				}
+			}  
+			
+			private function ordenarMontos(obj1:Object, obj2:Object):int
+			{
+				if(Number(obj1) < Number(obj2)) {
+					return -1;
+				} else if(Number(obj1) == Number(obj2)) {
+					return 0;
+				}
+				return 1;
+			}		
+			
+		]]>
+	</fx:Script>
+	
+	<mx:states>
+		<s:State name="buscarLiqState" id="sttBuscar"/>
+		<s:State name="resultadosLiqState" id="sttResultados" enterState="sttResultados_enterStateHandler(event)"/>
+		<s:State name="guardarArchivoState" id="sttGuardar" enterState="sttGuardar_enterStateHandler(event)"/>
+		<s:State name="guardarTxtState" id="sttGuardarTxt" enterState="sttGuardarTxt_enterStateHandler(event)"/>
+	</mx:states>	
+	<s:VGroup width="100%" height="100%">
+		<s:BorderContainer width="100%"  backgroundColor="#A2C1FF" backgroundAlpha="0.31" height="35">
+			<s:layout>
+				<s:HorizontalLayout verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5"/>
+			</s:layout>
+			<s:Label id="lblFecha" text="Fecha desde: "/>
+			<customComponent:FielDateField id="dfFechaFiel"/>
+			<s:Button id="btnBuscarLiq" label="Buscar" click="btnBuscarLiq_clickHandler(event)"/>
+			<s:HGroup width="100%" horizontalAlign="right">
+				<mx:LinkButton id="btnCerrar" label="Cerrar" click="btnCerrar_clickHandler(event)"/>
+			</s:HGroup>
+		</s:BorderContainer>
+		
+		<mx:AdvancedDataGrid id="dgLiquidacionesCom" dataProvider="{modelo.listaLiqComercios}"
+							 width="100%" height="100%"
+							 visible="true" includeInLayout="true"
+							 visible.buscarLiqState="false" includeInLayout.buscarLiqState="false"
+							 visible.resultadosLiqState="true" includeInLayout.resultadosLiqState="true"
+							 alternatingItemColors="{['#cee2ff','#84b5ff']}" 
+							 sortableColumns="true" draggableColumns="false"
+							 headerRenderer="com.bizit.consulta.web.view.renderer.GridHeaderRenderer"
+							 rollOverColor="0x007AC0" textRollOverColor="white" selectionColor="0x007AC0"
+							 textSelectedColor="white">
+			<mx:columns>
+<!--@I4148-->				<mx:AdvancedDataGridColumn headerText="Fecha Liquidación" labelFunction="grid_labelFunc_FechaLiq" dataField="fechaLiq" textAlign="center" />
+<!--@F4148-->				<mx:AdvancedDataGridColumn headerText="Periodo" labelFunction="grid_labelFunc_Periodos" textAlign="center" 
+										   width="150" sortCompareFunction="ordenarPeriodo"/>
+<!--@I4148-->				<!--<mx:AdvancedDataGridColumn headerText="Lista de precio" dataField="listaPrecio" width="150" />-->
+<!--@F4148-->				<mx:AdvancedDataGridColumn headerText="Nº Liquidación" dataField="idLiqComercio" textAlign="center" />
+<!--@I4148-->	
+<!--@I4923-->					<mx:AdvancedDataGridColumn headerText="Código Posnet" dataField="codPosnet" textAlign="center" />
+<!--@F4923-->					<mx:AdvancedDataGridColumn headerText="PDF Liquidación" dataField="guardarEn" 
+										   itemRenderer="com.bizit.consulta.web.view.renderer.ArchivosPdfLiquidacionRenderer"  
+										   textAlign="center"  width="120" sortable="false"/>
+				<!--<mx:AdvancedDataGridColumn headerText="Total Bruto" dataField="totalBruto" labelFunction="grid_labelFunc_Number" 
+										   textAlign="right" sortCompareFunction="{ordenarMontoGen('totalBruto')}"/>
+				<mx:AdvancedDataGridColumn headerText="Total Neto" dataField="totalNeto" labelFunction="grid_labelFunc_Number" 
+										   textAlign="right" sortCompareFunction="{ordenarMontoGen('totalNeto')}"/>
+				<mx:AdvancedDataGridColumn headerText="Total Pagar" dataField="totalPagos" labelFunction="grid_labelFunc_Number" 
+										   textAlign="right" sortCompareFunction="{ordenarMontoGen('totalPagos')}"/>-->
+<!--@F4148-->				<mx:AdvancedDataGridColumn headerText="TXT Liquidacion" itemRenderer="com.bizit.consulta.web.view.renderer.ArchivoTxtLiquidacionRenderer"  
+										   textAlign="center" sortable="false" />
+			</mx:columns>
+		</mx:AdvancedDataGrid>
+	</s:VGroup>
+</mx:Module>

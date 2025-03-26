@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="SubDiarioDetallado_ComExel"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="1034"
+		 pageHeight="28346371"
+		 columnWidth="1034"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 isIgnorePagination="true">
+	<property name="net.sf.jasperreports.print.keep.full.text" value="true" />
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true" />
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true" />
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false" />
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.bizitglobal.webapp.faces.beans.util.*" />
+	<import value="net.sf.jasperreports.engine.design.JasperDesign" />
+
+	<parameter name="Fecha_desde" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="Fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="URLImagen" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[select to_date(to_char(fecha,'DD/MM/YY'),'DD/MM/YY') AS FECHA, 'Arancel' tipo,c_id_liq_comercio as Comprobante,c_id_cod_comercio Cod_Comercio, max(nombre) Nombre,
+c_descripcion Concepto, sum(total) Total, sum(iva) IVA,((sum(total)) - (SUM(iva)))  Importe_Neto ,c_id_tranascciones
+from
+(
+
+select to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') as Fecha ,det.c_nombre, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social nombre, con.c_descripcion, con.c_id_concepto,
+sum(cta.c_importe) as Total, cta.c_id_tranascciones,
+(case when det.c_id_tipo_concepto_det = 3 then sum(cta.c_importe) else 0 end) as iva,det.c_id_tipo_concepto_det CondIva
+FROM t_vis_tra_ctacte_comercios cta 
+left join t_vis_tra_conceptos_detalle det on cta.c_id_concepto_detalle = det.c_id_concepto_detalle
+left join t_vis_tra_conceptos con on det.c_id_concepto = con.c_id_concepto
+left join t_vis_tra_cod_comercios cli on cta.c_id_cod_comercio = cli.c_id_cod_comercio
+left join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cli.c_id_sucursal
+
+left join t_vis_gen_empresas emp on suc.c_id_empresa = emp.c_id_empresa
+where trunc(cta.c_fecha_facturacion) between $P{Fecha_desde} and $P{Fecha_hasta} /* trunc(to_date('25/01/2010','DD/MM/YYYY')) and trunc(to_date('26/01/2010','DD/MM/YYYY'))*/ and cta.c_id_liq_comercio is not null
+and det.c_id_concepto_detalle in (20,21)
+GROUP by cta.c_id_tranascciones, to_date(cta.c_fecha_facturacion,'DD/MM/YYYY'), det.c_nombre, det.c_id_tipo_concepto_det, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social, con.c_descripcion, con.c_id_concepto
+Order by con.c_descripcion ,cta.c_id_liq_comercio)
+GROUP by c_id_cod_comercio, fecha,c_id_liq_comercio, c_descripcion ,c_id_tranascciones 
+HAVING sum(iva) > 0
+
+union
+
+select to_date(to_char(fecha,'DD/MM/YY'),'DD/MM/YY') AS FECHA, 'Promo Comercio' tipo,c_id_liq_comercio as Comprobante,c_id_cod_comercio Cod_Comercio, max(nombre) Nombre,
+c_descripcion Concepto, sum(total) Total, sum(iva) IVA,((sum(total)) - (SUM(iva)))  Importe_Neto ,c_id_tranascciones
+from
+(
+
+select to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') as Fecha ,det.c_nombre, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social nombre, con.c_descripcion, con.c_id_concepto,
+sum(cta.c_importe) as Total, cta.c_id_tranascciones,
+(case when det.c_id_tipo_concepto_det = 3 then sum(cta.c_importe) else 0 end) as iva,det.c_id_tipo_concepto_det CondIva
+FROM t_vis_tra_ctacte_comercios cta 
+left join t_vis_tra_conceptos_detalle det on cta.c_id_concepto_detalle = det.c_id_concepto_detalle
+left join t_vis_tra_conceptos con on det.c_id_concepto = con.c_id_concepto
+left join t_vis_tra_cod_comercios cli on cta.c_id_cod_comercio = cli.c_id_cod_comercio
+left join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cli.c_id_sucursal
+
+left join t_vis_gen_empresas emp on suc.c_id_empresa = emp.c_id_empresa
+where trunc(cta.c_fecha_facturacion) between $P{Fecha_desde} and $P{Fecha_hasta} /* trunc(to_date('25/01/2010','DD/MM/YYYY')) and trunc(to_date('26/01/2010','DD/MM/YYYY'))*/ and cta.c_id_liq_comercio is not null
+and det.c_id_concepto_detalle in (869,870)
+GROUP by cta.c_id_tranascciones, to_date(cta.c_fecha_facturacion,'DD/MM/YYYY'), det.c_nombre, det.c_id_tipo_concepto_det, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social, con.c_descripcion, con.c_id_concepto
+Order by con.c_descripcion ,cta.c_id_liq_comercio)
+GROUP by c_id_cod_comercio, fecha,c_id_liq_comercio, c_descripcion ,c_id_tranascciones 
+HAVING sum(iva) > 0
+
+
+union
+
+select to_date(to_char(fecha,'DD/MM/YY'),'DD/MM/YY') AS FECHA, 'Plan Cuotas' tipo,c_id_liq_comercio as Comprobante,c_id_cod_comercio Cod_Comercio, max(nombre) Nombre,
+c_descripcion Concepto, sum(total) Total, sum(iva) IVA,(sum(total) - (SUM(iva))) Importe_Neto ,c_id_tranascciones
+from
+(select to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') as Fecha ,det.c_nombre, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social nombre, con.c_descripcion, con.c_id_concepto,
+sum(cta.c_importe) as Total, cta.c_id_tranascciones,
+(case when det.c_id_tipo_concepto_det = 3 then sum(cta.c_importe) else 0 end) as iva,det.c_id_tipo_concepto_det CondIva
+FROM t_vis_tra_conceptos con
+inner join t_vis_tra_conceptos_detalle det on con.c_id_concepto = det.c_id_concepto
+inner join t_vis_tra_ctacte_comercios cta on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+inner join t_vis_tra_cod_comercios cli on cta.c_id_cod_comercio = cli.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cli.c_id_sucursal
+INNER join t_vis_gen_empresas emp on suc.c_id_empresa = emp.c_id_empresa
+where trunc(cta.c_fecha_facturacion) between $P{Fecha_desde} and $P{Fecha_hasta} /* trunc(to_date('25/01/2010','DD/MM/YYYY')) and trunc(to_date('26/01/2010','DD/MM/YYYY'))*/ and cta.c_id_liq_comercio is not null
+and det.c_id_concepto_detalle in (18,19)
+GROUP by cta.c_id_tranascciones, to_date(cta.c_fecha_facturacion,'DD/MM/YYYY'), det.c_nombre, det.c_id_tipo_concepto_det, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social, con.c_descripcion, con.c_id_concepto
+Order by con.c_descripcion ,cta.c_id_liq_comercio)
+GROUP by c_id_cod_comercio, fecha,c_id_liq_comercio, c_descripcion ,c_id_tranascciones 
+HAVING sum(iva) > 0
+
+union
+
+select to_date(to_char(fecha,'DD/MM/YY'),'DD/MM/YY') AS FECHA, 'IVA Emision Cheque' tipo,c_id_liq_comercio as Comprobante,c_id_cod_comercio Cod_Comercio, max(nombre) Nombre,
+c_descripcion Concepto, (sum(total) ) Total, (sum(iva) ) IVA,((sum(total) - max(iva)) ) Importe_Neto ,c_id_tranascciones
+from
+(select to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') as Fecha ,det.c_nombre, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social nombre, con.c_descripcion, con.c_id_concepto,
+sum(cta.c_importe) as Total, cta.c_id_tranascciones, 
+(case when det.c_id_tipo_concepto_det = 3 then sum(cta.c_importe) else 0 end) as iva,det.c_id_tipo_concepto_det CondIva
+FROM t_vis_tra_conceptos con
+inner join t_vis_tra_conceptos_detalle det on con.c_id_concepto = det.c_id_concepto
+inner join t_vis_tra_ctacte_comercios cta on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+inner join t_vis_tra_cod_comercios cli on cta.c_id_cod_comercio = cli.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cli.c_id_sucursal
+INNER join t_vis_gen_empresas emp on suc.c_id_empresa = emp.c_id_empresa
+where trunc(cta.c_fecha_facturacion) between $P{Fecha_desde} and $P{Fecha_hasta} /* trunc(to_date('25/01/2010','DD/MM/YYYY')) and trunc(to_date('26/01/2010','DD/MM/YYYY'))*/ and cta.c_id_liq_comercio is not null
+and det.c_id_concepto_detalle in (3)
+GROUP by cta.c_id_tranascciones, to_date(cta.c_fecha_facturacion,'DD/MM/YYYY'), det.c_nombre, det.c_id_tipo_concepto_det, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social, con.c_descripcion, con.c_id_concepto
+Order by con.c_descripcion ,cta.c_id_liq_comercio)
+GROUP by c_id_cod_comercio, fecha,c_id_liq_comercio, c_descripcion ,c_id_tranascciones 
+
+union
+
+select to_date(to_char(fecha,'DD/MM/YY'),'DD/MM/YY') AS FECHA, 'Cargo Transf.' tipo,c_id_liq_comercio as Comprobante,c_id_cod_comercio Cod_Comercio, max(nombre) Nombre,
+c_descripcion Concepto, (sum(total) ) Total, (sum(iva) ) IVA,((sum(total) - max(iva)) ) Importe_Neto ,c_id_tranascciones
+from
+(select to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') as Fecha ,det.c_nombre, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social nombre, con.c_descripcion, con.c_id_concepto,
+sum(cta.c_importe) as Total, cta.c_id_tranascciones, 
+(case when det.c_id_tipo_concepto_det = 3 then sum(cta.c_importe) else 0 end) as iva,det.c_id_tipo_concepto_det CondIva
+FROM t_vis_tra_conceptos con
+inner join t_vis_tra_conceptos_detalle det on con.c_id_concepto = det.c_id_concepto
+inner join t_vis_tra_ctacte_comercios cta on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+inner join t_vis_tra_cod_comercios cli on cta.c_id_cod_comercio = cli.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cli.c_id_sucursal
+INNER join t_vis_gen_empresas emp on suc.c_id_empresa = emp.c_id_empresa
+where trunc(cta.c_fecha_facturacion) between $P{Fecha_desde} and $P{Fecha_hasta} /* trunc(to_date('25/01/2010','DD/MM/YYYY')) and trunc(to_date('26/01/2010','DD/MM/YYYY'))*/ and cta.c_id_liq_comercio is not null
+and det.c_id_concepto_detalle in (193, 322) 
+GROUP by cta.c_id_tranascciones, to_date(cta.c_fecha_facturacion,'DD/MM/YYYY'), det.c_nombre, det.c_id_tipo_concepto_det, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social, con.c_descripcion, con.c_id_concepto
+Order by con.c_descripcion ,cta.c_id_liq_comercio)
+GROUP by c_id_cod_comercio, fecha,c_id_liq_comercio, c_descripcion ,c_id_tranascciones
+
+
+union
+
+select to_date(to_char(fecha,'DD/MM/YY'),'DD/MM/YY') AS FECHA, 'Cargo Emisión Cheques' tipo,c_id_liq_comercio as Comprobante,c_id_cod_comercio Cod_Comercio, max(nombre) Nombre,
+c_descripcion Concepto, (sum(total) ) Total, (sum(iva) ) IVA,((sum(total) - max(iva))) Importe_Neto ,c_id_tranascciones
+from
+(select to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') as Fecha ,det.c_nombre, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social nombre, con.c_descripcion, con.c_id_concepto,
+sum(cta.c_importe) as Total , cta.c_id_tranascciones,
+(case when det.c_id_tipo_concepto_det = 3 then sum(cta.c_importe) else 0 end) as iva,det.c_id_tipo_concepto_det CondIva
+FROM t_vis_tra_conceptos con
+inner join t_vis_tra_conceptos_detalle det on con.c_id_concepto = det.c_id_concepto
+inner join t_vis_tra_ctacte_comercios cta on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+inner join t_vis_tra_cod_comercios cli on cta.c_id_cod_comercio = cli.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cli.c_id_sucursal
+INNER join t_vis_gen_empresas emp on suc.c_id_empresa = emp.c_id_empresa
+where trunc(cta.c_fecha_facturacion) between $P{Fecha_desde} and $P{Fecha_hasta} /* trunc(to_date('25/01/2010','DD/MM/YYYY')) and trunc(to_date('26/01/2010','DD/MM/YYYY'))*/ and cta.c_id_liq_comercio is not null
+and det.c_id_concepto_detalle in (196, 323)
+GROUP by cta.c_id_tranascciones ,to_date(cta.c_fecha_facturacion,'DD/MM/YYYY'), det.c_nombre, det.c_id_tipo_concepto_det, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social, con.c_descripcion, con.c_id_concepto
+Order by con.c_descripcion ,cta.c_id_liq_comercio)
+GROUP by c_id_cod_comercio, fecha,c_id_liq_comercio, c_descripcion ,c_id_tranascciones 
+
+union
+
+select to_date(to_char(fecha,'DD/MM/YY'),'DD/MM/YY') AS FECHA, 'NC Consumo Comercio' tipo,c_id_liq_comercio as Comprobante,c_id_cod_comercio Cod_Comercio, max(nombre) Nombre,
+c_descripcion Concepto, (sum(total) ) Total, (sum(iva) ) IVA,((sum(total) - (SUM(iva)))) Importe_Neto ,c_id_tranascciones
+from
+(select to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') as Fecha ,det.c_nombre, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social nombre, con.c_descripcion, con.c_id_concepto,
+sum(-1*cta.c_importe) as Total , cta.c_id_tranascciones,
+(case when det.c_id_tipo_concepto_det = 3 then sum(-1*cta.c_importe) else 0 end) as iva,det.c_id_tipo_concepto_det CondIva
+FROM t_vis_tra_conceptos con
+inner join t_vis_tra_conceptos_detalle det on con.c_id_concepto = det.c_id_concepto
+inner join t_vis_tra_ctacte_comercios cta on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+inner join t_vis_tra_cod_comercios cli on cta.c_id_cod_comercio = cli.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cli.c_id_sucursal
+INNER join t_vis_gen_empresas emp on suc.c_id_empresa = emp.c_id_empresa
+where trunc(cta.c_fecha_facturacion) between $P{Fecha_desde} and $P{Fecha_hasta} /* trunc(to_date('25/01/2010','DD/MM/YYYY')) and trunc(to_date('26/01/2010','DD/MM/YYYY'))*/ and cta.c_id_liq_comercio is not null
+and det.c_id_concepto_detalle in (360, 361, 362)
+GROUP by cta.c_id_tranascciones ,to_date(cta.c_fecha_facturacion,'DD/MM/YYYY'), det.c_nombre, det.c_id_tipo_concepto_det, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social, con.c_descripcion, con.c_id_concepto
+Order by con.c_descripcion ,cta.c_id_liq_comercio)
+GROUP by c_id_cod_comercio, fecha,c_id_liq_comercio, c_descripcion ,c_id_tranascciones 
+
+union
+
+select to_date(to_char(fecha,'DD/MM/YY'),'DD/MM/YY') AS FECHA, 'Anulacion Compra Comercio' tipo,c_id_liq_comercio as Comprobante,c_id_cod_comercio Cod_Comercio, max(nombre) Nombre,
+c_descripcion Concepto, (sum(total) ) Total, (sum(iva) ) IVA,((sum(total) - (SUM(iva)))) Importe_Neto ,c_id_tranascciones
+from
+(select to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') as Fecha ,det.c_nombre, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social nombre, con.c_descripcion, con.c_id_concepto,
+sum(-1*cta.c_importe) as Total , cta.c_id_tranascciones,
+(case when det.c_id_tipo_concepto_det = 3 then sum(-1*cta.c_importe) else 0 end) as iva,det.c_id_tipo_concepto_det CondIva
+FROM t_vis_tra_conceptos con
+inner join t_vis_tra_conceptos_detalle det on con.c_id_concepto = det.c_id_concepto
+inner join t_vis_tra_ctacte_comercios cta on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+inner join t_vis_tra_cod_comercios cli on cta.c_id_cod_comercio = cli.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cli.c_id_sucursal
+INNER join t_vis_gen_empresas emp on suc.c_id_empresa = emp.c_id_empresa
+where trunc(cta.c_fecha_facturacion) between $P{Fecha_desde} and $P{Fecha_hasta} /* trunc(to_date('25/01/2010','DD/MM/YYYY')) and trunc(to_date('26/01/2010','DD/MM/YYYY'))*/ and cta.c_id_liq_comercio is not null
+and det.c_id_concepto_detalle in (526, 524, 527)
+GROUP by cta.c_id_tranascciones ,to_date(cta.c_fecha_facturacion,'DD/MM/YYYY'), det.c_nombre, det.c_id_tipo_concepto_det, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social, con.c_descripcion, con.c_id_concepto
+Order by con.c_descripcion ,cta.c_id_liq_comercio)
+GROUP by c_id_cod_comercio, fecha,c_id_liq_comercio, c_descripcion ,c_id_tranascciones 
+
+union
+
+select to_date(to_char(fecha,'DD/MM/YY'),'DD/MM/YY') AS FECHA, 'Ajustes por NC' tipo,c_id_liq_comercio as Comprobante,c_id_cod_comercio Cod_Comercio, max(nombre) Nombre,
+c_descripcion Concepto, (sum(total) ) Total, (sum(iva) ) IVA,((sum(total) - (SUM(iva)))) Importe_Neto ,c_id_tranascciones
+from
+(select to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') as Fecha ,det.c_nombre, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social nombre, con.c_descripcion, con.c_id_concepto,
+sum(cta.c_importe) as Total , cta.c_id_tranascciones,
+(case when det.c_id_tipo_concepto_det = 3 then sum(cta.c_importe) else 0 end) as iva,det.c_id_tipo_concepto_det CondIva
+FROM t_vis_tra_conceptos con
+inner join t_vis_tra_conceptos_detalle det on con.c_id_concepto = det.c_id_concepto
+inner join t_vis_tra_ctacte_comercios cta on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+inner join t_vis_tra_cod_comercios cli on cta.c_id_cod_comercio = cli.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cli.c_id_sucursal
+INNER join t_vis_gen_empresas emp on suc.c_id_empresa = emp.c_id_empresa
+where trunc(cta.c_fecha_facturacion) between $P{Fecha_desde} and $P{Fecha_hasta} /* trunc(to_date('25/01/2010','DD/MM/YYYY')) and trunc(to_date('26/01/2010','DD/MM/YYYY'))*/ and cta.c_id_liq_comercio is not null
+and det.c_id_concepto_detalle in (910,911,912,914)
+GROUP by cta.c_id_tranascciones ,to_date(cta.c_fecha_facturacion,'DD/MM/YYYY'), det.c_nombre, det.c_id_tipo_concepto_det, cta.c_id_liq_comercio, cta.c_id_cod_comercio, emp.c_razon_social, con.c_descripcion, con.c_id_concepto
+Order by con.c_descripcion ,cta.c_id_liq_comercio)
+GROUP by c_id_cod_comercio, fecha,c_id_liq_comercio, c_descripcion ,c_id_tranascciones
+
+
+
+
+Order by FECHA, nombre , Concepto]]></queryString>
+
+	<field name="FECHA" class="java.sql.Timestamp"/>
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="COMPROBANTE" class="java.math.BigDecimal"/>
+	<field name="COD_COMERCIO" class="java.math.BigDecimal"/>
+	<field name="NOMBRE" class="java.lang.String"/>
+	<field name="CONCEPTO" class="java.lang.String"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<field name="IVA" class="java.math.BigDecimal"/>
+	<field name="IMPORTE_NETO" class="java.math.BigDecimal"/>
+	<field name="C_ID_TRANASCCIONES" class="java.math.BigDecimal"/>
+
+	<variable name="SUM_IMPORTE_NTO" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_NETO}]]></variableExpression>
+	</variable>
+	<variable name="SUM_IVA" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IVA}]]></variableExpression>
+	</variable>
+	<variable name="SUM_TOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+	<variable name="SUM_IMPORTE_NTO_PARCIAL" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_NETO}]]></variableExpression>
+	</variable>
+	<variable name="SUM_IVA_PARCIAL" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Sum">
+		<variableExpression><![CDATA[$F{IVA}]]></variableExpression>
+	</variable>
+	<variable name="SUM_TOTAL_PARCIAL" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+
+		<group  name="fecha" isStartNewPage="true" >
+			<groupExpression><![CDATA[$F{FECHA}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="titulo" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="saldoant" isStartNewColumn="true" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="15"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="81"
+						y="0"
+						width="96"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-3"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Tipo Comprob.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="177"
+						y="0"
+						width="106"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-5"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Nro. Comprob.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="283"
+						y="0"
+						width="90"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-6"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Cod. Cte/Com]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="373"
+						y="0"
+						width="239"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-7"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Razón Social]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="612"
+						y="0"
+						width="208"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-8"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Concepto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="820"
+						y="0"
+						width="84"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-9"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Importe Neto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="904"
+						y="0"
+						width="65"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-10"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[IVA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="969"
+						y="0"
+						width="65"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-11"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="0"
+						width="81"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="11" isBold="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Fecha]]></text>
+				</staticText>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="81"
+						height="15"
+						key="textField-1"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{FECHA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="177"
+						y="0"
+						width="106"
+						height="15"
+						key="textField-2"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{COMPROBANTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="283"
+						y="0"
+						width="90"
+						height="15"
+						key="textField-3"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{COD_COMERCIO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="373"
+						y="0"
+						width="239"
+						height="15"
+						key="textField-4"
+						stretchType="RelativeToBandHeight"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="612"
+						y="0"
+						width="208"
+						height="15"
+						key="textField-5"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="820"
+						y="0"
+						width="84"
+						height="15"
+						key="textField-6"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_NETO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="904"
+						y="0"
+						width="65"
+						height="15"
+						key="textField-7"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IVA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="969"
+						y="0"
+						width="65"
+						height="15"
+						key="textField-8"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{TOTAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="81"
+						y="0"
+						width="96"
+						height="15"
+						key="textField-9"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TIPO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

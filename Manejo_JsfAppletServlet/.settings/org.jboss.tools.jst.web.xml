@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FILESYSTEMS APPLICATION_NAME="ZZZ_PRUEBA_ORELLY" ENTITY="FileSystems"
+ VERSION="2.0.0.cr1" WORKSPACE_HOME="./WebContent/WEB-INF">
+ <FILESYSTEM ENTITY="FileSystemFolder" LOCATION="%workspace.home%" NAME="WEB-INF"/>
+ <FILESYSTEM ENTITY="FileSystemFolder" INFO="Content-Type=Web"
+  LOCATION="%workspace.home%/.." NAME="WEB-ROOT"/>
+ <FILESYSTEM ENTITY="FileSystemFolder" LOCATION="%workspace.home%/lib" NAME="lib"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/commons-beanutils.jar" NAME="lib-commons-beanutils.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/commons-codec.jar" NAME="lib-commons-codec.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/commons-collections.jar" NAME="lib-commons-collections.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/commons-digester.jar" NAME="lib-commons-digester.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/commons-el.jar" NAME="lib-commons-el.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/commons-fileupload.jar" NAME="lib-commons-fileupload.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/commons-logging.jar" NAME="lib-commons-logging.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/commons-validator.jar" NAME="lib-commons-validator.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/jakarta-oro.jar" NAME="lib-jakarta-oro.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/jstl.jar" NAME="lib-jstl.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/log4j-1.2.8.jar" NAME="lib-log4j-1.2.8.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/myfaces-api-1.1.4.jar" NAME="lib-myfaces-api-1.1.4.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/myfaces-impl-1.1.4.jar" NAME="lib-myfaces-impl-1.1.4.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/portlet-api.jar" NAME="lib-portlet-api.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/struts.jar" NAME="lib-struts.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar" INFO="hidden=yes"
+  LOCATION="%workspace.home%/lib/tomahawk-1.1.4.jar" NAME="lib-tomahawk-1.1.4.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar"
+  LOCATION="%workspace.home%/lib/jms-1.1.jar" NAME="lib-jms-1.1.jar"/>
+ <FILESYSTEM ENTITY="FileSystemFolder"
+  LOCATION="%workspace.home%/../../src" NAME="src"/>
+ <FILESYSTEM ENTITY="FileSystemJar"
+  LOCATION="%workspace.home%/lib/jakarta-httpcore-4.0-alpha4.jar" NAME="lib-jakarta-httpcore-4.0-alpha4.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar"
+  LOCATION="%workspace.home%/lib/jmf.jar" NAME="lib-jmf.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar"
+  LOCATION="%workspace.home%/lib/mediaplayer.jar" NAME="lib-mediaplayer.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar"
+  LOCATION="%workspace.home%/lib/multiplayer.jar" NAME="lib-multiplayer.jar"/>
+ <FILESYSTEM ENTITY="FileSystemJar"
+  LOCATION="%workspace.home%/lib/commons-lang-2.0.jar" NAME="lib-commons-lang-2.0.jar"/>
+ <WEB ENTITY="JstWeb" MODEL_PATH="/web.xml" SERVLET_VERSION="2.5">
+  <MODULE ENTITY="WebJSFModule" MODEL_PATH="/faces-config.xml"
+   ROOT="WEB-ROOT" SRC="src" URI="/WEB-INF/faces-config.xml"/>
+ </WEB>
+</FILESYSTEMS>

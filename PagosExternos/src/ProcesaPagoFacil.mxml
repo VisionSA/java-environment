@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" 
+	xmlns:fc="http://www.adobe.com/2006/fc" xmlns:upload="com.util.upload.*" 
+	horizontalAlign="center" verticalAlign="middle" xmlns:pagofacil="modules.pagofacil.*" width="900" paddingTop="0" paddingRight="0" paddingLeft="0" paddingBottom="0" height="400" xmlns:modules="com.util.modules.*">
+	<mx:Style source="newStyle.css"/>
+	<modules:VboxLoadModule module="modules/pagofacil/ProcesarPagoFacilModule.swf"/>
+</mx:Application>

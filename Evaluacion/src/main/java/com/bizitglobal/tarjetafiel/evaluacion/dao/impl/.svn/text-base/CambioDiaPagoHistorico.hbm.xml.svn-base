@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.CambioDiaPagoHistorico" table="t_vis_eva_cambiodia_his" >
+	<id name="idCambioDiaPagoHis" type="java.lang.Long" column="C_ID_CAMBIO_DIA_HIS">
+		<generator class="increment" />
+	</id>
+
+
+
+	<property name="fecha" type="java.sql.Timestamp" column="C_FECHA" not-null="false" length="3594"/>
+	<property name="idCliente" type="java.lang.Long" column="C_ID_CLIENTE" not-null="true" />
+
+	<many-to-one name="diaPagoAnterior" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.DiaPago" not-null="false" lazy="false">
+		<column name="C_ID_DIA_PAGO_ANT" />
+	</many-to-one>
+
+	<many-to-one name="diaPagoCambio" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.DiaPago" not-null="false" lazy="false">
+		<column name="C_ID_DIA_PAGO_CAM" />
+	</many-to-one>
+
+	<many-to-one name="operador" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="false" >
+		<column name="C_ID_OPERADOR" />
+	</many-to-one>
+
+	<property name="Observaciones" type="java.lang.String" column="C_OBSERVACIONES" not-null="false" length="255"/>
+
+	
+</class>
+</hibernate-mapping>

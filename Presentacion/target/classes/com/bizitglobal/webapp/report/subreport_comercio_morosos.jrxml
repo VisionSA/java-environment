@@ -1,0 +1,1268 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="subreport_comercio_morosos"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="820"
+		 pageHeight="595"
+		 columnWidth="820"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="fecha_liquidacion" isForPrompting="true" class="java.util.Date"/>
+	<queryString><![CDATA[select
+liquidacion,
+posnet,grupo,fantacia,razon_social,fecha_liquidacion, titular,
+adicional,tipo_nombre,c_cuil,estado,apynom,fecha_mora, saldo_total,
+saldo_mora,propietario,importe  from ( 
+(select liquidacion,
+posnet,grupo,fantacia,razon_social,fecha_liquidacion, titular,
+adicional,tipo_nombre,c_cuil,estado,apynom,fecha_mora, saldo_total,
+ nvl(sum(clta.c_importe * clta.c_signo),0) saldo_mora, 'No' propietario,importe from
+(select liquidacion,
+posnet,grupo,fantacia,razon_social,fecha_liquidacion, titular,
+adicional,tipo_nombre,c_cuil,estado,apynom,fecha_mora,sum(nvl(cta.c_importe,0) * nvl(cta.c_signo,0)) saldo_total,importe from
+(select liquidacion,posnet,grupo,
+fantacia,razon_social,fecha_liquidacion,titular,
+adicional,
+tipo_nombre,
+c_cuil,
+estado,
+apynom,
+fecha_mora,
+importe
+ from   
+(select liquidacion,posnet,0 grupo,
+fantacia,razon_social,fecha_liquidacion,id_cliente titular,
+adicional,
+( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ) tipo_nombre 
+,c_cuil,SUBSTR(est_cob.c_descripcion, 1, 1) estado,
+apynom
+,min(trunc(c_fecha_vto_3))+1 fecha_mora,
+importe
+ from   
+ 
+(select  com.c_id_liq_comercio as liquidacion,
+to_char(cod.c_codigo_posnet,'99999') as posnet,
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20))as fantacia,
+UPPER(SUBSTR(emp.c_razon_social,1,20)) as razon_social,
+trunc(liq.c_fecha_liquidacion) as fecha_liquidacion,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ) id_cliente,
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ) adicional,
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres apynom,
+sum(pago.c_importe) as importe
+from t_vis_tra_liq_comercios com
+inner join t_vis_tra_liquidaciones liq on com.c_numero_liquidacion = liq.c_id_liquidacion
+inner join t_vis_tra_liq_com_pagos pago on com.c_id_liq_comercio = pago.c_id_liq_comercio
+inner join t_vis_tra_cod_comercios cod on com.c_cod_comercio = cod.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas sucemp on cod.c_id_sucursal = sucemp.c_id_sucursal
+inner join t_vis_gen_empresas  emp on emp.c_id_empresa = sucemp.c_id_empresa
+INNER JOIN t_vis_eva_actividades act 		ON act.c_id_sucursal = cod.c_id_sucursal and act.c_tipo in ('A','X')         
+INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil   = act.c_cuil
+INNER JOIN t_vis_gen_tipos_documentos doc 	on ind.c_id_tipo_documento = doc.c_id_tipo_documento 
+INNER JOIN t_vis_tra_clientes cli on cli.c_id_individuo = ind.c_id_individuo
+where trunc(liq.c_fecha_liquidacion) = $P{fecha_liquidacion}
+group by com.c_id_liq_comercio,
+to_char(cod.c_codigo_posnet,'99999'),
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20)),
+UPPER(SUBSTR(emp.c_razon_social,1,20)),
+trunc(liq.c_fecha_liquidacion) ,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ),
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ),
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres) liqui
+inner join  t_vis_tra_liq_clientes liq on liqui.id_cliente = liq.c_id_cliente and  
+trunc(liq.c_fecha_vto_3) <= trunc(sysdate)  and c_monto_total - c_importe_pagado> 0
+inner join t_vis_tra_clientes cli on cli.c_id_cliente = liqui.id_cliente 
+inner join t_vis_tra_estados_cobranza est_cob on est_cob.c_id_estado_cobranza = cli.c_id_estado_cobranza
+group by liquidacion, posnet, fantacia, razon_social, fecha_liquidacion, id_cliente, adicional, ( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ),c_cuil, apynom,SUBSTR(est_cob.c_descripcion, 1, 1),importe
+
+union
+
+select liquidacion,posnet,1 grupo,
+fantacia,razon_social,fecha_liquidacion,id_cliente titular,
+adicional,
+( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ) tipo_nombre 
+,c_cuil,SUBSTR(est_cob.c_descripcion, 1, 1) estado,
+apynom
+,trunc(cli.c_fecha_estado_cobranza) fecha_mora,
+importe
+ from   
+(select  com.c_id_liq_comercio as liquidacion,
+to_char(cod.c_codigo_posnet,'99999') as posnet,
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20))as fantacia,
+UPPER(SUBSTR(emp.c_razon_social,1,20)) as razon_social,
+trunc(liq.c_fecha_liquidacion) as fecha_liquidacion,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ) id_cliente,
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ) adicional,
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres apynom,
+sum(pago.c_importe) as importe
+from t_vis_tra_liq_comercios com
+inner join t_vis_tra_liquidaciones liq on com.c_numero_liquidacion = liq.c_id_liquidacion
+inner join t_vis_tra_liq_com_pagos pago on com.c_id_liq_comercio = pago.c_id_liq_comercio
+inner join t_vis_tra_cod_comercios cod on com.c_cod_comercio = cod.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas sucemp on cod.c_id_sucursal = sucemp.c_id_sucursal
+inner join t_vis_gen_empresas  emp on emp.c_id_empresa = sucemp.c_id_empresa
+INNER JOIN t_vis_eva_actividades act 		ON act.c_id_sucursal = cod.c_id_sucursal and act.c_tipo in ('A','X')         
+INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil   = act.c_cuil
+INNER JOIN t_vis_gen_tipos_documentos doc 	on ind.c_id_tipo_documento = doc.c_id_tipo_documento 
+INNER JOIN t_vis_tra_clientes cli on cli.c_id_individuo = ind.c_id_individuo
+where trunc(liq.c_fecha_liquidacion) = $P{fecha_liquidacion}
+group by com.c_id_liq_comercio,
+to_char(cod.c_codigo_posnet,'99999'),
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20)),
+UPPER(SUBSTR(emp.c_razon_social,1,20)),
+trunc(liq.c_fecha_liquidacion) ,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ),
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ),
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres) liqui
+inner join t_vis_tra_clientes cli on cli.c_id_cliente = liqui.id_cliente
+inner join t_vis_tra_estados_cobranza est_cob on est_cob.c_id_estado_cobranza = cli.c_id_estado_cobranza and est_cob.c_id_estado_cobranza != 1
+)) fecha
+inner join  t_vis_tra_ctacte_clientes cta on cta.c_id_cliente = fecha.titular
+group by liquidacion, posnet,grupo, fantacia, razon_social, fecha_liquidacion, titular, adicional, tipo_nombre,fecha.c_cuil,estado,  apynom, fecha_mora,importe) sal_mora, t_vis_tra_ctacte_clientes clta
+where clta.c_id_cliente = sal_mora.titular  and trunc(clta.c_fecha_facturacion) <= sysdate and
+(clta.c_id_liq_cliente is not null or clta.c_id_concepto_detalle = 187 or clta.c_signo = -1)
+group by liquidacion, posnet,grupo, fantacia, razon_social, fecha_liquidacion, titular, 
+adicional, tipo_nombre,c_cuil,estado, apynom, fecha_mora, saldo_total,importe
+
+MINUS
+
+select liquidacion,
+posnet,grupo,fantacia,razon_social,fecha_liquidacion, titular,
+adicional,tipo_nombre,c_cuil,estado,apynom,fecha_mora, saldo_total,
+ nvl(sum(clta.c_importe * clta.c_signo),0) saldo_mora,'No' propietario,importe from  
+(select liquidacion,
+posnet,grupo,fantacia,razon_social,fecha_liquidacion, titular,
+adicional,tipo_nombre,c_cuil,estado,apynom,fecha_mora,sum(nvl(cta.c_importe,0) * nvl(cta.c_signo,0)) saldo_total,importe from
+(select liquidacion,posnet,grupo,
+fantacia,razon_social,fecha_liquidacion,titular,
+adicional,
+tipo_nombre,
+c_cuil,
+estado,
+apynom,
+fecha_mora,
+importe
+ from   
+(select liquidacion,posnet,0 grupo,
+fantacia,razon_social,fecha_liquidacion,id_cliente titular,
+adicional,
+( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ) tipo_nombre 
+,c_cuil,SUBSTR(est_cob.c_descripcion, 1, 1) estado,
+apynom
+,min(trunc(c_fecha_vto_3))+1 fecha_mora,
+importe
+ from   
+ 
+(select  com.c_id_liq_comercio as liquidacion,
+to_char(cod.c_codigo_posnet,'99999') as posnet,
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20))as fantacia,
+UPPER(SUBSTR(emp.c_razon_social,1,20)) as razon_social,
+trunc(liq.c_fecha_liquidacion) as fecha_liquidacion,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ) id_cliente,
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ) adicional,
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres apynom,
+sum(pago.c_importe) as importe
+from t_vis_tra_liq_comercios com
+inner join t_vis_tra_liquidaciones liq on com.c_numero_liquidacion = liq.c_id_liquidacion
+inner join t_vis_tra_liq_com_pagos pago on com.c_id_liq_comercio = pago.c_id_liq_comercio
+inner join t_vis_tra_cod_comercios cod on com.c_cod_comercio = cod.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas sucemp on cod.c_id_sucursal = sucemp.c_id_sucursal
+inner join t_vis_gen_empresas  emp on emp.c_id_empresa = sucemp.c_id_empresa
+INNER JOIN t_vis_eva_actividades act 		ON act.c_id_sucursal = cod.c_id_sucursal and act.c_tipo in ('A','X')         
+--INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil   = act.c_cuil
+INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil = to_char(emp.c_cuit) and ind.c_cuil             = act.c_cuil
+INNER JOIN t_vis_gen_tipos_documentos doc 	on ind.c_id_tipo_documento = doc.c_id_tipo_documento 
+INNER JOIN t_vis_tra_clientes cli on cli.c_id_individuo = ind.c_id_individuo
+where trunc(liq.c_fecha_liquidacion) = $P{fecha_liquidacion}
+group by com.c_id_liq_comercio,
+to_char(cod.c_codigo_posnet,'99999'),
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20)),
+UPPER(SUBSTR(emp.c_razon_social,1,20)),
+trunc(liq.c_fecha_liquidacion) ,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ),
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ),
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres) liqui
+inner join  t_vis_tra_liq_clientes liq on liqui.id_cliente = liq.c_id_cliente and  
+trunc(liq.c_fecha_vto_3) <= trunc(sysdate)  and c_monto_total - c_importe_pagado> 0
+inner join t_vis_tra_clientes cli on cli.c_id_cliente = liqui.id_cliente 
+inner join t_vis_tra_estados_cobranza est_cob on est_cob.c_id_estado_cobranza = cli.c_id_estado_cobranza
+group by liquidacion, posnet, fantacia, razon_social, fecha_liquidacion, id_cliente, adicional, ( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ),c_cuil, apynom,SUBSTR(est_cob.c_descripcion, 1, 1),importe
+
+union
+
+select liquidacion,posnet,1 grupo,
+fantacia,razon_social,fecha_liquidacion,id_cliente titular,
+adicional,
+( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ) tipo_nombre 
+,c_cuil,SUBSTR(est_cob.c_descripcion, 1, 1) estado,
+apynom
+,trunc(cli.c_fecha_estado_cobranza) fecha_mora,
+importe
+ from   
+(select  com.c_id_liq_comercio as liquidacion,
+to_char(cod.c_codigo_posnet,'99999') as posnet,
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20))as fantacia,
+UPPER(SUBSTR(emp.c_razon_social,1,20)) as razon_social,
+trunc(liq.c_fecha_liquidacion) as fecha_liquidacion,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ) id_cliente,
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ) adicional,
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres apynom,
+sum(pago.c_importe) as importe
+from t_vis_tra_liq_comercios com
+inner join t_vis_tra_liquidaciones liq on com.c_numero_liquidacion = liq.c_id_liquidacion
+inner join t_vis_tra_liq_com_pagos pago on com.c_id_liq_comercio = pago.c_id_liq_comercio
+inner join t_vis_tra_cod_comercios cod on com.c_cod_comercio = cod.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas sucemp on cod.c_id_sucursal = sucemp.c_id_sucursal
+inner join t_vis_gen_empresas  emp on emp.c_id_empresa = sucemp.c_id_empresa
+INNER JOIN t_vis_eva_actividades act 		ON act.c_id_sucursal = cod.c_id_sucursal and act.c_tipo in ('A','X')         
+--INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil   = act.c_cuil
+INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil = to_char(emp.c_cuit) and ind.c_cuil       = act.c_cuil
+INNER JOIN t_vis_gen_tipos_documentos doc 	on ind.c_id_tipo_documento = doc.c_id_tipo_documento 
+INNER JOIN t_vis_tra_clientes cli on cli.c_id_individuo = ind.c_id_individuo
+where trunc(liq.c_fecha_liquidacion) = $P{fecha_liquidacion}
+group by com.c_id_liq_comercio,
+to_char(cod.c_codigo_posnet,'99999'),
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20)),
+UPPER(SUBSTR(emp.c_razon_social,1,20)),
+trunc(liq.c_fecha_liquidacion) ,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ),
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ),
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres) liqui
+inner join t_vis_tra_clientes cli on cli.c_id_cliente = liqui.id_cliente
+inner join t_vis_tra_estados_cobranza est_cob on est_cob.c_id_estado_cobranza = cli.c_id_estado_cobranza and est_cob.c_id_estado_cobranza != 1
+)) fecha
+inner join  t_vis_tra_ctacte_clientes cta on cta.c_id_cliente = fecha.titular
+--inner join   t_vis_gen_empresas empre on fecha.c_cuil = empre.c_cuit
+--inner join t_vis_gen_suc_empresas sucemp on sucemp.c_id_empresa = empre.c_id_empresa
+group by liquidacion, posnet, grupo, fantacia, razon_social, fecha_liquidacion, titular, adicional, tipo_nombre,c_cuil,estado,  apynom, fecha_mora,importe) sal_mora, t_vis_tra_ctacte_clientes clta
+where clta.c_id_cliente = sal_mora.titular  and trunc(clta.c_fecha_facturacion) <= sysdate 
+and (clta.c_id_liq_cliente is not null or clta.c_id_concepto_detalle = 187 or clta.c_signo = -1)
+group by liquidacion,posnet,grupo, 
+fantacia, razon_social, fecha_liquidacion, titular,adicional, tipo_nombre, c_cuil,estado,apynom, fecha_mora, saldo_total,importe
+)
+
+union
+
+(select liquidacion,
+posnet,grupo,fantacia,razon_social,fecha_liquidacion, titular,
+adicional,tipo_nombre,c_cuil,estado,apynom,fecha_mora, saldo_total,
+ nvl(sum(clta.c_importe * clta.c_signo),0) saldo_mora,'Si' propietario,importe from
+(select liquidacion,
+posnet,grupo,fantacia,razon_social,fecha_liquidacion, titular,
+adicional,tipo_nombre,c_cuil,
+estado,apynom,fecha_mora,sum(nvl(cta.c_importe,0) * nvl(cta.c_signo,0)) saldo_total,importe from
+(select liquidacion,posnet,grupo,
+fantacia,razon_social,fecha_liquidacion,titular,
+adicional,
+tipo_nombre,
+c_cuil,
+estado,
+apynom,
+fecha_mora,
+importe
+ from   
+(select liquidacion,posnet,0 grupo,
+fantacia,razon_social,fecha_liquidacion,id_cliente titular,
+adicional,
+( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ) tipo_nombre 
+,c_cuil,SUBSTR(est_cob.c_descripcion, 1, 1) estado,
+apynom
+,min(trunc(c_fecha_vto_3))+1 fecha_mora,
+importe
+ from   
+ 
+(select  com.c_id_liq_comercio as liquidacion,
+to_char(cod.c_codigo_posnet,'99999') as posnet,
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20))as fantacia,
+UPPER(SUBSTR(emp.c_razon_social,1,20)) as razon_social,
+trunc(liq.c_fecha_liquidacion) as fecha_liquidacion,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ) id_cliente,
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ) adicional,
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres apynom,
+sum(pago.c_importe) as importe
+from t_vis_tra_liq_comercios com
+inner join t_vis_tra_liquidaciones liq on com.c_numero_liquidacion = liq.c_id_liquidacion
+inner join t_vis_tra_liq_com_pagos pago on com.c_id_liq_comercio = pago.c_id_liq_comercio
+inner join t_vis_tra_cod_comercios cod on com.c_cod_comercio = cod.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas sucemp on cod.c_id_sucursal = sucemp.c_id_sucursal
+inner join t_vis_gen_empresas  emp on emp.c_id_empresa = sucemp.c_id_empresa
+INNER JOIN t_vis_eva_actividades act 		ON act.c_id_sucursal = cod.c_id_sucursal and act.c_tipo in ('A','X')         
+--INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil   = act.c_cuil
+INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil = to_char(emp.c_cuit) and ind.c_cuil             = act.c_cuil
+INNER JOIN t_vis_gen_tipos_documentos doc 	on ind.c_id_tipo_documento = doc.c_id_tipo_documento 
+INNER JOIN t_vis_tra_clientes cli on cli.c_id_individuo = ind.c_id_individuo
+where trunc(liq.c_fecha_liquidacion) = $P{fecha_liquidacion}
+group by com.c_id_liq_comercio,
+to_char(cod.c_codigo_posnet,'99999'),
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20)),
+UPPER(SUBSTR(emp.c_razon_social,1,20)),
+trunc(liq.c_fecha_liquidacion) ,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ),
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ),
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres) liqui
+inner join  t_vis_tra_liq_clientes liq on liqui.id_cliente = liq.c_id_cliente and  
+trunc(liq.c_fecha_vto_3) <= trunc(sysdate)  and c_monto_total - c_importe_pagado> 0
+inner join t_vis_tra_clientes cli on cli.c_id_cliente = liqui.id_cliente 
+inner join t_vis_tra_estados_cobranza est_cob on est_cob.c_id_estado_cobranza = cli.c_id_estado_cobranza
+group by liquidacion, posnet, fantacia, razon_social, fecha_liquidacion, id_cliente, adicional, ( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ),c_cuil, apynom,SUBSTR(est_cob.c_descripcion, 1, 1),importe
+
+union
+
+select liquidacion,posnet,1 grupo,
+fantacia,razon_social,fecha_liquidacion,id_cliente titular,
+adicional,
+( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ) tipo_nombre 
+,c_cuil,SUBSTR(est_cob.c_descripcion, 1, 1) estado,
+apynom
+,trunc(cli.c_fecha_estado_cobranza) fecha_mora,
+importe
+ from   
+(select  com.c_id_liq_comercio as liquidacion,
+to_char(cod.c_codigo_posnet,'99999') as posnet,
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20))as fantacia,
+UPPER(SUBSTR(emp.c_razon_social,1,20)) as razon_social,
+trunc(liq.c_fecha_liquidacion) as fecha_liquidacion,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ) id_cliente,
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ) adicional,
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres apynom,
+sum(pago.c_importe) as importe
+from t_vis_tra_liq_comercios com
+inner join t_vis_tra_liquidaciones liq on com.c_numero_liquidacion = liq.c_id_liquidacion
+inner join t_vis_tra_liq_com_pagos pago on com.c_id_liq_comercio = pago.c_id_liq_comercio
+inner join t_vis_tra_cod_comercios cod on com.c_cod_comercio = cod.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas sucemp on cod.c_id_sucursal = sucemp.c_id_sucursal
+inner join t_vis_gen_empresas  emp on emp.c_id_empresa = sucemp.c_id_empresa
+INNER JOIN t_vis_eva_actividades act 		ON act.c_id_sucursal = cod.c_id_sucursal and act.c_tipo in ('A','X')
+--INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil   = act.c_cuil
+INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil = to_char(emp.c_cuit) and ind.c_cuil             = act.c_cuil
+INNER JOIN t_vis_gen_tipos_documentos doc 	on ind.c_id_tipo_documento = doc.c_id_tipo_documento 
+INNER JOIN t_vis_tra_clientes cli on cli.c_id_individuo = ind.c_id_individuo
+where trunc(liq.c_fecha_liquidacion) = $P{fecha_liquidacion}
+group by com.c_id_liq_comercio,
+to_char(cod.c_codigo_posnet,'99999'),
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20)),
+UPPER(SUBSTR(emp.c_razon_social,1,20)),
+trunc(liq.c_fecha_liquidacion) ,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ),
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ),
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres) liqui
+inner join t_vis_tra_clientes cli on cli.c_id_cliente = liqui.id_cliente
+inner join t_vis_tra_estados_cobranza est_cob on est_cob.c_id_estado_cobranza = cli.c_id_estado_cobranza and est_cob.c_id_estado_cobranza != 1
+)) fecha
+inner join  t_vis_tra_ctacte_clientes cta on cta.c_id_cliente = fecha.titular
+--inner join   t_vis_gen_empresas empre on fecha.c_cuil = empre.c_cuit
+--inner join t_vis_gen_suc_empresas sucemp on sucemp.c_id_empresa = empre.c_id_empresa
+group by liquidacion, posnet,grupo, fantacia, razon_social, fecha_liquidacion, titular, adicional, tipo_nombre,c_cuil,estado,  apynom, fecha_mora,importe) sal_mora, t_vis_tra_ctacte_clientes clta
+where clta.c_id_cliente = sal_mora.titular  and trunc(clta.c_fecha_facturacion) <= sysdate and
+(clta.c_id_liq_cliente is not null or clta.c_id_concepto_detalle = 187 or clta.c_signo = -1)
+group by liquidacion, posnet,grupo, fantacia, razon_social, fecha_liquidacion, titular, 
+adicional, tipo_nombre,c_cuil,estado, apynom, fecha_mora, saldo_total,importe
+
+INTERSECT
+
+
+select liquidacion,
+posnet,grupo,fantacia,razon_social,fecha_liquidacion, titular,
+adicional,tipo_nombre,c_cuil,estado,apynom,fecha_mora, saldo_total,
+ nvl(sum(clta.c_importe * clta.c_signo),0) saldo_mora,'Si' propietario,importe from
+(select liquidacion,
+posnet,grupo,fantacia,razon_social,fecha_liquidacion, titular,
+adicional,tipo_nombre,c_cuil,estado,apynom,fecha_mora,sum(nvl(cta.c_importe,0) * nvl(cta.c_signo,0)) saldo_total,importe from
+(select liquidacion,posnet,grupo,
+fantacia,razon_social,fecha_liquidacion,titular,
+adicional,
+tipo_nombre, 
+c_cuil,
+estado,
+apynom,
+fecha_mora,
+importe
+ from   
+(select liquidacion,posnet,0 grupo,
+fantacia,razon_social,fecha_liquidacion,id_cliente titular,
+adicional,
+( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ) tipo_nombre 
+,c_cuil,SUBSTR(est_cob.c_descripcion, 1, 1) estado,
+apynom
+,min(trunc(c_fecha_vto_3))+1 fecha_mora,
+importe
+ from   
+ 
+(select  com.c_id_liq_comercio as liquidacion,
+to_char(cod.c_codigo_posnet,'99999') as posnet,
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20))as fantacia,
+UPPER(SUBSTR(emp.c_razon_social,1,20)) as razon_social,
+trunc(liq.c_fecha_liquidacion) as fecha_liquidacion,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ) id_cliente,
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ) adicional,
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres apynom,
+sum(pago.c_importe) as importe
+from t_vis_tra_liq_comercios com
+inner join t_vis_tra_liquidaciones liq on com.c_numero_liquidacion = liq.c_id_liquidacion
+inner join t_vis_tra_liq_com_pagos pago on com.c_id_liq_comercio = pago.c_id_liq_comercio
+inner join t_vis_tra_cod_comercios cod on com.c_cod_comercio = cod.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas sucemp on cod.c_id_sucursal = sucemp.c_id_sucursal
+inner join t_vis_gen_empresas  emp on emp.c_id_empresa = sucemp.c_id_empresa
+INNER JOIN t_vis_eva_actividades act 		ON act.c_id_sucursal = cod.c_id_sucursal and act.c_tipo in ('A','X')         
+INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil   = act.c_cuil
+INNER JOIN t_vis_gen_tipos_documentos doc 	on ind.c_id_tipo_documento = doc.c_id_tipo_documento 
+INNER JOIN t_vis_tra_clientes cli on cli.c_id_individuo = ind.c_id_individuo
+where trunc(liq.c_fecha_liquidacion) = $P{fecha_liquidacion}
+group by com.c_id_liq_comercio,
+to_char(cod.c_codigo_posnet,'99999'),
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20)),
+UPPER(SUBSTR(emp.c_razon_social,1,20)),
+trunc(liq.c_fecha_liquidacion) ,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ),
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ),
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres) liqui
+inner join  t_vis_tra_liq_clientes liq on liqui.id_cliente = liq.c_id_cliente and  
+trunc(liq.c_fecha_vto_3) <= trunc(sysdate)  and c_monto_total - c_importe_pagado> 0
+inner join t_vis_tra_clientes cli on cli.c_id_cliente = liqui.id_cliente 
+inner join t_vis_tra_estados_cobranza est_cob on est_cob.c_id_estado_cobranza = cli.c_id_estado_cobranza
+group by liquidacion, posnet,  fantacia, razon_social, fecha_liquidacion, id_cliente, adicional, ( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ),c_cuil, apynom,SUBSTR(est_cob.c_descripcion, 1, 1),importe
+
+union
+
+select liquidacion,posnet,1 grupo,
+fantacia,razon_social,fecha_liquidacion,id_cliente titular,
+adicional,
+( case  when c_tipo = 'X'
+then 'Responsable'
+else 'Autorizado'
+end ) tipo_nombre 
+,c_cuil,SUBSTR(est_cob.c_descripcion, 1, 1) estado,
+apynom
+,trunc(cli.c_fecha_estado_cobranza) fecha_mora,
+importe
+ from   
+(select  com.c_id_liq_comercio as liquidacion,
+to_char(cod.c_codigo_posnet,'99999') as posnet,
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20))as fantacia,
+UPPER(SUBSTR(emp.c_razon_social,1,20)) as razon_social,
+trunc(liq.c_fecha_liquidacion) as fecha_liquidacion,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ) id_cliente,
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ) adicional,
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres apynom,
+sum(pago.c_importe) as importe
+from t_vis_tra_liq_comercios com
+inner join t_vis_tra_liquidaciones liq on com.c_numero_liquidacion = liq.c_id_liquidacion
+inner join t_vis_tra_liq_com_pagos pago on com.c_id_liq_comercio = pago.c_id_liq_comercio
+inner join t_vis_tra_cod_comercios cod on com.c_cod_comercio = cod.c_id_cod_comercio
+inner join t_vis_gen_suc_empresas sucemp on cod.c_id_sucursal = sucemp.c_id_sucursal
+inner join t_vis_gen_empresas  emp on emp.c_id_empresa = sucemp.c_id_empresa
+INNER JOIN t_vis_eva_actividades act 		ON act.c_id_sucursal = cod.c_id_sucursal and act.c_tipo in ('A','X')         
+INNER JOIN t_vis_eva_individuos ind 		ON  ind.c_cuil   = act.c_cuil
+INNER JOIN t_vis_gen_tipos_documentos doc 	on ind.c_id_tipo_documento = doc.c_id_tipo_documento 
+INNER JOIN t_vis_tra_clientes cli on cli.c_id_individuo = ind.c_id_individuo
+where trunc(liq.c_fecha_liquidacion) = $P{fecha_liquidacion}
+group by com.c_id_liq_comercio,
+to_char(cod.c_codigo_posnet,'99999'),
+ UPPER(SUBSTR(sucemp.c_descripcion,1,20)),
+UPPER(SUBSTR(emp.c_razon_social,1,20)),
+trunc(liq.c_fecha_liquidacion) ,
+( case  when cli.c_id_titular is null
+then cli.c_id_cliente 
+else cli.c_id_titular
+end ),
+( case  when cli.c_id_titular is null
+then null
+else cli.c_id_cliente
+end ),
+act.c_tipo,
+ind.c_cuil,
+ind.c_apellido || ' ' || ind.c_nombres) liqui
+inner join t_vis_tra_clientes cli on cli.c_id_cliente = liqui.id_cliente
+inner join t_vis_tra_estados_cobranza est_cob on est_cob.c_id_estado_cobranza = cli.c_id_estado_cobranza and est_cob.c_id_estado_cobranza != 1
+)) fecha
+inner join  t_vis_tra_ctacte_clientes cta on cta.c_id_cliente = fecha.titular
+group by liquidacion, posnet,grupo, fantacia, razon_social, fecha_liquidacion, titular, adicional, tipo_nombre,
+c_cuil,  apynom,estado, fecha_mora,importe) sal_mora, t_vis_tra_ctacte_clientes clta
+where clta.c_id_cliente = sal_mora.titular  and trunc(clta.c_fecha_facturacion) <= sysdate and
+(clta.c_id_liq_cliente is not null or clta.c_id_concepto_detalle = 187 or clta.c_signo = -1)
+group by liquidacion, posnet,grupo, fantacia, razon_social, fecha_liquidacion, titular, 
+adicional, tipo_nombre,c_cuil,estado, apynom, fecha_mora, saldo_total,importe)
+)
+order by fecha_liquidacion,propietario desc,liquidacion,to_number(posnet,99999),titular,grupo]]></queryString>
+
+	<field name="LIQUIDACION" class="java.math.BigDecimal"/>
+	<field name="POSNET" class="java.lang.String"/>
+	<field name="GRUPO" class="java.math.BigDecimal"/>
+	<field name="FANTACIA" class="java.lang.String"/>
+	<field name="RAZON_SOCIAL" class="java.lang.String"/>
+	<field name="FECHA_LIQUIDACION" class="java.sql.Timestamp"/>
+	<field name="TITULAR" class="java.math.BigDecimal"/>
+	<field name="ADICIONAL" class="java.math.BigDecimal"/>
+	<field name="TIPO_NOMBRE" class="java.lang.String"/>
+	<field name="C_CUIL" class="java.lang.String"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="APYNOM" class="java.lang.String"/>
+	<field name="FECHA_MORA" class="java.sql.Timestamp"/>
+	<field name="SALDO_TOTAL" class="java.math.BigDecimal"/>
+	<field name="SALDO_MORA" class="java.math.BigDecimal"/>
+	<field name="PROPIETARIO" class="java.lang.String"/>
+	<field name="IMPORTE" class="java.math.BigDecimal"/>
+
+	<variable name="v_liquidacion" class="java.math.BigDecimal" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{LIQUIDACION}]]></variableExpression>
+	</variable>
+	<variable name="v_posnet" class="java.lang.String" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{POSNET}]]></variableExpression>
+	</variable>
+	<variable name="v_razon_social" class="java.lang.String" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{RAZON_SOCIAL}]]></variableExpression>
+	</variable>
+	<variable name="v_fantacia" class="java.lang.String" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{FANTACIA}]]></variableExpression>
+	</variable>
+	<variable name="v_apynom" class="java.lang.String" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{APYNOM}]]></variableExpression>
+	</variable>
+	<variable name="v_tipo" class="java.lang.String" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{TIPO_NOMBRE}]]></variableExpression>
+	</variable>
+	<variable name="v_estado" class="java.lang.String" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{ESTADO}]]></variableExpression>
+	</variable>
+	<variable name="v_titular" class="java.math.BigDecimal" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{TITULAR}]]></variableExpression>
+	</variable>
+	<variable name="v_adicional" class="java.math.BigDecimal" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{ADICIONAL}]]></variableExpression>
+	</variable>
+	<variable name="v_fecha_mora" class="java.util.Date" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{FECHA_MORA}]]></variableExpression>
+	</variable>
+	<variable name="v_saldo_mora" class="java.math.BigDecimal" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{SALDO_MORA}]]></variableExpression>
+	</variable>
+	<variable name="v_saldo_total" class="java.math.BigDecimal" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{SALDO_TOTAL}]]></variableExpression>
+	</variable>
+	<variable name="v_total_liq" class="java.math.BigDecimal" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{IMPORTE}]]></variableExpression>
+	</variable>
+	<variable name="v_propietario" class="java.lang.String" resetType="Group" resetGroup="titular" calculation="First">
+		<variableExpression><![CDATA[$F{PROPIETARIO}]]></variableExpression>
+	</variable>
+
+		<group  name="Cod_posnet" isStartNewPage="true" isResetPageNumber="true" isReprintHeaderOnEachPage="true" >
+			<groupExpression><![CDATA[$F{FECHA_LIQUIDACION}]]></groupExpression>
+			<groupHeader>
+			<band height="51"  isSplitAllowed="true" >
+				<rectangle radius="2" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="39"
+						width="813"
+						height="10"
+						backcolor="#CCCCCC"
+						key="rectangle-1"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="56"
+						y="40"
+						width="50"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Codigo Posnet]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="558"
+						y="40"
+						width="39"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-2"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Titular]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="382"
+						y="40"
+						width="82"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-3"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Apellido Nombre]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="472"
+						y="40"
+						width="81"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-4"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Tipo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="628"
+						y="40"
+						width="56"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-30"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Fecha Mora]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="124"
+						y="40"
+						width="66"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-31"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Razon Social]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="225"
+						y="40"
+						width="110"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-32"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Nombre de Fantacia]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="675"
+						y="40"
+						width="48"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-33"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Saldo Mora]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="591"
+						y="40"
+						width="39"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-34"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Adicional]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="147"
+						y="15"
+						width="359"
+						height="15"
+						key="staticText-24"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement lineSpacing="Single">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[RESPONSABLES O AUTORIZADOS DE COMERCIOS CON ESTADO MOROSOS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="40"
+						width="70"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-35"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Liquidación]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="496"
+						y="15"
+						width="89"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-31"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{FECHA_LIQUIDACION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="717"
+						y="40"
+						width="48"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-36"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Saldo Total
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="794"
+						y="40"
+						width="30"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-37"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Prop.
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="756"
+						y="40"
+						width="48"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-38"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Liquidación
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="529"
+						y="40"
+						width="41"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-39"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Estado]]></text>
+				</staticText>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="10"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="3"
+						y="2"
+						width="800"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="liquidacion" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="titular" >
+			<groupExpression><![CDATA[$F{TITULAR}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="11"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="105"
+						y="1"
+						width="130"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{v_razon_social}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="215"
+						y="1"
+						width="140"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{v_fantacia}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="56"
+						y="1"
+						width="50"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-23"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{v_posnet}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="334"
+						y="1"
+						width="130"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-24"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{v_apynom}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="467"
+						y="1"
+						width="80"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{v_tipo}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="624"
+						y="1"
+						width="59"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$V{v_fecha_mora}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="664"
+						y="1"
+						width="49"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{v_saldo_mora}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="536"
+						y="1"
+						width="45"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-28"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{v_titular}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="580"
+						y="1"
+						width="39"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-29"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{v_adicional}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="6"
+						y="1"
+						width="70"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-30"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{v_liquidacion}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="705"
+						y="1"
+						width="49"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-32"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{v_saldo_total}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="796"
+						y="1"
+						width="21"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-33"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{v_propietario}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="743"
+						y="1"
+						width="49"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-34"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{v_total_liq}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="534"
+						y="1"
+						width="20"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-35"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$V{v_estado}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<lastPageFooter>
+			<band height="5"  isSplitAllowed="true" >
+			</band>
+		</lastPageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

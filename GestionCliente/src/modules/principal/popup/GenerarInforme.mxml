@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"  
+				creationComplete="init()" layout="vertical" 
+				showCloseButton="true" close="PopUpManager.removePopUp(this)" 
+				horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/" 
+				xmlns:ns1="com.util.paginacion.*" 
+				height="190" title="Generar Informe" width="300" 
+				resizeEffect="{resize}" verticalScrollPolicy="off" 
+				initialize="init()"  
+				keyDown="pressKey(event)" 
+				horizontalScrollPolicy="off"
+				>
+	
+	<mx:VBox paddingTop="10" height="100%" width="100%">
+		<mx:HBox paddingRight="10" paddingLeft="10" height="100%" width="100%">
+			<mx:Label text="Operador:" styleName="tituloBusquedas" width="80" textAlign="right" paddingTop="2"/>
+			<mx:ComboBox id="cmbOperador" selectedIndex="0"
+						 dataProvider="{listaOperadores}" 
+						 change="cambioIndexOperador(event)" width="180"/>
+		</mx:HBox>
+		
+		<mx:HBox width="100%" horizontalAlign="center" paddingRight="10">	
+			<mx:VBox>
+				<mx:Label text="Desde:"/>
+				<mx:DateField id="dateDesde" 
+							  editable="true" 
+							  width="100" 
+							  formatString="DD/MM/YY"/> 
+			</mx:VBox>
+			<mx:VBox>
+				<mx:Label text="Hasta:"/>
+				<mx:DateField id="dateHasta" 
+							  editable="true" 
+							  width="100" 
+							  formatString="DD/MM/YY"/> 
+			</mx:VBox> 
+		</mx:HBox>
+
+	</mx:VBox>
+	
+	
+	<mx:VBox width="100%" paddingTop="20" >
+		<mx:HBox width="100%" horizontalAlign="right" paddingRight="10">	
+			<mx:Button label="Generar" width="90" click="guardar()" />
+			<mx:Button label="Cancelar" width="90" click="PopUpManager.removePopUp(this)" />
+		</mx:HBox>
+		<mx:Label height="10"/>
+	</mx:VBox>
+	
+	
+	<mx:Resize id="resize"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.GestionCliente;
+			import com.tarjetafiel.caja.vo.GestionClienteLog;
+			import com.util.components.alert.AlertOk;
+			
+			import modules.principal.Manager;
+			
+			import mx.controls.Alert;
+			import mx.effects.Resize;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.events.CloseEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ListEvent;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]public var manager:Manager;
+			
+
+		    private function init():void {
+
+			}
+			
+			private var listaOperadores:Array = new Array("Gimenez Aaron","Mayer Franco");
+			
+			protected function cambioIndexOperador(event:Event):void
+			{
+				
+			}
+
+				
+			public function cleanData():void {
+				this.dateDesde.text = "";
+				this.dateHasta.text = "";
+			}
+			
+			public function guardar():void {
+				if(dateDesde.text!="" && dateHasta.text!=""){
+					var idOperador:Number;
+					switch(this.cmbOperador.selectedIndex){
+						case 0:
+							idOperador = 1267; //Gimenez Aaron
+							break;
+						case 1:
+							idOperador = 1270; //Mayer Franco
+							break;
+					}
+					manager.generarInforme(dateDesde.selectedDate,dateHasta.selectedDate, idOperador);
+					PopUpManager.removePopUp(this);
+
+				}
+				else if(dateDesde.text=="") AlertOk.show("Seleccione una fecha inicial");
+				else if(dateHasta.text=="") AlertOk.show("Seleccione una fecha final");
+			}
+
+			
+			private function pressKey(event:KeyboardEvent):void{
+				if(event.keyCode == Keyboard.ESCAPE) { 
+					PopUpManager.removePopUp(this);
+				}
+			}
+
+
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   close="titlewindow1_closeHandler(event)"
+			   currentState="{modelo.estadoActualVAgCheque}"
+			   creationComplete="titlewindow1_creationCompleteHandler(event)"
+			   title="Agregar Cheque"
+			   resize="titlewindow1_resizeHandler(event)" xmlns:cheque="com.fiel.caja.judicial.view.component.cheque.*" 
+			   xmlns:Cheques="com.fiel.caja.judicial.command.Cheques.*" xmlns:textInput="com.util.components.textInput.*"
+			   keyUp="titlewindow1_keyUpHandler(event)">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.business.ConstantesEstados;
+			import com.fiel.caja.judicial.event.CajaJudicialEvent;
+			import com.fiel.caja.judicial.event.ChequeEvent;
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.BancoPropio;
+			import com.tarjetafiel.caja.vo.Cheque;
+			import com.tarjetafiel.proveedorconexion.event.BancoPropioEvent;
+			import com.tarjetafiel.proveedorconexion.vo.SetDataVo;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			import mx.events.ResizeEvent;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.StringUtil;
+			import mx.validators.Validator;
+			
+			import skin.BotonAceptarSkin;
+			
+			import utils.ManejadorMensajes;
+			import utils.ManejadorPantallas;
+			
+			
+			[Bindable]
+			private var modelo : CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();	
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				cerrarPopUp();
+			}
+			
+			private function cerrarPopUp():void{
+				ManejadorPantallas.cerrarPop(this);
+				modelo.estadoActualVAgCheque = ConstantesEstados.ESTADO_VACH_CHEQUE_TERCERO;
+			}
+			
+			protected function rbgTipoCheque_itemClickHandler(event:ItemClickEvent):void
+			{
+				if (event.currentTarget.selectedValue == "propio") {
+					modelo.estadoActualVAgCheque = ConstantesEstados.ESTADO_VACH_CHEQUE_PROPIO;					
+				} else {
+					modelo.estadoActualVAgCheque = ConstantesEstados.ESTADO_VACH_CHEQUE_TERCERO;
+				}
+			}
+			
+			//Esta funcion sirve solo para TextInputs (Spark) que tiene seteada la propiedad maxChars
+			public function completarConCeroAIzq(event:Event):void{
+				var ti:TextInput = event.currentTarget as TextInput;
+				var str : String = "";
+				for(var i:int = ti.text.length;i<ti.maxChars;i++){
+					str += "0"; 
+				}
+				ti.text = str + ti.text;
+			}
+			
+			
+			protected function btnAceptar_clickHandler(event:MouseEvent):void
+			{	
+				if (Validator.validateAll(validators).length == 0){//Si no hay errores
+					modelo.cheque.banco = modelo.banco;
+					modelo.cheque.sucursalBanco = inptSucursal.text;
+					modelo.cheque.codigoPostal = inptPlaza.text;
+					modelo.cheque.numero = inptNroCheque.text;
+					modelo.cheque.cuenta = inptNroCuenta.text;
+					modelo.cheque.beneficiario = inptBeneficiario.text;										
+					modelo.cheque.importe = Number(inptImporte.text);
+					if(chkCruzado.selected){
+						modelo.cheque.esCruzado = 'S';
+					}
+					if(chkNoOrden.selected){
+						modelo.cheque.noOrden = 'S';
+					}
+					modelo.cheque.fechaEmision = dateFechaEmision.selectedDate;
+					modelo.cheque.fechaPago = dateFechaPago.selectedDate;					
+					new ChequeEvent(ChequeEvent.AGREGAR_CHEQUE_EVENT,modelo.cheque).dispatch();
+					cerrarPopUp();
+				}else {
+					ManejadorMensajes.mostrarMensajeError("Faltan Completar Datos","Agregar Cheque"); 
+				}
+			}
+			
+			protected function btnAceptar_clickHandler_sinValidacion(event:MouseEvent):void
+			{
+				new ChequeEvent(ChequeEvent.AGREGAR_CHEQUE_EVENT,modelo.cheque).dispatch();
+				cerrarPopUp();
+			}
+			
+			
+			
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				new SetDataVo(modelo,"banco",null).guardarValor();
+				new SetDataVo(modelo,"cheque",null).guardarValor();
+				new SetDataVo(modelo,"estadoChequeEstado",ConstantesEstados.ESTADO_CMP_CHEQUE_NUEVO).guardarValor();
+				new SetDataVo(modelo,"estadoChequeConciliado",ConstantesEstados.ESTADO_CMP_CHEQUE_NUEVO).guardarValor();
+/*@I3820*/				new SetDataVo(modelo,"esChequeEstadoValido",false).guardarValor();
+				rbTercero.setFocus();
+			}
+/*F3820*/			
+			
+			protected function inptNroBanco_enterHandler(event:FlexEvent):void
+			{
+				completarConCeroAIzq(event);
+				new CajaJudicialEvent(CajaJudicialEvent.BUSCAR_BANCO_POR_ID_EVENT,inptNroBanco.text).dispatch();
+			}
+			
+			
+			
+			protected function inptDigVer3_enterHandler(event:FlexEvent):void
+			{
+				completarConCeroAIzq(event);
+				
+				
+				var cheque : Cheque = new Cheque();
+				
+				cheque.banco = modelo.banco;
+				cheque.sucursalBanco = inptSucursal.text;
+				cheque.codigoPostal = inptPlaza.text;
+				cheque.DV1 = parseInt(inptDigVer1.text);
+				cheque.numero = inptNroCheque.text;
+				cheque.DV2 = parseInt(inptDigVer2.text);
+				cheque.cuenta = inptNroCuenta.text;
+				cheque.DV3 = parseInt(inptDigVer3.text);
+				
+				
+				new CajaJudicialEvent(ChequeEvent.BUSCAR_CHEQUE_EVENT,cheque).dispatch();
+				
+			}
+			
+			
+			protected function titlewindow1_resizeHandler(event:ResizeEvent):void
+			{
+				ManejadorPantallas.centrarPopUp(this);
+			}
+			
+			
+			
+			protected function state1_enterStateHandler(event:FlexEvent):void
+			{
+				new BancoPropioEvent(BancoPropioEvent.LISTAR_TODOS_EVENT,null).dispatch();
+			}
+			
+			private function getLabelBancosPropios(item:Object):String{
+				var bp : BancoPropio = item as BancoPropio;
+				return StringUtil.substitute("{0} ({1})",StringUtil.trim(bp.banco.descripcion.toString()),bp.numeroSucursal);
+			}
+			
+			
+			protected function inptDigVerChequePropio_enterHandler(event:FlexEvent):void
+			{
+				var obj : Object = new Object();
+				obj.bp = modelo.listaBancosPropios.getItemAt(cbmBanboSuc.selectedIndex) as BancoPropio;
+				obj.numero = inptNroChequePropio.text;
+				obj.digVal = Number(inptDigVerChequePropio.text);	
+				new ChequeEvent(ChequeEvent.BUSCAR_CHEQUE_PROPIO_EVENT,obj).dispatch();
+			}
+			
+			protected function btnAceptar_clickHandler_chequePropio(event:MouseEvent):void
+			{
+				new ChequeEvent(ChequeEvent.AGREGAR_CHEQUE_EVENT,modelo.cheque).dispatch();
+				cerrarPopUp();
+			}
+/*@I3820*/
+			protected function titlewindow1_keyUpHandler(event:KeyboardEvent):void
+			{
+				switch (event.keyCode)
+				{
+					case Keyboard.ESCAPE:
+					{
+						event.stopImmediatePropagation();
+						cerrarPopUp();
+						break;
+					}
+				}
+			}
+/*@F3820*/
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:RadioButtonGroup id="rbgTipoCheque" itemClick="rbgTipoCheque_itemClickHandler(event)"/>
+		<fx:Array id="validators">
+			<mx:StringValidator id="valBeneficiario" 
+								source="{inptBeneficiario}" 
+								property="text" 
+								required="true"
+								requiredFieldError="El Beneficiario es requerido"/>
+			<mx:StringValidator id="valImporte" 
+								source="{inptImporte}" 
+								property="text" 
+								required="true"
+								requiredFieldError="El Importe es requerido"/>
+			<mx:DateValidator id="valFechaEmicion" 
+							  source="{dateFechaEmision}" 
+							  required="true"
+							  property="selectedDate"
+							  requiredFieldError="La fecha emision es requerida" />
+			<mx:DateValidator id="valFechaPago" 
+							  source="{dateFechaPago}" 
+							  required="true" 
+							  property="selectedDate"
+							  requiredFieldError="La fecha pago es requerida" />
+		</fx:Array>
+		
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="ChequeTercero"/>
+		<s:State name="ChequeTerceroModificable" />
+		<s:State name="ChequeTerceroNoModificable"/>
+		<s:State name="ChequePropioNoModificable"/>
+		<s:State name="ChequePropio" enterState="state1_enterStateHandler(event)"/>	
+	</s:states>
+	
+	<mx:Form>
+		<mx:FormItem label="Tipo Cheque: " width="100%">
+<!--@I3820-->			<s:VGroup width="100%">
+				<s:RadioButton id="rbTercero" label="Tercero" groupName="rbgTipoCheque" value="tercero" 
+							   selected="true" focusEnabled="false" enabled.ChequePropio="true" 
+							   enabled.ChequeTercero="true" enabled="false" />
+				<s:RadioButton id="rbPropio" label="Propio" groupName="rbgTipoCheque" value="propio" 
+							   selected="false" enabled.ChequePropio="true" enabled.ChequeTercero="true" 
+							   enabled="false" />
+			</s:VGroup>
+		</mx:FormItem>
+	</mx:Form>
+	
+	<mx:Form includeIn="ChequeTercero,ChequeTerceroModificable,ChequeTerceroNoModificable">
+		<mx:FormItem label="Nro Banco:" width="100%">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:TextInput id="inptNroBanco" restrict="0-9" width="40" maxChars="3" textAlign="right"
+							 enter="inptNroBanco_enterHandler(event),inptSucursal.setFocus()" 
+							 editable="false" editable.ChequeTercero="true"
+							 />
+				<s:TextInput id="inptDescBanco" editable="false" width="100%" selectable="false" 
+							 text="{modelo.banco.descripcion}"
+							focusEnabled="false"/>
+			</s:HGroup>
+		</mx:FormItem>
+		<mx:FormItem label="Sucursal:" width="100%">
+			<s:TextInput id="inptSucursal" restrict="0-9" width="40" maxChars="3" textAlign="right" 
+						 enter="inptPlaza.setFocus()" focusOut="completarConCeroAIzq(event)" 
+						 editable="false" editable.ChequeTercero="true"
+						 />						
+		</mx:FormItem>
+		<mx:FormItem label="Plaza:" width="100%">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:TextInput id="inptPlaza" restrict="0-9" width="40" maxChars="4" textAlign="right" 
+							 enter="inptDigVer1.setFocus()" focusOut="completarConCeroAIzq(event)" 
+							 editable="false" editable.ChequeTercero="true"
+							 />
+				<s:Rect width="100%"/>
+				<s:Label text="Dig. Ver:"/>
+				<s:TextInput id="inptDigVer1" restrict="0-9" width="20" maxChars="1" textAlign="right" 
+							 enter="inptNroCheque.setFocus()" focusOut="completarConCeroAIzq(event)" 
+							 editable="false" editable.ChequeTercero="true"
+							 />
+			</s:HGroup>									
+		</mx:FormItem>
+		<mx:FormItem label="Nro.Cheque:" width="100%">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:TextInput id="inptNroCheque" restrict="0-9" width="90" maxChars="8" textAlign="right" 
+							 enter="inptDigVer2.setFocus()" focusOut="completarConCeroAIzq(event)" 
+							 editable="false" editable.ChequeTercero="true"
+							 />
+				<s:Rect width="100%"/>
+				<s:Label text="Dig. Ver:"/>
+				<s:TextInput id="inptDigVer2" restrict="0-9" width="20" maxChars="1" textAlign="right" 
+							 enter="inptNroCuenta.setFocus()" focusOut="completarConCeroAIzq(event)" 
+							 editable="false" editable.ChequeTercero="true"
+							 />
+			</s:HGroup>									
+		</mx:FormItem>
+		<mx:FormItem label="Nro. Cuenta:" width="100%">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:TextInput id="inptNroCuenta" restrict="0-9" width="90" maxChars="11" textAlign="right" 
+							 enter="inptDigVer3.setFocus()" focusOut="completarConCeroAIzq(event)" 
+							 editable="false" editable.ChequeTercero="true"
+							 />
+				<s:Rect width="100%"/>
+				<s:Label text="Dig. Ver:"/>
+				<s:TextInput id="inptDigVer3" restrict="0-9" width="20" maxChars="1" textAlign="right" 
+							 enter="inptDigVer3_enterHandler(event)" editable="false" editable.ChequeTercero="true"
+							 />
+			</s:HGroup>									
+		</mx:FormItem>		
+	</mx:Form>
+	
+	<mx:Form includeIn="ChequePropio,ChequePropioNoModificable">
+		<mx:FormItem label="Banco (Suc):" width="100%">
+			<s:ComboBox id="cbmBanboSuc" dataProvider="{modelo.listaBancosPropios}" labelFunction="getLabelBancosPropios" textAlign="right" width="100%"/>
+		</mx:FormItem>
+		<mx:FormItem label="Cuenta:" width="100%">
+			<s:TextInput id="inptCuentaBP" editable="false" width="100%" text="{(cbmBanboSuc.selectedItem as BancoPropio).numeroCuenta}" 
+						 textAlign="right"/>
+		</mx:FormItem>
+		<mx:FormItem label="Nro.Cheque:" width="100%">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:TextInput id="inptNroChequePropio" restrict="0-9" width="90" maxChars="8" textAlign="right" 
+							 enter="inptDigVerChequePropio.setFocus()" focusOut="completarConCeroAIzq(event)"
+							 />
+				<s:Rect width="100%"/>
+				<s:Label text="Dig. Ver:"/>
+				<s:TextInput id="inptDigVerChequePropio" restrict="0-9" width="20" maxChars="1" textAlign="right" 
+							 enter="inptDigVerChequePropio_enterHandler(event)"
+							 />
+<!--@F3820-->			</s:HGroup>									
+		</mx:FormItem>
+	</mx:Form>
+	
+	
+	<mx:Form id="frmDatosRestantes" includeIn="ChequeTerceroModificable,ChequeTerceroNoModificable,ChequePropioNoModificable" width="100%">		
+		<mx:FormItem label="* Beneficiario:" width="100%">
+			<s:TextInput id="inptBeneficiario" text="{modelo.cheque.beneficiario}" editable="false" editable.ChequeTerceroModificable="true" width="100%" />
+		</mx:FormItem>
+		<mx:FormItem label="* Fecha emisión:" width="100%">
+			<mx:DateField id="dateFechaEmision" selectedDate="{modelo.cheque.fechaEmision}" enabled="false" enabled.ChequeTerceroModificable="true" width="100%"/>			
+		</mx:FormItem>
+		<mx:FormItem label="* Fecha pago:" width="100%">
+			<mx:DateField id="dateFechaPago" selectedDate="{modelo.cheque.fechaPago}" enabled="false" enabled.ChequeTerceroModificable="true" width="100%" />			
+		</mx:FormItem>
+		<mx:FormItem label="Cruzado:">
+			<s:CheckBox id="chkCruzado" selected="{modelo.cheque.esCruzado == 'S'}" enabled="false" enabled.ChequeTerceroModificable="true" />			
+		</mx:FormItem>
+		<mx:FormItem label="No a la orden:">
+			<s:CheckBox id="chkNoOrden" selected="{modelo.cheque.noOrden == 'S'}" enabled="false" enabled.ChequeTerceroModificable="true" />			
+		</mx:FormItem>
+		<mx:FormItem label="* Importe:" width="100%">
+			<textInput:TextInputMoneda id="inptImporte" text="{modelo.cheque.importe}" editable="false" editable.ChequeTerceroModificable="true" width="100%" textAlign="right"/>						
+		</mx:FormItem>
+		<cheque:ChequeEstadoCmp data="{modelo.cheque}"/>
+		<cheque:ChequeConciliadoCmp />		
+		<mx:FormItem id="fiRechazado" visible="{!modelo.esChequeValido}" includeInLayout="{!modelo.esChequeValido}">			
+			<s:RichText width="180" color="#F62B0F" fontWeight="bold" textAlign="justify">
+				<s:content>
+					No puede ser tomado en cuenta como forma de pago
+				</s:content>
+			</s:RichText>
+		</mx:FormItem>		
+	</mx:Form>
+	
+	<s:controlBarContent>
+		<s:Rect width="100%"/>
+		<s:Button id="btnAceptar" label="Aceptar" click.ChequeTerceroModificable="btnAceptar_clickHandler(event)" click.ChequeTerceroNoModificable="btnAceptar_clickHandler_sinValidacion(event)" click.ChequePropioNoModificable="btnAceptar_clickHandler_chequePropio(event)" enabled="{modelo.esChequeValido}" skinClass="skin.BotonAceptarSkin"/>
+	</s:controlBarContent>
+	
+</s:TitleWindow>

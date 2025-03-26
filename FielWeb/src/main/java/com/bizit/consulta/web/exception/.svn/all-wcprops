@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/exception
+END
+ComercioException.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/exception/ComercioException.java
+END
+LogInException.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/exception/LogInException.java
+END

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/spark" close="handleCloseEvent();" creationComplete="usuarioWebForm_creationCompleteHandler(event)" height="300" title="UsuarioWeb Form" width="400">
+	<fx:Script>
+        
+		import mx.collections.ArrayCollection;
+		import mx.controls.Alert;
+		import mx.events.FlexEvent;
+		import mx.managers.PopUpManager;
+		import mx.messaging.ChannelSet;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.events.ResultEvent;
+		
+		import mx.validators.Validator;
+		
+		import com.bizit.consulta.web.entity.UsuarioWeb;
+		
+		
+		[Bindable]
+		public var remotingChannels:ChannelSet;
+		
+		[Bindable]
+		public var usuarioWeb:UsuarioWeb;
+		
+		private function handleCloseEvent():void {
+			PopUpManager.removePopUp(this);
+		}            
+		
+		private function processSave():void {
+			if (!validateAndCommit()){
+				return;
+			}
+			this.dispatchEvent(new UsuarioWebEvent(((!usuarioWeb.id || usuarioWeb.id &lt;= 0) ? UsuarioWebEvent.CREATE : UsuarioWebEvent.UPDATE), usuarioWeb));
+			PopUpManager.removePopUp(this);
+		}
+		
+		private function validateAndCommit():Boolean{
+			var validatorErrors:Array = Validator.validateAll(validators.source);
+			if (validatorErrors.length &gt; 0){
+				return false;
+			}                
+			usuarioWeb.password = passwordInput.text;
+			usuarioWeb.email = emailInput.text;
+			usuarioWeb.activo = activoInput.selected;
+			
+			usuarioWeb.ultimoLogin = ultimoLoginInput.selectedDate;
+			
+			usuarioWeb.fechaCreacion = fechaCreacionInput.selectedDate;
+			
+			
+			return true;
+		}
+		
+		protected function usuarioWebForm_creationCompleteHandler(event:FlexEvent):void
+		{
+		}
+		
+		
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:ArrayList id="validators">			
+			<mx:StringValidator id="passwordValidator" maxLength="12" minLength="6" property="text" required="true" source="{passwordInput}"/>
+			<mx:StringValidator id="emailValidator" maxLength="50" property="text" required="true" source="{emailInput}"/>
+			<mx:StringValidator id="activoValidator" property="text" required="true" source="{activoInput}"/>
+		</s:ArrayList>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<mx:Form id="usuarioWebForm">
+		<mx:FormItem id="emailField" label="Email">
+			<s:TextInput id="emailInput" text="{usuarioWeb.email}"/>
+		</mx:FormItem>		
+		<mx:FormItem id="passwordField" label="Password">
+			<s:TextInput id="passwordInput" text="{usuarioWeb.password}"/>
+		</mx:FormItem>		
+		<mx:FormItem id="activoField" label="Activo">
+			<s:CheckBox id="activoInput" selected="{usuarioWeb.activo}"/>
+		</mx:FormItem>
+		<mx:FormItem id="ultimoLoginField" label="Ultimo Login">
+			<mx:DateField id="ultimoLoginInput" selectedDate="{usuarioWeb.ultimoLogin}"/>
+		</mx:FormItem>
+		<mx:FormItem id="fechaCreacionField" label="Fecha Creacion">
+			<mx:DateField id="fechaCreacionInput" selectedDate="{usuarioWeb.fechaCreacion}"/>
+		</mx:FormItem>
+	</mx:Form>
+	
+	<s:Group>
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		<s:Button click="processSave();" label="Save"/>
+		<s:Button click="handleCloseEvent();" label="Cancel"/>
+	</s:Group>
+	
+	
+</s:TitleWindow>

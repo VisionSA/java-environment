@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"  close="PopUpManager.removePopUp(this)" layout="vertical" title="Listar Clientes Cobros Externos" 
+	xmlns:date="com.util.components.date.*" horizontalAlign="center" verticalAlign="middle" showCloseButton="true" width="650" height="400">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.events.CloseEvent;
+			import com.util.components.alert.AlertOk;
+			
+			[Bindable]public var manager:Manager;
+			
+			/* [Bindable]private var _tipoArchivo:String = "PF"; */
+			
+			/* [Bindable]private var _tipoArchivo:String = "";
+			
+			[Bindable]private var url:String;
+			
+			[Bindable]public var extensionFiltro;
+			 
+			[Bindable]public var nombreFiltro; */
+			
+			/* private function uploadComplete():void{
+				AlertOk.show('El archivo se subio con éxito',closePopUp);
+				
+			} */
+			
+			private function closePopUp ():void{
+				 /* if (uploadComp.fileName.substring(0,2))   comentado por carlos */
+				/* if(_tipoArchivo == "PF"){
+					manager.listAllArchivos();	
+				} else {
+					manager.listAllArchivosFarmacia();
+				} */
+				/* la linea de abajo descomentada */
+				/* AlertOk.show(' closePopUp '); */				 
+				/*   manager.listAllArchivos();   */
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			
+			
+            
+           
+
+			
+			
+			
+		]]>
+	</mx:Script>
+	<!--<mx:HBox width="100%" horizontalAlign="center">
+			<mx:Label text="Subir Archivo "/>						
+		</mx:HBox>-->
+	<mx:AdvancedDataGrid id="adgc1" designViewDataType="flat" height="100%" width="100%" dataProvider="{manager.listaCuentasCobradas}">
+		<mx:columns>
+	        <mx:AdvancedDataGridColumn headerText="Cuenta Cliente" dataField="numeroCuenta"/>	
+			<mx:AdvancedDataGridColumn headerText="Fecha" dataField="fecha" formatter="{dateFormat}"/>
+			<mx:AdvancedDataGridColumn headerText="Cobro" dataField="nombreArchivo"/>
+			<mx:AdvancedDataGridColumn headerText="Total Pagado" dataField="monto" formatter="{currenencyFormatter}"/>
+<!--I4170--> <mx:AdvancedDataGridColumn headerText="Saldo" dataField="montoSaldo" formatter="{currenencyFormatter}"/>
+			<mx:AdvancedDataGridColumn headerText="Procesado" >
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:HBox width="100%" enabled="false" verticalAlign="middle" horizontalAlign="center">
+							<mx:CheckBox selected="{data.procesado == 1 ? true : false}"/>
+						</mx:HBox>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>			
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormat"/>
+	<mx:CurrencyFormatter id="currenencyFormatter" rounding="nearest" precision="2" currencySymbol="$"/>
+	
+	<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" horizontalGap="2">
+		<mx:Button label="Salir" click="closePopUp()"/>
+	</mx:HBox>
+	
+</mx:TitleWindow>

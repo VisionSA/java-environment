@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="100%" height="100%" xmlns:date="com.util.components.date.*" xmlns:notaCreditoDebitos="modules.notaCreditoDebitos.*">
+	<mx:ApplicationControlBar width="100%" >		
+		<mx:VBox width="100%" resizeEffect="{resizeEff}">
+			<notaCreditoDebitos:BusquedaCliente variasBusquedas="true"/>
+			<mx:HRule width="100%"/>
+			<mx:HBox visible="{manager.busquedaConsumosVisible}" includeInLayout="{manager.busquedaConsumosVisible}" horizontalAlign="left" verticalAlign="middle">
+				<mx:Label text="Fecha Desde:" styleName="lblInfoCaja"/>
+				<date:DateFiledMultiLan id="dateDesde" selectedDate="{Fecha.quitarDias(new Date(),30)}"/>
+				<mx:Label text="Fecha Hasta:" styleName="lblInfoCaja"/>
+				<date:DateFiledMultiLan id="dateHasta" selectedDate="{new Date()}"/>
+				<mx:Label text="Estado:" styleName="lblInfoCaja"/>
+				<mx:ComboBox id="cboEstado">
+			      <mx:ArrayCollection>
+			         <mx:Object label="TODOS" data="TODOS"/>
+			         <mx:Object label="Consiliados" data="C"/>
+			         <mx:Object label="Pendientes" data="P"/>
+			      </mx:ArrayCollection>
+			    </mx:ComboBox>			
+				<mx:Button label="{manager.labelBotonBusquedaCtaCte}" click="{manager.buscarConsumos(dateDesde.selectedDate,dateHasta.selectedDate,cboEstado.selectedItem.data)}"/>
+			</mx:HBox>			
+		</mx:VBox>		
+	</mx:ApplicationControlBar>
+	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" width="100%" height="100%" dataProvider="{manager.consumos}">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Fecha Consumo/Cargo" dataField="fecha" formatter="{dateFormatter}"/>
+			<mx:AdvancedDataGridColumn headerText="Cliente" dataField="cliente"/>
+			<mx:AdvancedDataGridColumn headerText="Descripción" dataField="comercio"/>
+			<mx:AdvancedDataGridColumn headerText="Transacción" dataField="transaccion"/>
+			<mx:AdvancedDataGridColumn headerText="Cod. Autor." dataField="codigo"/>
+			<mx:AdvancedDataGridColumn headerText="Cuotas" dataField="cuota"/>
+			<mx:AdvancedDataGridColumn headerText="Importe" dataField="importe" formatter="{currFormat}"/>
+			<mx:AdvancedDataGridColumn headerText="Estado Impacto" labelFunction="getEstadoImpacto" styleFunction="myStyleFunction" dataField="estadoImpacto"/>
+			<mx:AdvancedDataGridColumn headerText="Realizar NC Consumo/Cargo - ND Págo">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:HBox verticalAlign="middle" horizontalAlign="center" width="100%">
+							<mx:LinkButton label="Realizar ND / NC" click="outerDocument.realizarNc(data)"/>
+						</mx:HBox>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+	<mx:CurrencyFormatter id="currFormat" currencySymbol="$" rounding="nearest" precision="2"/>	
+	
+	<mx:Resize id="resizeEff"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import models.ApplicationModel;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import com.util.Fecha;
+			
+			[Bindable]public var manager:Manager;			
+			
+			private var popUpAnuPago:PopUpClienteDestinoAnuPago = new PopUpClienteDestinoAnuPago();
+			
+			
+			public function realizarNc(data:Object):void{
+				manager.soloPagos = false;
+				manager.realizarNCConsumo(data);	
+			}
+			
+			public function getColor(data:Object):uint{
+				return 0xFF0000;
+			}
+			
+			public function getEstadoImpacto(item:Object,column:AdvancedDataGridColumn):String {
+				
+				switch(item[column.dataField].toString()){
+					case "C": return "Conciliado";
+							  break;
+					case "P": return "Pendiente";
+							  break;
+					case "X": return "Rechazo Automático";
+							  break;
+					case "R": return "Rechazado";
+							  break;
+					default: return "";
+				}
+			}
+			
+			private function myStyleFunction(data:Object, column:AdvancedDataGridColumn):Object{
+				switch(data[column.dataField].toString()){
+					case "C": return {color:0x70c823};
+							  break;
+					case "P": return {color:0xFF0000};
+							  break;
+					case "X": return {color:0x000000};
+							  break;
+					case "R": return {color:0x000000};
+							  break;
+					default: return {color:0x000000};
+				}				
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:Module>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.TipoVencimiento" table="t_vis_prov_tipos_vtos"  >
+    <id name="idTipoVencimiento" type="java.lang.Long" column="c_id_tipo_vto">
+        <generator class="increment" />
+    </id>
+
+    <property name="orden" type="int" column="c_orden" not-null="true" length="4"/>
+
+    <property name="porcentajeMonto" type="int" column="c_porcentaje_monto" not-null="true" length="4"/>
+
+    <property name="dias" type="int" column="c_a_dias" not-null="true" length="4"/>
+
+    <!-- Associations -->
+    <many-to-one name="proveedor"    
+				 class="com.bizitglobal.tarjetafiel.proveedores.negocio.Proveedor" 
+				 not-null="true" 
+				 cascade="save-update">
+        <column name="c_id_proveedor" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/testing/!svn/ver/45/trunk/FielWeb
+END
+log.roo
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/testing/!svn/ver/46/trunk/FielWeb/log.roo
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/testing/!svn/ver/46/trunk/FielWeb/.classpath
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/testing/!svn/ver/46/trunk/FielWeb/.project
+END
+.tomcatplugin
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/testing/!svn/ver/46/trunk/FielWeb/.tomcatplugin
+END
+.flexProperties
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/testing/!svn/ver/46/trunk/FielWeb/.flexProperties
+END
+pom.xml
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/testing/!svn/ver/46/trunk/FielWeb/pom.xml
+END
+.actionScriptProperties
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/testing/!svn/ver/46/trunk/FielWeb/.actionScriptProperties
+END

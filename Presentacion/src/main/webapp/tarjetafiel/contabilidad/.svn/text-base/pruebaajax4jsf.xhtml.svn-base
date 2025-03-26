@@ -1,0 +1,27 @@
+<xmlns:a4j="https://Ajax4jsf.dev.java.net/Ajax">
+<h:panelGrid id="uno" columns="1" width="850" align="center">
+
+			 <t:tree2 id="clientTree" value="#{PlanCuenta.treeData}" var="node" varNodeToggler="t">
+         
+        <f:facet name="nodo">
+            <h:panelGroup>
+                <f:facet name="expand">
+                    <t:graphicImage value="images/yellow-folder-open.png" rendered="#{t.nodeExpanded}" border="0"/>
+                </f:facet>
+                <f:facet name="collapse">
+                    <t:graphicImage value="images/yellow-folder-closed.png" rendered="#{!t.nodeExpanded}" border="0"/>
+                </f:facet>
+               
+           <h:commandLink styleClass="#{t.nodeSelected ? 'documentSelected':'document'}" action="ejem" >  
+                   <h:outputText value="#{node.description}" styleClass="nodeFolder"/>  
+                <h:outputText value=" (#{node.childCount})" styleClass="childCount" rendered="#{!empty node.children}"/>
+           </h:commandLink>    
+           
+            </h:panelGroup>
+        </f:facet>
+               
+       
+    </t:tree2> 
+					
+	</h:panelGrid>
+					

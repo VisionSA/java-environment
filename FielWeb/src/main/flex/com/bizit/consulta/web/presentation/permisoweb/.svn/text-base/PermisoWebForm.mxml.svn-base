@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/spark" close="handleCloseEvent();" creationComplete="permisoWebForm_creationCompleteHandler(event)" height="300" title="PermisoWeb Form" width="400">
+    <fx:Script>
+        <![CDATA[
+            import mx.collections.ArrayCollection;
+            import mx.controls.Alert;
+            import mx.events.FlexEvent;
+            import mx.managers.PopUpManager;
+            import mx.messaging.ChannelSet;
+            import mx.rpc.events.FaultEvent;
+            import mx.rpc.events.ResultEvent;
+            
+            import mx.validators.Validator;
+            
+            import com.bizit.consulta.web.entity.PermisoWeb;
+            
+            
+            [Bindable]
+            public var remotingChannels:ChannelSet;
+            
+            [Bindable]
+            public var permisoWeb:PermisoWeb;
+            
+            private function handleCloseEvent():void {
+                PopUpManager.removePopUp(this);
+            }            
+            
+            private function processSave():void {
+                if (!validateAndCommit()){
+                    return;
+                }
+                this.dispatchEvent(new PermisoWebEvent(((!permisoWeb.id || permisoWeb.id <= 0) ? PermisoWebEvent.CREATE : PermisoWebEvent.UPDATE), permisoWeb));
+                PopUpManager.removePopUp(this);
+            }
+            
+            private function validateAndCommit():Boolean{
+                var validatorErrors:Array = Validator.validateAll(validators.source);
+                if (validatorErrors.length > 0){
+                    return false;
+                }
+                permisoWeb.nombre = nombreInput.text;
+                permisoWeb.swf = swfInput.text;
+
+                return true;
+            }
+            
+            protected function permisoWebForm_creationCompleteHandler(event:FlexEvent):void
+            {
+            }
+            
+        ]]>
+    </fx:Script>
+    
+    <fx:Declarations>
+        <s:ArrayList id="validators">
+            <mx:StringValidator id="nombreValidator" maxLength="50" property="text" required="true" source="{nombreInput}"/>
+            <mx:StringValidator id="swfValidator" maxLength="100" property="text" required="true" source="{swfInput}"/>
+        </s:ArrayList>
+    </fx:Declarations>
+    
+    <s:layout>
+        <s:VerticalLayout/>
+    </s:layout>
+    
+    <mx:Form id="permisoWebForm">
+        <mx:FormItem id="nombreField" label="Nombre">
+        	<s:TextInput id="nombreInput" text="{permisoWeb.nombre}"/>
+        </mx:FormItem>
+        <mx:FormItem id="swfField" label="Swf">
+        	<s:TextInput id="swfInput" text="{permisoWeb.swf}"/>
+        </mx:FormItem>
+    </mx:Form>
+    
+    <s:Group>
+        <s:layout>
+            <s:HorizontalLayout/>
+        </s:layout>
+        <s:Button click="processSave();" label="Save"/>
+        <s:Button click="handleCloseEvent();" label="Cancel"/>
+    </s:Group>
+    
+    
+</s:TitleWindow>

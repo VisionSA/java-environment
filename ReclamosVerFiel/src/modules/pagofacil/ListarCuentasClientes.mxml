@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"  close="PopUpManager.removePopUp(this)" layout="vertical" title="Listar Clientes Cobros Externos" 
+	xmlns:date="com.util.components.date.*" horizontalAlign="center" verticalAlign="middle" showCloseButton="true" width="650" height="400">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.events.CloseEvent;
+			import com.util.components.alert.AlertOk;
+			
+			[Bindable]public var manager:Manager;
+			
+			/* [Bindable]private var _tipoArchivo:String = "PF"; */
+			
+			/* [Bindable]private var _tipoArchivo:String = "";
+			
+			[Bindable]private var url:String;
+			
+			[Bindable]public var extensionFiltro;
+			 
+			[Bindable]public var nombreFiltro; */
+			
+			/* private function uploadComplete():void{
+				AlertOk.show('El archivo se subio con éxito',closePopUp);
+				
+			} */
+			
+			private function closePopUp ():void{
+				 /* if (uploadComp.fileName.substring(0,2))   comentado por carlos */
+				/* if(_tipoArchivo == "PF"){
+					manager.listAllArchivos();	
+				} else {
+					manager.listAllArchivosFarmacia();
+				} */
+				/* la linea de abajo descomentada */
+				/* AlertOk.show(' closePopUp '); */				 
+				/*   manager.listAllArchivos();   */
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			
+			
+            
+           
+
+			
+			
+			
+		]]>
+	</mx:Script>
+	<!--<mx:HBox width="100%" horizontalAlign="center">
+			<mx:Label text="Subir Archivo "/>						
+		</mx:HBox>-->
+	<mx:Panel title="Datos Interesado" label="Datos Interesado" width="100%"  height="20%" >
+		<mx:VBox backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%" height="100%" verticalGap="0" horizontalAlign="left" paddingTop="0">
+			<mx:HBox  width="100%" height="50%"   paddingTop="0"   textAlign="left" paddingBottom="0">
+				
+				<mx:Form width="30%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="DNI: " styleName="tituloBusquedas" width="100%"  height="100%" textAlign="left" >
+						<mx:TextInput id="txtDNI" restrict="0-9"/>
+					</mx:FormItem>										
+				</mx:Form>	
+				
+				<mx:Button label="Buscar Cliente" width="10%" click=""/>
+				
+				<mx:Form width="30%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Nº Cliente: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+						<mx:Label id="txtCliente" />
+					</mx:FormItem>										
+				</mx:Form>
+				
+				<mx:Form width="30%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Fecha Reclamo: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+						<mx:Label id="txtFechaReclamo" />
+					</mx:FormItem>										
+				</mx:Form>
+				
+			</mx:HBox>
+			
+			<mx:HBox  width="100%" height="50%"   paddingTop="0"   textAlign="left" paddingBottom="0">
+				
+				<mx:Form width="70%"   paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Apellido Nombre: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+						<mx:TextInput id="txtApellidoNom" width="100%" textAlign="center"  restrict="A-Z/a-z/ /" />
+					</mx:FormItem>											
+				</mx:Form>	
+				
+				
+				
+				<mx:Form width="10%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Interesado y Declarante misma Persona " styleName="tituloBusquedas" width="100%" textAlign="left" >
+						<mx:CheckBox id="chckbAlerta" click=""/>
+					</mx:FormItem>										
+				</mx:Form>
+				
+				
+				
+			</mx:HBox>
+		</mx:VBox>
+		
+		
+		
+	</mx:Panel>
+	<mx:Panel title="Datos Declarante" label="Datos Declarante" width="100%"  height="80%">
+		<mx:VBox backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%" height="100%" verticalGap="0" horizontalAlign="left" paddingTop="0">
+			<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="0">
+				
+				<mx:Form width="30%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="DNI: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+						<mx:TextInput id="txtDniDec" restrict="0-9"/>
+					</mx:FormItem>										
+				</mx:Form>
+				
+				<mx:Form width="70%"   paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Apellido Nombre: " styleName="tituloBusquedas" width="100%" textAlign="left" >
+						<mx:TextInput id="txtApellidoDecl" width="100%"   restrict="A-Z/a-z/ /" />
+					</mx:FormItem>											
+				</mx:Form>
+			</mx:HBox>
+			<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="0">
+				
+				<mx:Form width="80%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Calle: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtCalle" width="100%" textAlign="left" />
+					</mx:FormItem>									
+				</mx:Form>				
+				<mx:Form width="10%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Nro: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtNro" width="100%" textAlign="left" />
+					</mx:FormItem>								
+				</mx:Form>				
+				<mx:Form width="10%"   paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Orientacion: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtOrientacion" width="100%" textAlign="left" />
+					</mx:FormItem>											
+				</mx:Form>
+			</mx:HBox>
+			<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="0">				
+				<mx:Form width="30%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Manzana: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtManzana" width="100%" textAlign="left" />
+					</mx:FormItem>									
+				</mx:Form>				
+				<mx:Form width="30%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Area Sector: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtAreaSector" width="100%" textAlign="left" />
+					</mx:FormItem>								
+				</mx:Form>				
+				<mx:Form width="20%"   paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Piso: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtPiso" width="100%" textAlign="left" />
+					</mx:FormItem>											
+				</mx:Form>
+				<mx:Form width="20%"   paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Depto: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtDepto" width="100%" textAlign="left" />
+					</mx:FormItem>											
+				</mx:Form>
+			</mx:HBox>
+			<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="0">				
+				<mx:Form width="60%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Barrio: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtBarrio" width="100%" textAlign="left" />
+					</mx:FormItem>									
+				</mx:Form>				
+				<mx:Form width="40%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Localidad: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtLocalidad" width="100%" textAlign="left" />
+					</mx:FormItem>							
+				</mx:Form>								
+			</mx:HBox>
+			<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="0">				
+				<mx:Form width="50%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Departamento: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtDepartamento" width="100%" textAlign="left" />
+					</mx:FormItem>									
+				</mx:Form>				
+				<mx:Form width="15%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Codigo Postal: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtCodigoPostal" width="100%" textAlign="left" />
+					</mx:FormItem>							
+				</mx:Form>	
+				<mx:Form width="45%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Provincia: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtProvincia" width="100%" textAlign="left" />
+					</mx:FormItem>						
+				</mx:Form>
+			</mx:HBox>
+			<mx:HBox  width="100%" height="15%"   paddingTop="0"   textAlign="left" paddingBottom="0">
+				<mx:DataGrid height="25%" dataProvider="" width="20%">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Nro telefono" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label styleName="lblInfo" text=""/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:DataGridColumn>					
+					</mx:columns>
+				</mx:DataGrid>
+				<mx:Button label="Agregar Telefono" width="10%" click=""/>
+				<mx:Form width="65%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"> 
+					<mx:FormItem label="Mail: " styleName="tituloBusquedas"  width="100%">
+						<mx:TextInput id="txtMail" width="100%" textAlign="left" />
+					</mx:FormItem>						
+				</mx:Form>
+			</mx:HBox>
+			<mx:VBox  width="100%" height="30%"   paddingTop="0"   textAlign="left" paddingBottom="0">
+				<mx:HBox  width="100%" height="10%"   paddingTop="0"   textAlign="left" paddingBottom="0">
+					<mx:Form width="70%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0">  
+						<mx:FormItem label="Tipo de reclamo: " styleName="tituloBusquedas"  width="100%" >
+							<mx:ComboBox id="cmbReclamo" prompt="Seleccione..." change="" 
+										 dataProvider=""  width="100%" />
+						</mx:FormItem>									
+					</mx:Form>
+					
+					<mx:Form width="30%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0">  
+						<mx:FormItem label="Operador: " styleName="tituloBusquedas"  width="100%" >
+							<mx:ComboBox id="cmbOperadores" prompt="Seleccione..." change="" 
+										 dataProvider="" labelField="username" width="100%" />
+						</mx:FormItem>									
+					</mx:Form>
+					
+					
+					
+				</mx:HBox>
+				<mx:Form width="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" height="80%"> 
+					<mx:FormItem label="Descripcion: " styleName="tituloBusquedas"  width="100%" height="100%">
+						<mx:TextArea id="txtDescripcion" width="100%" textAlign="left" height="100%" />
+					</mx:FormItem>							
+				</mx:Form>	
+				<mx:HBox  width="100%" height="10%"   paddingTop="0"   horizontalAlign="center" verticalAlign="middle" paddingBottom="0" horizontalGap="2" >
+					<mx:Button label="Grabar" click=""/>
+					<mx:Button label="Salir" click=""/>
+				</mx:HBox>
+			</mx:VBox>
+			
+		</mx:VBox> 
+	</mx:Panel>
+	
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormat"/>
+	<mx:CurrencyFormatter id="currenencyFormatter" rounding="nearest" precision="2" currencySymbol="$"/>
+	
+	<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" horizontalGap="2">
+		<mx:Button label="Salir" click="closePopUp()"/>
+	</mx:HBox>
+	
+</mx:TitleWindow>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   creationComplete="titlewindow1_creationCompleteHandler(event)" 
+			   xmlns:textInput="com.util.components.textInput.*"
+			   close="titlewindow1_closeHandler(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.proveedorconexion.business.ConstantesFormaPago;
+			
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.StringUtil;
+			
+			import utils.ManejadorPantallas;		
+			
+			[Bindable]
+			private var modelo : CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			protected function vgroup1_mouseOutHandler(event:MouseEvent):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+//				this.title = StringUtil.substitute("{0}, {1}",
+//					modelo.cliMovSelected.cliente.individuo.apellido.toUpperCase(), 
+//					modelo.cliMovSelected.cliente.individuo.nombres.toUpperCase());
+				
+			}
+
+
+			protected function btnCerrar_clickHandler(event:MouseEvent):void
+			{
+				ManejadorPantallas.cerrarPop(this);
+			}
+
+
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				ManejadorPantallas.cerrarPop(this);
+			}
+			
+
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<mx:Form>
+		<mx:FormItem label="Efectivo:" includeInLayout="{modelo.mediosPosibles.efectivo}" visible="{modelo.mediosPosibles.efectivo}">
+<!--			<textInput:TextInputMoneda  editable="false" text="{modelo.cliMovSelected.sumador.sumaEfectivo}" textAlign="right" width="100%"/>-->			
+		</mx:FormItem>
+		<mx:FormItem label="Tickets:" includeInLayout="{modelo.mediosPosibles.tickets}" visible="{modelo.mediosPosibles.tickets}" width="100%">
+		<!--	<textInput:TextInputMoneda  editable="false" text="{modelo.cliMovSelected.sumador.sumaTickets}" textAlign="right" width="100%"/>-->
+		</mx:FormItem>
+		<mx:FormItem label="Cheques:" includeInLayout="{modelo.mediosPosibles.cheques}" visible="{modelo.mediosPosibles.cheques}" width="100%">
+	<!--		<textInput:TextInputMoneda editable="false" text="{modelo.cliMovSelected.sumador.sumaCheques}" textAlign="right" width="100%"/>-->
+		</mx:FormItem>
+		<mx:FormItem label="Depósitos:" includeInLayout="{modelo.mediosPosibles.depositos}" visible="{modelo.mediosPosibles.depositos}" width="100%">
+	<!--		<textInput:TextInputMoneda editable="false" text="{modelo.cliMovSelected.sumador.sumaDepositos}" textAlign="right" width="100%"/>-->
+		</mx:FormItem>
+		<mx:FormItem label="Total:" fontWeight="bold" width="100%">
+		<!--	<textInput:TextInputMoneda  editable="false" text="{modelo.cliMovSelected.sumador.sumaTotal}" textAlign="right" width="100%" contentBackgroundColor="#BF4343" color="#FFFFFF"/>-->
+		</mx:FormItem>
+	</mx:Form>
+	
+	<s:controlBarContent>
+		<s:Rect width="100%"/>			
+		<s:Button id="btnCerrar" label="Cerrar" click="btnCerrar_clickHandler(event)"/>		
+	</s:controlBarContent>
+	
+</s:TitleWindow>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceLocator xmlns="com.adobe.cairngorm.business.*" xmlns:mx="http://www.adobe.com/2006/mxml">
+
+	<mx:RemoteObject 
+		id="clientes" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="clienteTransaccionServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="clientesPlastico" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="plasticoClienteServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="banco" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="bancoNuevoServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="empresa" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="empresaServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="liqComercio" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="liqComercioLPServiceTarget"/>
+	
+	<mx:RemoteObject 
+		id="liqComercioLpDetalle" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="liqComercioDetServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="ctaCteComercio" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="ctaCteComercioServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="login" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="operadorServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="liquidacionCliente" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="liqClienteServiceTarget"/>
+	
+	<mx:RemoteObject 
+		id="liquidacionDetalleCliente" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="ctaCteClienteServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="pagosCliente" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="pagosClienteServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="conceptos" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="conceptoServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="bancoPropio" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="bancoPropioServiceTarget"/>		
+	
+	<mx:RemoteObject 
+		id="formaPagoCaja" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="cajaMPServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="caja" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="cajaServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="cajaApertura" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="cajaAperturaServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="chequeEstados" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="chequeEstadoServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="calculoCuotas" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="calculoCuotaServicesTarget"/>
+	
+	<mx:RemoteObject 
+		id="adelantoEfectivo" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="adelantoEfectivoServicesTarget"/>
+		
+	<mx:RemoteObject 
+		id="impresoras" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="impresoraServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="cheque" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="chequeServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="formaPagoValor" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="formaPagoValorServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="arqueoService" 
+		destination="GenericDestination" 	
+		showBusyCursor="true"	
+		source="cajaArqueoServiceTarget"/>
+	
+	<mx:RemoteObject 
+		id="movimientoService" 
+		destination="GenericDestination" 	
+		showBusyCursor="true"	
+		source="movimientoServiceTarget"/>	
+		
+	<mx:RemoteObject 
+		id="chequeLugarService" 
+		destination="GenericDestination" 	
+		showBusyCursor="true"	
+		source="chequeLugarServiceTarget"/>
+
+	<mx:RemoteObject
+		id="reImpresionService"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="com.bizitglobal.tarjetafiel.general.impresion.ImpresionTickets"			
+		/>
+		
+	<mx:RemoteObject
+		id="pagoAComercioService"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="liqComPagoServiceTarget"
+		/>
+		
+	<mx:RemoteObject
+		id="individuoEvaluacionService"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="individuoEvaluacionServiceTarget"
+		/>
+	
+	<mx:RemoteObject
+		id="iliquidacionComercioService"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="liquidacionServiceTarget"
+	/>
+	
+	<mx:RemoteObject
+		id="chequeHistorial"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="chequeHistorialServiceTarget"
+	/>
+	
+	<mx:RemoteObject
+		id="recibo"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="reciboServiceTarget"
+	/>
+	
+</ServiceLocator>

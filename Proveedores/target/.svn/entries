@@ -1,0 +1,71 @@
+9
+
+dir
+132
+https://testingpc/svn/testing/trunk/Proveedores/target
+https://testingpc/svn/testing
+
+
+
+2017-09-14T13:59:36.637937Z
+78
+gaston
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+Proveedores-1.0-SNAPSHOT.jar
+file
+
+
+
+
+2017-12-01T12:43:32.215590Z
+0d6f59e6e14fe5b83a5c475f2537ccdd
+2017-09-14T13:59:36.637937Z
+78
+gaston
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+212598
+
+maven-archiver
+dir
+
+test-classes
+dir
+
+classes
+dir
+

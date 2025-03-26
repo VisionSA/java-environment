@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+                       "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+ <!-- DEFINICION DEL DATA SOURCE -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/dataSource.xml"/>
+	
+ <!-- ================================================================================================ -->
+ <!-- =======================          DEFINICION DE SESSION FACTORY           ======================= -->
+ <!-- ================================================================================================ --> 
+ <bean class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" id="sessionFactory">
+  <property name="mappingResources">
+   <list>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Actividad.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Aplicable.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Categoria.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Exclusion.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Impuesto.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/ImpuestosIndividuo.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Individuo.hbm.xml</value>     
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Jurisdiccion.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/JurisdiccionActividad.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/JurisTipoImpuesto.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Retencion.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/TipoImpuesto.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/TramosRetencion.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Partido.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Provincia.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Pais.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Localidad.hbm.xml</value>
+   </list>
+  </property>
+  <property name="hibernateProperties">
+   <props>
+    <prop key="hibernate.dialect">org.hibernate.dialect.InformixDialect</prop>
+    <prop key="hibernate.show_sql">true</prop>
+    <prop key="hibernate.cglib.use_reflection_optimizer">true</prop>
+    <prop key="hibernate.cache.provider_class">org.hibernate.cache.HashtableCacheProvider</prop>
+   </props>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+
+ <!-- DEFINICION DEL SESSION FACTORY -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/commonContext.xml"/>	
+	
+ <!-- DEFINICION DEL CONTEXT DE IMPUESTOS -->
+ <import resource="impuestoContext.xml"/>  
+	
+</beans>

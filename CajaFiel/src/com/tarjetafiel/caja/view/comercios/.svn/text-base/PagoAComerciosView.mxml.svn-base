@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onCreationComplete()" layout="vertical" width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+	<mx:HBox width="100%" verticalAlign="middle">
+		<mx:Label text="Entrega Orden de pago" styleName="tituloBusquedas" fontSize="14" fontFamily="Arial"/>	
+	</mx:HBox>	
+	<mx:AdvancedDataGrid id="adg1" doubleClickEnabled="true" 
+		doubleClick="entregarLiquidacion()" designViewDataType="flat" width="100%" height="100%"
+		dataProvider="{pagoComModel.liquidacionesList}" fontSize="16">		
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Nro. Liquidacion">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.numeroLiquidacion}" fontSize="16"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>			
+			<mx:AdvancedDataGridColumn headerText="Fecha" dataField="fechaLiquidacion" formatter="{formatterDate}"/>
+			<mx:AdvancedDataGridColumn headerText="Importe Total" dataField="montoTotal" formatter="{currencyFormatter}"/>
+			<mx:AdvancedDataGridColumn headerText="Entregar">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:HBox horizontalAlign="center" width="100%">
+							<mx:Button label="Entregar" click="outerDocument.entregarLiquidacion()"/>	
+						</mx:HBox>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	<mx:HBox width="100%" horizontalAlign="left" verticalAlign="middle">
+		<mx:Button label="Entregar Todo" click="entregarTodos()"/>
+		<mx:Button label="Impresoras" click="ModelLocator.getInstance().impresorasModel.showListaImpresoras()" />		
+	</mx:HBox>
+	<mx:CurrencyFormatter id="currencyFormatter" currencySymbol="$" rounding="nearest" precision="2"/>
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="formatterDate"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import com.tarjetafiel.caja.vo.Liquidacion;
+			import com.tarjetafiel.caja.vo.LiqComPago;
+			import mx.collections.Grouping;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.event.IndividuosHabilitadosPagosEvent;
+			import com.tarjetafiel.caja.model.EmpresaModel;
+			import mx.events.CollectionEvent;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.model.PagoAComercioModel;
+			import com.tarjetafiel.caja.event.PagoAComercioEvent;
+			import com.tarjetafiel.caja.vo.LiqComPagoView;
+			 
+			 [Bindable]private var pagoComModel:PagoAComercioModel = ModelLocator.getInstance().pagosAComercios; 
+			 [Bindable]private var empresaModel:EmpresaModel = ModelLocator.getInstance().empresaModel;			 			
+			 
+			 public var responsablesPopUp:ResponsablesView = new ResponsablesView();			 					 	
+      		 
+      		 private function onCreationComplete():void{
+      		 	ModelLocator.getInstance().pagosAComercios.addEventListener(PagoAComercioEvent.PAGOS_UPDATE_COMPLETE, function (evt:PagoAComercioEvent):void{
+      		 		PopUpManager.removePopUp(responsablesPopUp);      		 		
+      		 	});
+      		 	var evt:PagoAComercioEvent = new PagoAComercioEvent(PagoAComercioEvent.PAGOS_LIST);
+      		 	evt.dispatch();        		 	 		 
+      		 } 
+ 			 
+ 			 public function entregarLiquidacion():void{
+ 			 	if(adg1.selectedItem != null){
+ 			 		pagoComModel.liquidacionesAEntregar.removeAll();
+ 			 		pagoComModel.liquidacionesAEntregar.addItem(adg1.selectedItem as Liquidacion);
+ 			 		loadPopUpResponsables(); 			 		
+ 			 	} 
+ 			 }
+ 			 
+ 			 private function entregarTodos():void{ 		 			 	
+		 		pagoComModel.liquidacionesAEntregar = new ArrayCollection(pagoComModel.liquidacionesList.source);		 		
+		 		loadPopUpResponsables();
+ 			 }
+ 			 
+ 			 private function loadPopUpResponsables():void{
+ 			 	PopUpManager.addPopUp(responsablesPopUp,Application.application as DisplayObject,true);
+ 			 	PopUpManager.centerPopUp(responsablesPopUp);
+ 			 	new IndividuosHabilitadosPagosEvent(IndividuosHabilitadosPagosEvent.BUSCAR_INDIVIDUOS_EMPRESA).dispatch();
+ 			 }
+ 
+		]]>
+	</mx:Script>
+	
+</mx:Module>

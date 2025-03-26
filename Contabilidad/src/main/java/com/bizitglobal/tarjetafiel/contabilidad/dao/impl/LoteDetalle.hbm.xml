@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+                               
+<hibernate-mapping package="com.bizitglobal.tarjetafiel.contabilidad.negocio">
+<class name="LoteDetalle" table="t_cont_lote_d" >  
+    
+    
+      <composite-id name="id" class="LoteDetalle$Id">
+         <key-property name="idEmpresa" type="java.lang.Integer" column="c_empresa"/>
+         <key-property name="idEjercicio" type="java.lang.Integer" column="c_ejercicio"/>
+         <key-property name="idAsiento" type="java.lang.Integer" column="c_asiento"/>
+         <key-property name="renglon" type="java.lang.Integer" column="c_renglon"/>
+      </composite-id>
+    
+	<property name="importe" type="java.lang.Double" column="c_importe" not-null="true" />
+    <property name="numeroImputa" type="java.lang.Long" column="c_numero_imputa" not-null="true"/>
+    <property name="signo" type="java.lang.String" column="c_signo" not-null="false" length="1"/>
+    <property name="leyenda" type="java.lang.String" column="c_leyenda" not-null="false" length="40"/>
+    <property name="operador" type="java.lang.String" column="c_operador" not-null="false" length="8"/>
+    <property name="fechaContab" type="java.util.Date" column="c_fecha_contab" not-null="false"/>
+    <property name="fechaCarga" type="java.sql.Date" column="c_fecha_carga" not-null="false"/>
+   
+   
+    
+</class>
+</hibernate-mapping>

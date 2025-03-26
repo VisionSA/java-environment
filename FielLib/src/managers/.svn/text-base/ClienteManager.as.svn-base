@@ -1,0 +1,1292 @@
+package managers
+{
+	import com.componentView.InformacionCliente;
+	import com.darronschall.util.Iterator;
+	import com.tarjetafiel.caja.vo.ClienteTransaccion;
+	import com.tarjetafiel.caja.vo.Email;
+	import com.tarjetafiel.caja.vo.GestionCliente;
+	import com.tarjetafiel.caja.vo.GestionClienteLog;
+	import com.tarjetafiel.caja.vo.IndividuoEvaluacion;
+	import com.tarjetafiel.caja.vo.LiqCliente;
+	import com.tarjetafiel.caja.vo.MovTransaccionCliCom;
+	import com.tarjetafiel.caja.vo.MovimientoCtaCte;
+	import com.tarjetafiel.caja.vo.PlasticoCliente;
+	import com.tarjetafiel.caja.vo.Telefono;
+	import com.tarjetafiel.caja.vo.util.Filtro;
+	import com.util.block.ControlBlock;
+	import com.util.collections.ArrayUtil;
+	import com.util.components.alert.AlertError;
+	import com.util.components.alert.AlertOk;
+	import com.util.paginacion.Paginador;
+	
+	import events.ClienteEvent;
+	import events.ClienteManagerEvent;
+	import events.LiquidacionEvent;
+	
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
+	
+	import mx.collections.ArrayCollection;
+	import mx.collections.Sort;
+	import mx.collections.SortField;
+	import mx.controls.Alert;
+	import mx.controls.List;
+	import mx.core.Application;
+	import mx.managers.PopUpManager;
+	import mx.rpc.Fault;
+
+	/*import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;*/
+
+	
+	
+	public class ClienteManager extends EventDispatcher
+	{   
+		public var dispatcher:IEventDispatcher;
+		[Bindable]public var cliente:ClienteTransaccion; 
+		[Bindable]private var _titular:ClienteTransaccion;
+		//[Bindable]public var clienteSeleccionado:ClienteTransaccion;
+	    [Bindable]public var clienteEncontrado:ClienteTransaccion;
+		[Bindable]public var arrayClientes:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayAdicionales:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayTitularAdiscionales:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayMovientosCtaCteResumen:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayLineaTemporal:ArrayCollection= new ArrayCollection();
+		
+		[Bindable]public var revistaBaja:String;
+		[Bindable]public var envioResumen:String;
+		[Bindable]public var desbloqueoRepacta:String;
+		[Bindable]public var movTransaccionCliCom:MovTransaccionCliCom;
+		[Bindable]public var movTransaccionCliComCompos:MovTransaccionCliCom;
+		[Bindable]public var varBloqueDesbloque:String;
+		
+		[Bindable]public var arrayMovientoCtaCteDetalles:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayMovientoComercioDetalles:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayMovientoComercioDetallesCom:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayMovientoPendiente:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayMovientoPendienteComp:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayMovientoComposDetalles:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayComposicionDetalleCtaCte:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayComposicionDetalleCtaCteCom:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayLiquidaciones:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayDetallesLiquidaciones:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayComposicionSaldo:ArrayCollection= new ArrayCollection();
+		[Bindable]public var arrayComposicionSaldoDetalles:ArrayCollection= new ArrayCollection();
+		
+		[Bindable]public var saldoAnteriorCtaCte:Number;
+		[Bindable]public var saldoAnteriorComposicionSaldo:Number;		
+		
+		[Bindable]public var arrayPlasticos:ArrayCollection = new ArrayCollection();
+		
+		[Bindable]public var arrayGestionCliente:ArrayCollection = new ArrayCollection();
+		
+		[Bindable]public var resultadoLog:Boolean;
+		
+		[Bindable]public var rutaDetalleIntereses:String;
+		
+		private var paramBusqueda:String ; 
+		private var tipoBusqueda:String ;
+		private var isBuscarPorPlastico:Number;
+		
+		public static const BUSQ_POR_DNI:String = "busqPorDni";
+		public static const BUSQ_POR_PLASTICO:String = "busqPorPlastico";
+		public static const BUSQ_POR_CUIL:String = "busqPorCuil";
+		public static const BUSQ_POR_NRO_CUENTA:String = "busqPorNroCuenta";
+		public static const BUSQ_POR_APELLIDO:String = "busqPorApellido";
+		public static const BUSQ_POR_SIT_COMERCIAL:String = "busqPorSitComercial";
+		public static const BUSQ_POR_SIT_COBRANZA:String = "busqPorSitCobranza";
+		public static const BUSQ_POR_GENERAL:String = "busqPorGeneral";
+		public static const BUSQ_POR_PARAMETRO:String = "busqPorParametro";
+		public var liqCliente : LiqCliente;
+		public var movimientoCtaCte : MovimientoCtaCte;
+		
+		[Bindable]public var informacionCliente:String;
+		/*[Bindable]
+		public var modelo : ModelLocatorGeneral = ModelLocatorGeneral.getInstance();*/
+		
+					
+		public var arrayEventos:ArrayCollection= new ArrayCollection() ;
+		private var fechaDesde:Date;
+		private var idCliente:Number;	
+		
+		//public var popUpInformacionCliente:InformacionCliente = new InformacionCliente();
+		
+		[Bindable]public var arrayTiposTelefono:ArrayCollection= new ArrayCollection();
+		private var idIndividuoMail : Number;
+		
+				
+		public function ClienteManager()
+		{			
+		}
+		//1
+		public function buscarPorPlastico(numeroTar:String, codSeg:String):void{
+			resetDatosCliente();
+			var filtro:Filtro = new Filtro();
+			filtro.campos.push("numero");
+			filtro.operadores.push(Filtro.IGUAL);
+			filtro.valores.push(numeroTar);
+			if(codSeg!= null){
+				filtro.campos.push("pin");
+				filtro.operadores.push(Filtro.IGUAL);
+				filtro.valores.push(codSeg);
+			}	
+			this.buscarPlasticoCliente(filtro);
+		}
+		
+		private function resetDatosCliente():void{
+			  arrayAdicionales = new ArrayCollection();
+			  arrayLineaTemporal = new ArrayCollection();
+              arrayClientes = new ArrayCollection();
+              arrayComposicionDetalleCtaCte = new ArrayCollection();
+			  arrayComposicionDetalleCtaCteCom = new ArrayCollection();
+              arrayComposicionSaldo = new ArrayCollection();
+              arrayComposicionSaldoDetalles = new ArrayCollection();
+              arrayDetallesLiquidaciones = new ArrayCollection();
+              arrayLiquidaciones = new ArrayCollection();
+              arrayMovientoCtaCteDetalles = new ArrayCollection();
+			  arrayMovientoComposDetalles = new ArrayCollection();
+			  arrayMovientoComercioDetalles = new ArrayCollection();
+			  arrayMovientoComercioDetallesCom = new ArrayCollection();
+			  arrayMovientoPendiente = new ArrayCollection();
+			  arrayMovientoPendienteComp = new ArrayCollection();
+			  arrayMovientosCtaCteResumen = new ArrayCollection();
+              arrayTitularAdiscionales = new ArrayCollection();
+
+              dispatcher.dispatchEvent(new ClienteEvent(ClienteEvent.RESET_CLIENTES));
+		}
+		
+		//2
+		public function buscarTitularAdicionales(paramBusqueda:String,tipoBusqueda:String,nuevoTipoCliente:ClienteTransaccion):void{
+			
+			
+			//resetDatosCliente();
+			
+			this.paramBusqueda = paramBusqueda;
+			this.tipoBusqueda= tipoBusqueda;
+			var filtro:Filtro = new Filtro();
+			var filtro1:Filtro = new Filtro();
+			this.isBuscarPorPlastico=-1;
+			
+			//Alert.show("buscarTitularAdicionales " + paramBusqueda + "nuevoTipoCliente " +  nuevoTipoCliente);
+			switch (tipoBusqueda)
+             {     
+	               case BUSQ_POR_PLASTICO:
+	                    filtro.campos.push("numero");
+						filtro.operadores.push(Filtro.IGUAL);
+						filtro.valores.push(paramBusqueda);
+						this.isBuscarPorPlastico =1;					
+				   break; 
+	               case BUSQ_POR_CUIL:
+					   
+					   
+	                    filtro.campos.push("individuo.cuil");
+						filtro.operadores.push(Filtro.IGUAL);
+						filtro.valores.push(paramBusqueda);
+						
+						filtro1.campos.push("individuo.cuil");
+						filtro1.operadores.push(Filtro.IGUAL);
+						filtro1.valores.push(paramBusqueda);
+						
+						filtro.funcion = " or (obj.idCliente in (select obj1.cliente.idCliente from Garante obj1 inner join obj1.individuo ind1 where ind1.cuil  = " + paramBusqueda + " )) ";
+												
+				   break;
+	               case BUSQ_POR_NRO_CUENTA:
+					   
+					   
+					   if (nuevoTipoCliente) {
+						   filtro.campos.push("idCliente");
+						   filtro.operadores.push(Filtro.IGUAL);
+						   filtro.valores.push(paramBusqueda);
+						   
+						   
+					   } else {
+						   filtro.campos.push("idCliente");
+						   filtro.operadores.push(Filtro.IGUAL);
+						   filtro.valores.push(paramBusqueda);
+						   filtro.funcion = " and obj.idTitular is null ";
+					   }
+	                    
+						
+	               break;
+              }
+				// evt.buscarPorPlastico = this.isBuscarPorPlastico; 
+              var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_TITULAR_ADICIONALES);
+			  evt.filtro = filtro;
+			  evt.buscarPorPlastico= this.isBuscarPorPlastico;
+			  evt.nuevoTipoCliente=nuevoTipoCliente;
+			  this.dispatcher.dispatchEvent(evt);
+     	}
+  	
+				
+		public function buscarClientesListParam(filtro:Filtro,paginador:Paginador):void{
+			// this.paramBusqueda = paramBusqueda;
+			//this.tipoBusqueda= tipoBusqueda;
+			var filtro1:Filtro;
+			resetDatosCliente();
+			//Alert.show("buscarClientesListParam paginador " + paginador.pagina);
+			
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_CLIENTES_LIST);
+			evt.filtro = filtro;
+			evt.paginador =  paginador; 
+			evt.filtro1 = filtro;
+			this.dispatcher.dispatchEvent(evt);
+			// ControlBlock.getInstance().add();
+		}   
+		
+		//3
+		
+		///este metodo devuelve una lista de clientes ya q los filtros usados pueden devolver mas d un valor
+		public function buscarClientesList(paramBusqueda:String,tipoBusqueda:String,paginador:Paginador):void{
+		   // this.paramBusqueda = paramBusqueda;
+		    //this.tipoBusqueda= tipoBusqueda;
+			resetDatosCliente();
+			var filtro:Filtro = new Filtro();
+			var filtro1:Filtro;
+			
+			//Alert.show("buscarClientesList paginador " + paginador.pagina);
+			
+			switch (tipoBusqueda)
+             {  case BUSQ_POR_DNI:
+                    filtro.campos.push("individuo.nroDocumento");
+					filtro.operadores.push(Filtro.IGUAL);
+					filtro.valores.push(paramBusqueda);
+					
+					filtro1 = new Filtro();
+					
+					filtro1.campos.push("individuo.nroDocumento");
+					filtro1.operadores.push(Filtro.IGUAL);
+					filtro1.valores.push(paramBusqueda);
+					
+					filtro.funcion = " or (obj.idCliente in (select obj1.cliente.idCliente from Garante obj1 inner join obj1.individuo ind1 where ind1.nroDocumento  = " + paramBusqueda + " )) ";
+				
+				//	or (cli.c_id_cliente in (select gar.c_id_cliente from t_vis_tra_garantes gar
+				//		where gar.c_id_individuo in (select c_id_individuo ind1 from t_vis_eva_individuos ind1 where ind.c_nro_documento = 20169889)))
+                break;  
+                case BUSQ_POR_APELLIDO:
+                  	var  indice:int  = paramBusqueda.indexOf(".");
+					filtro1 = new Filtro();
+                  	if(indice==-1){
+                       filtro.campos.push("individuo.apellido");
+                       filtro.operadores.push(Filtro.LIKE);
+			           filtro.valores.push(paramBusqueda);
+					   
+					   filtro1.campos.push("individuo.apellido");
+					   filtro1.operadores.push(Filtro.LIKE);
+					   filtro1.valores.push(paramBusqueda);
+					   
+					   filtro.funcion = " or (obj.idCliente in (select obj1.cliente.idCliente from Garante obj1 inner join obj1.individuo ind1 where upper(ind1.apellido)  LIKE '%" + paramBusqueda.toUpperCase() + "%')) ";
+					   
+                  	 }else {
+                  	 	    var apellido:String=  paramBusqueda.substr(0,indice);
+				            var nombre:String =  paramBusqueda.substr(indice+1,paramBusqueda.length);
+				            filtro.campos.push("individuo.apellido");
+			        		filtro.operadores.push(Filtro.LIKE);
+							filtro.valores.push(apellido);
+							filtro.campos.push("individuo.nombres");
+			        		filtro.operadores.push(Filtro.LIKE);
+							filtro.valores.push(nombre); 
+							
+							filtro1.campos.push("individuo.apellido");
+							filtro1.operadores.push(Filtro.LIKE);
+							filtro1.valores.push(apellido);							
+							filtro1.campos.push("individuo.nombres");
+							filtro1.operadores.push(Filtro.LIKE);
+							filtro1.valores.push(nombre); 
+														
+							filtro.funcion = " or (obj.idCliente in (select obj1.cliente.idCliente from Garante obj1 inner join obj1.individuo ind1 where upper(ind1.apellido)  LIKE '%" + apellido.toUpperCase() + "%' and upper(ind1.nombres)  LIKE '%" + nombre.toUpperCase() + "%' )) ";
+							
+		          	    }
+					
+					
+			     break;
+				case BUSQ_POR_GENERAL:
+					var buscarPorPlastico:String = "sucEmpresa.empresa.cuit";
+					var buscarPorTelefono:String = "individuo.telefonos.telefono.nroTlefono";
+					var buscarPorMail:String = "individuo.mails.email.email";
+					
+					/*filtro.join.push("individuo.mails gmails ");
+					filtro.join.push("individuo.telefonos gtelefonos ");
+					filtro.join.push("plasticoClienteSet gplasticos ");
+					
+					filtro.funcion = " where (gmails.email.email  LIKE '%" + paramBusqueda + "%' or  gtelefonos.telefono.nroTlefono  LIKE '%" + paramBusqueda + "%' or gplasticos.numero LIKE '%" + paramBusqueda + "%' ) " ;
+	*/				
+					
+					filtro.funcion = " where (obj.idCliente in (select obj1.idCliente from ClienteTransaccion obj1  inner join obj1.plasticoClienteSet gplasticos " +
+					" where gplasticos.numero LIKE '%" + paramBusqueda + "%' ) " +
+					" or (obj.idCliente in (select obj1.idCliente from ClienteTransaccion obj1 inner join obj1.individuo.mails gmails where gmails.email.email  LIKE '%" + paramBusqueda + "%')) " +
+					" or (obj.idCliente in (select obj1.idCliente from ClienteTransaccion obj1 inner join obj1.individuo.telefonos gtelefonos  where gtelefonos.telefono.nroTlefono  LIKE '%" + paramBusqueda + "%' )))";
+					
+					
+					
+				//	filtro.funcion = " inner join individuo.mails gmails Where gmails.email.email " + buscarPorMail + " LIKE '%" + paramBusqueda + "%'  " ;
+				//	filtro.funcion = " left join obj.individuo.mails gmails left join obj.individuo.telefonos gtelefonos  Where gmails.email.email  LIKE '%" + paramBusqueda + "%' or  gtelefonos.telefono.nroTlefono  LIKE '%" + paramBusqueda + "%'  " ;
+					
+					
+				break;  
+                case BUSQ_POR_SIT_COMERCIAL:
+                break;
+                case BUSQ_POR_SIT_COBRANZA:
+                break;
+             }
+											
+              var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_CLIENTES_LIST);
+			  evt.filtro = filtro;
+			  evt.filtro1 = filtro1;
+			  evt.paginador =  paginador; 
+			  this.dispatcher.dispatchEvent(evt);
+			 // ControlBlock.getInstance().add();
+     	}   
+		
+		//4
+	    public function  buscarMovimientosCtaCte(fechaDesde:Date,idCliente:Number):void {
+          	  var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_MOVIMIENTOS_CTA_CTE_CLIENTE);
+         	  evt.fechaDesde =  fechaDesde;
+			  evt.idCliente =  idCliente;
+			//  evt.tipoConcepto =  tipoConcepto; 
+			//  evt.idTransaccion = idTranasaccion;
+			  this.dispatcher.dispatchEvent(evt);
+        } 	
+		//5
+		 public function  buscarDetallesMovimientoCtaCte(idTransaccion:Number,idCliente:Number,idTipoConcDetalle:int ):void {
+           var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_DETALLES_MOVIMIENTO_CTA_CTE_CLIENTE);
+		   evt.idTransaccion = idTransaccion;
+		   evt.idCliente =  idCliente; 
+		   evt.idTipoConceptoDetalle=idTipoConcDetalle;
+		   
+		   this.dispatcher.dispatchEvent(evt);     	
+         } 
+		 
+		 public function  buscarDetallesMovimientoCompos(idTransaccion:Number,idCliente:Number,idTipoConcDetalle:int ):void {
+			 var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_DETALLES_MOVIMIENTO_COMPOS_CLIENTE);
+			 evt.idTransaccion = idTransaccion;
+			 evt.idCliente =  idCliente; 
+			 evt.idTipoConceptoDetalle=idTipoConcDetalle;
+			 this.dispatcher.dispatchEvent(evt);     	
+		 } 
+		 
+		 
+		 public function  buscarTransaccionCliCom(idTransaccion:Number ):void {
+			 var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_TRANSACCION_CLI_COM);
+			 evt.idTransaccion = idTransaccion;
+			 this.dispatcher.dispatchEvent(evt);     	
+		 } 
+		 
+		 
+		 
+		 public function  buscarTransaccionCliComCompos(idTransaccion:Number ):void {
+			 var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_TRANSACCION_CLI_COM_COMP);
+			 evt.idTransaccion = idTransaccion;
+			 this.dispatcher.dispatchEvent(evt);     	
+		 } 
+		 
+		 
+		 
+		 
+		 public function  buscarDetallesMovimientoComercio(idTransaccion:Number ):void {
+			 var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_DETALLES_MOVIMIENTO_CTA_CTE_COMERCIO);
+			 evt.idTransaccion = idTransaccion;
+						 
+			 this.dispatcher.dispatchEvent(evt);     	
+		 }
+		 
+		 
+		 public function  buscarDetallesMovimientoComercioComp(idTransaccion:Number ):void {
+			 var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_DETALLES_MOVIMIENTO_CTA_CTE_COMERCIO_COMP);
+			 evt.idTransaccion = idTransaccion;
+			 
+			 this.dispatcher.dispatchEvent(evt);     	
+		 }
+		 
+		 
+		 
+		 
+		 
+		 public function  buscarDetallesMovimientoPendiente(idCliente:Number ):void {
+			 var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_DETALLES_MOVIMIENTO_PENDIENTE);
+			 evt.idCliente =  idCliente; 
+			 
+			 this.dispatcher.dispatchEvent(evt);     	
+		 }
+		 
+		 
+		//6
+		public function  obtenerSaldoAnteriorCtaCte(fechaHasta:Date,idCliente:Number ):void {
+          var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.OBTENER_SALDO_ANTERIOR_CTA_CTE);
+		  evt.fechaHasta = this.fechaDesde= fechaHasta;
+		  evt.idCliente = this.idCliente=idCliente; 
+		  this.dispatcher.dispatchEvent(evt);     	
+        } 
+		//7
+		 public function  buscarComposicionDetalleCtaCte(idTransaccion:Number,idCliente:Number,idConceptoDetalle:Number ):void {
+           var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_COMPOSICION_DETALLE_CTA_CTE_CLIENTE);
+		   evt.idTransaccion = idTransaccion;
+		   evt.idCliente =  idCliente; 
+		   evt.idConceptoDetalle=  idConceptoDetalle; 
+		   this.dispatcher.dispatchEvent(evt);     	
+         } 
+		 
+		 
+		 public function  buscarComposicionDetalleCtaCteComp(idTransaccion:Number,idCliente:Number,idConceptoDetalle:Number ):void {
+			 var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_COMPOSICION_DETALLE_CTA_CTE_CLIENTE_COMP);
+			 evt.idTransaccion = idTransaccion;
+			 evt.idCliente =  idCliente; 
+			 evt.idConceptoDetalle=  idConceptoDetalle; 
+			 this.dispatcher.dispatchEvent(evt);     	
+		 }
+		 
+         
+         //8
+		 public function  buscarUltimasLiquidaciones(cant:int, idCliente:Number):void {
+           var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_LIQUIDACIONES_CLIENTES);
+		   evt.cantLiqHaciaAtras = cant;
+		   evt.idCliente =  idCliente; 
+		   this.dispatcher.dispatchEvent(evt);     	
+         }
+         
+         //9
+		 public function  buscarDetallesLiquidaciones(idLiqCliente:Number,idCliente:Number):void {
+             var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_DETALLES_PAGOS_LIQUIDACIONES_CLIENTES);
+		   /* var filtro:Filtro = new Filtro();
+		    filtro.campos.push("idLiqCliente");
+			filtro.operadores.push(Filtro.IGUAL);
+			filtro.valores.push(idLiqCliente);*/
+			evt.idLiqCliente =  idLiqCliente;
+			evt.idCliente =  idCliente;
+			this.dispatcher.dispatchEvent(evt);   
+         } 
+         
+         
+		//10
+		public function  obtenerSaldoAnteriorComposicionSaldo(fechaHasta:Date,idCliente:Number ):void {
+          var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.OBTENER_SALDO_ANTERIOR_COMPOSICION_SALDO);
+		  evt.fechaHasta =  fechaHasta;
+		  evt.idCliente =  idCliente; 
+		  this.dispatcher.dispatchEvent(evt);     	
+        } 
+        
+        //11
+		public function  buscarComposicionesSaldo(fechaDesde:Date,fechaHasta:Date,idCliente:Number,modo:int,modoConciliado:int ):void {
+          var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_COMPOSICIONES_SALDO_CLIENTE);
+		  evt.fechaDesde =  fechaDesde;
+		  evt.fechaHasta =  fechaHasta;
+		  evt.idCliente =  idCliente;
+		  evt.modo = modo;
+		  evt.modoConciliado = modoConciliado;
+		  this.dispatcher.dispatchEvent(evt);
+        } 
+        
+         //12
+       public function  buscarComposicionesSaldoDetalle(idTransaccion:Number,nroCuota:int,idCliente:Number,fechaFacturacion:Date ):void {
+          var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_COMPOSICIONES_SALDO_DETALLE_CLIENTE);
+		  evt.idTransaccion =  idTransaccion;
+		  evt.nroCuota = nroCuota;
+		  evt.idCliente =  idCliente;
+		  evt.fechaFacturacion = fechaFacturacion; 
+		  this.dispatcher.dispatchEvent(evt);
+        } 
+        
+       //9
+		 public function  buscarPlasticos(idLiqCliente:Number,idCliente:Number):void {
+             var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_DETALLES_PAGOS_LIQUIDACIONES_CLIENTES);
+			evt.idLiqCliente =  idLiqCliente;
+			evt.idCliente =  idCliente;
+			this.dispatcher.dispatchEvent(evt);   
+         } 
+        
+        
+		private function buscarPlasticoCliente(filtro:Filtro):void{
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_PLATICO);
+			evt.filtro = filtro;
+			this.dispatcher.dispatchEvent(evt);
+		}
+
+		
+/*		
+		private function  buscar(): void {
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_CLIENTES);
+		//	evt.filtro = filtro;
+			this.dispatcher.dispatchEvent(evt);
+		}*/
+		
+		public function buscarPorDni(dni:String):void{
+			if(dni && dni!= ""){
+			    buscarGenerico(dni);
+			}
+		}
+		
+		public function buscarGenerico(dni:String=null,nroCuenta:String=null,apellido:String=null,cuil:String=null,nroTarjeta:String=null,
+		                               situacionCom:String=null,situacionCobr:String=null):void{
+			//resetDatosCliente();
+			var filtro:Filtro = new Filtro();
+			if(dni!=null){
+				filtro.campos.push("individuo.nroDocumento");
+				filtro.operadores.push(Filtro.IGUAL);
+			}	
+			if(nroCuenta!=null){
+				filtro.campos.push("individuo.nroCuenta");
+				filtro.operadores.push(Filtro.IGUAL);
+			}	
+			if(apellido!=null){
+				filtro.campos.push("individuo.apellido");
+				filtro.operadores.push(Filtro.IGUAL);
+			}	
+			if(cuil!=null){
+				filtro.campos.push("individuo.cuil");
+				filtro.operadores.push(Filtro.IGUAL);
+			}	
+			if(nroTarjeta!=null){
+				
+			}
+			////AGREGAR SIUTUACION COMERCIAL Y COBRANZA!!!!!!!!!!!!!!!!!!!	
+			/*if(situacionCom!=null){
+				filtro.campos.push("individuo.");
+				filtro.operadores.push(Filtro.IGUAL);
+			}*/	
+				//this.buscar(filtro);
+		}
+		
+/*@I3945*/	/**
+		 * @id 3945
+		 * lanza el evento que llama a agregarMail
+		 **/	
+		public function agregarEmail(mail:Email,idIndividuo:Number):void{
+			this.idIndividuoMail = idIndividuo;
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.AGREGAR_EMAIL);
+			evt.email = mail;
+			evt.idIndividuo = idIndividuo;
+			evt.operador = Application.application.parameters.codigoOperador;
+			
+			this.dispatcher.dispatchEvent(evt);
+		}
+		
+		 /*@I35*/	/**
+		 * @id 35
+		 * lanza el evento que llama a modificar mail 
+		 * 		 **/
+			
+		public function modifEmail(idMail:Number,mail:Email,idIndividuo:Number):void{
+			this.idIndividuoMail = idIndividuo;
+			/*Alert.show("entro  modifEmail")*/
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.MODIFICAR_EMAIL);
+			evt.email = mail;
+			evt.idMail = idMail;
+			evt.idIndividuo = idIndividuo;
+			evt.operador = Application.application.parameters.codigoOperador;
+			//Alert.show("modifEmail")
+			this.dispatcher.dispatchEvent(evt);
+		}
+		
+		 /**
+		 * @id 35
+		 * lanza el evento que llama a elimEmail mail 
+		 * 		 **/
+		
+		public function elimEmail(idMail:Number,idIndividuo:Number):void{
+			this.idIndividuoMail = idIndividuo;
+			/*Alert.show("entro  modifEmail")*/
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.ELIMINAR_EMAIL);
+			evt.idMail = idMail;
+			evt.idIndividuo = idIndividuo;
+			evt.operador = Application.application.parameters.codigoOperador;
+			//Alert.show("modifEmail")
+			this.dispatcher.dispatchEvent(evt);
+		}
+		
+		
+		
+		/**
+		 * @id 3945
+		 * lanza el evento que llama a agregarTelefono
+		 **/
+		public function agregarTelefono(tel:Telefono,idIndividuo:Number):void{
+			this.idIndividuoMail = idIndividuo;
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.AGREGAR_TELEFONO);
+			evt.telefono = tel;
+			evt.idIndividuo = idIndividuo;
+			evt.operador = Application.application.parameters.codigoOperador;
+			
+			this.dispatcher.dispatchEvent(evt);
+		}
+		
+		
+		
+		/**
+		 * @id 100
+		 * lanza el evento que llama a agregarTelefono
+		 **/
+		public function agregarTelefonoLaboral(tel:Telefono,idSucEmpresa:Number,idIndividuo:Number):void{
+			this.idIndividuoMail = idIndividuo;
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.AGREGAR_TELEFONO_LABORAL);
+			evt.telefono = tel;
+			evt.idSucEmpresa = idSucEmpresa;
+			evt.operador = Application.application.parameters.codigoOperador;
+			
+			this.dispatcher.dispatchEvent(evt);
+		}
+		
+		/**
+		 * @id 100
+		 * lanza el evento que llama a modificarTelefono
+		 **/
+		public function modificarTelefono(idTelefono:Number,tel:Telefono,idIndividuo:Number):void{
+			this.idIndividuoMail = idIndividuo;
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.MODIFICAR_TELEFONO);
+			evt.idTelefono = idTelefono;
+			evt.telefono = tel;
+			evt.idIndividuo = idIndividuo;
+			evt.operador = Application.application.parameters.codigoOperador;
+			
+			this.dispatcher.dispatchEvent(evt);
+		}
+		
+		/**
+		 * @id 100
+		 * lanza el evento que llama a eliminarTelefono
+		 **/
+		public function eliminarTelefono(tel:Number,idIndividuo:Number):void{
+			this.idIndividuoMail = idIndividuo;
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.ELIMINAR_TELEFONO);
+			evt.idTelefono = tel;
+			evt.idIndividuo = idIndividuo;
+			evt.operador = Application.application.parameters.codigoOperador;
+			
+			this.dispatcher.dispatchEvent(evt);
+		}
+		
+		
+		/**
+		 * @id 3945
+		 * lanza el evento que llama a cargarCmbTipoTelefono
+		 **/
+		public function cargarCmbTipoTelefono():void{
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.CARGAR_CMB_TIPO_TEL);
+			
+			this.dispatcher.dispatchEvent(evt);
+		}
+/*@F3945*/		
+		
+		
+	//**************************************RESULTS***************************************************//
+	
+	//result 1
+		public function resultBuscarPorPlastico( cliente:ClienteTransaccion ):void{
+			this.cliente = cliente; 
+			//if(cliente.idTitular) //si es titular buscamos los adiscionales
+			   // buscarAdiscionales(cliente.idCliente);
+			    ControlBlock.getInstance().remove();
+		}
+		
+	//result 2	
+		public function resultBuscarTitularAdicionales(arrayTitularAdiscionales:Array):void{
+			//Alert.show("resultBuscarTitularAdicionales");
+			this.arrayTitularAdiscionales = new ArrayCollection(arrayTitularAdiscionales);
+
+			  if(arrayTitularAdiscionales && arrayTitularAdiscionales.length >0){	
+			  	//limpiamos las listas
+			  	   ArrayUtil.limpiarLista(arrayMovientosCtaCteResumen);
+			  	   ArrayUtil.limpiarLista(arrayMovientoCtaCteDetalles);
+				   
+				   ArrayUtil.limpiarLista(arrayMovientoComposDetalles);
+				   
+				   
+				   ArrayUtil.limpiarLista(arrayMovientoComercioDetalles);
+				   ArrayUtil.limpiarLista(arrayMovientoComercioDetallesCom);
+				   
+				   ArrayUtil.limpiarLista(arrayMovientoPendiente);
+				   ArrayUtil.limpiarLista(arrayMovientoPendienteComp);
+				   
+				   
+				   
+				   
+			  	   arrayComposicionSaldo.removeAll();
+			  	   arrayLiquidaciones.removeAll();
+			  	   arrayComposicionDetalleCtaCte.removeAll();
+				   arrayComposicionDetalleCtaCteCom.removeAll();
+			  	   arrayDetallesLiquidaciones.removeAll();
+			  	   arrayMovientoCtaCteDetalles.removeAll();
+				   arrayMovientoComposDetalles.removeAll();
+				   
+				   
+				   arrayMovientoComercioDetalles.removeAll();
+				   arrayMovientoComercioDetallesCom..removeAll();
+				   arrayMovientoPendiente.removeAll();
+				   
+				   arrayMovientoPendienteComp.removeAll();
+				   
+				   
+			  	   arrayMovientosCtaCteResumen.removeAll();
+			  for each ( var element:ClienteTransaccion in arrayTitularAdiscionales)
+              {
+				  
+				 /* Alert.show(PlasticoCliente(element.plasticoClienteSet.getItemAt(0)).numero + '  numero');
+					  Alert.show(PlasticoCliente(element.plasticoClienteSet.getItemAt(0)).idPlasticocliente + '  idPlasticocliente');*/
+				  
+				/*Alert.show(((PlasticoCliente)  element.plasticoClienteSet.getItemAt(0)).idPlasticoclient + '  aaa');*
+				  
+				  /*var srt:Sort = new Sort();
+				  srt.fields = [new SortField("idPlasticocliente", true, false, true)];
+				  element.plasticoClienteSet.sort = srt;
+				  element.plasticoClienteSet.refresh();*/
+				  
+				  
+				  
+              		if(!element.idTitular || isNaN(element.idTitular))
+					     this.titular = element;
+						
+						switch (tipoBusqueda) { 
+			               case BUSQ_POR_PLASTICO:
+			               			                       
+			                        if(element.platicoClienteHabilitado.numero== paramBusqueda)
+			                            clienteEncontrado=element;
+			                     break; 
+			                     
+			                 case BUSQ_POR_CUIL:
+			                      if(element.individuo.cuil== paramBusqueda){
+			                      	  clienteEncontrado =  element;
+			                      } 
+			                     break;
+			                     
+			                 case BUSQ_POR_NRO_CUENTA:
+
+			                      if(element.idCliente.toString()== paramBusqueda.toString()){
+			                      	  clienteEncontrado =  element;
+			                      } 
+			                    break;  
+						 }
+					
+						
+                 }
+			  
+///*@I5374*/			  if(_titular){
+//				  		var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_LINEA_TEMPORAL);
+//				  evt.idCliente =  _titular.idCliente; 
+//				  		this.dispatcher.dispatchEvent(evt);				  
+///*@F5374*/			  }
+
+
+/*@I7469*/		if(_titular){
+				var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_REVISTA_BAJA);
+				evt.idCliente =  _titular.idCliente; 
+				this.dispatcher.dispatchEvent(evt);				  
+/*@F7469*/		}
+
+/*@I37*/		if(_titular){
+	var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_ENVIO_RESUMEN);
+	evt.idCliente =  _titular.idCliente; 
+	this.dispatcher.dispatchEvent(evt);				  
+/*@F37*/		}
+
+/*@I8156*/		if(_titular){
+				var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_BLOQUE_DESBLOQUE);
+				evt.idCliente =  _titular.idCliente; 
+				this.dispatcher.dispatchEvent(evt);				  
+/*@F8156*/		}
+
+/*@I8156*/		if(_titular){
+	var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_DESBLOQUEO_REPACTACION);
+	evt.idCliente =  _titular.idCliente; 
+	this.dispatcher.dispatchEvent(evt);				  
+/*@F8156*/		}
+				
+		if(_titular){
+			this.dispatcher.dispatchEvent(new Event("limpiarDatosCliente"));			  
+		}
+		
+		if(_titular){
+			this.dispatcher.dispatchEvent(new Event("limpiarDatosSimulacion"));			  
+		}
+		
+		if(_titular){
+		
+				
+			/*new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_HIST_EST_COBR_Y_COM_EVENT,null,null).dispatch();
+			new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_FUTUROS_VENCIMIENTOS,null,null).dispatch();
+			new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_HIST_ACCIONES_EVENT,null,null).dispatch(); 
+			new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_HIST_ESTADOS_EVENT,null,null).dispatch();
+			new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_HIST_LINEA_CREDITO_EVENT,null,null).dispatch(); 
+			new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_TRAMITES_EVENT,null,null).dispatch();
+			new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_RECLAMOS_EVENT,null,null).dispatch();
+			new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_REVISIONCREDITO_EVENT,null,null).dispatch();*/
+			
+			
+				
+                   
+                } else  Alert.show("La Busqueda no produjo resultados");
+            
+            
+             ControlBlock.getInstance().remove();
+        } else {
+			Alert.show("El cliente no existe en la base");
+			resetDatosCliente();
+			ControlBlock.getInstance().remove();
+		}
+			  
+		}
+		
+		/**
+		 * @id: 7469 **/
+		public function haceBajaRevista(operador:Number):void{			
+		if(_titular){
+			ControlBlock.getInstance().add();			
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.HACER_REVISTA_BAJA);
+			evt.idCliente =  _titular.idCliente; 
+			evt.operador = operador;
+			this.dispatcher.dispatchEvent(evt);	
+		}
+		}
+		
+		
+		public function haceDesbloqueoPagoM(operador:Number):void{			
+			if(_titular){
+				ControlBlock.getInstance().add();			
+				var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.HACER_DESBLOQUEO_PAGOM);
+				evt.idCliente =  _titular.idCliente; 
+				evt.operador = operador;
+				this.dispatcher.dispatchEvent(evt);	
+			}
+		}
+		
+		
+		
+		/**
+		 * @id: 37 **/
+		public function haceEnvioResumen(operador:Number):void{			
+			if(_titular){
+				ControlBlock.getInstance().add();			
+				var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.HACER_ENVIO_RESUMEN);
+				evt.idCliente =  _titular.idCliente; 
+				evt.operador = operador;
+				this.dispatcher.dispatchEvent(evt);	
+			}
+		}
+		
+		
+		/**
+		 * @id: 8156 **/
+		public function resultGuardarBolqueoEvento(evento:Object):void{
+			/*arrayEventos.addItemAt(evento,0);
+			arrayEventos = arrayEventos;*/
+			Alert.show("titular "+ _titular.idCliente)
+			if(_titular){
+				ControlBlock.getInstance().add();	
+				
+				var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.BUSCAR_BLOQUE_DESBLOQUE);
+				evt.idCliente =  _titular.idCliente; 
+				this.dispatcher.dispatchEvent(evt);	
+			}
+		}
+		
+        
+       [Bindable]public var paginador:Paginador;
+       //result  3 
+       public function resultBuscarClientesList(paginador:Paginador):void{	
+		   
+		   this.paginador = paginador;  
+	   	   this.arrayClientes= new ArrayCollection(paginador.result); 
+		   //Alert.show(" arrayClientes.length "+ arrayClientes.length  );
+		   if(arrayClientes.length==1){
+	   	   	    var  cliente : ClienteTransaccion= arrayClientes[0] as ClienteTransaccion;
+	   	   	    this.cliente = cliente;
+				this.buscarTitularAdicionales(cliente.idCliente.toString(),BUSQ_POR_NRO_CUENTA,cliente);	
+	   	   }
+
+	   	   if(arrayClientes.length==0){
+	   	   	    Alert.show("La Busqueda no produjo resultados");
+	   	   	
+	   	   }
+	   	   ControlBlock.getInstance().remove();
+
+	   
+	   }
+
+
+	   /**
+		* @id: 5374 **/
+	   public function resultBuscarLineaTemporalList(lineaTemporal:Array):void{
+		   this.arrayLineaTemporal = new ArrayCollection(lineaTemporal);		   
+	   }
+	   
+	   
+	   public function resultGrabarControlClientes(datos:String):void{
+		   		   
+	   }
+	   
+	   
+	   /**
+		* @id: 7469 **/
+	   public function resultBajaRevistaCliente(revistaBaja:String):void{
+		   this.revistaBaja = revistaBaja;	
+		   ControlBlock.getInstance().remove();
+		   
+	   }
+	   
+	   public function resultDesbloqueoPagoM(desbloqueoRepacta:String):void{
+		   this.desbloqueoRepacta = desbloqueoRepacta;	
+		   ControlBlock.getInstance().remove();
+		   
+	   }
+	   
+	   public function resultEnvioResumenSolo(envioResumen:String):void{
+		   this.envioResumen = envioResumen;
+		   
+		   if(_titular){
+			   
+			   //ControlBlock.getInstance().add();
+			   
+			   this.buscarTitularAdicionales(_titular.idCliente.toString(),BUSQ_POR_NRO_CUENTA,_titular);			  
+		   }
+		   
+		   //ControlBlock.getInstance().remove();
+	   }
+	   
+	   
+	   /**
+		* @id: 37 **/
+	   public function resultEnvioResumen(envioResumen:String):void{
+		   this.envioResumen = envioResumen;
+		   
+		   
+			//   resultBuscarTitularAdicionales(arrayTitularAdiscionales.source());
+		   //this.buscarTitularAdicionales(_titular.idCliente.toString(),BUSQ_POR_NRO_CUENTA,_titular);
+		   
+		   //this.arrayTitularAdiscionales = arrayTitularAdiscionales;
+		   
+		   /*if(arrayTitularAdiscionales){
+			   
+			   
+			   
+			   for each (var element:ClienteTransaccion in arrayTitularAdiscionales){
+				   for each (var mail:Email in element.individuo.mails){
+					   
+					   Alert.show(mail.email);
+					   
+					   			   
+				   }
+			   }
+		   }*/
+ 
+		   ControlBlock.getInstance().remove();
+		   
+	   }
+	  
+	   
+	   /**
+		* @id: 8156 **/
+	   /*public function resultBloqueDesbloque(varBloqueDesbloque:String):void{
+		   this.varBloqueDesbloque = varBloqueDesbloque;
+		   this.buscarTitularAdicionales(_titular.idCliente.toString(),BUSQ_POR_NRO_CUENTA,_titular);
+		   ControlBlock.getInstance().remove();
+		   
+	   }*/
+	   
+	   public function resultBloqueDesbloque(varBloqueDesbloque:Object):void{
+		  // this.varBloqueDesbloque = varBloqueDesbloque;
+		   this.buscarTitularAdicionales(_titular.idCliente.toString(),BUSQ_POR_NRO_CUENTA,_titular);
+		   ControlBlock.getInstance().remove();
+		   
+	   }
+	   
+	   /**
+		* @id: 8156 **/
+	   public function resultBusBloqueDesbloque(varBloqueDesbloque:String):void{
+		   this.varBloqueDesbloque = varBloqueDesbloque;		   
+		   ControlBlock.getInstance().remove();
+		   
+	   }
+	   
+	   
+       
+      // result 4
+      public function resultBuscarMovimientosCtaCte(movimientosResumen:Array):void{
+	   	   this.arrayMovientosCtaCteResumen = new ArrayCollection(movimientosResumen);
+	   	   if(arrayMovientosCtaCteResumen.length == 0){
+	   	   		AlertOk.show("No se encontraron datos");
+	   	   } 
+	   	   
+	   	    ControlBlock.getInstance().remove();
+	   	   
+	  }
+        
+      // result 5
+       public function resultBuscarDetallesMovimientoCtaCte(arrayMovientoCtaCteDetalles:Array):void{
+	   	   this.arrayMovientoCtaCteDetalles = new ArrayCollection(arrayMovientoCtaCteDetalles);
+	   	   if(arrayMovientoCtaCteDetalles.length == 0){
+	   	   		AlertOk.show("No se encontraron datos");
+	   	   } 
+	   	   
+	   	    ControlBlock.getInstance().remove();
+	  }
+	   public function resultBuscarDetallesMovimientoCompos(arrayMovientoComposDetalles:Array):void{
+		   this.arrayMovientoComposDetalles = new ArrayCollection(arrayMovientoComposDetalles);
+		   if(arrayMovientoComposDetalles.length == 0){
+			   AlertOk.show("No se encontraron datos");
+		   } 
+		   
+		   ControlBlock.getInstance().remove();
+	   }
+	   
+	   
+	   
+	   
+	   public function resultBuscarTransaccionCliCom(movTransaccionCliCom:MovTransaccionCliCom):void{
+		   this.movTransaccionCliCom = movTransaccionCliCom;
+		   ControlBlock.getInstance().remove();
+	   }
+	   
+	   
+	   
+	   public function resultBuscarTransaccionCliComCompos(movTransaccionCliComCompos:MovTransaccionCliCom):void{
+		   this.movTransaccionCliComCompos = movTransaccionCliComCompos;
+		   
+		   ControlBlock.getInstance().remove();
+	   }
+	   
+	   
+	   
+	   
+	   public function resultBuscarDetallesMovimientoComercio(arrayMovientoCtaCteDetalles:Array):void{
+		   this.arrayMovientoComercioDetalles = new ArrayCollection(arrayMovientoCtaCteDetalles);
+		   if(arrayMovientoCtaCteDetalles.length == 0){
+			   /*AlertOk.show("No se encontraron datos");*/
+		   } 
+		   
+		   ControlBlock.getInstance().remove();
+	   }
+	   
+	   public function resultBuscarDetallesMovimientoComercioComp(arrayMovientoComercioDetallesCom:Array):void{
+		   this.arrayMovientoComercioDetallesCom = new ArrayCollection(arrayMovientoComercioDetallesCom);
+		   if(arrayMovientoComercioDetallesCom.length == 0){
+			   /*AlertOk.show("No se encontraron datos");*/
+		   } 
+		   
+		   ControlBlock.getInstance().remove();
+	   }
+	   
+	   
+	   
+	   public function resultMovientoPendiente(arrayMovientoPendiente:Array):void{
+		   this.arrayMovientoPendiente = new ArrayCollection(arrayMovientoPendiente);
+		   if(arrayMovientoPendiente.length == 0){
+			   /*AlertOk.show("No se encontraron datos");*/
+		   } 
+		   
+		   ControlBlock.getInstance().remove();
+	   }
+	   
+	   public function resultMovientoPendienteComp(arrayMovientoPendienteComp:Array):void{
+		   this.arrayMovientoPendienteComp = new ArrayCollection(arrayMovientoPendienteComp);
+		   if(arrayMovientoPendienteComp.length == 0){
+			   /*AlertOk.show("No se encontraron datos");*/
+		   } 
+		   
+		   ControlBlock.getInstance().remove();
+	   }
+	   
+	   
+      
+      // result 6
+        public function resultObtenerSaldoAnteriorCtaCte(saldoAnterior:Number):void{
+	   	   this.saldoAnteriorCtaCte = saldoAnterior;
+	   	   buscarMovimientosCtaCte(fechaDesde,idCliente);
+	   	   /*if(saldoAnterior>=0)
+	   	   	       
+	   	     else  AlertOk.show("Consulte la base de datos histórica para obtener resultados para la fecha ingresada");*/
+	   	   
+	   	    ControlBlock.getInstance().remove();
+	  }
+      
+      // result 7
+      public function resultBuscarComposicionDetalleCtaCte(arrayComposicionDetalleCtaCte:Array):void{
+	   	   this.arrayComposicionDetalleCtaCte = new ArrayCollection(arrayComposicionDetalleCtaCte);
+	   	   if(arrayComposicionDetalleCtaCte.length == 0){
+	   	   		AlertOk.show("No se encontraron datos");
+	   	   } 
+	   	   
+	   	    ControlBlock.getInstance().remove();
+	  }
+	  
+	  public function resultBuscarComposicionDetalleCtaCteComp(arrayComposicionDetalleCtaCteCom:Array):void{
+		  this.arrayComposicionDetalleCtaCteCom = new ArrayCollection(arrayComposicionDetalleCtaCteCom);
+		  if(arrayComposicionDetalleCtaCteCom.length == 0){
+			  AlertOk.show("No se encontraron datos");
+		  } 
+		  
+		  ControlBlock.getInstance().remove();
+	  }
+	  
+	  
+	  
+      
+       // result 8
+      public function resultBuscarUltimasLiquidaciones(arrayLiquidaciones:Array):void{
+	   	   this.arrayLiquidaciones = new ArrayCollection(arrayLiquidaciones); 
+	   	   if(arrayLiquidaciones.length == 0){
+	   	   		//AlertOk.show("No se encontraron datos");
+	   	   }
+	   	   
+	   	    ControlBlock.getInstance().remove();
+	  }
+	  
+	   // result 9
+        public function resultBuscarDetallesLiquidaciones(arrayDetallesLiquidaciones:Array):void{
+	   	   this.arrayDetallesLiquidaciones = new ArrayCollection(arrayDetallesLiquidaciones);
+	   	   if(arrayDetallesLiquidaciones.length == 0){
+	   	   		AlertOk.show("No se encontraron datos");
+	   	   }
+	   	   
+	   	    ControlBlock.getInstance().remove();
+	  }
+	  
+	  // result 10
+        public function resultObtenerSaldoAnteriorComposicionSaldo(saldoAnterior:Number):void{
+	   	   this.saldoAnteriorComposicionSaldo = saldoAnterior;	   	   
+	   	    ControlBlock.getInstance().remove();
+	  }
+      //result  11 
+       public function resultBuscarComposicionesSaldo(arrayComposicionSaldo:Array):void{
+	   	   this.arrayComposicionSaldo = new ArrayCollection(arrayComposicionSaldo);
+	   	   if(arrayComposicionSaldo.length == 0){
+	   	   		AlertOk.show("No se encontraron datos");
+	   	   }
+	   	    ControlBlock.getInstance().remove();
+	   }
+	   
+	   //result  12
+	   public function resultBuscarComposicionesSaldoDetalle(arrayComposicionSaldoDetalles:Array):void{
+	   	   this.arrayComposicionSaldoDetalles = new ArrayCollection(arrayComposicionSaldoDetalles);
+	   	   if(arrayComposicionSaldoDetalles.length == 0){
+	   	   		AlertOk.show("No se encontraron datos");
+	   	   }
+	   	    ControlBlock.getInstance().remove();
+	  }
+      
+      
+       public function resultBuscarCliente(cliente:ClienteTransaccion ):void{
+			this.cliente = cliente; 
+			 ControlBlock.getInstance().remove();
+		}
+		
+			
+		
+       	public function resultBuscarClientes(arrayClientes:ArrayCollection ):void{
+			this.arrayClientes = arrayClientes ; 
+			 ControlBlock.getInstance().remove();
+		}
+		
+		public function resultBuscarPorId( titular:Object ):void{
+			this.titular = titular as ClienteTransaccion; 
+			 ControlBlock.getInstance().remove();
+		}
+
+		public function fault( fault:Fault ):void{
+			//ManagerErrors.getInstance().addPopUpError(fault.faultString,fault.faultDetail);
+			AlertError.show(fault.faultString);
+			ControlBlock.getInstance().remove();
+		}
+		
+		
+		public function set titular(tit:ClienteTransaccion):void{
+			_titular = tit;
+			if(_titular){
+				var evt:LiquidacionEvent = new LiquidacionEvent(LiquidacionEvent.BUSCAR_PAGOS_AND_DEUDA);
+				evt.idCliente = _titular.idCliente;
+				dispatcher.dispatchEvent(evt);
+			}
+			dispatchEvent(new Event("changedTitular"));		
+			ControlBlock.getInstance().remove();	
+		}
+		
+		[Bindable(event="changedTitular")]
+		public function get titular():ClienteTransaccion{
+			return _titular;
+		}
+		
+/*@I3945*/		
+		/**
+		 * @id 3945
+		 * recibe el resultado del evento que llama a agregarMail
+		 **/
+		public function resultAgregarEmail(result:Array):void{ 
+			if(result != null){
+				for each (var element:ClienteTransaccion in arrayTitularAdiscionales)
+				{
+					if(element.individuo && element.individuo.idIndividuo == idIndividuoMail)
+					{
+						element.individuo.mails = result;
+					}
+				}
+			}else{
+				AlertError.show("No se pudo grabar el Email, intente mas tarde");
+			}
+			
+			
+			
+			var evt:ClienteManagerEvent = new ClienteManagerEvent(ClienteManagerEvent.SOLO_ENVIO_RESUMEN);
+			evt.idCliente =  _titular.idCliente; 
+			this.dispatcher.dispatchEvent(evt);	
+			
+			//ControlBlock.getInstance().remove();
+		}
+		/**
+		 * @id 3945
+		 * recibe el resultado del evento que llama a agregarTelefono
+		 **/
+		public function resultAgregarTelefono(result:Array):void{ 
+			if(result != null){
+				for each (var element:ClienteTransaccion in arrayTitularAdiscionales)
+				{
+					if(element.individuo && element.individuo.idIndividuo == idIndividuoMail)
+					{
+						
+						element.individuo.telefonos = result;
+					}
+				}
+			}else{
+				AlertError.show("No se pudo grabar el Telefono, intente mas tarde");
+			}
+			
+			ControlBlock.getInstance().remove();
+		}
+		
+		/**
+		 * @id 3945
+		 * recibe el resultado del evento que llama a agregarTelefono
+		 **/
+		public function resultAgregarTelefonoLaboral(result:Array):void{ 
+			if(result != null){
+				for each (var element:ClienteTransaccion in arrayTitularAdiscionales)
+				{
+					if(element.individuo && element.individuo.idIndividuo == idIndividuoMail)
+					{
+						
+						element.individuo.actividad.sucEmpresa.sucTelefonos = result;
+					}
+				}
+			}else{
+				AlertError.show("No se pudo grabar el Telefono Laboral, intente mas tarde");
+			}
+			
+			ControlBlock.getInstance().remove();
+		}
+		
+		
+
+		/**
+		 * @id 3945
+		 * recibe el resultado del evento que llama a agregarTelefono
+		 **/
+		public function resultCargarCmbTipoTelefono(result:Array):void{ 
+			if(result != null){
+				arrayTiposTelefono = new ArrayCollection(result);
+				this.dispatcher.dispatchEvent(new Event("selecionarTipoTelefono"));
+			}else{
+				AlertError.show("No se pudieron cargar los tipos de telefono, intente mas tarde");
+			}
+			
+			ControlBlock.getInstance().remove();
+		}
+		
+
+	}
+}

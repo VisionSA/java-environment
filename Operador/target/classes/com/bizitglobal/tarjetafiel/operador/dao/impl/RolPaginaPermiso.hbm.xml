@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+	<class name="com.bizitglobal.tarjetafiel.operador.negocio.RolPaginaPermiso" table="t_vis_seg_paginas_permisos" lazy="false">
+	    <id name="idRolPaginaPermiso" column="c_id_pagina_permiso" unsaved-value="null">
+	        <generator class="increment" />
+	    </id>
+	
+     	<many-to-one name="rol" 
+			        class="com.bizitglobal.tarjetafiel.operador.negocio.Rol" not-null="true" lazy="false">
+      	  			<column name="c_id_rol" />
+     	</many-to-one>     	
+
+     	<many-to-one name="pagina" 
+			        class="com.bizitglobal.tarjetafiel.operador.negocio.Pagina" not-null="true" lazy="false">
+      	  			<column name="c_id_pagina" />
+     	</many-to-one>
+     	
+     	<many-to-one name="permiso" 
+			        class="com.bizitglobal.tarjetafiel.operador.negocio.Permiso" not-null="true" lazy="false">
+      	  			<column name="c_id_permiso" />
+     	</many-to-one>     	
+	
+	</class>
+</hibernate-mapping>

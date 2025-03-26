@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+                       "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	 <!-- DEFINICION DEL DATA SOURCE -->
+	 <import resource="classpath:dataSource.xml" />
+
+<!-- DEFINICION DEL SESSION FACTORY -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/sessionFactory.xml"/>	
+
+ <!-- DEFINICION DEL HIBERNATE TEMPLATE, TRANSACTION MANAGER, ETC... -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/commonContext.xml"/>	
+
+<!-- DEFINICION DEL CONTEXT DE EVALUACIÓN -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/evaluacion/evaluacionContext.xml"/>
+ 
+ <!-- DEFINICION DEL CONTEXT DE TRANSACCIONES -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/transacciones/transaccionesContext.xml"/>
+ 
+ <!-- DEFINICION DEL CONTEXT DE OPERADOR -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/operador/operadorContext.xml"/>  
+ 
+ <!-- DEFINICION DEL CONTEXT DE TPARAMETROS -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/tparametros/tparametrosContext.xml"/>   
+ 
+ <!-- DEFINICION DEL CONTEXT DE GENERAL -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/general/generalContext.xml"/>    
+ 
+ <!-- DEFINICION DEL CONTEXT DE PROVEEDOR -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/proveedores/proveedorContext.xml"/>     
+ 
+ <!-- DEFINICION DEL CONTEXT DE IMPUESTOS -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/impuestos/impuestoContext.xml"/>
+  
+  <!-- DEFINICION DEL CONTEXT DE CONTABILIDAD-->
+  <import resource="classpath:/com/bizitglobal/tarjetafiel/contabilidad/contabilidadContext.xml"/>
+  
+   <!-- DEFINICION DEL CONTEXT DE FONDOS-->
+  <import resource="classpath:/com/bizitglobal/tarjetafiel/fondos/fondosContext.xml"/>
+  
+  <!--@I6958 -->  <!-- DEFINICION DEL CONTEXT DE WORKFLOW -->
+	
+
+	<!-- DEFINICION DEL CONTEXT DE TRAMSACCIONADOR -->
+	<import
+		resource="classpath:/com/visionis/transaccionador/transaccionadorContext.xml" />
+
+		<!-- DEFINICION DEL CONTEXT DE PLANIFICADOREMAIL -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/planificadoremail/planificadorEmailContext.xml" />
+<!--@F6958 -->
+
+	<bean id="quartzUser" class="org.quartz.ui.web.security.User">
+		<property name="userName"><value>quartz</value></property>
+		<property name="password"><value>quartz</value></property>
+		<property name="roles">
+		<map>
+			<entry key="manager">
+			<value>manager</value>
+		</entry>
+		</map>
+	</property>
+	</bean>
+
+	<bean id="users" class="org.quartz.ui.web.security.Users">
+	<property name="userMap">
+	<map>
+			<entry key="quartz">
+				<ref bean="quartzUser"/>
+			</entry>
+	</map>
+</property>
+</bean>
+
+	<!-- Quartz Scheduler, with pre-registered triggers -->
+	<!-- Will automatically start scheduling on context startup -->
+<!--
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref local="listImagesTrigger"/>
+				<ref local="checkImagesTrigger"/>
+			</list>
+		</property> 
+	</bean>
+-->
+<!--
+<bean id="dirPlugin" class="org.quartz.ui.web.action.DirMonitorCreate" />
+-->
+
+</beans>

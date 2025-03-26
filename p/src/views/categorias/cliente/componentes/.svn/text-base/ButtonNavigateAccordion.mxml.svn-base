@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Button xmlns:mx="http://www.adobe.com/2006/mxml" styleName="buttonNavigateAcordion" click="dispatchEvent(new Event('navigateIndexEvent'))">
+	<mx:Metadata>
+		[Event (type="navigateIndexEvent")]
+	</mx:Metadata>
+	<mx:Script>
+		<![CDATA[
+			[Bindable]public var index:int;
+						
+		]]>
+	</mx:Script>
+</mx:Button>

@@ -1,0 +1,11 @@
+package com.bizitglobal.webapp.service;
+
+/**
+ * @id 6247
+ * @author Carlos Ibañez. Tarjeta Fiel - Año 2012 * Esta clase es para enviar el paquete de autorización eco al transaccionador
+ */
+public interface AutorizacionEcoService {
+
+	public String enviarMensajeTransaccionadoEco(long transaccion, String numero_tarjeta, long importe) throws Exception;
+
+}

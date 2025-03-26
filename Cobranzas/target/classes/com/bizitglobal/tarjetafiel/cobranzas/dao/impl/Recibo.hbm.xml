@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.bizitglobal.tarjetafiel.cobranzas.negocio">
+  <class name="Recibo" table="t_vis_cob_recibos">
+  
+  	<id name="idRecibo" type="long" column="c_id_recibo">
+  		<generator class="increment"/>
+  	</id>
+  	
+    <property name="codigoRecibo" column="c_codigo_recibo" type="long" />
+    
+    <many-to-one name="ctaCteCliente"    
+		        class="com.bizitglobal.tarjetafiel.transacciones.negocio.CtaCteCliente">
+        <column name="C_ID_CTACTE_CLIENTE" />
+    </many-to-one>
+    
+    <many-to-one name="cobrador"    
+    			class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Cobrador" not-null="true" lazy="false">
+        <column name="C_ID_COBRADOR" />
+    </many-to-one>
+    
+    <property name="esEstadoAnulado" column="C_ES_ESTADO_ANULADO" type="character" length="1"/>
+    
+    <property name="desde" column="c_desde" type="long" />
+    
+    <property name="hasta" column="c_hasta" type="long" />
+  
+  </class>
+</hibernate-mapping>

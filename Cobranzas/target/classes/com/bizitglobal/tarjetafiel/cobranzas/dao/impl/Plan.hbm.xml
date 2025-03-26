@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.bizitglobal.tarjetafiel.cobranzas.negocio">
+  <class name="Plan" table="t_vis_cob_planes">
+  	<id name="idPlan" type="integer" column="c_id_plan">
+  		<generator class="increment"/>
+  	</id>
+    <property name="descripcion" column="c_descripcion" type="string"/>
+  	<property name="habilitado" column="c_habilitado" type="string"/>
+  	<property name="sucursal" column="c_id_sucursal" type="integer"/> 
+  	<property name="esPlanPorDefecto" column="c_es_plan_por_defecto" type="string"/>
+    
+    <set name="planesVersion" inverse="false" cascade="all" lazy="false">
+		<key>
+			<column name="c_id_plan" />
+		</key>
+		<one-to-many class="PlanVersion"/>
+	</set>
+    
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import managers.ClienteManager;
+			import views.categorias.cliente.modules.DocAdjuntosModule;
+			import views.categorias.cliente.models.DocAdjuntosModel;
+		]]>
+	</mx:Script>
+	
+	<Injectors target="{DocAdjuntosModule}">
+		<ObjectBuilder generator="{DocAdjuntosModel}" >
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="DocAdjuntosModel"/>
+	</Injectors>
+	
+	<Injectors targets="{[DocAdjuntosModel]}">		
+		<PropertyInjector targetKey="cliente" sourceKey="cliente" source="{ClienteManager}"/>
+	</Injectors>
+	
+</EventMap>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:FormItem xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			 xmlns:s="library://ns.adobe.com/flex/spark" 
+			 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%"
+			 label="Conciliado:"
+			 currentState="{CajaJudicialModelLocator.getInstance().estadoChequeConciliado}"
+			 visible.ChequeNuevo="false"
+			 includeInLayout.ChequeNuevo="false">
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<mx:states>
+		<s:State name="ChequeNuevo"/>
+		<s:State name="Conciliado"/>
+		<s:State name="NoConciliado"/>
+	</mx:states>
+	
+	<s:TextInput text.Conciliado="Si" text.NoConciliado="No" color.Conciliado="#F62B0F" color.NoConciliado="#38A123" fontWeight="bold" width="100%" editable="false"/>
+	
+</mx:FormItem>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						  xmlns:s="library://ns.adobe.com/flex/spark" 
+						  xmlns:mx="library://ns.adobe.com/flex/mx" 
+						  focusEnabled="true" width="100%" 
+						  xmlns:textInput="com.util.components.textInput.*"
+						  autoDrawBackground="false">
+
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.fiel.caja.judicial.view.component.VistaAgregarPago;
+			import com.fiel.caja.judicial.view.component.VistaMovimientosMPCliente;
+			import com.tarjetafiel.caja.vo.ClienteMontoDTO;
+			import com.tarjetafiel.caja.vo.ClienteMovimientosMP;
+			import com.tarjetafiel.caja.vo.Moneda;
+			import com.tarjetafiel.proveedorconexion.vo.SetDataVo;
+			
+			import mx.core.IFlexDisplayObject;
+			import mx.events.FlexEvent;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			import mx.validators.NumberValidator;
+			
+			import utils.ManejadorMensajes;
+			import utils.ManejadorPantallas;
+			
+			[Bindable]
+			private var modelo : CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			private var valorAnterior : Number = 0;
+			
+
+			protected function btnAddPago_clickHandler(event:MouseEvent):void
+			{
+				new SetDataVo(modelo,"cliMovSelected",data).guardarValor();
+				ManejadorPantallas.crearPopUp(ManejadorPantallas.getAplicacion() as DisplayObject,VistaAgregarPago,true);
+			}
+/*@I3820*/			
+			protected function inptMonto_focusInHandler(event:FocusEvent):void
+			{
+				if (!isNaN(Number(inptMonto.text)))
+				{
+					valorAnterior = Number(inptMonto.text);
+				}
+			}
+
+			protected function inptMonto_focusOutHandler(event:FocusEvent):void
+			{
+				inptMonto.errorString = "";
+				inptMonto.setStyle("color","black");
+				inptMonto.setStyle("fontWeight","normal");
+				ClienteMontoDTO(data).montoValido = true;
+				if (nVal.validate().type == ValidationResultEvent.INVALID)
+				{
+					inptMonto.errorString = nVal.validate().message;
+					inptMonto.setStyle("color","red");
+					inptMonto.setStyle("fontWeight","bold");
+					ClienteMontoDTO(data).montoValido = false;
+					return;
+				}
+				actualizarMontos();
+			}
+
+			protected function inptMonto_valueCommitHandler(event:FlexEvent):void
+			{
+				actualizarMontos();
+			}
+			
+			private function actualizarMontos():void
+			{
+				modelo.sumaTotalClientes -= valorAnterior;
+				(data as ClienteMontoDTO).monto = Number(inptMonto.text);
+				modelo.sumaTotalClientes += Number(inptMonto.text);
+			}
+/*@I3820*/
+
+		]]>
+	</fx:Script>
+<!--@I3820-->	<fx:Declarations>
+		<mx:NumberValidator id="nVal" maxValue="1000000" minValue="0"
+							source="{inptMonto}" property="text"
+							exceedsMaxError="El monto ingresado es mayor al máximo permitido ($1.000.000)"
+							lowerThanMinError="El monto ingresado debe ser mayor a $0"/>
+<!--@F3820-->	</fx:Declarations>
+	<s:HGroup width="100%" horizontalAlign="center">
+		<!--<s:Button id="btnAddPago" label="Pagos" toolTip="Agregar o modificar Medio Pago" click="btnAddPago_clickHandler(event)"/>-->
+<!--@I3820-->		<textInput:TextInputMoneda id="inptMonto" text="{(data as ClienteMontoDTO).monto}" textAlign="right" 
+								   focusOut="inptMonto_focusOutHandler(event)"  focusIn="inptMonto_focusInHandler(event)"/>
+<!--@F3820-->	</s:HGroup>
+</s:MXDataGridItemRenderer>

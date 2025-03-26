@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ESCAPE) removePopUp()"  creationComplete="init()" layout="vertical" title="Clientes Encontrados" height="400" xmlns:ns1="com.util.paginacion.*">
+	<mx:Script>
+		<![CDATA[
+			import com.util.paginacion.PaginacionEvent;
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import mx.core.Application;
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import mx.managers.PopUpManager;
+			import mx.collections.ArrayCollection;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			
+			[Bindable]public var arrayClientes:ArrayCollection = new ArrayCollection(); 
+			public var popUpVisible:Boolean = false;
+			
+			
+			private function init():void {
+				this.adg.setFocus();								
+			}
+			
+			private function removePopUp():void{
+				popUpVisible = false;
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function getEstadoCliente(data:Object):String{
+				 
+				switch(data.estadoCliente){
+					case "H":
+						return "Habilitado";
+					case "N":
+						return "Nueva Cuenta";
+					case "B":
+						return "Cuenta Bloqueada";
+					case "C":
+						return "Cerrada";
+					case "S":
+						return "Sobregiro";
+						
+				}				
+				
+				return "No definido";
+			}
+			
+			private function keyPress(evt:KeyboardEvent):void{
+				
+				if(evt.keyCode == Keyboard.ENTER){
+					this.seleccionarCliente();		
+				} 
+			}
+			
+			private function seleccionarCliente():void{
+				
+				if(this.arrayClientes.length > 0){
+					ModelLocator.getInstance().clienteSeleccionado.cliente = this.adg.selectedItem as ClienteTransaccion;
+					ModelLocator.getInstance().clienteSeleccionado.clienteSelect = "Cliente: " +
+					ModelLocator.getInstance().clienteSeleccionado.cliente.individuo.apellido + ", " + ModelLocator.getInstance().clienteSeleccionado.cliente.individuo.apellido;
+					ModelLocator.getInstance().liqClienteModel.buscarLiquidaciones(); 
+				}
+					
+				Application.application.setFocus();
+				ModelLocator.getInstance().busquedaClientesNoVisible();
+				ModelLocator.getInstance().clienteSeleccionado.labelButtonBusqueda = "Buscar";					
+				this.removePopUp();
+			}
+			
+			public function paginar(evt:PaginacionEvent):void{
+				this.paginador.paginador.result = new Array();
+				ModelLocator.getInstance().clienteSeleccionado.buscar(this.paginador.paginador);
+			}
+			
+			
+		]]>
+	</mx:Script>		
+	<mx:AdvancedDataGrid sortableColumns="false" doubleClickEnabled="true" doubleClick="seleccionarCliente()" keyUp="this.keyPress(event)" id="adg" designViewDataType="flat" dataProvider="{arrayClientes}" width="100%" height="100%">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Id." dataField="idCliente" width="70"/>
+			<mx:AdvancedDataGridColumn headerText="Nombres">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.individuo.nombres}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Apellido">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.individuo.apellido}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Num. Plástico">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.platicoClienteHabilitado.numero}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Estado" dataField="estadoCliente">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{outerDocument.getEstadoCliente(data)}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Habilitado Consumo">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.habilitadoConsumo == 'S' ? 'Habilitado' : 'Deshabilitado'}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+		</mx:columns>
+	</mx:AdvancedDataGrid>	
+	<ns1:PaginadorComp id="paginador" creationComplete="this.paginador.addEventListener(PaginacionEvent.PAGINAR, paginar)">
+	</ns1:PaginadorComp>
+	<mx:Button label="Salir" click="this.removePopUp()"/>	
+</mx:Panel>

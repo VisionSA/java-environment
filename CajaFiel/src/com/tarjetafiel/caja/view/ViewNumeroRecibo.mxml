@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="horizontal" 
+	title="Numero Recibo Vendedor"
+	creationComplete="init()"
+	keyDown="keyPress(event)">
+	<mx:Script>
+		<![CDATA[
+			import com.util.components.alert.AlertError;
+			import com.tarjetafiel.caja.event.GeneralCajaFieldEvent;
+			import com.tarjetafiel.caja.event.PagoEvent;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.model.PagoModel;
+			import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			
+			[Bindable]
+			private var pagoModel : PagoModel = ModelLocator.getInstance().pagoModel;
+			
+			
+			private var pagoEfectuado : Boolean = false; /* Esta bandera se utiliza porque en ocaciones ya sea por mal tipeo del cajero o problemas de flex
+			                                                se generaban 2 movimientos de caja para registrar solo un pago */
+			
+			private function init():void{
+				pagoModel.nroReciboCobrador = null;
+				pagoModel.existeRecibo = false;
+				pagoModel.recibo = null;
+				inptNumeroRecibo.setFocus();
+			}
+			
+			private function efectuarPagoKey(evt:KeyboardEvent):void{
+				if(evt.keyCode == Keyboard.ENTER){
+					efectuarPago();
+				}			
+			}
+			
+			private function efectuarPago():void{
+				if (!pagoEfectuado){
+					if (pagoModel.existeRecibo){
+						pagoEfectuado = true;						
+						new PagoEvent(PagoEvent.EFECTUAR_PAGO,pagoModel.ctaCteCliente,pagoModel.funcionPagoRealizado,pagoModel.suVuelto).dispatch();					
+						PopUpManager.removePopUp(this);	
+					}else {
+						inptNumeroRecibo.setFocus();
+						AlertError.show("No se puede procesar su información.\nFaltan datos o los datos ingresados\nson inválidos.");
+					}				
+					
+				}
+			}
+			
+			private function buscarRecibo():void{
+				pagoModel.existeRecibo = false;
+				pagoModel.recibo = null;
+				var validarNumeroRecibo:ValidationResultEvent = nroReciboValidator.validate();
+				if (validarNumeroRecibo.type == ValidationResultEvent.VALID){					
+						pagoModel.nroReciboCobrador = inptNumeroRecibo.text;
+						var obj:Object = new Object();
+						obj.nroRecibo = inptNumeroRecibo.text;
+						new GeneralCajaFieldEvent(GeneralCajaFieldEvent.GET_RECIBO_COBRADOR_EVENT,obj).dispatch();
+						btnAceptar.setFocus();							
+				}else {
+					inptNumeroRecibo.setFocus();
+				}			
+			}
+			
+			public function keyPress(evt:KeyboardEvent):void{
+				if(evt.keyCode == Keyboard.ESCAPE){
+					PopUpManager.removePopUp(this);					
+				}
+			}
+			
+			
+			
+		]]>
+	</mx:Script>
+	<!-- Validadores -->
+	<mx:StringValidator 
+      id="nroReciboValidator" 
+      requiredFieldError="Ingrese el número de recibo del cobrador. 0(Cero) para cliente particular" 
+      source="{inptNumeroRecibo}" 
+      property="text" />
+      
+    <!-- Componentes de Vista -->      
+    <mx:Form>
+    	<mx:FormItem label="Número de Recibo">
+			<mx:TextInput id="inptNumeroRecibo" restrict="0-9" enter="buscarRecibo()"/>
+		</mx:FormItem>
+		<mx:FormItem label="Cobrador" visible="{pagoModel.existeRecibo}" includeInLayout="{pagoModel.existeRecibo}">
+			<mx:TextInput text="{pagoModel.recibo.cobrador.nombre+' '+pagoModel.recibo.cobrador.apellido}" editable="false"/>
+		</mx:FormItem>	
+	</mx:Form>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="btnAceptar" label="Aceptar" click="efectuarPago()" enabled="{pagoModel.existeRecibo}" keyDown="efectuarPagoKey(event)"/>
+	</mx:ControlBar>
+	
+</mx:TitleWindow>

@@ -1,0 +1,4 @@
+<application>
+<!-- 	<webService url="http://201.251.111.21/Presentacion/services"/> -->
+	<webService url="http://comercial.tarjetafiel.com/Presentacion/services/ArchivoLiqComercioService?wsdl"/>
+</application>

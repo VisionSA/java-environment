@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:HBox>
+		<mx:Image id="imgIconError" source="@Embed(source='../../../../img/icon-error.gif')" visible="{!(data.isDomicilioValido as Boolean)}"/>
+		<mx:Label visible="{!(data.isDomicilioValido as Boolean)}" color="red" text="Domicilio Incorrecto"/>	
+	</mx:HBox>
+	<mx:HBox>
+		<mx:Image id="imgIconOK" source="@Embed(source='../../../../img/icon_ok.jpg')" visible="{data.isDomicilioValido as Boolean}"/>
+		<mx:Label visible="{!(data.isDomicilioValido as Boolean)}" color="green" text="Domicilio Correcto"/>		
+	</mx:HBox>	
+</mx:Canvas>

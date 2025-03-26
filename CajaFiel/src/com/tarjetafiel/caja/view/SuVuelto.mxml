@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="PopUpManager.removePopUp(this)" layout="absolute" keyDown="keyPress(event)" title="Calcular vuelto" horizontalAlign="center" verticalAlign="middle" xmlns:textInput="com.util.components.textInput.*" showCloseButton="true">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]public var suVuelto:Number = 0;
+			
+			private function keyPress(evt:KeyboardEvent):void{
+				if(evt.ctrlKey && String.fromCharCode(evt.charCode).toUpperCase() == "A"){
+					closePopUp(1);
+				}else if(evt.keyCode == Keyboard.ESCAPE){
+					closePopUp(0);		
+				} 
+			}
+						
+			private function closePopUp(detail:int):void{
+				PopUpManager.removePopUp(this);
+				var evt:CloseEvent = new CloseEvent(CloseEvent.CLOSE);
+				evt.detail = detail;
+				dispatchEvent(evt);
+			}
+			
+			private function keyPressTxtPagaCon(evt:KeyboardEvent):void{
+				if(evt.keyCode == Keyboard.ENTER){
+					if(btnAceptar.enabled || Number(txtPagaCon.text) == 0){
+						closePopUp(1);						
+					}
+				} else {
+					if(Number(txtPagaCon.text)){
+						suVuelto = Number(txtPagaCon.text) - ModelLocator.getInstance().pagoModel.importeEfectivo; 
+					} else {
+						suVuelto = 0;
+					}
+					if(suVuelto >= 0){
+						btnAceptar.enabled = true;					
+					} else {
+						btnAceptar.enabled = false;
+						suVuelto = 0;
+					}	
+				}
+				
+			}
+			
+			public function showPopUp():void{
+				suVuelto = 0;
+				txtPagaCon.text = "0";
+				txtPagaCon.setFocus();				
+				btnAceptar.enabled = false;		
+						
+			}
+		]]>
+	</mx:Script>
+	<mx:VBox width="100%" height="100%" verticalAlign="middle" horizontalAlign="center" verticalGap="10" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+		<mx:HBox horizontalAlign="right" verticalAlign="middle" width="400">
+			<mx:Label text="Importe pagado:" fontSize="15" fontWeight="bold"/>
+			<textInput:TextInputMoneda text="{ModelLocator.getInstance().pagoModel.importeEfectivo}" editable="false" fontSize="30" width="250"  textAlign="center" color="#FF0000" fontWeight="bold"/>
+		</mx:HBox>		
+		<mx:HBox horizontalAlign="right" verticalAlign="middle" width="400">
+			<mx:Label text="Paga con:" fontSize="15" fontWeight="bold" />
+			<textInput:TextInputMoneda id="txtPagaCon" editable="true" fontSize="30" width="250"  keyUp="keyPressTxtPagaCon(event)" textAlign="center" color="#2500C5" fontWeight="bold"/>
+		</mx:HBox>				
+		<mx:HRule width="400"  strokeColor="#000000" height="10" strokeWidth="2"/>
+		<mx:HBox horizontalAlign="right" verticalAlign="middle" width="400">
+			<mx:Label text="Su vuelto:" fontSize="15" fontWeight="bold"/>
+			<textInput:TextInputMoneda id="txtSuVuelto" text="{suVuelto.toString()}" editable="false" fontSize="30" width="250"  textAlign="center" color="#FF0000" fontWeight="bold"/>
+		</mx:HBox>
+		<mx:Button label="Aceptar - Ctrl + A" id="btnAceptar" enabled="true" click="closePopUp(1)"/>						
+	</mx:VBox>		
+</mx:TitleWindow>

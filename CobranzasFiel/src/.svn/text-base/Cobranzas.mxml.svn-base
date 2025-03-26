@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" 
+	xmlns:views="views.*" 
+	xmlns:maps="maps.*" 
+	xmlns:controller="controller.*" 
+	xmlns:business="business.*" xmlns:componentView="com.componentView.*" width="100%">
+
+    <mx:Style source="css/newStyle.css"/>
+    
+    <controller:CobranzasController id="controller"/>
+    
+    <business:Services/>
+    
+    <!-- <maps:MainEventMap/> -->
+    
+    <componentView:Top/>
+    
+	<views:MenuView width="100%"/>
+	
+	<mx:HBox width="100%">
+		<mx:ModuleLoader id="modulo" width="100%" height="100%" horizontalAlign="center"/>	
+	</mx:HBox>	
+	
+	<!--<views:MainView id="contenido" horizontalAlign="center" width="100%" height="100%"/>-->
+	
+</mx:Application>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleGeneral xmlns="views.categorias.*" visible="{plasticosModel.mostrarPanel}" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" 
+	xmlns:modules="views.categorias.cliente.modules.*" xmlns:maps="views.categorias.cliente.maps.*"
+	creationComplete="onCreationComplete()" xmlns:mate="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.DynamicEvent;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import events.OperadorEvent;
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import views.categorias.cliente.models.PlasticosModel;
+			[Bindable]public var plasticosModel:PlasticosModel;
+			
+			private var cambiarEstadoPlasticoPopUp:CambiarEstadoPlasticoView = new CambiarEstadoPlasticoView();
+			
+			private function onCreationComplete():void{
+				plasticosModel.buscarEstados();
+				plasticosModel.buscarLugares();	
+			}
+			
+			private function addPopUpCambioEstado(evt:DynamicEvent):void{
+				cambiarEstadoPlasticoPopUp.plasticosXClienteModel = evt.data;
+				PopUpManager.addPopUp(cambiarEstadoPlasticoPopUp,Application.application as DisplayObject, true);
+				PopUpManager.centerPopUp(cambiarEstadoPlasticoPopUp);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mate:Listener type="addPopUpCambioEstadoEvent" receive="addPopUpCambioEstado(event)"/>
+	<mate:Listener type="closePopUpCambioEstadoEvent" receive="PopUpManager.removePopUp(cambiarEstadoPlasticoPopUp)"/>
+	
+	<mx:HBox width="100%">
+	<mx:ToggleButtonBar dataProvider="{viewStack}" styleName="lblInfoBlanco" color="#FFFFFF" />	
+	</mx:HBox>
+	<mx:ViewStack id="viewStack" width="100%" height="100%">
+		<mx:Repeater id="rpt" dataProvider="{plasticosModel.arrayTitularAdiscionales}">
+			<modules:PlasticosXCliente plasticosModel="{plasticosModel}" cliente="{rpt.currentItem as ClienteTransaccion}" />
+		</mx:Repeater>
+	</mx:ViewStack>
+	
+	<maps:PlasticoModelMap/>
+	
+</ModuleGeneral>

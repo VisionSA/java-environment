@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import views.categorias.cliente.models.RepactacionModel;
+			import events.LiquidacionEvent;
+			import com.tarjetafiel.caja.vo.Liquidacion;
+			import views.categorias.cliente.models.AdelantoEfectivoModel;
+			import managers.SimuladorManager;
+            import managers.LineaCreditoManager;
+			import mx.events.FlexEvent;
+			import events.ApplicationEvent;
+			import managers.ConceptosManager;
+			import events.ConceptoEvent;
+			import models.ApplicationModel;
+			import mx.core.Application;
+			import events.OperadorEvent;
+			import com.tarjetafiel.caja.vo.Eventos;
+			import events.EventosEvent;
+			import managers.EventoManager;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import events.ClienteManagerEvent;
+            import events.LineaCreditoManagerEvent;
+			import managers.ClienteManager;
+			import events.ClienteEvent;
+            import events.LineaCreditoEvent;
+			import views.categorias.cliente.models.GeneralClienteModel;
+			/* import events.TramiteEvent;
+			import events.TramiteManagerEvent;
+			import managers.TramiteManager; */
+		]]>
+	</mx:Script>
+	<!--EventHandlers type="test">
+		<MethodInvoker generator="{GeneralClienteModel}" method="testMateModule"/>
+	</EventHandlers-->
+	
+	<Debugger level="{Debugger.ALL}" />
+	
+	<!-- ######################### CLIENTE #############################-->
+	
+	<EventHandlers type="{FlexEvent.APPLICATION_COMPLETE}" debug="true">
+		<EventAnnouncer type="{ConceptoEvent.BUSCAR_CONCEPTOS}" generator="{ConceptoEvent}"/>
+		<MethodInvoker generator="{ApplicationModel}" method="buscarConfiguracionModo"/>
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteEvent.BUSCAR_POR_PLASTICO}">
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.nroTarjeta,event.codSeguridad]}" method="buscarPorPlastico">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+
+	<EventHandlers type="{ClienteManagerEvent.BUSCAR_PLATICO}">
+		<RemoteObjectInvoker instance="{plasticoCliente}" method="getPlasticoClienteFlex" arguments="{event.filtro}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarPorPlastico" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	
+	<EventHandlers type="{ClienteEvent.BUSCAR_TITULAR_ADICIONALES}"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.paramBusqueda,event.tipoBusqueda,event.nuevoTipoCliente]}" method="buscarTitularAdicionales">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteManagerEvent.BUSCAR_TITULAR_ADICIONALES}" debug="true">		
+		<RemoteObjectInvoker instance="{plasticoCliente}" method="getTitularPlasticoFlex" arguments="{[event.filtro,event.buscarPorPlastico,event.nuevoTipoCliente]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarTitularAdicionales" arguments="{resultObject}"/>
+				<EventAnnouncer type="getValoresLineaCredito"/>
+				<EventAnnouncer type="restaurarCtaCteListener"/>
+				<EventAnnouncer type="restaurarComposicionListener"/>
+				<EventAnnouncer type="restaurarViewStackResumenCtaListener"/>				
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteEvent.BUSCAR_CLIENTES_PARM}" debug="true"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.filtro,event.paginador]}" method="buscarClientesListParam">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	
+	
+	<EventHandlers type="{ClienteEvent.BUSCAR_CLIENTES_LIST}" debug="true"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.paramBusqueda,event.tipoBusqueda,event.paginador]}" method="buscarClientesList">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteManagerEvent.BUSCAR_CLIENTES_LIST}">		
+		<RemoteObjectInvoker instance="{cliente}" method="getClienteFlex" arguments="{[event.filtro,event.paginador,event.filtro1]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarClientesList" arguments="{resultObject}"/>				
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+   <!--linea credito-->
+    <EventHandlers type="{LineaCreditoEvent.BUSCAR_VALORES_ADELANTO_EFECTIVO}" debug="true"> 
+		<MethodInvoker generator="{LineaCreditoManager}" arguments="{[event.idCliente]}" method="buscarValoresAdelantoEfectivo">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{LineaCreditoManagerEvent.BUSCAR_VALORES_ADELANTO_EFECTIVO}">		
+		<RemoteObjectInvoker instance="{adelantoEfectivoService}" method="getValoresAdelantoEfectivo" arguments="{[event.idCliente]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{LineaCreditoManager}" method="resultBuscarValoresAdelantoEfectivo" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{LineaCreditoManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+
+	<!--cta cte-->	
+		
+	<!--EventHandlers type="{ClienteEvent.BUSCAR_MOVIMIENTOS_CTA_CTE_CLIENTE}"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.fechaDesde,event.idCliente,event.idTransaccion,event.tipoConcepto]}" method="buscarMovimientosCtaCte">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers-->
+	
+	<EventHandlers type="{ClienteManagerEvent.BUSCAR_MOVIMIENTOS_CTA_CTE_CLIENTE}">		
+		<RemoteObjectInvoker instance="{ctaCteCli}" method="getMovimientosCtaCte" arguments="{[event.fechaDesde,event.idCliente,event.idTransaccion,event.tipoConcepto,event.modoConciliado]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarMovimientosCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteEvent.BUSCAR_DETALLES_MOVIMIENTO_CTA_CTE_CLIENTE}"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.idTransaccion,event.idCliente,event.idTipoConceptoDetalle]}" method="buscarDetallesMovimientoCtaCte">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteManagerEvent.BUSCAR_DETALLES_MOVIMIENTO_CTA_CTE_CLIENTE}">		
+		<RemoteObjectInvoker instance="{ctaCteCli}" method="getDetallesMovimientoCtaCte" arguments="{[event.idTransaccion,event.idCliente,event.idTipoConceptoDetalle]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarDetallesMovimientoCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteEvent.BUSCAR_TRANSACCION_CLI_COM}"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.idTransaccion]}" method="buscarTransaccionCliCom">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteManagerEvent.BUSCAR_TRANSACCION_CLI_COM}">		
+		<RemoteObjectInvoker instance="{ctaCteCli}" method="getDetallesTransaccionCliCom" arguments="{[event.idTransaccion]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarTransaccionCliCom" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	
+	
+	
+	
+	<EventHandlers type="{ClienteEvent.BUSCAR_COMPOSICION_DETALLE_CTA_CTE_CLIENTE}" debug="true"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.idTransaccion,event.idCliente,event.idConceptoDetalle]}" method="buscarComposicionDetalleCtaCte">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+
+	<EventHandlers type="{ClienteManagerEvent.BUSCAR_COMPOSICION_DETALLE_CTA_CTE_CLIENTE}" debug="true">		
+		<RemoteObjectInvoker instance="{ctaCteCli}" method="getComposicionDetalleCtaCte" arguments="{[event.idTransaccion,event.idCliente,event.idConceptoDetalle]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarComposicionDetalleCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	 <!--fin cta cte-->
+	
+	<!-- Composicion de saldo-->
+	<EventHandlers type="{ClienteEvent.OBTENER_SALDO_ANTERIOR_COMPOSICION_SALDO}"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.fechaHasta,event.idCliente]}" method="obtenerSaldoAnteriorComposicionSaldo">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteManagerEvent.OBTENER_SALDO_ANTERIOR_COMPOSICION_SALDO}" >		
+		<RemoteObjectInvoker instance="{ctaCteCli}" method="getSaldoAnteriorComposicionSaldo" arguments="{[event.fechaHasta,event.idCliente]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultObtenerSaldoAnteriorComposicionSaldo" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	
+	<EventHandlers type="{ClienteEvent.BUSCAR_COMPOSICIONES_SALDO_CLIENTE}" debug="true"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.fechaDesde,event.fechaHasta,event.idCliente,event.modo,event.modoConciliado]}" method="buscarComposicionesSaldo">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteManagerEvent.BUSCAR_COMPOSICIONES_SALDO_CLIENTE}" >		
+		<RemoteObjectInvoker instance="{ctaCteCli}" method="getComposicionSaldoResumen" arguments="{[event.fechaDesde,event.fechaHasta,event.idCliente,event.modo,event.modoConciliado]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarComposicionesSaldo" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+
+	
+	<EventHandlers type="{ClienteEvent.BUSCAR_COMPOSICIONES_SALDO_DETALLE_CLIENTE}" debug="true"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.idTransaccion,event.nroCuota,event.idCliente,event.fechaFacturacion]}" method="buscarComposicionesSaldoDetalle">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ClienteManagerEvent.BUSCAR_COMPOSICIONES_SALDO_DETALLE_CLIENTE}" >		
+		<RemoteObjectInvoker instance="{ctaCteCli}" method="getComposicionSaldoDetalle" arguments="{[event.idTransaccion,event.nroCuota,event.idCliente,event.fechaFacturacion]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarComposicionesSaldoDetalle" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	
+	
+	<!--fin  Composicion de saldo-->
+   
+     <!--resumen cta-->
+	  <EventHandlers type="{ClienteEvent.BUSCAR_LIQUIDACIONES_CLIENTES}"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.cantLiqHaciaAtras,event.idCliente]}" method="buscarUltimasLiquidaciones">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	  </EventHandlers>
+
+	 <EventHandlers type="{ClienteManagerEvent.BUSCAR_LIQUIDACIONES_CLIENTES}">		
+		<RemoteObjectInvoker instance="{liqCli}" method="listarUltimasLiquidaciones" arguments="{[event.cantLiqHaciaAtras,event.idCliente]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarUltimasLiquidaciones" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	  </EventHandlers>
+	  
+	  <EventHandlers type="{ClienteEvent.BUSCAR_DETALLES_PAGOS_LIQUIDACIONES_CLIENTES}"> 
+		<MethodInvoker generator="{ClienteManager}" arguments="{[event.idLiqCliente,event.idCliente]}" method="buscarDetallesLiquidaciones">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	  </EventHandlers>
+
+	 <EventHandlers type="{ClienteManagerEvent.BUSCAR_DETALLES_PAGOS_LIQUIDACIONES_CLIENTES}">		
+		<RemoteObjectInvoker instance="{ctaCteCli}" method="getDetallesLiqCliente" arguments="{[event.idLiqCliente,event.idCliente]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarDetallesLiquidaciones" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	  </EventHandlers>
+	 
+	 
+	 <!--fin resumen cta-->
+	 
+	 <!-- Tramites Workflow -->
+	 <!--<EventHandlers type="{TramiteEvent.BUSCAR_TRAMITE_POR_CLIENTE}" debug="true"> 
+		<MethodInvoker generator="{TramiteManager}" arguments="{[event.idCliente, event.idProceso]}" method="buscarTramites">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	 </EventHandlers>
+	
+	 <EventHandlers type="{TramiteManagerEvent.BUSCAR_TRAMITE_POR_CLIENTE}" >		
+		<RemoteObjectInvoker instance="{tramiteCliente}" method="listarDetalleTramite" arguments="{[event.fechaDesde,event.fechaHasta,event.idCliente,event.modo,event.modoConciliado]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="resultBuscarComposicionesSaldo" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ClienteManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	 </EventHandlers>-->
+	 <!-- Fin Tramites Workflow -->
+
+
+	 
+	   <!--EventHandlers type="{EventosEvent.BUSCAR_EVENTOS_CLIENTE}"> 
+		<MethodInvoker generator="{EventoManager}" arguments="{[event.fechaDesde,event.fechaHasta,event.idCliente]}" method="buscarEventosCliente">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	  </EventHandlers-->
+	      
+	 <EventHandlers type="{ClienteEvent.RESET_CLIENTES}">
+	 	<MethodInvoker generator="{EventoManager}" method="resetEvento"/>
+	 	<MethodInvoker generator="{SimuladorManager}" method="resetArrayCuotas"/>
+	 	<MethodInvoker generator="{AdelantoEfectivoModel}" method="resetImporte"/>
+	 	<MethodInvoker generator="{RepactacionModel}" method="resetValues"/>
+	 </EventHandlers>
+	 	
+	 <!--agenda -->
+   	
+   	<!-- LOGIN -->
+   	<EventHandlers type="{OperadorEvent.BUSCAR_OPERADOR_LOGUEADO}">
+   		<RemoteObjectInvoker instance="{operadorService}" method="getOperadorLogueado" arguments="{event.codigoOperador}">
+   			<resultHandlers>
+   				<MethodInvoker generator="{ApplicationModel}" method="resultOperadorLogueado" arguments="{resultObject}"/>
+   			</resultHandlers>
+   			<faultHandlers>
+   				<MethodInvoker generator="{ApplicationModel}" method="faultConsultaOperador" arguments="{fault}"/>   				
+   			</faultHandlers>
+   		</RemoteObjectInvoker>
+   	</EventHandlers>   	
+   	<!-- LOGIN -->
+   	
+   	<!--CONCEPTOS-->
+   	<EventHandlers type="{ConceptoEvent.BUSCAR_CONCEPTOS}">
+   		<RemoteObjectInvoker instance="{conceptoService}" method="getConceptoFlex" arguments="{new Filtro()}">
+   			<resultHandlers>
+   				<MethodInvoker generator="{ConceptosManager}" method="resultConceptos" arguments="{resultObject}"/>
+   			</resultHandlers>
+   			<faultHandlers>
+   				<MethodInvoker generator="{ConceptosManager}" method="fault" arguments="{fault}"/>
+   			</faultHandlers>
+   		</RemoteObjectInvoker>
+   	</EventHandlers>   	
+   	<!--CONCEPTOS-->
+   	
+   	<!--Busca el pago a cuenta -->
+   	<EventHandlers type="{LiquidacionEvent.BUSCAR_PAGOS_AND_DEUDA}">
+   		<RemoteObjectInvoker instance="{liqCli}" method="buscarPagoACuenta" arguments="{event.idCliente}">
+   			<resultHandlers>
+   				<MethodInvoker generator="{RepactacionModel}" method="setPagoACuenta" arguments="{resultObject}"/>
+   			</resultHandlers>
+   			<faultHandlers>
+   				<MethodInvoker generator="{RepactacionModel}" method="fault" arguments="{fault}"/>
+   			</faultHandlers>
+   		</RemoteObjectInvoker>
+   		<RemoteObjectInvoker instance="{liqCli}" method="buscarDeuda" arguments="{event.idCliente}">
+   			<resultHandlers>
+   				<MethodInvoker generator="{RepactacionModel}" method="setDeuda" arguments="{resultObject}"/>
+   			</resultHandlers>
+   			<faultHandlers>
+   				<MethodInvoker generator="{RepactacionModel}" method="fault" arguments="{fault}"/>
+   			</faultHandlers>
+   		</RemoteObjectInvoker>
+   	</EventHandlers>
+   	<!---->
+   	
+   	<Injectors target="{RepactacionModel}" debug="true">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+		<ObjectBuilder generator="{ConceptosManager}"/>
+   		<PropertyInjector targetKey="conceptosManager" source="{lastReturn}"/>
+   		<PropertyInjector targetKey="titular" sourceKey="titular" source="{ClienteManager}"/>   	
+   	</Injectors>
+	
+	<!-- ######################### FIN CLIENTE #############################-->
+	
+  <!-- Remotes Object -->
+  <mx:RemoteObject id="plasticoCliente" destination="GenericDestination" source="plasticoClienteServiceTarget"/>
+  <mx:RemoteObject id="cliente" destination="GenericDestination" source="clienteTransaccionServiceTarget"/>
+  <mx:RemoteObject id="ctaCteCli" destination="GenericDestination" source="ctaCteClienteServiceTarget"/>
+  <mx:RemoteObject id="liqCli" destination="GenericDestination" source="liqClienteServiceTarget"/>  
+  <mx:RemoteObject id="operadorService" destination="GenericSessionDestination" source="operadorServiceTarget"/>
+  <mx:RemoteObject id="conceptoService" destination="GenericSessionDestination" source="conceptoServiceTarget"/>
+  <mx:RemoteObject id="adelantoEfectivoService" destination="GenericSessionDestination" source="adelantoEfectivoServicesTarget"/>
+  <mx:RemoteObject id="tramiteCliente" destination="GenericDestination" source="detalleTramiteServiceTarget"/>
+</EventMap>
+

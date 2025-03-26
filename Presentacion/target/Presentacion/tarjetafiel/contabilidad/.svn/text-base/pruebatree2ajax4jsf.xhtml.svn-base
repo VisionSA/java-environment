@@ -1,0 +1,36 @@
+<xmlns:a4j="https://ajax4jsf.dev.java.net/ajax">
+<x:div style="OVERFLOW-Y: auto; OVERFLOW-X: auto; WIDTH: 300px; HEIGHT: 375px; border: 1px; margin-left: auto; margin-right: 15px; border-style: solid; border-color: grey; background-color: #f1f1f1;"
+		>
+
+
+ <x:tree2 id="clientTree" value="#{PlanCuentaBean.treeData}" 
+  var="node" varNodeToggler="t" 
+  clientSideToggle="true">
+         
+       <f:facet name="nodo" >
+           <h:panelGroup>
+              
+           
+           <x:commandLink id="event" shape="true"
+              	actionListener= "#{PlanCuentaBean.processToogle}"
+                styleClass="#{t.nodeSelected ? 'treenodeSelected':'treenodeSelected a'}"
+            	disabled="#{PlanCuentaBean.accionDeshabilitada}">
+            <x:graphicImage 
+             url="#{(!node.leaf) ? '/img/icon/dir_16.gif':'/img/icon/docs_16.gif'}"
+            rendered="#{(!node.leaf)}"
+             />
+            <h:outputText value="#{node.description}" onmouseover="this.style.color='darkblue'" onmouseout="this.style.color='gray'" style="color: gray" styleClass="text"/>
+           </x:commandLink>    
+           
+			                   
+           
+           
+            </h:panelGroup>
+        </f:facet>
+              
+       
+    </x:tree2> 
+
+</x:div>
+                   
+    

@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="subreport_resumen_detalle"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="340"
+		 pageHeight="170"
+		 columnWidth="340"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="liquidacion_numero" isForPrompting="true" class="java.lang.Long"/>
+	<parameter name="cuenta_nro" isForPrompting="true" class="java.lang.Long"/>
+	<parameter name="nombre" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="fechaEspecial" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="total_pagar" isForPrompting="true" class="java.math.BigDecimal"/>
+	<queryString><![CDATA[select detalle_transaccion, fecha, comprobante, cuota ,orden, 
+importe,grupo,adicional,nombre_cliente,linea,cliente,tipo_cuenta
+, cliente.c_fecha_mora,elemento,
+(case when (trim(sp_email_cliente($P{cuenta_nro})) is null)
+then 'Estimado Cliente: Se encuentra a su disposición el envío de su resumen de cuenta en formato electrónico a la casilla de correo que Ud. nos indique, llamando al 0810-222-3400 o escríbanos a info@tarjetafiel.com. Esto le permitirá ahorrar hasta $68.97 por año en concepto de Servicio Postal.'
+else 'Estimado Cliente: A partir del próximo mes recibirá su resumen de cuenta en formato electrónico. Será enviado a su casilla de correo: "'|| trim(sp_email_cliente($P{cuenta_nro})) || '". Esto le permitirá ahorrar hasta $68.97 por año en concepto de Servicio Postal. Si desee su resumen de cuenta en formato papel, avísenos llamando al 0810-222-3400 o escríbanos a info@tarjetafiel.com '
+end ) as email,(select nvl(max(c_id_cliente),0) from t_vis_gen_envio_resumen where c_id_cliente = $P{cuenta_nro}) envio_mail,
+trim(sp_email_cliente($P{cuenta_nro})) tiene_email
+ from
+(Select detalle_transaccion, fecha, comprobante, cuota ,orden, 
+importe,grupo,(case  when (adicional = 0 or adicional = cliente )
+ then cliente
+ else adicional end) as adicional,
+(case  when (adicional = 0 or adicional = cliente )
+ then $P{nombre}
+ else nombre_cliente end) as nombre_cliente,linea,cliente,
+(case  when (adicional = 0 or adicional = cliente )
+ then 'Titular'
+ else 'Adicional' end) as tipo_cuenta,elemento From (
+
+Select 'Resumen Anterior' detalle_transaccion, null as fecha, 
+		null as comprobante, null cuota ,1 orden, nvl(sum(cta.c_importe * cta.c_signo),0) importe,0 as grupo,
+		null as adicional,'' as nombre_cliente,0 as linea,0 as cliente, 0 elemento
+		From t_vis_tra_ctacte_clientes cta 
+		Where cta.c_id_cliente = $P{cuenta_nro}  and c_fecha_facturacion < $P{fechaEspecial} 
+		and ((cta.c_id_liq_cliente is not null and cta.c_id_liq_cliente != $P{liquidacion_numero} and cta.c_signo = 1 ) 
+    or cta.c_id_concepto_detalle = 187 or cta.c_signo = -1)
+		
+		union
+		
+Select '' detalle_transaccion, null as fecha, 
+		null as comprobante, null cuota ,2 orden, null importe,0 as grupo
+    ,null as adicional,'' as nombre_cliente,0 as linea,0 as cliente, 0 elemento from dual
+
+union
+		
+		--Su pago
+Select initcap(con.c_descripcion) as detalle_transaccion, to_date(to_char(cta.c_timestamp, 'dd/mm/yyyy'),'dd/mm/yyyy') as fecha, 
+		null as comprobante,'1/1' cuota , 3 orden, nvl(sum(cta.c_importe * cta.c_signo),0) importe,0 as grupo
+    ,null as adicional,'' as nombre_cliente,0 as linea,cta.c_id_cliente as cliente, 0 elemento
+		From t_vis_tra_ctacte_clientes cta 
+		inner join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+		inner join t_vis_tra_conceptos con on con.c_id_concepto = det.c_id_concepto
+		Where cta.c_id_cliente = $P{cuenta_nro}  and trunc(cta.c_fecha_facturacion) = $P{fechaEspecial} 
+		and det.c_id_tipo_concepto_det = 6
+    and cta.c_estado_impacto !='R'
+		Group by  initcap(con.c_descripcion),  to_date(to_char(cta.c_timestamp, 'dd/mm/yyyy'),'dd/mm/yyyy'), cta.c_id_cliente
+		
+		
+union
+	
+	--cancelaciones
+		Select initcap(det.c_nombre) as detalle_transaccion, to_date(to_char(cta.c_timestamp, 'dd/mm/yyyy'),'dd/mm/yyyy') as fecha, 
+		cta.c_id_tranascciones as comprobante, '1/1' cuota, 4 orden, nvl(sum(cta.c_importe * cta.c_signo),0) importe,0 as grupo
+    ,null as adicional,'' as nombre_cliente,0 as linea,cta.c_id_cliente as cliente, 0 elemento
+		From t_vis_tra_ctacte_clientes cta 
+		inner join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+                Where cta.c_id_cliente = $P{cuenta_nro}  and cta.c_id_liq_cliente = $P{liquidacion_numero}
+		and (cta.c_cod_posnet = 0 or cta.c_cod_posnet is null) and det.c_id_tipo_concepto_det in(5)
+    and cta.c_estado_impacto !='R'
+		Group by initcap(det.c_nombre),to_date(to_char(cta.c_timestamp, 'dd/mm/yyyy'),'dd/mm/yyyy'), 
+		cta.c_id_tranascciones,(cta.c_nro_cuota || '/' || cta.c_cant_cuotas),cta.c_id_cliente
+		
+		union
+		
+				
+		--productos fiel
+	Select initcap(con.c_descripcion) as detalle_transaccion, to_date(to_char(cta.c_timestamp, 'dd/mm/yyyy'),'dd/mm/yyyy') as fecha, 
+		cta.c_id_tranascciones as comprobante, (cta.c_nro_cuota || '/' || cta.c_cant_cuotas) cuota, 5 orden, nvl(sum(cta.c_importe * cta.c_signo),0) importe,1 as grupo
+    ,nvl(cta.c_id_adicional,0) as adicional,trim(ind.c_apellido) || ' ' || trim(ind.c_nombres) as nombre_cliente,0 as linea,cta.c_id_cliente as cliente, 0 elemento
+		From t_vis_tra_ctacte_clientes cta 
+		inner join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+		inner join t_vis_tra_conceptos con on con.c_id_concepto = det.c_id_concepto
+                left join t_vis_tra_clientes cli on cli.c_id_cliente = cta.c_id_adicional
+                left join t_vis_eva_individuos ind on ind.c_id_individuo = cli.c_id_individuo 
+		Where cta.c_id_cliente =  $P{cuenta_nro}  and cta.c_id_liq_cliente = $P{liquidacion_numero}
+		and (cta.c_cod_posnet = 0 or cta.c_cod_posnet is null) and det.c_id_tipo_concepto_det not in(6, 8, 4, 3, 9,5)
+		and cta.c_estado_impacto !='R'
+    Group by initcap(con.c_descripcion),to_date(to_char(cta.c_timestamp, 'dd/mm/yyyy'),'dd/mm/yyyy'), 
+		cta.c_id_tranascciones,(cta.c_nro_cuota || '/' || cta.c_cant_cuotas),
+    		nvl(cta.c_id_adicional,0),trim(ind.c_apellido) || ' ' || trim(ind.c_nombres),cta.c_id_cliente
+
+	union
+        
+        --consumos del mes	
+	Select (case when (det.c_id_tipo_concepto_det != 19) then initcap(suc.c_descripcion) else 'Promo ' || initcap(suc.c_descripcion) end) as detalle_transaccion, to_date(to_char(cta.c_timestamp, 'dd/mm/yyyy'),'dd/mm/yyyy') as fecha, 
+		cta.c_id_tranascciones as comprobante, (cta.c_nro_cuota || '/' || cta.c_cant_cuotas) cuota, 6 orden, nvl(sum(cta.c_importe * cta.c_signo),0) importe,1 as grupo
+    ,nvl(cta.c_id_adicional,0) as adicional,trim(ind.c_apellido) || ' ' || trim(ind.c_nombres) as nombre_cliente,0 as linea,cta.c_id_cliente as cliente,
+    (case when (det.c_id_tipo_concepto_det != 19) then 0 else 1 end) elemento
+		From t_vis_tra_ctacte_clientes cta
+		inner join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = cta.c_id_concepto_detalle 
+		inner join t_vis_tra_cod_comercios cod on cta.c_cod_posnet = cod.c_codigo_posnet
+		inner join t_vis_gen_suc_empresas suc on suc.c_id_sucursal = cod.c_id_sucursal
+    left join t_vis_tra_clientes cli on cli.c_id_cliente = cta.c_id_adicional
+    left join t_vis_eva_individuos ind on ind.c_id_individuo = cli.c_id_individuo
+		Where cta.c_id_cliente = $P{cuenta_nro}  and cta.c_id_liq_cliente = $P{liquidacion_numero}
+		and det.c_id_tipo_concepto_det in (1,19,2) and (cta.c_importe != 0 or det.c_id_tipo_concepto_det != 19)
+		and cta.c_estado_impacto !='R'
+    Group by (case when (det.c_id_tipo_concepto_det != 19) then initcap(suc.c_descripcion) else 'Promo ' || initcap(suc.c_descripcion) end),to_char(cta.c_timestamp, 'dd/mm/yyyy'), cta.c_id_tranascciones,(cta.c_nro_cuota || '/' || cta.c_cant_cuotas),
+    nvl(cta.c_id_adicional,0),trim(ind.c_apellido) || ' ' || trim(ind.c_nombres),cta.c_id_cliente,(case when (det.c_id_tipo_concepto_det != 19) then 0 else 1 end)
+	
+		union
+		
+		--Cargos
+		Select det.c_nombre as detalle_transaccion, to_date(to_char(cta.c_timestamp, 'dd/mm/yyyy'),'dd/mm/yyyy') as fecha, 
+		cta.c_id_tranascciones as comprobante, CTA.C_NRO_CUOTA || '/' || NVL(CTA.C_CANT_CUOTAS,1) cuota, 7 orden, nvl(sum(cta.c_importe * cta.c_signo),0) importe,0 as grupo 
+    ,null as adicional,'' as nombre_cliente,0 as linea,cta.c_id_cliente as cliente,0 elemento
+		From t_vis_tra_ctacte_clientes cta 
+		inner join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+		Where cta.c_id_cliente = $P{cuenta_nro}  and cta.c_id_liq_cliente = $P{liquidacion_numero}
+		and (cta.c_cod_posnet = 0 or cta.c_cod_posnet is null) and det.c_id_tipo_concepto_det = 8
+		and cta.c_estado_impacto !='R'
+    GROUP BY det.c_nombre, TO_DATE(TO_CHAR(CTA.C_TIMESTAMP, 'dd/mm/yyyy'),'dd/mm/yyyy'), cta.c_id_tranascciones, CTA.C_NRO_CUOTA || '/' ||NVL(CTA.C_CANT_CUOTAS,1), 7, 0, null, '', 0, cta.c_id_cliente
+		
+		union
+		
+		--Cargos Aux
+		Select det.c_nombre as detalle_transaccion, to_date(to_char(cta.c_timestamp, 'dd/mm/yyyy'),'dd/mm/yyyy') as fecha, 
+		cta.c_id_tranascciones as comprobante, '1/1' cuota, 8 orden, nvl(sum(cta.c_importe * cta.c_signo),0) importe,0 as grupo 
+    ,null as adicional,'' as nombre_cliente,0 as linea,cta.c_id_cliente as cliente,0 elemento
+		From t_vis_tra_ctacte_clientes_aux cta 
+		inner join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+		Where cta.c_id_cliente = $P{cuenta_nro}  and cta.c_id_liq_cliente = $P{liquidacion_numero}
+		and (cta.c_cod_posnet = 0 or cta.c_cod_posnet is null) and det.c_id_tipo_concepto_det = 8
+		and cta.c_estado_impacto !='R'
+    Group by det.c_nombre,to_date(to_char(cta.c_timestamp, 'dd/mm/yyyy'),'dd/mm/yyyy'), cta.c_id_tranascciones,cta.c_id_cliente
+		
+	
+		
+		
+		union
+		
+		Select '' detalle_transaccion, null as fecha, 
+		null as comprobante, null cuota ,10 orden, null importe,0 as grupo
+    ,null as adicional,'' as nombre_cliente,0 as linea,0 as cliente,0 elemento from dual
+		
+		union
+		
+		--Iva Cosumos		
+		Select 'IVA' as detalle_transaccion, null as fecha, 
+		null as comprobante, null cuota,11 orden, sum(importe_iva) importe,0 as grupo
+    ,null as adicional,'' as nombre_cliente,0 as linea,0 as cliente,0 elemento From (
+		    --Iva de cosumos
+		    Select nvl(sum(cta.c_importe * cta.c_signo),0) importe_iva 
+		    From t_vis_tra_ctacte_clientes cta 
+		    inner join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+		    Where cta.c_id_cliente = $P{cuenta_nro}  and cta.c_id_liq_cliente = $P{liquidacion_numero}
+		    and det.c_id_tipo_concepto_det = 3
+		    and cta.c_estado_impacto !='R'
+        union
+		    --Iva de cargos
+		    Select nvl(sum(cta.c_importe * cta.c_signo),0) importe_iva 
+		    From t_vis_tra_ctacte_clientes_aux cta 
+		    inner join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+		    Where cta.c_id_cliente = $P{cuenta_nro}  and cta.c_id_liq_cliente = $P{liquidacion_numero}
+		    and det.c_id_tipo_concepto_det = 3
+        and cta.c_estado_impacto !='R')
+		    
+		union
+		
+		--Sellos
+		Select 'Sellos' as detalle_transaccion, null as fecha, 
+		null as comprobante, null cuota,12 orden, sum(importe_sellos) importe,0 as grupo
+    ,null as adicional,'' as nombre_cliente,0 as linea,0 as cliente,0 elemento From(
+		    --Sellos de cosumos
+		    Select nvl(sum(cta.c_importe * cta.c_signo),0) importe_sellos 
+		    From t_vis_tra_ctacte_clientes_aux cta 
+		    inner join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+		    Where cta.c_id_cliente = $P{cuenta_nro}  and cta.c_id_liq_cliente = $P{liquidacion_numero}
+		    and det.c_id_tipo_concepto_det = 4
+        and cta.c_estado_impacto !='R'
+		    union
+
+		    --Sellos de liquidacion
+		    Select nvl(sum(cta.c_importe * cta.c_signo),0) importe_sellos 
+		    From t_vis_tra_ctacte_clientes cta 
+		    inner join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+		    Where cta.c_id_cliente = $P{cuenta_nro}  and cta.c_id_liq_cliente = $P{liquidacion_numero} and cta.c_estado_impacto !='R'
+		    and det.c_id_tipo_concepto_det = 4))) liqui
+		    inner join t_vis_tra_clientes cliente on cliente.c_id_cliente = $P{cuenta_nro}
+		order by orden,adicional,comprobante,fecha,elemento]]></queryString>
+
+	<field name="DETALLE_TRANSACCION" class="java.lang.String"/>
+	<field name="FECHA" class="java.sql.Timestamp"/>
+	<field name="COMPROBANTE" class="java.math.BigDecimal"/>
+	<field name="CUOTA" class="java.lang.String"/>
+	<field name="ORDEN" class="java.math.BigDecimal"/>
+	<field name="IMPORTE" class="java.math.BigDecimal"/>
+	<field name="GRUPO" class="java.math.BigDecimal"/>
+	<field name="ADICIONAL" class="java.math.BigDecimal"/>
+	<field name="NOMBRE_CLIENTE" class="java.lang.String"/>
+	<field name="LINEA" class="java.math.BigDecimal"/>
+	<field name="CLIENTE" class="java.math.BigDecimal"/>
+	<field name="TIPO_CUENTA" class="java.lang.String"/>
+	<field name="C_FECHA_MORA" class="java.sql.Timestamp"/>
+	<field name="ELEMENTO" class="java.math.BigDecimal"/>
+	<field name="EMAIL" class="java.lang.String"/>
+	<field name="ENVIO_MAIL" class="java.math.BigDecimal"/>
+	<field name="TIENE_EMAIL" class="java.lang.String"/>
+
+	<variable name="suma_adicional" class="java.math.BigDecimal" resetType="Group" resetGroup="adicional" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE}]]></variableExpression>
+	</variable>
+
+		<group  name="grupo" >
+			<groupExpression><![CDATA[$F{LINEA}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="16"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="233"
+						y="2"
+						width="55"
+						height="10"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="element-8"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="##,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="271"
+						y="2"
+						width="69"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-8"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$P{total_pagar}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="adicional" >
+			<groupExpression><![CDATA[$F{ADICIONAL}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="11"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="65"
+						y="1"
+						width="172"
+						height="10"
+						key="textField-6"
+						positionType="Float"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[($F{GRUPO}.intValue() == 0 ) ? new Boolean(false)  : new Boolean(true)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="8" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBRE_CLIENTE}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="1"
+						width="109"
+						height="10"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-6"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($F{GRUPO}.intValue() == 0 ) ? new Boolean(false)  : new Boolean(true)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Movimientos de:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="233"
+						y="1"
+						width="62"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-7"
+						positionType="Float"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[($F{GRUPO}.intValue() == 0 ) ? new Boolean(false)  : new Boolean(true)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Subtotal]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="##,##0.00" isBlankWhenNull="true" evaluationTime="Group" evaluationGroup="adicional"  hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="271"
+						y="1"
+						width="69"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-7"
+						positionType="Float"
+						isRemoveLineWhenBlank="true">
+							<printWhenExpression><![CDATA[($F{GRUPO}.intValue() == 0 ) ? new Boolean(false)  : new Boolean(true)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{suma_adicional}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="12"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="7"
+						y="1"
+						width="35"
+						height="11"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-9"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Fecha]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="2"
+						y="1"
+						width="5"
+						height="11"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="element-10"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="88"
+						y="1"
+						width="166"
+						height="11"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-11"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Detalle de Transacción]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="254"
+						y="1"
+						width="35"
+						height="11"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-12"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Cuota]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="289"
+						y="1"
+						width="50"
+						height="11"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-13"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Importe]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="42"
+						y="1"
+						width="46"
+						height="11"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-14"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Trans. ]]></text>
+				</staticText>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="10"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="dd.MM.yy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="2"
+						y="0"
+						width="40"
+						height="10"
+						forecolor="#000000"
+						key="textField-1"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{FECHA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="88"
+						y="0"
+						width="166"
+						height="10"
+						key="textField-3"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DETALLE_TRANSACCION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="254"
+						y="0"
+						width="35"
+						height="10"
+						key="textField-4"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CUOTA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="289"
+						y="0"
+						width="51"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-5"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="42"
+						y="0"
+						width="46"
+						height="10"
+						forecolor="#000000"
+						key="textField-9"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{COMPROBANTE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

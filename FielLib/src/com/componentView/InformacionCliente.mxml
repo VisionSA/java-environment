@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ENTER)this.removePopUp()"
+ creationComplete="init()" layout="vertical" showCloseButton="true" close="PopUpManager.removePopUp(this)" 
+ horizontalAlign="center"  height="400" width="350" title="INFORMACION DEL CLIENTE">
+	
+	
+		<mx:VBox >
+			<mx:HBox visible="{titular.domicilioValido == 0}" includeInLayout="{titular.domicilioValido == 0}" paddingBottom="10" paddingTop="10">
+				<mx:Image id="imgIconError" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="DOMICILIO NO INGREADO"/>	
+			</mx:HBox>
+			<mx:HBox visible="{titular.domicilioValido != 0}" includeInLayout="{titular.domicilioValido != 0}" paddingBottom="10" paddingTop="10">
+				<mx:Image id="imgIconOK" source="@Embed(source='/img/icon_ok.jpg')" />
+				<mx:Label color="green" text="DOMICILIO INGRESADO"/>
+			</mx:HBox>
+			
+			<mx:HBox visible="{titular.individuo.actividad.sucEmpresa == null}" includeInLayout="{titular.individuo.actividad.sucEmpresa == null}"
+					 paddingBottom="10" paddingTop="10">
+				<mx:Image id="imgIconError1" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="DATOS LABORALES NO INGRESADOS"/>	
+			</mx:HBox>
+			<mx:HBox visible="{titular.individuo.actividad.sucEmpresa != null}" includeInLayout="{titular.individuo.actividad.sucEmpresa != null}"
+					 paddingBottom="10" paddingTop="10">
+				<mx:Image id="imgIconOK1" source="@Embed(source='/img/icon_ok.jpg')" />
+				<mx:Label color="green" text="DATOS LABORALES INGRESADOS"/>
+			</mx:HBox>
+			
+			<mx:HBox visible="{titular.individuo.telefonos.length == 0}" includeInLayout="{titular.individuo.telefonos.length == 0}"
+					 paddingBottom="10" paddingTop="10">
+				<mx:Image id="imgIconError2" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="TELEFONO NO INGRESADO"/>	
+			</mx:HBox>
+			<mx:HBox visible="{titular.individuo.telefonos.length != 0}" includeInLayout="{titular.individuo.telefonos.length != 0}"
+					 paddingBottom="10" paddingTop="10">
+				<mx:Image id="imgIconOK2" source="@Embed(source='/img/icon_ok.jpg')" />
+				<mx:Label color="green" text="TELEFONO INGRESADO"/>
+			</mx:HBox>
+			
+			<mx:HBox visible="{titular.individuo.mails.length == 0}" includeInLayout="{titular.individuo.mails.length == 0}"
+					 paddingBottom="10" paddingTop="10">
+				<mx:Image id="imgIconError3" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="MAIL NO INGRESADO"/>	
+			</mx:HBox>
+			<mx:HBox visible="{titular.individuo.mails.length != 0}" includeInLayout="{titular.individuo.mails.length != 0}"
+					 paddingBottom="10" paddingTop="10">
+				<mx:Image id="imgIconOK3" source="@Embed(source='/img/icon_ok.jpg')" />
+				<mx:Label color="green" text="MAIL INGRESADO"/>
+			</mx:HBox>
+			
+			<mx:HBox
+			visible="{((titular.individuo.actividad.sucEmpresa == null)?true:((titular.individuo.actividad.sucEmpresa.sucTelefonos.length == 0)?true:false))}"
+					 includeInLayout="{((titular.individuo.actividad.sucEmpresa == null)?true:((titular.individuo.actividad.sucEmpresa.sucTelefonos.length == 0)?true:false))}"
+					 paddingBottom="10" paddingTop="10">
+				<mx:Image id="imgIconError4" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="TELEFONO LABORAL NO INGRESADO"/>	
+			</mx:HBox>
+			
+			<mx:HBox
+			visible="{((titular.individuo.actividad.sucEmpresa == null)?false:((titular.individuo.actividad.sucEmpresa.sucTelefonos.length == 0)?false:true))}"
+			 includeInLayout="{((titular.individuo.actividad.sucEmpresa == null)?false:((titular.individuo.actividad.sucEmpresa.sucTelefonos.length == 0)?false:true))}"
+					 paddingBottom="10" paddingTop="10">
+				<mx:Image id="imgIconOK4" source="@Embed(source='/img/icon_ok.jpg')" />
+				<mx:Label color="green" text="TELEFONO LABORAL INGRESADO"/>
+			</mx:HBox>
+			
+	</mx:VBox>
+	<mx:VBox width="100%" paddingTop="10">
+		<mx:HBox width="100%" horizontalAlign="center">	
+			<mx:Button id = "btContinuar" label="ENTER para Continuar" width="160" click="removePopUp()"/>
+			</mx:HBox>
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.tarjetafiel.caja.vo.Email;
+			import com.util.components.alert.AlertOk;
+			import com.util.paginacion.PaginacionEvent;
+			import mx.core.Application;
+			
+			import models.ApplicationModel;
+			
+			import managers.ClienteManager;
+			
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			import mx.validators.ValidationResult;
+			
+			import flash.display.DisplayObject;
+			
+						
+			[Bindable]public var applicationModel:ApplicationModel = new ApplicationModel();
+			[Bindable]public var generalClienteModel:ClienteManager;
+			[Bindable]public var titular:ClienteTransaccion;
+			
+			private var browserType:String = "";
+			private var urlString:String;
+			private var request:URLRequest;
+			
+			
+			private function closeWindow():void
+			{
+				/**
+				 * For this to work in Firefox,
+				 * Type in "about:config" in firefox address bar 
+				 * set dom.allow_scripts_to_close_windows to true.
+				 */
+				urlString = "javascript:window.close();";
+				request = new URLRequest(urlString);
+				navigateToURL(request, "_self");    
+			}
+			
+			private function init():void {
+				/* this.txtEmail.setFocus(); */
+				this.btContinuar.setFocus();
+				
+			}
+			
+			
+			private function submitButton_click(evt:MouseEvent):void {
+				/* Alert.show(evt.currentTarget.label,
+					Object(focusManager.getFocus()).name);
+				 */
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function removePopUp():void{
+				//popUpVisible = false;
+				
+				PopUpManager.removePopUp(this);
+				 
+				
+			}
+			
+			public function guardar():void {
+				//controlo el campo txtEmail
+		/* 		var valido:ValidationResultEvent = mailValidator.validate(txtEmail.text);
+				if (valido.type==ValidationResultEvent.VALID)
+				{
+					
+					//creo el objeto mail para guardar
+					var mail:Email = new Email();
+					mail.email=this.txtEmail.text;
+					/* mail.descripcion=this.txtDescrip.text; */
+					/* mail.operador = applicationModel.operador; */
+					/* mail.operador = Application.application.operador; */
+				//	generalClienteModel.agregarMail(mail,idIndividuo);
+				//	this.removePopUp();
+				//} */
+			}
+			
+			private function cleanData():void {
+				//creo el objeto mail para guardar
+				//this.txtEmail.text = "";
+				/* this.txtDescrip.text = ""; */
+				//this.txtEmail.errorString="";
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:TitleWindow>

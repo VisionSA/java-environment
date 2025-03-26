@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="false" version="1">
+  <includeClasses>
+    <classEntry path="com.application.red5.ConnectionRed5"/>
+    <classEntry path="com.util.Fecha"/>
+    <classEntry path="com.util.Imagenes"/>
+    <classEntry path="com.util.block.Block"/>
+    <classEntry path="com.util.block.ControlBlock"/>
+    <classEntry path="com.util.collections.ArrayUtil"/>
+    <classEntry path="com.util.collections.IEnumeration"/>
+    <classEntry path="com.util.collections.IIterator"/>
+    <classEntry path="com.util.collections.StringTokenizer"/>
+    <classEntry path="com.util.components.alert.AlertError"/>
+    <classEntry path="com.util.components.alert.AlertOk"/>
+    <classEntry path="com.util.components.alert.AlertWarning"/>
+    <classEntry path="com.util.components.alert.AlertYesNo"/>
+    <classEntry path="com.util.components.date.DateFiledMultiLan"/>
+    <classEntry path="com.util.components.textInput.TextInputMoneda"/>
+    <classEntry path="com.util.error.ManagerErrors"/>
+    <classEntry path="com.util.error.PopUpError"/>
+    <classEntry path="com.util.format.FormatUtil"/>
+    <classEntry path="com.util.modules.IModulo"/>
+    <classEntry path="com.util.modules.ManagerModules"/>
+    <classEntry path="com.util.modules.MdiWindows"/>
+    <classEntry path="com.util.modules.TitleWindowCustom"/>
+    <classEntry path="com.util.modules.VboxLoadModule"/>
+    <classEntry path="com.util.modules.VentanasAbiertasModel"/>
+    <classEntry path="com.util.paginacion.PaginacionEvent"/>
+    <classEntry path="com.util.paginacion.Paginador"/>
+    <classEntry path="com.util.paginacion.PaginadorComp"/>
+    <classEntry path="com.util.relleno.rellenarNroUtil"/>
+    <classEntry path="com.util.upload.UploadFile"/>
+    <classEntry path="com.util.upload.UploadReclamo"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

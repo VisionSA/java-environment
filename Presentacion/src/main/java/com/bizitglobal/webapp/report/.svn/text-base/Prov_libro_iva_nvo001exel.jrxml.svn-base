@@ -1,0 +1,841 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Prov_libro_iva_nvo001exel"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="2885"
+		 pageHeight="28346371"
+		 columnWidth="2885"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true" />
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true" />
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false" />
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.bizitglobal.webapp.faces.beans.util.*" />
+	<import value="net.sf.jasperreports.engine.design.JasperDesign" />
+
+	<parameter name="fecha_desde" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<queryString><![CDATA[select    
+comprobante, 
+FECHA_EMISION,  
+FECHA_CONTABLE, 
+
+DESCRIPCION_LARGA, 
+DESCRIPCION_CORTA,
+NRO_COMPROBANTE, 
+PROVEEDOR, 
+RAZON_SOCIAL, 
+CUIT, 
+CATEGORIA,
+case when MONTO_GRABADO = 0  then NULL  else MONTO_GRABADO end AS MONTO_GRABADO, 
+--MONTO_GRABADO, 
+case when MONTO_NO_GRABADO = 0  then NULL  else MONTO_NO_GRABADO end AS MONTO_NO_GRABADO, 
+--MONTO_NO_GRABADO, 
+case when IMPORTE_IVA_TASA_GRAL IS NULL  then '0%'  else '21%' end AS PORC_IVA_TASA_GRAL, 
+--case when IMPORTE_IVA_TASA_GRAL IS NULL  then 0  else IMPORTE_IVA_TASA_GRAL end AS IMPORTE_IVA_TASA_GRAL, 
+IMPORTE_IVA_TASA_GRAL, 
+case when IMPORTE_IVA_TASA_GRAL_27 IS NULL  then '0%'  else '27%' end AS PORC_IVA_TASA_GRAL27, 
+--case when IMPORTE_IVA_TASA_GRAL_27 IS NULL  then 0  else IMPORTE_IVA_TASA_GRAL_27 end AS IMPORTE_IVA_TASA_GRAL_27, 
+IMPORTE_IVA_TASA_GRAL_27,
+case when IMPORTE_IVA_TASA_GRAL_10_5 IS NULL  then '0%'  else '10.5%' end AS PORC_IVA_TASA_GRAL_10_5, 
+--case when IMPORTE_IVA_TASA_GRAL_10_5 IS NULL  then 0  else IMPORTE_IVA_TASA_GRAL_10_5 end AS IMPORTE_IVA_TASA_GRAL_10_5, 
+IMPORTE_IVA_TASA_GRAL_10_5,
+--case when IMPORTE_PERCEPCION_IVA IS NULL  then 0  else IMPORTE_PERCEPCION_IVA end AS IMPORTE_PERCEPCION_IVA, 
+IMPORTE_PERCEPCION_IVA, 
+--case when IMPORTE_RETENCION_IVA IS NULL  then 0  else IMPORTE_RETENCION_IVA end AS IMPORTE_RETENCION_IVA, 
+IMPORTE_RETENCION_IVA, 
+--case when IMPORTE_RETENCION_GANANCIAS IS NULL  then 0  else IMPORTE_RETENCION_GANANCIAS end AS IMPORTE_RETENCION_GANANCIAS, 
+IMPORTE_RETENCION_GANANCIAS, 
+--case when IMPORTE_IMPUESTOS_PROV IS NULL  then 0  else IMPORTE_IMPUESTOS_PROV end AS IMPORTE_IMPUESTOS_PROV, 
+IMPORTE_IMPUESTOS_PROV, 
+IMPORTE_TOTAL, 
+DOC_ADJUNTO,
+ GRUPO
+   
+from (   
+        SELECT  comp.c_id_comprobante AS comprobante, 
+  TO_char (comp.c_fecha_emision, 'DD/MM/YYYY') || ' ' || tcomp.c_descripcion_larga || ' ' || LPAD(comp.c_nro_corto, 4, '0') || '-' || LPAD(comp.c_nro_largo, 8, '0') || ' ' || prov.c_id_proveedor ||  ' ' || c_razon_social || ' ' || c_cuit || ' ' || comp.c_importe_neto || ' ' || comp.c_importe_total AS DATOSPROV, 
+                     trunc(comp.c_fecha_emision) AS FECHA_EMISION,  
+    tcomp.c_descripcion_larga AS DESCRIPCION_LARGA, 
+    tcomp.c_descripcion_corta AS DESCRIPCION_CORTA, 
+    tcomp.c_grupo AS GRUPO,
+                     LPAD(comp.c_nro_corto, 4, '0') || '-' || LPAD(comp.c_nro_largo, 8, '0') AS NRO_COMPROBANTE,        
+                     prov.c_id_proveedor AS PROVEEDOR, 
+                     prov.c_razon_social AS RAZON_SOCIAL, 
+                     to_number(prov.c_cuit) AS CUIT, 
+                case 
+                  when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+                        then  (comp.c_monto_grabado*-1) 
+                else 
+                  comp.c_monto_grabado 
+                     end AS MONTO_GRABADO,                  
+                      
+                      
+                case 
+                  when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+                      then 
+                        (comp.c_monto_no_grabado*-1) 
+                      else 
+                        comp.c_monto_no_grabado 
+                     end AS MONTO_NO_GRABADO, 
+                      
+               case 
+                      when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+                        then (comp.c_importe_neto*-1) 
+                      else comp.c_importe_neto 
+                     end AS IMPORTE_NETO,       
+                      
+              case 
+                      when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+                        then (comp.c_importe_total*-1) 
+                      else comp.c_importe_total 
+                     end AS IMPORTE_TOTAL,                      
+ 
+
+ 
+ case 
+      when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+          then 
+                (SELECT (c_importe*-1) FROM t_vis_prov_impuestos 
+                WHERE c_id_comprobante=comp.c_id_comprobante 
+                  AND c_id_impuesto=1)  
+                
+ 
+                      else 
+                      (SELECT c_importe FROM t_vis_prov_impuestos 
+                WHERE c_id_comprobante=comp.c_id_comprobante 
+                  AND c_id_impuesto=1) 
+              
+                     end AS IMPORTE_IVA_TASA_GRAL, 
+                      
+case 
+      when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+          then 
+          (SELECT (c_importe*-1) FROM t_vis_prov_impuestos 
+                WHERE c_id_comprobante=comp.c_id_comprobante 
+                AND c_id_impuesto=8) 
+                else 
+                   (SELECT (c_importe) FROM t_vis_prov_impuestos 
+                WHERE c_id_comprobante=comp.c_id_comprobante 
+                AND c_id_impuesto=8) 
+                 
+                     end AS IMPORTE_IVA_TASA_GRAL_27, 
+ 
+  
+case 
+      when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+          then 
+          (SELECT (c_importe*-1) FROM t_vis_prov_impuestos 
+            WHERE c_id_comprobante=comp.c_id_comprobante 
+            AND c_id_impuesto=13) 
+                 
+                      else 
+                      (SELECT c_importe FROM t_vis_prov_impuestos 
+                    WHERE c_id_comprobante=comp.c_id_comprobante 
+                      AND c_id_impuesto=13) 
+                 
+                     end AS IMPORTE_IVA_TASA_GRAL_10_5, 
+ 
+
+ 
+
+case 
+      when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+          then 
+          (SELECT SUM(c_importe*-1) FROM t_vis_prov_impuestos 
+            WHERE c_id_comprobante=comp.c_id_comprobante 
+            AND c_id_impuesto in(2,3)) 
+                else 
+                (SELECT SUM(c_importe) FROM t_vis_prov_impuestos 
+                  WHERE c_id_comprobante=comp.c_id_comprobante 
+                  AND c_id_impuesto in(2,3)) 
+                   end AS IMPORTE_PERCEPCION_IVA, 
+ 
+
+ 
+
+ 
+case 
+      when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+          then 
+                (SELECT (c_importe*-1) FROM t_vis_prov_impuestos 
+            WHERE c_id_comprobante=comp.c_id_comprobante 
+            AND c_id_impuesto=11) 
+                      else 
+                      (SELECT c_importe FROM t_vis_prov_impuestos 
+                      WHERE c_id_comprobante=comp.c_id_comprobante 
+                        AND c_id_impuesto=11) 
+                     end AS IMPORTE_RETENCION_IVA, 
+ 
+
+ 
+
+case 
+      when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+          then 
+          (SELECT (c_importe*-1) FROM t_vis_prov_impuestos 
+              WHERE c_id_comprobante=comp.c_id_comprobante 
+              AND c_id_impuesto=12) 
+                else 
+                (SELECT c_importe FROM t_vis_prov_impuestos 
+                  WHERE c_id_comprobante=comp.c_id_comprobante 
+                    AND c_id_impuesto=12) 
+                 end AS IMPORTE_RETENCION_GANANCIAS, 
+ 
+
+ 
+
+case 
+      when tcomp.c_descripcion_corta in ('NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+          then 
+          (SELECT SUM(c_importe*-1) FROM t_vis_prov_impuestos 
+              WHERE c_id_comprobante=comp.c_id_comprobante 
+              AND c_id_impuesto in(4,5,6,7,9,10)) 
+                else 
+                (SELECT SUM(c_importe) FROM t_vis_prov_impuestos 
+                  WHERE c_id_comprobante=comp.c_id_comprobante 
+                  AND c_id_impuesto in(4,5,6,7,9,10)) 
+                   end AS IMPORTE_IMPUESTOS_PROV, 
+ 
+
+ 
+(SELECT c_url FROM t_vis_prov_doc_adjuntos 
+WHERE c_id_comprobante=comp.c_id_comprobante) AS DOC_ADJUNTO, 
+ 
+ (SELECT c_descripcion
+            FROM t_vis_prov_categorias pcat
+                 JOIN t_vis_juris_actividades jact ON pcat.c_id_juris_actividad = jact.c_id_juris_actividad
+                 JOIN t_vis_imp_categorias icat ON jact.c_id_categoria_imp = icat.c_id_categoria_imp
+            WHERE icat.c_id_tipo_impuesto in (1, 4)
+            AND   pcat.c_id_proveedor = prov.c_id_proveedor) AS CATEGORIA,
+ 
+    
+trunc(comp.c_fecha_contable) AS FECHA_CONTABLE 
+                                  
+                      
+  
+from t_vis_prov_comprobantes comp,t_vis_prov_proveedores prov,t_vis_gen_tipos_comprobantes tcomp 
+WHERE comp.c_id_proveedor=prov.c_id_proveedor 
+AND comp.c_id_tipo_cte=tcomp.c_id_tipo_cte 
+AND tcomp.c_libro_iva='S'
+--AND tcomp.c_descripcion_corta in ('FA','FB','FC','FM','FT','NDA','NDB','NDC','NDM','NDT','NDIA','NDIB','NDIC','NDIM','NDIT','NCIA','NCIB','NCIC','NCIM','NCIT','NCA','NCB','NCC','NCM','NCT') 
+
+         AND          trunc(comp.c_fecha_contable)  BETWEEN $P{fecha_desde} and $P{fecha_hasta} 
+        order by tcomp.c_grupo,comp.c_fecha_contable,comp.c_fecha_emision,prov.c_cuit)]]></queryString>
+
+	<field name="COMPROBANTE" class="java.math.BigDecimal"/>
+	<field name="FECHA_EMISION" class="java.sql.Timestamp"/>
+	<field name="FECHA_CONTABLE" class="java.sql.Timestamp"/>
+	<field name="DESCRIPCION_LARGA" class="java.lang.String"/>
+	<field name="DESCRIPCION_CORTA" class="java.lang.String"/>
+	<field name="NRO_COMPROBANTE" class="java.lang.String"/>
+	<field name="PROVEEDOR" class="java.math.BigDecimal"/>
+	<field name="RAZON_SOCIAL" class="java.lang.String"/>
+	<field name="CUIT" class="java.math.BigDecimal"/>
+	<field name="CATEGORIA" class="java.lang.String"/>
+	<field name="MONTO_GRABADO" class="java.math.BigDecimal"/>
+	<field name="MONTO_NO_GRABADO" class="java.math.BigDecimal"/>
+	<field name="PORC_IVA_TASA_GRAL" class="java.lang.String"/>
+	<field name="IMPORTE_IVA_TASA_GRAL" class="java.math.BigDecimal"/>
+	<field name="PORC_IVA_TASA_GRAL27" class="java.lang.String"/>
+	<field name="IMPORTE_IVA_TASA_GRAL_27" class="java.math.BigDecimal"/>
+	<field name="PORC_IVA_TASA_GRAL_10_5" class="java.lang.String"/>
+	<field name="IMPORTE_IVA_TASA_GRAL_10_5" class="java.math.BigDecimal"/>
+	<field name="IMPORTE_PERCEPCION_IVA" class="java.math.BigDecimal"/>
+	<field name="IMPORTE_RETENCION_IVA" class="java.math.BigDecimal"/>
+	<field name="IMPORTE_RETENCION_GANANCIAS" class="java.math.BigDecimal"/>
+	<field name="IMPORTE_IMPUESTOS_PROV" class="java.math.BigDecimal"/>
+	<field name="IMPORTE_TOTAL" class="java.math.BigDecimal"/>
+	<field name="DOC_ADJUNTO" class="java.lang.String"/>
+	<field name="GRUPO" class="java.math.BigDecimal"/>
+
+	<variable name="sum_g_monto_no_gravado" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{MONTO_NO_GRABADO}]]></variableExpression>
+	</variable>
+	<variable name="sum_g_monto_gravado" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{MONTO_GRABADO}]]></variableExpression>
+	</variable>
+	<variable name="sum_g_iva_10.5" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_IVA_TASA_GRAL_10_5}]]></variableExpression>
+	</variable>
+	<variable name="sum_g_iva_21" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_IVA_TASA_GRAL}]]></variableExpression>
+	</variable>
+	<variable name="sum_g_iva_27" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_IVA_TASA_GRAL_27}]]></variableExpression>
+	</variable>
+	<variable name="sum_g_retencion_iva" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_RETENCION_IVA}]]></variableExpression>
+	</variable>
+	<variable name="total_monto_no_gravado" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{MONTO_NO_GRABADO}]]></variableExpression>
+	</variable>
+	<variable name="sum_g_percepcion_iva" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_PERCEPCION_IVA}]]></variableExpression>
+	</variable>
+	<variable name="sum_g_importe_total" class="java.math.BigDecimal" resetType="Report" calculation="Nothing">
+		<variableExpression><![CDATA[$F{IMPORTE_TOTAL}]]></variableExpression>
+	</variable>
+	<variable name="total_monto_gravado" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{MONTO_GRABADO}]]></variableExpression>
+	</variable>
+	<variable name="total_iva_10.5" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_IVA_TASA_GRAL_10_5}]]></variableExpression>
+	</variable>
+	<variable name="total_retencion_iva" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_RETENCION_IVA}]]></variableExpression>
+	</variable>
+	<variable name="total_iva_21" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_IVA_TASA_GRAL}]]></variableExpression>
+	</variable>
+	<variable name="total_iva_27" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_IVA_TASA_GRAL_27}]]></variableExpression>
+	</variable>
+	<variable name="total_percepcion_iva" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_PERCEPCION_IVA}]]></variableExpression>
+	</variable>
+	<variable name="total_importe_total" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_TOTAL}]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="15"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="89"
+						height="15"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[FECHA EMISIÓN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="0"
+						width="102"
+						height="15"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[FECHA CONTABLE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="191"
+						y="0"
+						width="187"
+						height="15"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[TIPO COMPROBANTE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="378"
+						y="0"
+						width="102"
+						height="15"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[COMPROBANTE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="480"
+						y="0"
+						width="70"
+						height="15"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[PROVEEDOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="550"
+						y="0"
+						width="233"
+						height="15"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[RAZÓN SOCIAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="783"
+						y="0"
+						width="87"
+						height="15"
+						key="staticText-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[CUIT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="870"
+						y="0"
+						width="167"
+						height="15"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[CATEGORÍA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1037"
+						y="0"
+						width="107"
+						height="15"
+						key="staticText-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[MONTO GRAVADO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1144"
+						y="0"
+						width="121"
+						height="15"
+						key="staticText-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[MONTO NO GRAVADO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1265"
+						y="0"
+						width="81"
+						height="15"
+						key="staticText-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[IVA 21%]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1346"
+						y="0"
+						width="81"
+						height="15"
+						key="staticText-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[IVA 10.5%]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1427"
+						y="0"
+						width="81"
+						height="15"
+						key="staticText-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[IVA 27%]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1508"
+						y="0"
+						width="81"
+						height="15"
+						key="staticText-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[PERC. IVA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1589"
+						y="0"
+						width="88"
+						height="15"
+						key="staticText-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[RETENCIÓN  IVA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1677"
+						y="0"
+						width="104"
+						height="15"
+						key="staticText-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[RETENCIÓN GANANCIAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1781"
+						y="0"
+						width="120"
+						height="15"
+						key="staticText-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[IMPUESTOS PROVINCIALES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1901"
+						y="0"
+						width="113"
+						height="15"
+						key="staticText-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[IMPORTE TOTAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2014"
+						y="0"
+						width="871"
+						height="15"
+						key="staticText-19"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<text><![CDATA[FACTURA]]></text>
+				</staticText>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="89"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{FECHA_EMISION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="89"
+						y="0"
+						width="102"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{FECHA_CONTABLE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="191"
+						y="0"
+						width="187"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DESCRIPCION_LARGA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="378"
+						y="0"
+						width="102"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NRO_COMPROBANTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="480"
+						y="0"
+						width="70"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{PROVEEDOR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="550"
+						y="0"
+						width="233"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{RAZON_SOCIAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="783"
+						y="0"
+						width="87"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{CUIT}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="870"
+						y="0"
+						width="167"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CATEGORIA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1037"
+						y="0"
+						width="107"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{MONTO_GRABADO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1144"
+						y="0"
+						width="121"
+						height="15"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{MONTO_NO_GRABADO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1265"
+						y="0"
+						width="81"
+						height="15"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_IVA_TASA_GRAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1346"
+						y="0"
+						width="81"
+						height="15"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_IVA_TASA_GRAL_10_5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1427"
+						y="0"
+						width="81"
+						height="15"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_IVA_TASA_GRAL_27}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1508"
+						y="0"
+						width="81"
+						height="15"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_PERCEPCION_IVA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1589"
+						y="0"
+						width="88"
+						height="15"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_RETENCION_IVA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1677"
+						y="0"
+						width="104"
+						height="15"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_RETENCION_GANANCIAS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1781"
+						y="0"
+						width="120"
+						height="15"
+						key="textField-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_IMPUESTOS_PROV}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1901"
+						y="0"
+						width="113"
+						height="15"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_TOTAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="2014"
+						y="0"
+						width="871"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["http://192.168.0.7:8080/archivos/proveedores/docAdjuntos/" + $F{DOC_ADJUNTO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

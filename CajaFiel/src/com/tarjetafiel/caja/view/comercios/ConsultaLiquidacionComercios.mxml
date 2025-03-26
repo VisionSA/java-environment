@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="this.oncreationComplete()" layout="vertical" width="100%" height="100%" verticalAlign="top" horizontalAlign="center" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" xmlns:components="com.tarjetafiel.util.components.*" xmlns:date="com.util.components.date.*" xmlns:vo="com.tarjetafiel.caja.vo.*">			
+	<mx:VBox width="100%" id="header" >		
+	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" width="100%" height="140" dataProvider="{ModelLocator.getInstance().empresaModel.empresa.sucEmpresas}">
+		<mx:groupedColumns>
+			<mx:AdvancedDataGridColumnGroup headerText="Sucursales">								
+				<mx:AdvancedDataGridColumn headerText="Consultar Liquidación">
+					<mx:itemRenderer>
+						<mx:Component>
+							<mx:HBox verticalAlign="middle" horizontalAlign="center">							
+								<mx:CheckBox selected="{data.calcularLiquidacion}" id="chk" change="outerDocument.changeSucSeleccionadas(data, chk)"/>
+							</mx:HBox>						
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:AdvancedDataGridColumn>
+				<mx:AdvancedDataGridColumn headerText="Cod. Sucursal" dataField="idSucEmpresa"/>
+				<mx:AdvancedDataGridColumn headerText="Sucursal" dataField="descripcion"/>								
+				<mx:AdvancedDataGridColumn headerText="Domicilio">
+					<mx:itemRenderer>
+						<mx:Component>
+							<mx:Label text="{data.domicilio.calleNombre + ' - ' + data.domicilio.calleNumero}"/>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:AdvancedDataGridColumn>
+				<mx:AdvancedDataGridColumn headerText="Localidad">
+					<mx:itemRenderer>
+						<mx:Component>
+							<mx:Label text="{data.domicilio.barrio.localidad.nombre}"/>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:AdvancedDataGridColumn>
+				<mx:AdvancedDataGridColumn headerText="Provincia">
+					<mx:itemRenderer>
+						<mx:Component>
+							<mx:Label text="{data.domicilio.barrio.localidad.provincia.nombre}"/>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:AdvancedDataGridColumn>
+			</mx:AdvancedDataGridColumnGroup>
+		</mx:groupedColumns>
+	</mx:AdvancedDataGrid>		
+	
+	<mx:HBox horizontalAlign="left" verticalAlign="middle" width="100%" paddingTop="5" paddingBottom="5"> 		
+		<mx:Button label="Ctrl + 0 - Deseleccionar Todos" enabled="{ModelLocator.getInstance().empresaModel.empresa.tipoLiquidacion == 2}" id="btnSeleccionar" click="changeSucursalesSelected()"/>				
+	</mx:HBox>		
+	
+	<mx:HRule width="100%"/>
+	
+	<mx:HBox width="100%" horizontalAlign="left" verticalAlign="middle">
+		<mx:Label text="Liquidaciones" styleName="tituloBusquedas" fontSize="14" fontFamily="Arial"/>
+	</mx:HBox>
+				
+	<mx:HRule width="100%"/>
+	
+	<mx:VBox width="100%" verticalAlign="middle" horizontalAlign="left">
+		<mx:HBox width="100%" horizontalAlign="left" verticalAlign="middle">		
+			<mx:Label text="Desde:"/>
+			<date:DateFiledMultiLan id="dateDesde" />
+			<mx:Spacer width="10"/>
+			<mx:Label text="Hasta:"/>
+			<date:DateFiledMultiLan id="dateHasta" />		
+			<mx:Spacer width="10"/>
+			<mx:Button label="Ctrl + 1 - Consultar Liquidaciones" id="btnConsultarLiquidacion" click="consultarLiquidaciones()"/>
+		</mx:HBox>
+	</mx:VBox>
+		
+	</mx:VBox>
+	
+	<mx:Spacer height="5"/>
+	
+	<mx:TabNavigator width="100%" height="100%" id="tabLiquidacion" >
+		<mx:VBox width="100%" height="100%" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" verticalAlign="middle" horizontalAlign="center" label="Liquidaciones">
+			<mx:AdvancedDataGrid id="adgLiquidaciones" lockedColumnCount="1" horizontalScrollPolicy="auto"  keyDown="itemDoubleClick(event)" itemDoubleClick="this.itemDoubleClick()" 
+				doubleClickEnabled="true" designViewDataType="tree" width="100%" height="100%" initialize="gc.refresh()">
+				<mx:dataProvider>
+					<mx:GroupingCollection id="gc" source="{ModelLocator.getInstance().liqComercioModel.arrayLIquidaciones}">
+						<mx:grouping>
+							<mx:Grouping>
+								<mx:GroupingField groupingFunction="groupFunc" name="sucEmpresa">									
+									<mx:SummaryRow summaryPlacement="group">
+                             			<mx:fields>
+                                 			<mx:SummaryField dataField="totalBruto" 
+                                     		label="Total"/>                                 			
+                             			</mx:fields>
+                           			</mx:SummaryRow>                           			
+								</mx:GroupingField>																							
+							</mx:Grouping>
+						</mx:grouping>								
+					</mx:GroupingCollection>
+					
+				</mx:dataProvider>
+				<mx:columns>			
+					<mx:AdvancedDataGridColumn headerText="Periodo" paddingLeft="10" width="160">
+						<mx:itemRenderer>
+						<mx:Component>
+							<mx:Label text="{outerDocument.dateFormat.format(data.periodoDesde) + ' - ' + outerDocument.dateFormat.format(data.periodoHasta)}"/>
+						</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Lista Precio" width="100" >
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.listaPrecio.descripcion}" toolTip="{data.listaPrecio.descripcion}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Cod. Posnet" width="90">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.liqComercio.codComercio.codigoPosnet}" toolTip="{data.liqComercio.codComercio.codigoPosnet}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Liq. Finali." width="90">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.liqComercio.finalizoLiquidado == 'S' ? 'Si' : 'No'}"/>												
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Disp. Impr." width="90">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.liqComercio.disponibleImpresion == 'S' ? 'Si' : 'No'}"/>												
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Total Bruto" width="100" formatter="{currencyFormat}" dataField="totalBruto" />																															
+					<mx:AdvancedDataGridColumn headerText="Total Neto" width="100" formatter="{currencyFormat}" dataField="totalNeto" />
+					<mx:AdvancedDataGridColumn headerText="Total Pagar" width="100" formatter="{currencyFormat}" dataField="totalPagar" />					
+					<mx:AdvancedDataGridColumn width="100" formatter="{currencyFormat}" dataField="Total" />
+				</mx:columns>																					
+			</mx:AdvancedDataGrid>
+		</mx:VBox>		
+		<mx:VBox width="100%" height="100%" verticalAlign="middle" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" horizontalAlign="center" label="Movimientos Pendientes">
+			<mx:AdvancedDataGrid id="adgLiquidacionesPend" itemDoubleClick="itemDoubleClick()" doubleClickEnabled="true" designViewDataType="tree" width="100%" height="100%" initialize="gcPendientes.refresh()">
+				<mx:dataProvider>
+					<mx:GroupingCollection id="gcPendientes" source="{ModelLocator.getInstance().liqComercioModel.arrayCtaCteComercio}">
+						<mx:grouping>
+							<mx:Grouping>
+								<mx:GroupingField groupingFunction="groupFuncPendientes" name="sucEmpresa">
+									<mx:SummaryRow summaryPlacement="group">
+	                             			<mx:fields>
+                                 				<mx:SummaryField dataField="importe" 
+                                     			label="Total"/>                                 			
+                             				</mx:fields>
+                           			</mx:SummaryRow>
+                           		</mx:GroupingField> 																							
+							</mx:Grouping>
+						</mx:grouping>								
+					</mx:GroupingCollection>					
+				</mx:dataProvider>
+				<mx:columns>								
+					<mx:AdvancedDataGridColumn headerText="Fecha Lote" paddingLeft="10" width="160">
+						<mx:itemRenderer>
+						<mx:Component>
+							<mx:Label text="{outerDocument.dateFormat.format(data.fechaLote)}"/>
+						</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>					
+					<mx:AdvancedDataGridColumn headerText="Cuotas" dataField="nroCuota"/>
+					<mx:AdvancedDataGridColumn headerText="Importe" dataField="importe" formatter="{currencyFormat}"/>
+					<mx:AdvancedDataGridColumn dataField="Total" formatter="{currencyFormat}"/>
+				</mx:columns>																					
+			</mx:AdvancedDataGrid>
+		</mx:VBox>
+	</mx:TabNavigator>
+	<mx:HBox horizontalAlign="left" width="100%" verticalAlign="middle">
+		<mx:Label text="Total Bruto:"/>
+		<mx:TextInput text="{FormatUtil.formatMoneda(ModelLocator.getInstance().liqComercioModel.totalBrutoLiquidado)}" editable="false"/>
+		<mx:Label text="Total Neto:"/>
+		<mx:TextInput text="{FormatUtil.formatMoneda(ModelLocator.getInstance().liqComercioModel.totalNetoLiquidado)}" editable="false"/>
+		<mx:Label text="Total a Pagar:"/>
+		<mx:TextInput text="{FormatUtil.formatMoneda(ModelLocator.getInstance().liqComercioModel.totalPagarLiquidado)}" editable="false"/>
+	</mx:HBox>
+	
+	<mx:Spacer height="5"/>
+	
+	<mx:HBox width="100%">
+		<mx:Button label="Ctrl + 2 - Imprimir"/>	
+		<mx:Button label="Pantalla Completa" click="pantallaCompleta()"/>
+	</mx:HBox>	
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormat"/>
+	<mx:CurrencyFormatter currencySymbol="$" id="currencyFormat" rounding="none" precision="2"/>
+	<mx:NumberFormatter id="numberFormat" rounding="none" precision="0" />		
+	
+	<mx:Script>
+		<![CDATA[
+			import com.util.format.FormatUtil;
+			import com.util.modules.MdiWindows;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import flexmdi.containers.MDIWindow;
+			import com.util.components.alert.AlertYesNo;
+			import com.tarjetafiel.caja.vo.CtaCteComercio;
+			import com.tarjetafiel.caja.vo.LiqComercio;			
+			import mx.controls.CheckBox;
+			import mx.events.ListEvent;
+			import com.tarjetafiel.caja.vo.LiqComercioLP;
+			import mx.collections.GroupingField;
+			import mx.formatters.DateFormatter;
+			import com.util.components.alert.AlertWarning;
+			import com.tarjetafiel.caja.event.LiqComercioEvent;
+			import mx.formatters.DateBase;
+			import com.tarjetafiel.caja.vo.SucEmpresa;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import com.util.modules.IModulo;
+			import com.tarjetafiel.caja.model.ModelLocator;			
+			
+			private var todosSeleccionados:Boolean = true;
+			
+			private function pantallaCompleta():void{
+				
+				if(this.header.visible){
+					this.header.visible = false;
+					this.header.height = 0;				
+					this.header.includeInLayout = false;					
+				} else {
+					this.header.visible = true;
+					this.header.includeInLayout = true;
+					this.header.percentHeight = 100;
+					//this.tabLiquidacion.percentHeight = null;
+				}
+			}
+			
+			private function itemDoubleClick(evt:KeyboardEvent=null):void{
+				
+				var pasa:Boolean = true;
+				if(evt != null){
+					if(evt.keyCode != Keyboard.ENTER){
+						pasa = false;
+					}
+				}
+				if( pasa && this.adgLiquidaciones.selectedItem is LiqComercioLP ){
+					var filtro:Filtro = new Filtro();
+					filtro.campos.push("liqComercioLp.idLiqComercioLp");
+					filtro.operadores.push(Filtro.IGUAL);
+					filtro.valores.push((this.adgLiquidaciones.selectedItem as LiqComercioLP).idLiqComercioLp);
+					var event:LiqComercioEvent = new LiqComercioEvent(LiqComercioEvent.BUSCAR_DETALLES_LIQ, filtro, this.adgLiquidaciones.selectedItem as LiqComercioLP);
+					event.dispatch();	
+				}
+											
+			}
+			
+			private function groupFunc(item:Object, field:GroupingField):String
+		    {
+        	  	return LiqComercioLP(item).sucEmpresa.descripcion.toString();        	  	        	  	
+      		}
+      		
+      		private function groupFuncPendientes(item:Object, field:GroupingField):String
+		    {
+        	   	return CtaCteComercio(item).sucEmpresa.descripcion.toString();
+      		}
+
+		
+			public function changeSucSeleccionadas(data:Object, chk:CheckBox):void{				
+				
+				//ModelLocator.getInstance().empresaModel.empresa.tipoLiquidacion == 1 LIQUIDA POR CUIT								
+				//ModelLocator.getInstance().empresaModel.empresa.tipoLiquidacion == 2 LIQUIDA POR COD_COMERCIO
+				
+				if(ModelLocator.getInstance().empresaModel.empresa.tipoLiquidacion == 2) {
+					var index:int = ModelLocator.getInstance().empresaModel.empresa.sucEmpresas.indexOf(data);
+					SucEmpresa(ModelLocator.getInstance().empresaModel.empresa.sucEmpresas[index]).calcularLiquidacion = chk.selected;				
+				} else {
+					chk.selected = true;
+				}
+				 
+			}
+		
+			public function oncreationComplete():void{
+				var date:Date = new Date();
+				this.dateDesde.data = new Date(date.fullYear,date.month,1);								
+				if(date.month == 11){
+					this.dateHasta.data = new Date(date.fullYear+1,0,1);	
+				} else {
+					this.dateHasta.data = new Date(date.fullYear,date.month+1,1);
+				}							
+				
+				this.parent.addEventListener(KeyboardEvent.KEY_UP,keyStartOperacion);											
+				
+			}	
+			
+			private function keyStartOperacion(evt:KeyboardEvent):void {
+								
+				if (evt.ctrlKey && String.fromCharCode(evt.charCode).toUpperCase()=="0"){
+					this.changeSucursalesSelected();
+				}else if (evt.ctrlKey && String.fromCharCode(evt.charCode).toUpperCase()=="1"){										
+					this.consultarLiquidaciones()
+				}else if (evt.ctrlKey && String.fromCharCode(evt.charCode).toUpperCase()=="2"){
+					//imprimir
+				}else if (evt.ctrlKey && String.fromCharCode(evt.charCode).toUpperCase()=="4"){
+					salir();
+				}
+				
+			}				
+			
+			private function salir():void {
+				MdiWindows(this.parent).salir();			
+			} 	
+			
+			public function changeSucursalesSelected():void{
+				
+				if(todosSeleccionados){
+					todosSeleccionados = false;
+					this.btnSeleccionar.label = "Ctrl + 0 - Seleccionar Todos";
+				} else {
+					todosSeleccionados = true;
+					this.btnSeleccionar.label = "Ctrl + 0 - Deseleccionar Todos";
+				}
+				
+				for each(var suc:SucEmpresa in this.adg1.dataProvider){
+					suc.calcularLiquidacion = todosSeleccionados;
+					
+				}
+						
+			}									
+								
+			
+			public function consultarLiquidaciones():void{
+				
+				ModelLocator.getInstance().liqComercioModel.arrayLIquidaciones.removeAll();
+				
+				if(ModelLocator.getInstance().empresaModel.empresa != null){
+						
+					ModelLocator.getInstance().liqComercioModel.arraySucursalesSeleccionadas.removeAll();
+					for each(var suc:SucEmpresa in ModelLocator.getInstance().empresaModel.empresa.sucEmpresas){
+						if(suc.calcularLiquidacion){
+							ModelLocator.getInstance().liqComercioModel.arraySucursalesSeleccionadas.addItem(suc);
+						}					
+					}
+						
+					if(ModelLocator.getInstance().liqComercioModel.arraySucursalesSeleccionadas.length > 0) {
+																			
+						var filtro:Filtro = new Filtro();
+						filtro.campos.push("periodoDesde");
+						filtro.campos.push("periodoHasta");
+						filtro.campos.push("liqComercio.codComercio.sucEmpresa.idSucEmpresa");
+						filtro.operadores.push(Filtro.MAYOR_IGUAL);
+						filtro.operadores.push(Filtro.MENOR_IGUAL);
+						filtro.operadores.push(Filtro.IGUAL);						
+						filtro.valores.push(Filtro.toDate(this.dateDesde.selectedDate));				
+						filtro.valores.push(Filtro.toDate(this.dateHasta.selectedDate));						
+						filtro.valores.push(SucEmpresa(ModelLocator.getInstance().liqComercioModel.arraySucursalesSeleccionadas.getItemAt(0)).idSucEmpresa);
+						var evt:LiqComercioEvent = new LiqComercioEvent(LiqComercioEvent.BUSCAR_LIQ_COMERCIO,filtro);
+						evt.dispatch();
+						
+					} else {
+						this.alertConsultaDeshabilitada();
+					}
+				} else {
+						this.alertConsultaDeshabilitada();
+				}
+			}
+								
+			
+			private function alertConsultaDeshabilitada():void{
+				AlertWarning.show("No hay sucursales seleccionadas para realizar la busqueda de liquidaciones");
+			}
+			
+		]]>
+	</mx:Script>	
+</mx:Module>

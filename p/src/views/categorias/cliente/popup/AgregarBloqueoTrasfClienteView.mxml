@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ESCAPE) removePopUp()" 
+				creationComplete="init()" layout="vertical" showCloseButton="true" close="PopUpManager.removePopUp(this)"
+				horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/" xmlns:ns1="com.util.paginacion.*" height="250"
+				title="Agregar Evento en Agenda" width="400" xmlns:maps1="maps.*">
+	
+	<maps1:AgendaModelMap/>
+	
+	<mx:VBox paddingBottom="0" paddingLeft="0" paddingRight="0" width="100%" height="90%"
+			 paddingTop="0">
+		<mx:HBox  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+				  paddingTop="0" height="100%" width="100%" horizontalAlign="right" verticalAlign="middle" >
+			<mx:Form width="100%" height="100%"  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					 paddingTop="0">
+				<mx:FormItem label="Descripcion: " styleName="tituloBusquedas" width="100%" >
+					<mx:TextInput id="txtDescripcion" maxChars="20" width="100%"/>
+				</mx:FormItem>
+				
+				<mx:FormItem label="Comenarios " styleName="tituloBusquedas" width="100%"  height="90%" >
+							<mx:TextArea id="txtComentarios" width="100%" height="100%"  />
+				</mx:FormItem>
+				
+			</mx:Form>
+		</mx:HBox>
+	</mx:VBox>
+	<mx:VBox paddingBottom="0" paddingLeft="0" paddingRight="0" width="100%" height="10%"
+			 paddingTop="0">
+		<mx:HBox width="100%" horizontalAlign="center">	
+			<mx:Button label="Guardar" width="90" click="guardar()"/>
+			<mx:Button label="Salir" width="90" click="removePopUp()"/>
+		</mx:HBox>
+	</mx:VBox>
+		
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.tarjetafiel.caja.vo.Email;
+			import com.util.components.alert.AlertOk;
+			import com.util.paginacion.PaginacionEvent;
+			import mx.core.Application;
+			
+			import views.categorias.models.AgendaModel;
+			import com.tarjetafiel.caja.vo.Eventos;
+			import com.tarjetafiel.caja.vo.EventosCliente;
+			import mx.utils.StringUtil;
+			
+			
+			
+			
+			import models.ApplicationModel;
+			
+			import managers.ClienteManager;
+			
+			import mx.controls.Alert;
+			
+			import mx.managers.PopUpManager;
+			
+			
+			
+			
+			[Bindable] public  var agendaModel : AgendaModel;
+			
+			
+			
+			
+			public var idCliente:Number;
+			
+			
+		    private function init():void {
+				this.txtDescripcion.setFocus();
+			}
+			
+			public function removePopUp():void{
+				//popUpVisible = false;
+				cleanData();
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function guardar():void {
+				if (StringUtil.trim(txtDescripcion.text) != "" && StringUtil.trim(txtComentarios.text) != "")
+				{
+					var eventosCliente:EventosCliente = new EventosCliente;
+					var evento:Eventos = new Eventos;
+					evento.descripcion = this.txtDescripcion.text ;
+					evento.comentario = this.txtComentarios.text;
+					eventosCliente.idCliente = this.idCliente;
+					eventosCliente.evento = evento;
+					this.agendaModel.guardarNuevoEvento(eventosCliente);
+					removePopUp();
+				} else {
+					if (StringUtil.trim(txtDescripcion.text) == "") {
+						Alert.show("Ingrese informacion en el campo Descripcion");
+						txtDescripcion.setFocus();
+					} else {
+						Alert.show("Ingrese informacion en el campo Comentario");
+						txtComentarios.setFocus();
+						
+					}
+					
+				}
+				
+				 
+				//controlo el campo txtEmail
+				
+			}
+		
+			private function cleanData():void {
+				//creo el objeto mail para guardar
+				this.txtDescripcion.text = "";
+				this.txtComentarios.text = "";
+				/* this.txtDescrip.text = ""; */
+				
+			}
+			
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

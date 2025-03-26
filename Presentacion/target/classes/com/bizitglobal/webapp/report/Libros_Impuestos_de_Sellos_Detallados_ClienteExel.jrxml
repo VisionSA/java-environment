@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Sellos_Clientes"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="555"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 isIgnorePagination="true">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.bizitglobal.webapp.faces.beans.util.*" />
+	<import value="net.sf.jasperreports.engine.design.JasperDesign" />
+
+	<parameter name="Fecha_desde" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="Fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="URLImagen" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[Select fecha, comprobante, cod_cliente, nombre, concepto, sellos, loteHogar, accionSocial, total from (
+
+select trunc(ctacli.c_fecha_facturacion) as fecha , ctacli.c_id_tranascciones as comprobante, cli.c_id_cliente as cod_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres)) nombre, 'Refinanciacion' as concepto, 
+sum(decode(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0)) as sellos, 
+sum(decode(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0)) as loteHogar, 
+sum(decode(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0)) as accionSocial,
+sum(decode(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) as total
+
+from t_vis_tra_ctacte_clientes ctacli
+  INNER JOIN t_vis_tra_clientes cli   ON cli.c_id_cliente = ctacli.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind ON cli.c_id_individuo = ind.c_id_individuo    
+ 
+where  
+trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  
+and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta} 
+and ctacli.c_id_concepto_detalle in (67,68,69)
+and ctacli.c_id_liq_cliente is not null
+AND c_id_tranascciones in (Select DISTINCT(c_id_tranascciones) from t_vis_tra_ctacte_clientes where c_id_concepto_detalle = 73 AND trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta})
+
+group by trunc(ctacli.c_fecha_facturacion) , ctacli.c_id_tranascciones,cli.c_id_cliente , (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres))
+
+union
+
+select  trunc(ctacli.c_fecha_facturacion) as fecha , ctacli.c_id_tranascciones as comprobante, cli.c_id_cliente as cod_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres)) nombre,'Repactacion'  as concepto, 
+sum(decode(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0)) as sellos, 
+sum(decode(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0)) as loteHogar, 
+sum(decode(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0)) as accionSocial,
+sum(decode(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) as total
+
+from t_vis_tra_ctacte_clientes ctacli
+  INNER JOIN t_vis_tra_clientes cli   ON cli.c_id_cliente = ctacli.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind ON cli.c_id_individuo = ind.c_id_individuo  
+ 
+where  trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  
+and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta} 
+AND ctacli.c_id_concepto_detalle IN (67,68,69)
+and ctacli.c_id_liq_cliente is not null
+AND c_id_tranascciones in (Select DISTINCT(c_id_tranascciones) from t_vis_tra_ctacte_clientes where c_id_concepto_detalle =57 AND trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta})
+
+group by trunc(ctacli.c_fecha_facturacion) , ctacli.c_id_tranascciones, cli.c_id_cliente , cli.c_id_cliente,(upper(ind.c_apellido) || ', '|| upper(ind.c_nombres))
+
+union 
+
+select  trunc(ctacli.c_fecha_facturacion) as fecha , ctacli.c_id_tranascciones as comprobante, cli.c_id_cliente as cod_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres)) nombre,  'Consumo'  as concepto,
+sum(decode(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0)) as sellos, 
+sum(decode(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0)) as loteHogar, 
+sum(decode(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0)) as accionSocial,
+sum(decode(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) as total
+
+from t_vis_tra_ctacte_clientes ctacli
+  INNER JOIN t_vis_tra_clientes cli   ON cli.c_id_cliente = ctacli.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind ON cli.c_id_individuo = ind.c_id_individuo
+     
+where  trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  
+and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta} 
+and ctacli.c_id_concepto_detalle in (67,68,69)
+and ctacli.c_id_liq_cliente is not null
+AND c_id_tranascciones in (Select DISTINCT(c_id_tranascciones) from t_vis_tra_ctacte_clientes where c_id_concepto_detalle =1 
+AND trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta})
+
+group by trunc(ctacli.c_fecha_facturacion) , ctacli.c_id_tranascciones, cli.c_id_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres))
+
+union 
+
+select  trunc(ctacli.c_fecha_facturacion) as fecha , ctacli.c_id_tranascciones as comprobante, cli.c_id_cliente as cod_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres)) nombre,  'Adelanto'  as concepto,
+sum(decode(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0)) as sellos, 
+sum(decode(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0)) as loteHogar, 
+sum(decode(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0)) as accionSocial,
+sum(decode(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) as total
+
+from t_vis_tra_ctacte_clientes ctacli
+  INNER JOIN t_vis_tra_clientes cli   ON cli.c_id_cliente = ctacli.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind ON cli.c_id_individuo = ind.c_id_individuo
+     
+where  trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  
+and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta}
+AND ctacli.c_id_concepto_detalle IN (67,68,69)
+AND ctacli.c_id_liq_cliente IS NOT null
+AND c_id_tranascciones in (Select DISTINCT(c_id_tranascciones) from t_vis_tra_ctacte_clientes where c_id_concepto_detalle =22 
+AND trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta})
+
+group by trunc(ctacli.c_fecha_facturacion) , ctacli.c_id_tranascciones, cli.c_id_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres))
+
+union
+       (
+       
+         
+
+select  trunc(ctacli.c_fecha_facturacion) as fecha , ctacli.c_id_tranascciones as comprobante, cli.c_id_cliente as cod_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres)) nombre,'Liquidacion'  as concepto,
+sum(decode(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0)) as sellos, 
+sum(decode(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0)) as loteHogar, 
+sum(decode(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0)) as accionSocial,
+sum(decode(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) as total
+
+from t_vis_tra_ctacte_clientes ctacli
+  INNER JOIN t_vis_tra_clientes cli   ON cli.c_id_cliente = ctacli.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind ON cli.c_id_individuo = ind.c_id_individuo
+ 
+where  trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  
+and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta} 
+AND ctacli.c_id_concepto_detalle IN (67,68,69)
+AND ctacli.c_id_liq_cliente IS NOT null
+
+group by trunc(ctacli.c_fecha_facturacion) , ctacli.c_id_tranascciones, cli.c_id_cliente,(upper(ind.c_apellido) || ', '|| upper(ind.c_nombres))
+
+   minus 
+   
+   (
+   select trunc(ctacli.c_fecha_facturacion) as fecha , ctacli.c_id_tranascciones as comprobante, cli.c_id_cliente as cod_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres)) nombre, 'Liquidacion'  as concepto, 
+   sum(decode(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0)) as sellos, 
+   sum(decode(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0)) as loteHogar, 
+   sum(decode(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0)) as accionSocial,
+   sum(decode(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) as total
+
+from t_vis_tra_ctacte_clientes ctacli
+  INNER JOIN t_vis_tra_clientes cli   ON cli.c_id_cliente = ctacli.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind ON cli.c_id_individuo = ind.c_id_individuo    
+ 
+where  trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  
+and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta} 
+AND ctacli.c_id_concepto_detalle IN (67,68,69)
+AND ctacli.c_id_liq_cliente IS NOT null
+AND c_id_tranascciones in (Select DISTINCT(c_id_tranascciones) from t_vis_tra_ctacte_clientes where c_id_concepto_detalle = 73 AND trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta})
+
+group by trunc(ctacli.c_fecha_facturacion) , ctacli.c_id_tranascciones,cli.c_id_cliente , (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres))
+
+union
+
+select  trunc(ctacli.c_fecha_facturacion) as fecha , ctacli.c_id_tranascciones as comprobante, cli.c_id_cliente as cod_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres)) nombre,'Liquidacion'   as concepto, 
+  sum(decode(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0)) as sellos, 
+  sum(decode(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0)) as loteHogar, 
+  sum(decode(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0)) as accionSocial,
+  sum(decode(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) as total
+
+from t_vis_tra_ctacte_clientes ctacli
+  INNER JOIN t_vis_tra_clientes cli   ON cli.c_id_cliente = ctacli.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind ON cli.c_id_individuo = ind.c_id_individuo  
+ 
+where  trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  
+and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta}
+AND ctacli.c_id_concepto_detalle IN (67,68,69)
+AND ctacli.c_id_liq_cliente IS NOT null
+AND c_id_tranascciones in (Select DISTINCT(c_id_tranascciones) from t_vis_tra_ctacte_clientes where c_id_concepto_detalle =57 AND trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta})
+
+group by trunc(ctacli.c_fecha_facturacion) , ctacli.c_id_tranascciones, cli.c_id_cliente , cli.c_id_cliente,(upper(ind.c_apellido) || ', '|| upper(ind.c_nombres))
+
+union 
+
+select  trunc(ctacli.c_fecha_facturacion) as fecha , ctacli.c_id_tranascciones as comprobante, cli.c_id_cliente as cod_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres)) nombre,  'Liquidacion'   as concepto,
+  sum(decode(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0)) as sellos, 
+  sum(decode(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0)) as loteHogar, 
+  sum(decode(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0)) as accionSocial,
+  sum(decode(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) as total
+
+from t_vis_tra_ctacte_clientes ctacli
+  INNER JOIN t_vis_tra_clientes cli   ON cli.c_id_cliente = ctacli.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind ON cli.c_id_individuo = ind.c_id_individuo
+     
+where  trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  
+and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta} 
+AND ctacli.c_id_concepto_detalle IN (67,68,69)
+AND ctacli.c_id_liq_cliente IS NOT null
+AND c_id_tranascciones in (Select DISTINCT(c_id_tranascciones) from t_vis_tra_ctacte_clientes where c_id_concepto_detalle =1 
+AND trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta})
+
+group by trunc(ctacli.c_fecha_facturacion) , ctacli.c_id_tranascciones, cli.c_id_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres))  
+   
+union 
+
+select  trunc(ctacli.c_fecha_facturacion) as fecha , ctacli.c_id_tranascciones as comprobante, cli.c_id_cliente as cod_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres)) nombre,  'Liquidacion'   as concepto,
+  sum(decode(ctacli.c_id_concepto_detalle, 67, ctacli.c_importe, 0)) as sellos, 
+  sum(decode(ctacli.c_id_concepto_detalle, 68, ctacli.c_importe, 0)) as loteHogar, 
+  sum(decode(ctacli.c_id_concepto_detalle, 69, ctacli.c_importe, 0)) as accionSocial,
+  sum(decode(ctacli.c_id_concepto_detalle, 67,c_importe,68,c_importe,69,c_importe, 0)) as total
+
+from t_vis_tra_ctacte_clientes ctacli
+  INNER JOIN t_vis_tra_clientes cli   ON cli.c_id_cliente = ctacli.c_id_cliente
+  INNER JOIN t_vis_eva_individuos ind ON cli.c_id_individuo = ind.c_id_individuo
+     
+where  trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  
+and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta} 
+AND ctacli.c_id_concepto_detalle IN (67,68,69)
+AND ctacli.c_id_liq_cliente IS NOT null
+AND c_id_tranascciones in (Select DISTINCT(c_id_tranascciones) from t_vis_tra_ctacte_clientes where c_id_concepto_detalle =22 
+AND trunc(ctacli.c_fecha_facturacion) >= $P{Fecha_desde}  and trunc(ctacli.c_fecha_facturacion) <= $P{Fecha_hasta})
+
+group by trunc(ctacli.c_fecha_facturacion) , ctacli.c_id_tranascciones, cli.c_id_cliente, (upper(ind.c_apellido) || ', '|| upper(ind.c_nombres))  
+   
+   
+   )
+      
+  )
+
+)
+where total <> 0
+order by trunc(fecha), 4]]></queryString>
+
+	<field name="FECHA" class="java.lang.String"/>
+	<field name="COMPROBANTE" class="java.math.BigDecimal"/>
+	<field name="COD_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="NOMBRE" class="java.lang.String"/>
+	<field name="CONCEPTO" class="java.lang.String"/>
+	<field name="SELLOS" class="java.math.BigDecimal"/>
+	<field name="LOTEHOGAR" class="java.math.BigDecimal"/>
+	<field name="ACCIONSOCIAL" class="java.math.BigDecimal"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+
+	<variable name="SUM_SELLOS_PARCIAL" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Sum">
+		<variableExpression><![CDATA[$F{SELLOS}]]></variableExpression>
+	</variable>
+	<variable name="SUM_LOTEHOGAR_PARCIAL" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Sum">
+		<variableExpression><![CDATA[$F{LOTEHOGAR}]]></variableExpression>
+	</variable>
+	<variable name="SUM_TOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+	<variable name="SUM_LOTEHOGAR" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{LOTEHOGAR}]]></variableExpression>
+	</variable>
+	<variable name="SUM_SELLOS" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{SELLOS}]]></variableExpression>
+	</variable>
+	<variable name="SUM_TOTAL_PARCIAL" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+	<variable name="SUM_ACCIONSOCIAL_PARCIAL" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Nothing">
+		<variableExpression><![CDATA[$F{ACCIONSOCIAL}]]></variableExpression>
+	</variable>
+	<variable name="SUM_ACCIONSOCIAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{ACCIONSOCIAL}]]></variableExpression>
+	</variable>
+
+		<group  name="fecha" >
+			<groupExpression><![CDATA[$F{FECHA}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="false" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="false" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="12"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="548"
+						y="0"
+						width="47"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="445"
+						y="0"
+						width="53"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Lote]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="372"
+						y="0"
+						width="73"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Sellos]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="48"
+						y="0"
+						width="54"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Comprobante]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="276"
+						y="0"
+						width="96"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Concepto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="48"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Fecha]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="102"
+						y="0"
+						width="60"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Cod.Cliente]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="162"
+						y="0"
+						width="114"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Nombre]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="498"
+						y="0"
+						width="50"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Accion]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="13"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="48"
+						height="13"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{FECHA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="102"
+						y="0"
+						width="60"
+						height="13"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{COD_CLIENTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="162"
+						y="0"
+						width="114"
+						height="13"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="276"
+						y="0"
+						width="96"
+						height="13"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="372"
+						y="0"
+						width="73"
+						height="13"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SELLOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="445"
+						y="0"
+						width="53"
+						height="13"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{LOTEHOGAR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="498"
+						y="0"
+						width="50"
+						height="13"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{ACCIONSOCIAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="548"
+						y="0"
+						width="47"
+						height="13"
+						key="textField-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{TOTAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="48"
+						y="0"
+						width="54"
+						height="13"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{COMPROBANTE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

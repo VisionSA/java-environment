@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.planificadoremail.negocio.HistoricoPlan" table="T_VIS_PLA_HISTORICO_PLANES" >
+	
+	<cache usage="read-write"/>
+	<id name="idHistorico" type="java.lang.Long" column="C_ID_HISTPLAN">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_HISTPLAN_ID</param>
+		</generator>
+	</id>
+	
+	<property name="fecEjecucion" type="java.util.Date" column="C_FEC_EJECUCION" not-null="true" />
+	<property name="claveUnica" type="java.lang.String" column="C_CLAVEUNICA" length="100"/>
+	<property name="queryEjecucion" type="java.lang.String" column="C_QUERY_EJEC " length="255"/>
+	<property name="archivoTemp" type="java.lang.String" column="C_ARCHIVOTEMP" not-null="true"  length="255" />
+    
+  	<many-to-one name="planProcesoEmail" class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.PlanProcesoEmail" not-null="true" >
+		<column name="C_ID_PLAN" />
+	</many-to-one>
+	
+    
+</class>
+</hibernate-mapping>

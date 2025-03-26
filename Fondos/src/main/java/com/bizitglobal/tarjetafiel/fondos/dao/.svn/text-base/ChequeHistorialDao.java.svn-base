@@ -1,0 +1,32 @@
+package com.bizitglobal.tarjetafiel.fondos.dao;
+import java.util.Date;
+import java.util.List;
+
+import com.bizitglobal.tarjetafiel.commons.filtros.Filtro;
+import com.bizitglobal.tarjetafiel.contabilidad.negocio.PlanCuentaDos;
+import com.bizitglobal.tarjetafiel.fondos.negocio.Cheque;
+import com.bizitglobal.tarjetafiel.fondos.negocio.ChequeEstado;
+import com.bizitglobal.tarjetafiel.fondos.negocio.ChequeHistorial;
+import com.bizitglobal.tarjetafiel.fondos.negocio.MovimientoMP;
+
+public interface ChequeHistorialDao {
+	public void grabarChequeHistorial (ChequeHistorial pObject);
+	public ChequeHistorial buscarChequeHistorial (Long id);
+	public void borrarChequeHistorial (Long id);
+	public void borrarChequeHistorial (ChequeHistorial pObject);
+	public void actualizarChequeHistorial (ChequeHistorial pObject);
+	public List listarTodos(Filtro filtro);
+	public List buscarChequeHistorial (final MovimientoMP movimientoMP);
+	public List buscarChequesParaValidarEstados();
+	public PlanCuentaDos buscarPlanCuenta(final ChequeHistorial chequeHistorial);
+	public ChequeHistorial buscarUltimoHistorial (final Cheque cheque);
+	public ChequeEstado getChequeEstadoByIdCheque(Long idCheque);
+//	public List buscarParaPasarCorriente();
+	public List buscarParaPasarCorriente(Date fecha);
+	public List buscarParaPasarVencido();
+	public List buscarParaPasarBaja();
+	public List listarTodosFlex(Filtro filtro);
+	public List listarTodosConciliar(Filtro filtro);
+/*@I3918*/	public List listarTodosConciliar(final Long idPlanCuenta);
+/*@F3918*/}
+

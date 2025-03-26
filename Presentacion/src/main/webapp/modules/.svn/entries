@@ -1,0 +1,80 @@
+9
+
+dir
+800
+https://testingpc/svn/testing/Presentacion/src/main/webapp/modules
+https://testingpc/svn/testing
+
+
+
+2020-05-27T21:53:41.635600Z
+736
+gaston
+has-props
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+principal
+dir
+
+imprimirLiquidaciones
+dir
+
+notaCreditoDebitos
+dir
+
+pagofacil
+dir
+
+MainModule.swf
+file
+
+
+
+
+2018-07-20T14:42:21.928869Z
+f10db8f4dfd2272091ad9016e01c78fa
+2017-12-07T12:02:26.781992Z
+144
+esteban
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+683367
+
+admin
+dir
+
+revertirPago
+dir
+

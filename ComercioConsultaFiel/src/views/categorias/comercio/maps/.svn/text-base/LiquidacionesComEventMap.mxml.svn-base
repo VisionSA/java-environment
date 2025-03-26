@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import views.categorias.comercio.models.ListaComercioModel;
+			import managers.ClienteManager;
+			import events.LiquidacionComEvent;
+			import managers.LiquidacionComManager;
+			import views.categorias.comercio.models.LiquidacionComModel;
+			import views.categorias.comercio.modules.LiquidacionesComercioModule;
+		]]>
+	</mx:Script>
+	
+	<Injectors target="{LiquidacionesComercioModule}">
+		<ObjectBuilder generator="{LiquidacionComModel}">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>		
+		<PropertyInjector source="{lastReturn}" targetKey="liquidacionComModel"/>
+	</Injectors>
+	
+	<EventHandlers type="{LiquidacionComEvent.BUSCAR_LIQUIDACIONES}">
+		<RemoteObjectInvoker instance="{liqComercio}" method="getLiqComercioLPFlex" arguments="{event.filtro}">
+			<resultHandlers>
+				<MethodInvoker generator="{LiquidacionComManager}" method="resultLiquidacionesList" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker method="fault" generator="{LiquidacionComManager}" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<mx:RemoteObject destination="GenericSessionDestination" source="liqComercioLPServiceTarget" id="liqComercio"/>
+	
+</EventMap>
+

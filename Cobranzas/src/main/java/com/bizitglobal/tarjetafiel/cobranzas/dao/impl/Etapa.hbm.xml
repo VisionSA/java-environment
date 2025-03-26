@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.bizitglobal.tarjetafiel.cobranzas.negocio">
+  <class name="Etapa" table="t_vis_cob_etapas">
+  	<id name="idEtapa" type="integer" column="c_id_etapa">
+  		<generator class="increment"/>
+  	</id>
+    <property name="descripcion" column="c_descripcion" type="string" length="50"/>
+  	<property name="habilitado" column="c_habilitado" type="string" length="1"/>
+	<property name="orden" column="c_orden" type="integer" />
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.Promotor" table="t_vis_eva_promotores">
+	<id name="idPromotor" type="java.lang.Long" column="c_id_promotor">
+		<generator class="increment" />
+	</id>
+
+	<property name="apellido" type="java.lang.String" column="c_apellido" not-null="false" length="50"/>
+
+	<many-to-one name="domicilio" class="com.bizitglobal.tarjetafiel.general.negocio.Domicilio" not-null="false" cascade="all">
+		<column name="c_id_domicilio" />
+	</many-to-one>
+
+	<many-to-one name="email" class="com.bizitglobal.tarjetafiel.general.negocio.Email" not-null="false" cascade="all">
+		<column name="c_id_email" />
+	</many-to-one>
+
+	<property name="nombre" type="java.lang.String" column="c_nombre" not-null="false" length="50"/>
+	
+	<property name="estado" type="java.lang.String" column="c_estado" not-null="false" length="1"/>
+	
+	<property name="fechaBaja" type="java.sql.Timestamp" column="c_fecha_baja" not-null="false" length="3594"/>
+
+	<set name="promoTelefonos" inverse="false" cascade="all"  >
+		<key>
+			<column name="c_id_promotor" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.PromotorTelefono"/>
+	</set>
+
+</class>
+</hibernate-mapping>

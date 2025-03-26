@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.contabilidad.negocio.Origen" table="t_vis_cont_origen" >
+	<id name="idOrigen" type="java.lang.Long" column="c_id_origen">
+		<generator class="increment" />
+	</id>
+
+	<property name="descripcion" type="java.lang.String" column="c_descripcion" not-null="true" length="40"/>
+
+</class>
+</hibernate-mapping>

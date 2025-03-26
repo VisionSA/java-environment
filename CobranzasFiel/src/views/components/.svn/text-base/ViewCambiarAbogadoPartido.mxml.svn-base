@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" 
+	title="{'Cambiar Cobrador Partido '+modelo.partidoSeleccionado.descripcion}"
+	creationComplete="init()">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Abogado;
+			import events.GenericAbogadosEvent;
+			import com.tarjetafiel.caja.vo.Partido;
+			import com.tarjetafiel.caja.vo.Cobrador;
+			import events.GenericAsignacionCobradoresEvent;
+			import com.util.components.alert.AlertError;
+			import mx.managers.PopUpManager;
+			import events.GenericTareasPendientesEvent;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import model.CobranzasModelLocator;
+		
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+		
+		
+			private function init() : void {
+				modelo.esAbogadoValido = false;
+				if (modelo.listaAbogadosCambio == null){
+					new GenericAbogadosEvent(GenericAbogadosEvent.BUSCAR_ABOGADOS_PARA_CAMBIO_EVENT,null).dispatch();	
+				}	
+			}
+		
+			private function cambiarAbogado():void {
+				if (chkFuturasAsig.selected || chkTareasPend.selected){
+					Alert.yesLabel = "SI";
+ 					Alert.noLabel = "NO";
+ 					Alert.show("Esta Seguro?","Cambiar Abogado",Alert.YES | Alert.NO,this,confirmarCambioAbogado,null,Alert.NO);	
+				}else {
+					AlertError.show("Debe seleccionar al menos una de las opciones");
+				}
+			}
+			
+			private function datosAbogados(obj : Object) : String {
+				var ab : Abogado = Abogado(obj);
+				
+				if (ab.idColaborador == -1){
+					return ab.apellido;	
+				}else {
+					return ab.apellido + ", " + ab.nombres;	
+				}
+				
+			}
+			
+			
+			private function seleccionarAbogado():void {
+				
+				var obj : Object = new Object();
+				obj.abogCombo = modelo.listaAbogadosCambio.getItemAt(cboAbogados.selectedIndex);
+				obj.abogSelected = modelo.partidoSeleccionado.abogado;
+				new GenericAbogadosEvent(GenericAbogadosEvent.SELECCIONAR_ABOGADO_CAMBIO_EVENT,obj).dispatch();
+			}
+						
+			private function confirmarCambioAbogado(eventObj:CloseEvent):void {
+				
+				if (eventObj.detail==Alert.YES) {
+					if (chkFuturasAsig.selected){
+						new GenericAbogadosEvent(GenericAbogadosEvent.CAMBIAR_ABOGADO_A_FUTURO_EVENT,modelo.abogadoSeleccionadoACambiar).dispatch();
+					}
+					if (chkTareasPend.selected){
+						var obj : Object = new Object();
+						obj.idAbogIN = modelo.abogadoSeleccionadoACambiar.idColaborador; 
+						obj.idAbogOUT = (modelo.partidoSeleccionado as Partido).idAbogado;
+						new GenericAbogadosEvent(GenericAbogadosEvent.CAMBIAR_ABOGADOS_ASIGNADOS_EVENT,obj).dispatch();
+					}
+					salir();	
+				}
+				
+			}
+			
+			private function salir() : void {
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Form width="100%">
+		<mx:FormItem label="Apellido:">
+			<mx:TextInput editable="false" text="{modelo.partidoSeleccionado.abogado.apellido}" width="230"/>
+		</mx:FormItem>
+		<mx:FormItem label="Nombre:" >
+			<mx:TextInput editable="false" text="{modelo.partidoSeleccionado.abogado.nombres}" width="230"/>
+		</mx:FormItem>
+		<mx:FormItem label="Cambiar por:" >
+			<mx:ComboBox id="cboAbogados" dataProvider="{modelo.listaAbogadosCambio}" labelFunction="datosAbogados" width="230" change="seleccionarAbogado()"/>
+		</mx:FormItem>
+		<mx:FormItem label="Futuras Asignaciones">
+			<mx:CheckBox id="chkFuturasAsig" />
+		</mx:FormItem>
+		<mx:FormItem label="Ya Asignadas">
+			<mx:HBox>
+				<mx:CheckBox id="chkTareasPend" />
+				<mx:Label text="(Abogados en tareas pendientes)" />	
+			</mx:HBox>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button label="Cambiar" enabled="{modelo.esAbogadoValido}" click="cambiarAbogado()" width="80"/>
+		<mx:Button label="Salir" click="salir()" width="80"/>
+	</mx:ControlBar>
+	
+	
+</mx:TitleWindow>

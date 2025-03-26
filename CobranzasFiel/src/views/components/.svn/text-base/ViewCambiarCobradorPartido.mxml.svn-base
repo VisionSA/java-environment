@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" 
+	title="{'Cambiar Cobrador Partido '+modelo.partidoSeleccionado.descripcion}"
+	creationComplete="init()">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Partido;
+			import com.tarjetafiel.caja.vo.Cobrador;
+			import events.GenericAsignacionCobradoresEvent;
+			import com.util.components.alert.AlertError;
+			import mx.managers.PopUpManager;
+			import events.GenericTareasPendientesEvent;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import model.CobranzasModelLocator;
+		
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+		
+		
+			private function init() : void {
+				modelo.esCobradorValido = false;
+				if (modelo.listaCobradoresCambio == null){
+					new GenericTareasPendientesEvent(GenericTareasPendientesEvent.BUSCAR_COBRADORES_PARA_CAMBIO_EVENT,null).dispatch();	
+				}	
+			}
+		
+			private function cambiarCobrador():void {
+				if (chkFuturasAsig.selected || chkTareasPend.selected){
+					Alert.yesLabel = "SI";
+ 					Alert.noLabel = "NO";
+ 					Alert.show("Esta Seguro?","Cambiar Cobrador",Alert.YES | Alert.NO,this,confirmarCambioCobrador,null,Alert.NO);	
+				}else {
+					AlertError.show("Debe seleccionar al menos una de las opciones");
+				}
+			}
+			
+			private function datosCobradores(obj : Object) : String {
+				if (obj.idCobrador == -1){
+					return obj.apellido;	
+				}else {
+					return obj.apellido + ", " + obj.nombre;	
+				}
+				
+			}
+			
+			
+			private function seleccionarCobrador():void {
+				
+				var obj : Object = new Object();
+				obj.cobCombo = modelo.listaCobradoresCambio.getItemAt(cboCobradores.selectedIndex);
+				obj.cobSelected = modelo.partidoSeleccionado.cobrador;
+				
+				new GenericTareasPendientesEvent(GenericTareasPendientesEvent.SELECCIONAR_COBRADOR_EVENT,obj).dispatch();
+			}
+						
+			private function confirmarCambioCobrador(eventObj:CloseEvent):void {
+				
+				if (eventObj.detail==Alert.YES) {
+					if (chkFuturasAsig.selected){
+						new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.CAMBIAR_COBRADOR_A_FUTURO_EVENT,modelo.listaCobradoresCambio.getItemAt(cboCobradores.selectedIndex)).dispatch();
+					}
+					if (chkTareasPend.selected){
+						var obj : Object = new Object();
+						obj.idCobIN = (modelo.listaCobradoresCambio.getItemAt(cboCobradores.selectedIndex) as Cobrador).idCobrador; 
+						obj.idCobOUT = (modelo.partidoSeleccionado as Partido).idCobrador;
+						new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.CAMBIAR_COBRADORES_ASIGNADOS_EVENT,obj).dispatch();
+					}
+					salir();	
+				}
+				
+			}
+			
+			private function salir() : void {
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Form width="100%">
+		<mx:FormItem label="Apellido:">
+			<mx:TextInput editable="false" text="{modelo.partidoSeleccionado.cobrador.apellido}" width="230"/>
+		</mx:FormItem>
+		<mx:FormItem label="Nombre:" >
+			<mx:TextInput editable="false" text="{modelo.partidoSeleccionado.cobrador.nombre}" width="230"/>
+		</mx:FormItem>
+		<mx:FormItem label="Cambiar por:" >
+			<mx:ComboBox id="cboCobradores" dataProvider="{modelo.listaCobradoresCambio}" labelFunction="datosCobradores" width="230" change="seleccionarCobrador()"/>
+		</mx:FormItem>
+		<mx:FormItem label="Futuras Asignaciones">
+			<mx:CheckBox id="chkFuturasAsig" />
+		</mx:FormItem>
+		<mx:FormItem label="Ya Asignadas">
+			<mx:HBox>
+				<mx:CheckBox id="chkTareasPend" />
+				<mx:Label text="(Cobradores en tareas pendientes)" />	
+			</mx:HBox>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button label="Cambiar" enabled="{modelo.esCobradorValido}" click="cambiarCobrador()" width="80"/>
+		<mx:Button label="Salir" click="salir()" width="80"/>
+	</mx:ControlBar>
+	
+	
+</mx:TitleWindow>

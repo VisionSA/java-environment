@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/testing/!svn/ver/607/Presentacion/src/main/webapp/tarjetafiel/contabilidad/reportes
+END
+balance.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/testing/!svn/ver/607/Presentacion/src/main/webapp/tarjetafiel/contabilidad/reportes/balance.jsp
+END
+contabilidadSumasYSaldos.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/testing/!svn/ver/607/Presentacion/src/main/webapp/tarjetafiel/contabilidad/reportes/contabilidadSumasYSaldos.jsp
+END
+contabilidadLibroMayorMensualizado.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/testing/!svn/ver/607/Presentacion/src/main/webapp/tarjetafiel/contabilidad/reportes/contabilidadLibroMayorMensualizado.jsp
+END
+contabilidadLibroDiario.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/testing/!svn/ver/607/Presentacion/src/main/webapp/tarjetafiel/contabilidad/reportes/contabilidadLibroDiario.jsp
+END
+contabilidadLibroMayor.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/testing/!svn/ver/607/Presentacion/src/main/webapp/tarjetafiel/contabilidad/reportes/contabilidadLibroMayor.jsp
+END

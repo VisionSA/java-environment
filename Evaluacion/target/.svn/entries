@@ -1,0 +1,71 @@
+9
+
+dir
+132
+https://testingpc/svn/testing/trunk/Evaluacion/target
+https://testingpc/svn/testing
+
+
+
+2017-09-14T13:40:17.872312Z
+40
+gaston
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+maven-archiver
+dir
+
+test-classes
+dir
+
+Evaluacion-1.0-SNAPSHOT.jar
+file
+
+
+
+
+2017-12-01T12:30:55.143084Z
+4e7f0cd67a509a89ad92a10f56a04199
+2017-09-14T13:40:17.872312Z
+40
+gaston
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1277404
+
+classes
+dir
+

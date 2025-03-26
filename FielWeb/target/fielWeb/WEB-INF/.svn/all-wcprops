@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/fielWeb/WEB-INF
+END
+urlrewrite3.0.dtd
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/fielWeb/WEB-INF/urlrewrite3.0.dtd
+END
+urlrewrite.xml
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/fielWeb/WEB-INF/urlrewrite.xml
+END
+web.xml
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/fielWeb/WEB-INF/web.xml
+END

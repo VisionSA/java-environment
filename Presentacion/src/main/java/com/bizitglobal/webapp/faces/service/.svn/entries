@@ -1,0 +1,132 @@
+9
+
+dir
+800
+https://testingpc/svn/testing/Presentacion/src/main/java/com/bizitglobal/webapp/faces/service
+https://testingpc/svn/testing
+
+
+
+2019-04-25T17:44:44.544000Z
+695
+gaston
+has-props
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+ProveedoresServiceFaces.java
+file
+
+
+
+
+2018-07-20T14:42:11.137078Z
+5b7eb46868afbb7b0616546b875426cc
+2017-12-07T12:02:26.781992Z
+144
+esteban
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1079
+
+cobranzas
+dir
+
+evaluacion
+dir
+
+fondos
+dir
+
+impuestos
+dir
+
+parametro
+dir
+
+workflow
+dir
+
+operador
+dir
+
+BaseService.java
+file
+
+
+
+
+2018-07-20T14:42:11.133081Z
+6036724540c8a74d0b45a848c3379609
+2017-12-07T12:02:26.781992Z
+144
+esteban
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+660
+
+transacciones
+dir
+
+general
+dir
+
+contabilidad
+dir
+
+proveedores
+dir
+
+util
+dir
+

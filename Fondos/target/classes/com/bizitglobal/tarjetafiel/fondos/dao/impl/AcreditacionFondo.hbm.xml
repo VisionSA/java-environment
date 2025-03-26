@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.AcreditacionFondo" table="T_VIS_FON_ACREDITACIONES" >
+	
+	<id name="idAcreditacion" type="java.lang.Long" column="C_ID_ACREDITACION">
+		<generator class="increment" />
+	</id>
+	
+	<property name="tipoRegistroInicial" type="java.lang.String" column="C_TIPO_REGISTRO_I" not-null="false" length="1"/>
+	<property name="nroCliente" type="java.lang.String" column="C_NRO_CLIENTE" not-null="false" length="7"/>
+	<property name="fechaProceso" type="java.util.Date" column="C_FECHA_PROCESO" not-null="false" />
+	<property name="nombreArchivo" type="java.lang.String" column="C_NOMBRE_ARCHIVO" not-null="false" length="6"/>
+	
+	<property name="tipoRegistroFinal" type="java.lang.String" column="C_TIPO_REGISTRO_F" not-null="false" length="1"/>
+	<property name="blancosFinal" type="java.lang.String" column="C_BLANCOS_F" not-null="false" length="3"/>
+	<property name="totalTranferenciasFinal" type="java.lang.Long" column="C_TOTAL_TRASFERENCIAS_F" not-null="false"/>
+	
+	<property name="conciliado" type="java.lang.String" column="C_CONCILIADO" not-null="false" length="1"/>
+	
+	<set name="acreditacionesFondoDetalle" inverse="true" cascade="all">
+		<key>
+			<column name="C_ID_ACREDITACION" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.AcreditacionFondoDetalle"/>
+	</set>
+    
+    <property name="registroOriginal" type="java.lang.String" column="C_REGISTRO_ORIGINAL" not-null="false" length="500"/>
+    <property name="registroOriginalFinal" type="java.lang.String" column="C_REGISTRO_ORIGINAL_F" not-null="false" length="500"/>
+    
+    <property name="fechaProcesoCadena" type="java.lang.String" column="C_FECHA_CADENA" not-null="false" length="8"/>
+    <property name="idBanco" type="java.lang.Long" column="C_ID_BANCO" not-null="false"/>
+    
+</class>
+</hibernate-mapping>

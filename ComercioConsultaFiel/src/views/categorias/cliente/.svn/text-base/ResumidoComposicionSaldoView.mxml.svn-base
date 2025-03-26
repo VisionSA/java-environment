@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox   xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"    horizontalAlign="center" verticalAlign="top">
+       	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat"  doubleClickEnabled="true" width="100%" height="100%"   doubleClick="this.cambiarVistaDetalle()"  dataProvider="{composicionSaldoClienteModel.arrayComposicionSaldo}">
+					<mx:columns>
+					     <!--<mx:AdvancedDataGridColumn  headerText="N°" dataField="numeroFila" />-->
+					     <mx:AdvancedDataGridColumn headerText="Fecha Facturacion" dataField="fechaFacturacion" formatter="{dateFormatter}">			                
+			            </mx:AdvancedDataGridColumn>
+			             <mx:AdvancedDataGridColumn headerText="Fecha Mov."  >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.dateFormatter.format(data.fechaReal)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            <mx:AdvancedDataGridColumn headerText="Comprobante" dataField="idTransaccion"/>
+			           <!-- <mx:AdvancedDataGridColumn headerText="Fecha Contable." >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.dateFormatter.format(data.fechaContable)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>-->
+			            <mx:AdvancedDataGridColumn headerText="Descripcion" dataField="descripcionConcepto"/>			             
+						<mx:AdvancedDataGridColumn headerText="Cuota" dataField="cuota"/>							                
+						<!--mx:AdvancedDataGridColumn headerText="Nombre" dataField="clienteMovimiento"/-->
+				        <!--mx:AdvancedDataGridColumn headerText="Categoría">
+							                <mx:itemRenderer>
+									            <mx:Component>
+										           <mx:Label text="{outerDocument.getCategoria(data)}"/>
+									            </mx:Component>
+								            </mx:itemRenderer>
+						</mx:AdvancedDataGridColumn-->
+				        <mx:AdvancedDataGridColumn headerText="Estado" dataField="estadoImpacto" styleFunction="styleFunctionEstado"/>
+				        <mx:AdvancedDataGridColumn headerText="Importe" dataField="importeCuota" formatter="{currencyFormatter}"/>				             
+			            <mx:AdvancedDataGridColumn headerText="Saldo" dataField="saldoAcumulado" formatter="{currencyFormatter}"/>			                 
+			        </mx:columns>
+		</mx:AdvancedDataGrid>
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY" />
+	<mx:CurrencyFormatter  id="currencyFormatter" currencySymbol="$" 
+		 useThousandsSeparator="false" useNegativeSign="true" rounding="nearest" precision="2" alignSymbol="left"/>  
+        
+    
+  
+<mx:Script>
+	<![CDATA[
+		import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+		import com.util.Fecha;
+		import views.categorias.cliente.models.ComposicionSaldoClienteModel;
+		import mx.effects.easing.Back;
+		import com.tarjetafiel.caja.vo.MovimientoCtaCte;
+		import mx.controls.Alert;
+		import views.categorias.cliente.models.CtaCteClienteModel;
+		     [Bindable]private var  _composicionSaldoClienteModel:ComposicionSaldoClienteModel;  
+		     public var primero: Boolean=true; 
+		     public var acumulado:  Number=0;
+		     
+		     [Bindable (event="changedcomposicionSaldoClienteModel")]
+		     public function get composicionSaldoClienteModel():ComposicionSaldoClienteModel{
+		     	return _composicionSaldoClienteModel;
+		     }
+		     
+		     public function set composicionSaldoClienteModel(target:ComposicionSaldoClienteModel):void{
+		     	_composicionSaldoClienteModel = target;
+		     	dispatchEvent(new Event("changedcomposicionSaldoClienteModel"));
+		     }
+		     
+		     public function formatFechaString(fecha:String):String{
+		     	var date:Date = new Date();
+		     	date.setTime(Date.parse(fecha));
+		     	var dateFormatter:DateFormatter = new DateFormatter();
+		     	//el formato que necesites
+		     	dateFormatter.formatString = "DD/MM/YYYY";
+		     	return dateFormatter.format(date);
+		     }
+		     
+		   /*  public function getSaldo(valor:Number):Number
+		     {  if(!primero){
+		     	   acumulado+= valor;
+		        } else{
+		          acumulado = ctaCteClienteModel.saldo+ valor;
+		     	  primero= false;
+		        }
+		          
+		      return acumulado;     	
+		     }*/
+		     
+		     public function styleFunctionEstado(data:Object, col:AdvancedDataGridColumn):Object{
+		     	if(data.estadoImpacto == "Conciliado"){
+		     		return {fontWeight : "bold",color : "#16BB00"};	
+		     	} else {
+		     		return {fontWeight : "bold",color : "#FF0000"};
+		     	}
+		     	
+		     }
+		     
+		     public  function cambiarVistaDetalle():void{
+		     	
+		     	if(adg1.selectedItem){
+		     		var movim : MovimientoCtaCte = MovimientoCtaCte(adg1.selectedItem);
+		     		composicionSaldoClienteModel.movimientoComposicionSeleccionado=movim;
+		     		composicionSaldoClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaDetalleCompSaldo"));
+		     	}
+		     	//ctaCteClienteModel.movimientoCtaCteSeleccionado = movim; 
+		     	//ctaCteClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaDetalle"));	
+		     }
+		     	
+		/* public function myStyleFunction(data:Object, column:AdvancedDataGridColumn):Object{ 
+           var nroFila:int = data.numeroFila; 
+           trace("Region: " + nroFila); 
+           if (nroFila == 2) 
+              return {background: true,  fontWeight:"bold", backgroundColor: 0x000044} 
+           else 
+              return {background: true, backgroundColor: 0xFF0000} 
+        } */
+           public function getConcepto(data:Object):String{
+				var comp:MovimientoCtaCte = data as MovimientoCtaCte;
+				return comp.codigoConcepto + "- "+comp.descripcionConcepto;
+			}		  
+			
+			public function getCategoria(data:Object):String{
+				var comp:MovimientoCtaCte = data as MovimientoCtaCte;
+			  return (comp.esTitular == true)? "Titular":"Adicional";
+			}      
+			
+			 public function getDebe(data:Object):String{
+				var ctacte:MovimientoCtaCte = data as MovimientoCtaCte;
+			  return (isNaN(ctacte.debe))? "":ctacte.debe.toString();
+		    }
+		    public function getHaber(data:Object):String{
+				var ctacte:MovimientoCtaCte = data as MovimientoCtaCte;
+			  return (isNaN(ctacte.haber))? "":ctacte.haber.toString();
+		     }        
+			
+			
+			
+	]]>
+</mx:Script>
+
+	
+</mx:VBox>

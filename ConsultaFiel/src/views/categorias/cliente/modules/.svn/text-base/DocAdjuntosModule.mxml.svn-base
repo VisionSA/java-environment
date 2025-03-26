@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" 
+				  layout="absolute" 
+				  width="100%" height="100%"
+				  xmlns:mate="http://mate.asfusion.com/"
+				  xmlns:html="*"
+				  xmlns:maps="views.categorias.cliente.maps.*" 
+				  initialize="init();" 
+				  >
+	
+	<mx:HBox width="100%" height="100%">
+		<mx:VBox width="40%" height="100%">
+			<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" width="100%" height="100%" sortableColumns="false"
+								 dataProvider="{modelo.listaDigitales}" sortItemRenderer="{null}" itemClick="itemClickEvent(event);" 
+								 keyDown="pressKey(event)" >
+				<mx:columns>
+					
+					<mx:AdvancedDataGridColumn  headerText="Fecha" width="15" textAlign="left">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label styleName="lblInfo" text="{outerDocument.dateFormatter.format(data.fecha)}" textAlign="left"/>
+							</mx:Component>
+						</mx:itemRenderer>	
+					</mx:AdvancedDataGridColumn>
+					
+					<mx:AdvancedDataGridColumn  headerText="Archivo" width="55" textAlign="left">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label styleName="lblInfo" text="{data.url}" textAlign="left"/>
+							</mx:Component>
+						</mx:itemRenderer>	
+					</mx:AdvancedDataGridColumn>
+
+					<mx:AdvancedDataGridColumn  headerText="Tipo" width="30" textAlign="left">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label styleName="lblInfo" text="{data.tipo}" textAlign="left"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					
+				</mx:columns>
+			</mx:AdvancedDataGrid>
+		</mx:VBox>
+			
+		<mx:VBox width="100%" height="100%">
+		<!--<mx:HBox width="100%">
+				<mx:TextInput id="iframeURL" text="{modelo.urlDocAdj}" width="100%" editable="false" />
+			</mx:HBox> -->
+			<html:IFrame id="iframe"
+					width="100%"
+					height="100%" 
+					source="{modelo.urlDocAdj}" 
+					/>
+		</mx:VBox>
+			
+	</mx:HBox>
+
+	
+	
+	<maps:DocAdjuntosMap/>
+	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YY"/>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.DocAdj;
+			import com.tarjetafiel.caja.vo.IndividuoEvaluacion;
+			import com.tarjetafiel.caja.vo.Telefono;
+			import com.tarjetafiel.proveedorconexion.event.ClientesGeneralEvent;
+			import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+			import com.util.components.alert.AlertOk;
+			import com.util.components.alert.AlertYesNo;
+			
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			
+			import views.categorias.cliente.models.DocAdjuntosModel;
+			import views.categorias.cliente.models.EncabezadoClienteModel;
+			
+			[Bindable] private var modelo : ModelLocatorGeneral = ModelLocatorGeneral.getInstance();
+			
+			[Bindable] public var encabezadoClienteModel:EncabezadoClienteModel;
+
+			private function init():void{
+				iframe.visible = true;
+				iframe.source = modelo.urlDocAdj;
+			}
+
+			private function itemClickEvent(event:ListEvent):void {
+				modelo.setUrlDocAdj(event.rowIndex);
+			}
+			
+			private function pressKey(event:KeyboardEvent):void{
+				var curKeyCode:int = event.keyCode;
+				if (curKeyCode == 13) {
+					modelo.setUrlDocAdj(adg1.selectedIndex);
+				}
+			}
+
+		]]>
+	</mx:Script>
+	
+</mx:Module>

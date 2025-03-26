@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" version="3">
+  <includeClasses>
+    <classEntry path="skin.BotonBorrarSkin"/>
+    <classEntry path="components.BotonImagen"/>
+  </includeClasses>
+  <includeResources>
+    <resourceEntry destPath="assets/images/icons/Exclamation_32x32.png" sourcePath="assets/images/icons/Exclamation_32x32.png"/>
+    <resourceEntry destPath="assets/images/icons/Email_32x32.png" sourcePath="assets/images/icons/Email_32x32.png"/>
+    <resourceEntry destPath="assets/images/icons/Info_32x32.png" sourcePath="assets/images/icons/Info_32x32.png"/>
+    <resourceEntry destPath="assets/images/icons/Question_32x32.png" sourcePath="assets/images/icons/Question_32x32.png"/>
+  </includeResources>
+  <namespaceManifests/>
+</flexLibProperties>

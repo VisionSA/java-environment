@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   mouseOut="vgroup1_mouseOverHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import utils.ManejadorPantallas;
+			protected function vgroup1_mouseOverHandler(event:MouseEvent):void
+			{
+				ManejadorPantallas.cerrarPop(this);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	
+	<mx:Form>
+		<mx:FormItem label="Banco:">
+			<s:Label text="Santander RIO"  fontWeight="bold"/>
+		</mx:FormItem>
+		<mx:FormItem label="Numero:">
+			<s:Label text="245465446"  fontWeight="bold"/>
+		</mx:FormItem>
+		<mx:FormItem label="Monto:">
+			<s:Label text="$ 350"  fontWeight="bold"/>
+		</mx:FormItem>
+		
+	</mx:Form>
+</s:BorderContainer>

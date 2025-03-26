@@ -1,0 +1,179 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente
+END
+ComposicionSaldoClienteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/ComposicionSaldoClienteView.mxml
+END
+ResumidoCtaCteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/ResumidoCtaCteView.mxml
+END
+VTabNavigator.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/VTabNavigator.mxml
+END
+OtrosFiltrosClienteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/OtrosFiltrosClienteView.mxml
+END
+ResumidoComposicionSaldoView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/ResumidoComposicionSaldoView.mxml
+END
+AgendaView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/AgendaView.mxml
+END
+AbogadosView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/AbogadosView.mxml
+END
+GeneralClienteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/GeneralClienteView.mxml
+END
+AgendaClienteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/AgendaClienteView.mxml
+END
+TramitesWorkflowView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/TramitesWorkflowView.mxml
+END
+ClientesEncontradosViewModel.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/ClientesEncontradosViewModel.mxml
+END
+SimuladoresView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/SimuladoresView.mxml
+END
+DetalleLiquidacionCteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/DetalleLiquidacionCteView.mxml
+END
+TramitesView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/TramitesView.mxml
+END
+RelacionIndividuosView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/RelacionIndividuosView.mxml
+END
+FuturosVencimientosView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/FuturosVencimientosView.mxml
+END
+ResumidoTramitesWorkflowView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/ResumidoTramitesWorkflowView.mxml
+END
+DetalleCtaCteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/DetalleCtaCteView.mxml
+END
+EncabezadoClienteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/EncabezadoClienteView.mxml
+END
+DetalleTramiteTareasView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/DetalleTramiteTareasView.mxml
+END
+DetalleComposicionSaldoView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/DetalleComposicionSaldoView.mxml
+END
+ComposicionDetalleCtaCteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/ComposicionDetalleCtaCteView.mxml
+END
+PlasticosView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/PlasticosView.mxml
+END
+LineaCreditoView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/LineaCreditoView.mxml
+END
+HistoricoView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/HistoricoView.mxml
+END
+AnalisisCuentaView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/AnalisisCuentaView.mxml
+END
+ResumidoLiquidacionCteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/ResumidoLiquidacionCteView.mxml
+END
+ResumenCtaView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/ResumenCtaView.mxml
+END
+CtaCteClienteView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/cliente/CtaCteClienteView.mxml
+END

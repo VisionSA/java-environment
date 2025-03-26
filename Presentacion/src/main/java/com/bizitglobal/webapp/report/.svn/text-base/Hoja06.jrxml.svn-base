@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Hoja06"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="561"
+		 pageHeight="841"
+		 columnWidth="561"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="URLImagen" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[select * from t_vis_tra_clientes WHERE c_id_cliente = 1]]></queryString>
+
+	<field name="C_ID_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_SUCURSAL" class="java.math.BigDecimal"/>
+	<field name="C_ID_INDIVIDUO" class="java.math.BigDecimal"/>
+	<field name="C_LIMITE_CREDITO" class="java.math.BigDecimal"/>
+	<field name="C_SALDO_LINEA" class="java.math.BigDecimal"/>
+	<field name="C_ID_ESTADO_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_OPERADOR_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_OPERADOR_COBRANZA" class="java.math.BigDecimal"/>
+	<field name="C_ID_ESTADO_COBRANZA" class="java.math.BigDecimal"/>
+	<field name="C_HABILITADO_CONSUMO" class="java.lang.String"/>
+	<field name="C_ID_OPER_HAB_CONSUMO" class="java.math.BigDecimal"/>
+	<field name="C_CICLO" class="java.math.BigDecimal"/>
+	<field name="C_ADICIONAL" class="java.math.BigDecimal"/>
+	<field name="C_ID_TITULAR" class="java.math.BigDecimal"/>
+	<field name="C_FECHA_ESTADO_CLIENTE" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_ESTADO_COBRANZA" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_HABILITADO_CONSUMO" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_ALTA" class="java.sql.Timestamp"/>
+	<field name="C_NRO_SOLICITUD" class="java.lang.String"/>
+	<field name="C_CLIENTE_VIEJO" class="java.math.BigDecimal"/>
+	<field name="V_NOMBRE" class="java.lang.String"/>
+	<field name="V_DOMICILIO" class="java.lang.String"/>
+	<field name="V_LOCALIDAD" class="java.lang.String"/>
+	<field name="V_COD_POST" class="java.lang.String"/>
+	<field name="V_PROVINCIA" class="java.lang.String"/>
+	<field name="C_FECHA_MORA" class="java.sql.Timestamp"/>
+	<field name="C_ID_PLAN_MORA" class="java.math.BigDecimal"/>
+	<field name="C_CAMBIO_ESTADO_COB" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="60"  isSplitAllowed="true" >
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="149"
+						y="10"
+						width="283"
+						height="45"
+						key="image-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="770"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="548"
+						height="737"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Calibri" size="9" isUnderline="false"/>
+					</textElement>
+				<text><![CDATA[necesidad de previa interpelación judicial o extrajudicial, debiendo abonar en tal caso el importe correspondiente a su deuda con más sus intereses (punitorios y compensatorios), comisiones y gastos administrativos pendientes. Producida la mora, la deuda devengará además del interés compensatorio pactado, el interés punitorio pertinente, a partir de la fecha de cierre de facturación del resumen que le dio origen y hasta su total cancelación. A dichos intereses deberán adicionarse los impuestos correspondientes que los graven. La aceptación pura y simple de cualquier pago no implica renuncia a los intereses devengados, pues aun cuando no se efectúe reserva expresa, todo pago se imputa primero a los intereses y luego al capital.
+Las comisiones y cargos en que se haya incurrido con motivo del uso de la Tarjeta de Crédito son debidos y deben ser abonados contra la recepción del resumen periódico correspondiente a dicha tarjeta.
+Las comisiones y cargos vigentes al momento del inicio de la relación contractual son los que se indican en el Anexo al Contrato de Emisión de Tarjeta de Crédito FIEL y podrá variar periódicamente, atendiendo a las circunstancias generales del mercado. Cualquier modificación futura será comunicada al titular mediante nota que acompañará al Resumen de Cuenta, con una anticipación de 60 (sesenta) días a la entrada de vigencia del cambio, pudiendo el TITULAR rescindir el contrato en caso de no estar de acuerdo con tales modificaciones.
+Asimismo, se establecen en el Anexo al Contrato de Emisión, las comisiones que el TITULAR deberá abonar en los casos que el USUARIO adhiera a otros servicios ofrecidos por TARJETA FIEL, sean propios o derivados de acuerdos comerciales. El USUARIO tiene el derecho de rechazar la utilización de tales servicios.
+15. Extravío, hurto o robo. La/s tarjeta/s es/son intransferible/s. En el caso de extravío, hurto o robo el TITULAR y/o el/los adicional/es se obliga/n a efectuar la denuncia pertinente ante la seccional policial que corresponda así como a dar aviso inmediato a Tarjeta FIEL dentro de las veinticuatro (24) horas de ocurrido el hecho. El TITULAR y/o el/los adicional/es y/o el/los fiador/es quedarán obligados por las operaciones que se efectúen mediante la Tarjeta de Crédito FIEL hasta las 0 horas del día en que se haya formalizado la denuncia. A estos efectos los usuarios dispondrán de un servicio telefónico destinado a la recepción de denuncias, comunicándose al 0810-222-3435 o a través de nuestra casilla de correo info@tarjetafiel.com. De existir consumos realizados con posterioridad a la denuncia policial, el tarjetahabiente afectado deberá completar de puño y letra el correspondiente formulario de desconocimiento de compra en la sucursal FIEL, de acuerdo a lo indicado en la cláusula 8 del presente contrato. El TITULAR, el/los adicional/es y el/los fiador/es serán responsables de las obligaciones emergentes de la utilización de la/s tarjeta/s hasta el momento de la comunicación a VISION S.A. por medio fehaciente. Si por cualquier causa el TITULAR recuperase la/s tarjetas deberá restituirla/s a Tarjeta FIEL en forma inmediata.
+Si a su vencimiento o por cualquier circunstancia antes de que este se opere a cualquiera de los tarjetahabientes le fueran otorgada/s otras tarjetas y no devolviera las que obrasen en su poder con anterioridad a las nuevas, tanto los tarjetahabientes como el/los fiadores serán responsables sin ninguna limitación de todo consumo que se efectúe con la/s mismas, aún después de operado el/los vencimiento/s de su/s vigencia/s y haya/n sido éstas adulteradas o no y hasta tanto sean efectivamente devueltas al EMISOR, salvo el supuesto de denuncia policial por extravío, hurto o robo.
+Tarjeta FIEL queda facultada para realizar por sí o por terceros la investigación que corresponda ante la realización de consumos con tarjetas que hubiesen sido denunciadas como extraviadas o sustraídas. No obstante de existir denuncia policial, si se acredita la responsabilidad del tarjetahabiente en la pérdida o sustracción o se verifica que tal situación ha sido fraudulenta, el TITULAR, el/los adicional/es y el/los fiador/es serán responsables las obligaciones emergentes de la utilización de dicha/s tarjeta/s instando VISION S.A. las acciones civiles y penales que correspondan.
+16. Modificación de Condiciones pactadas. En el caso de que TARJETA FIEL pretenda incorporar nuevos conceptos en calidad de comisiones y/o cargos que no hubiesen sido previstos en este contrato o reducir prestaciones contempladas, deberá previamente obtener el consentimiento expreso del usuario de servicios financieros. Cuando se trate de modificaciones en los valores de comisiones y/o cargos debidamente aceptados por el usuario, su consentimiento al cambio podrá quedar conformado por la falta de objeción al mismo dentro del plazo establecido. El consentimiento a modificaciones en las condiciones pactadas (nuevas comisiones y/o cargos) sólo puede ser dado por el titular de la cuenta.
+17. Cesión. VISION S.A. queda autorizada, manifestando por este acto la voluntad expresa tanto del TITULAR como el/los usuario/s adicional/es y el/los fiador/es, a ceder los derechos emergentes de este contrato, ofrecerlos en garantía en cualquier circunstancia y según su criterio, sin necesidad de comunicar su decisión al TITULAR, salvo cuando implique la modificación del domicilio de pago, caso en el cual deberá hacérsele saber tal circunstancia al TITULAR por cualquier medio, bastándole para ello que comunique su decisión de modo fehaciente. También procederá la cesión sin necesidad de notificarla, cuando se la hiciere en los términos de los artículos 70 a 72 de la Ley 24.441. El TITULAR, el/los usuario/s adicional/es y el/los fiador/es no podrán de manera alguna ceder o transferir los derechos u obligaciones establecidas en este contrato.
+18. Información. VISION S.A. queda autorizado a suministrar a las empresas administradoras de sistemas de tarjeta de crédito que emita a favor del TITULAR y de su/s adicional/es, la totalidad de la información relativa a los tarjetahabientes que resulte necesaria para cumplir con los requisitos de admisión de dichas empresas administradoras. Para el caso que VISION S.A. emita tarjetas bajo un programa o grupo de afinidad, queda autorizada a suministrar a las empresas titulares de dichos programas o grupos, la totalidad de la información relativa a los tarjetahabientes que resulte necesaria para cumplir con los requisitos de admisión del programa o grupo de afinidad de que se trate.
+El TITULAR, su/s adicional/es y el/los fiador/es AUTORIZAN y ACEPTAN que tarjeta FIEL les remita a la dirección de correo electrónico que figura en este contrato o la que en el futuro la reemplace, como así también a los números de teléfonos informados, todo tipo de información relativa a los servicios que tarjeta FIEL ofrezca, alertas de seguridad y/o información de las operaciones que se relacionen directa o indirectamente con las tarjetas o toda otra solicitud de servicio o prestación que el TITULAR y su/s adicional/es hayan solicitado o soliciten en el futuro.
+19. Modificaciones de contratación. Para el caso de modificaciones a las condiciones de contratación, comisiones y cargos, etc., Tarjeta FIEL informará al TITULAR con sesenta (60) días de antelación a través de los medios establecidos en este contrato, dejando constancia que en caso de NO aceptar las modificaciones, el TITULAR tendrá derecho a rescindir el presente contrato sin cargo. Toda comunicación realizada en las condiciones preindicadas se considerará realizada de acuerdo a las previsiones de la Ley 24.240 de Defensa del Consumidor, sus modificatorias y normas reglamentarias.
+20. Protección de Datos. El TITULAR, su/s adicional/es y el/los fiador/es prestan su consentimiento libre e informado, de conformidad con lo dispuesto por la Ley 25.326 de Protección de los Datos Personales y declaran conocer y aceptar que sus datos personales y  ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="504"
+						y="746"
+						width="43"
+						height="12"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[7]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="746"
+						width="171"
+						height="12"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Visión SA - Mendoza 360 Sur - San Juan]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="250"
+						y="746"
+						width="43"
+						height="12"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[v/7.1]]></text>
+				</staticText>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	title="{etapaVersion.etapa.descripcion}" 
+	xmlns:components="views.components.*">
+	<mx:Script>
+		<![CDATA[
+			import events.GenericPlanEvent;
+			import mx.managers.PopUpManager;
+			import mx.core.IFlexDisplayObject;
+			import mx.collections.Sort;
+			import com.tarjetafiel.caja.vo.AccionVersion;
+			import com.tarjetafiel.caja.vo.Accion;
+			import mx.managers.DragManager;
+			import mx.core.IUIComponent;
+			import mx.utils.ObjectUtil;
+			import mx.events.DragEvent;
+			import mx.controls.Alert;
+			import mx.events.DropdownEvent;
+			import mx.collections.ArrayCollection;
+			import com.tarjetafiel.caja.vo.Etapa;
+			import model.CobranzasModelLocator;
+			import com.tarjetafiel.caja.vo.EtapaVersion;
+			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			[Bindable]
+			public var etapaVersion : EtapaVersion;
+			
+			/*
+			 * Este ArrayColection es el que esta bindable al dataGrid de acciones, cuando se ordena el array anterior se asigna a este arrayColection
+			 */
+			[Bindable]
+			public var accionesDG : ArrayCollection = new ArrayCollection();
+			
+			private function item_dragDrop(event:DragEvent):void {
+				modelo.esNuevaAccion = true;
+				var vent : IFlexDisplayObject = PopUpManager.createPopUp(this,ViewNuevaAccion,true);
+				PopUpManager.centerPopUp(vent);
+				
+				var obj : Object = new Object();
+				obj.accionesDG = accionesDG;
+				obj.etapaVersion = etapaVersion;
+				
+				/* ademas de agregar la lista de acciones agrega la relacion a etapa*/
+				new GenericPlanEvent(GenericPlanEvent.SELECCION_LISTA_ACCION_PANEL_EVENT,obj).dispatch();			
+			}
+			
+			private function item_dragEnter(event:DragEvent):void {				
+				var obj:IUIComponent = IUIComponent(event.currentTarget);
+                DragManager.acceptDragDrop(obj);
+			}
+			
+//			private function seleccionarAccion():void {
+//				if (accionesDG.length > 0 && accionesDG.length > dgAcciones.selectedIndex){
+//					var av : AccionVersion = accionesDG.getItemAt(dgAcciones.selectedIndex) as AccionVersion;
+//					new GenericPlanEvent(GenericPlanEvent.SELECCIONAR_ACCION_VERSION_EVENT,av).dispatch();	
+//				}
+//			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:VBox horizontalAlign="right">
+		<mx:Form>
+			<mx:FormItem label="Duración en dias:" >
+				<mx:TextInput id="inptDias" text="{etapaVersion.dias}" width="59" editable="{modelo.esNuevaVersion}" restrict="0-9" textAlign="right" />
+			</mx:FormItem>
+		</mx:Form>		
+		<mx:DataGrid id="dgAcciones" width="280" height="400" rowHeight="90" dataProvider="{accionesDG}" dragDrop="item_dragDrop(event)" dragEnter="item_dragEnter(event)" focusEnabled="false">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Acciones a tomar" >
+					<mx:itemRenderer>
+						<mx:Component>
+							<components:ViewAccion accionVersion="{data as AccionVersion}">
+								<mx:Script>
+									<![CDATA[
+										import com.tarjetafiel.caja.vo.AccionVersion;
+									]]>
+								</mx:Script>
+							</components:ViewAccion>						
+						</mx:Component>					
+					</mx:itemRenderer>
+				</mx:DataGridColumn>				
+			</mx:columns>
+		</mx:DataGrid>				
+	</mx:VBox>
+</mx:Panel>

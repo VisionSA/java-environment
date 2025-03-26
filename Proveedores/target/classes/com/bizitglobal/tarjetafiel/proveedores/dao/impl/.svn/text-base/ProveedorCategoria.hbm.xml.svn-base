@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorCategoria" table="t_vis_prov_categorias"  >
+    <id name="idProvCategoria" type="java.lang.Long" column="c_id_prov_categoria">
+        <generator class="increment" />
+    </id>
+
+    <property name="activo" type="java.lang.String" column="c_activo" not-null="true" length="1"/>    
+
+    <many-to-one name="proveedor"    
+    			 class="com.bizitglobal.tarjetafiel.proveedores.negocio.Proveedor" 
+    			 not-null="true" 
+    			 cascade="save-update">
+        <column name="c_id_proveedor" />
+    </many-to-one>
+    
+ 	<many-to-one name="jurisdiccionActividad"    
+				 class="com.bizitglobal.tarjetafiel.impuestos.negocio.JurisdiccionActividad" 
+				 not-null="true"
+				 cascade="none">
+        <column name="c_id_juris_actividad" />
+    </many-to-one>  
+
+</class>
+</hibernate-mapping>

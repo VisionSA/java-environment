@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" keyUp="keyPress(event)" verticalAlign="middle"
+	horizontalAlign="center" creationComplete="this.complete()" width="100%" height="100%" 
+	xmlns:flexmdi="http://flexmdi.googlecode.com/"  
+	xmlns:business="com.tarjetafiel.caja.business.*" xmlns:control="com.tarjetafiel.caja.control.*" 
+	xmlns:view="com.tarjetafiel.caja.view.*" horizontalGap="0" verticalGap="0" xmlns:busquedaComercios="com.tarjetafiel.caja.view.busquedaComercios.*" xmlns:comercios="com.tarjetafiel.caja.view.comercios.*">
+	
+	<mx:VBox id="contGlobal" width="100%" height="100%" verticalAlign="top" horizontalAlign="center">
+		<mx:VBox height="100%" resizeEffect="{resizeHead}" id="containerHead" width="100%" horizontalAlign="center" verticalGap="0">						
+			<mx:MenuBar id="menuPrincipal" itemClick="navegacionModel.clickMenu(event,this.mdiCanvas)" width="100%" showRoot="false" height="25" dataProvider="{Application.application.xmlMenuComercio}" labelField="@label"/>
+			<mx:HBox width="100%" height="5" styleName="subMenu"/>
+			<mx:VBox width="100%" styleName="infocaja" verticalGap="10">																
+				<mx:HBox width="100%" height="100%" horizontalAlign="left">
+					<view:InfoCaja height="100%" horizontalAlign="left" verticalGap="0" verticalAlign="middle"/>							
+				</mx:HBox>	
+				<mx:HBox width="55%">
+					<mx:HBox toolTip="Mas Datos..." height="100%" width="100%" styleName="seleccionado">
+						<mx:Label mouseChildren="false" buttonMode="true" useHandCursor="true" click="this.verMasDatos()" width="100%"  text="{ModelLocator.getInstance().empresaModel.labelEmpresaSeleccionada}" styleName="lblSeleccionado"/>																		
+					</mx:HBox>						
+					<mx:LinkButton id="lnkBusquedaComercios" toolTip="Busqueda de Empresas" label="{ModelLocator.getInstance().empresaModel.labelButtonBusqueda}" click="abrirBusquedaComercios()" styleName="busqueda" color="#000000"/>				
+				</mx:HBox>
+				
+			</mx:VBox>			
+			<mx:HBox width="100%" height="5" styleName="hboxDivBusqueda"/>		
+			<comercios:BusquedaComercios height="{ModelLocator.getInstance().busquedaVisibleComercios}"  resizeEffect="{resizeBusqueda}" id="busquedaComercio" width="100%"/>							
+			<mx:HBox width="100%" height="5" styleName="hboxDivBusqueda"/>
+			<flexmdi:MDICanvas verticalScrollPolicy="off" horizontalScrollPolicy="off" maxWidth="{this.contGlobal.width}"  id="mdiCanvas" width="100%" height="100%">
+			
+			</flexmdi:MDICanvas>						
+		</mx:VBox>			
+	</mx:VBox>
+			
+	
+	
+	<!-- Effect de inicio -->	
+	<mx:Resize id="resizeHead" duration="2000" />
+	<mx:Resize id="resizeBusqueda" duration="350"/>			
+	<mx:Fade id="fadeOut" alphaFrom="1.0" alphaTo="0.0" duration="350" target="{this.busquedaComercio}"/>
+	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0" duration="350" target="{this.busquedaComercio}"/>
+
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.model.NavegacionModel;
+			import com.util.modules.TitleWindowCustom;
+			import com.util.modules.ManagerModules;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import flash.events.KeyboardEvent;
+			import mx.controls.Alert;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import com.tarjetafiel.caja.event.BancoEvent;
+			//import mx.automation.delegates.controls.MenuBarItemAutomationImpl;
+			import mx.controls.menuClasses.MenuBarItem;
+			import flexmdi.effects.effectsLib.MDIVistaEffects;			
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import mx.events.MenuEvent;
+			import mx.events.EffectEvent;					
+			
+			[Bindable]private var navegacionModel:NavegacionModel = ModelLocator.getInstance().navegacionModel;
+			
+			private function complete():void{								
+				this.setFocus();
+				this.containerHead.percentHeight = 100;										
+			}			
+			
+		
+			private function verMasDatos():void{
+				if(ModelLocator.getInstance().empresaModel.empresa != null){
+					/* PopUpManager.addPopUp(ModelLocator.getInstance().masDatosEmpresa,Application.application.contGlobal,true);
+					PopUpManager.centerPopUp(ModelLocator.getInstance().masDatosEmpresa); */
+				}
+			}
+						
+			public function abrirBusquedaComercios():void {
+				this.busquedaComercio.limpiarFiltro();
+				if(this.busquedaComercio.height == 0) {
+					ModelLocator.getInstance().empresaModel.labelButtonBusqueda = "Cerrar";									
+					this.fadeIn.play();
+					ModelLocator.getInstance().busquedaComerciosVisible();
+				} else {
+					ModelLocator.getInstance().empresaModel.labelButtonBusqueda = "Buscar";					
+					this.fadeOut.play();
+					ModelLocator.getInstance().busquedaComerciosNoVisible();					
+				}
+				
+				
+			}
+			
+			private function keyPress(evt:KeyboardEvent):void {
+				
+				if (evt.keyCode == Keyboard.F8){
+					if(busquedaComercio.height == 0){
+						ModelLocator.getInstance().empresaModel.labelButtonBusqueda = "Cerrar";						
+						this.fadeIn.play();
+						ModelLocator.getInstance().busquedaComerciosVisible();
+					} else {
+						ModelLocator.getInstance().empresaModel.labelButtonBusqueda = "Buscar";						
+						this.fadeOut.play();
+						ModelLocator.getInstance().busquedaComerciosNoVisible();
+					}															
+				} else if(evt.ctrlKey && String.fromCharCode(evt.charCode).toUpperCase() == "M"){					
+					MenuBarItem(this.menuPrincipal.menuBarItems[0]).setFocus();
+				}
+										
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

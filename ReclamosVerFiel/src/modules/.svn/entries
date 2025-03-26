@@ -1,0 +1,74 @@
+9
+
+dir
+132
+https://testingpc/svn/testing/trunk/ReclamosVerFiel/src/modules
+https://testingpc/svn/testing
+
+
+
+2017-10-30T14:57:02.901500Z
+122
+gaston
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+ModulesView.mxml
+file
+
+
+
+
+2017-12-01T12:43:35.700143Z
+4ee90442202cfb1f63dbdfcc7020cacf
+2017-09-14T14:00:00.684812Z
+80
+gaston
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+489
+
+imprimirLiquidaciones
+dir
+
+pagofacil
+dir
+
+notaCreditoDebitos
+dir
+
+revertirPago
+dir
+

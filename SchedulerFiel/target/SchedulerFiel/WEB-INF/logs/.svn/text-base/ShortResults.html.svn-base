@@ -1,0 +1,2444 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Thu Oct 22 12:03:53 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>31</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>266</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>437</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>437</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>437</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>437</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>469</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/repositorios/tarjetafiel/SchedulerFiel/WebContent/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>547</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 0 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>547</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>257828</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.ActionSupport category">com.opensymphony.xwork.ActionSupport</td>
+<td title="Message">command is = </td>
+</tr>
+
+<tr>
+<td>293719</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = start</td>
+</tr>
+
+<tr>
+<td>329000</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>329016</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>387109</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>387109</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>391250</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED shutting down.</td>
+</tr>
+
+<tr>
+<td>391250</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED paused.</td>
+</tr>
+
+<tr>
+<td>391250</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED shutdown complete.</td>
+</tr>
+</table>
+<br>
+</body></html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Thu Oct 22 12:10:25 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>15</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>344</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>469</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>469</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>469</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>469</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>484</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/repositorios/tarjetafiel/SchedulerFiel/WebContent/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>515</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 0 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>515</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>10547</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.ActionSupport category">com.opensymphony.xwork.ActionSupport</td>
+<td title="Message">command is = </td>
+</tr>
+
+<tr>
+<td>12140</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = logout</td>
+</tr>
+
+<tr>
+<td>16562</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.ActionSupport category">com.opensymphony.xwork.ActionSupport</td>
+<td title="Message">command is = </td>
+</tr>
+
+<tr>
+<td>19015</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = start</td>
+</tr>
+
+<tr>
+<td>32828</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>32844</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>32875</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ActionChainResult.execute(ActionChainResult.java:106)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.executeResult(DefaultActionInvocation.java:263)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:187)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>32890</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ActionChainResult.execute(ActionChainResult.java:106)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.executeResult(DefaultActionInvocation.java:263)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:187)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>32906</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = view</td>
+</tr>
+
+<tr>
+<td>80765</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = runNow</td>
+</tr>
+
+<tr>
+<td>80765</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = view</td>
+</tr>
+
+<tr>
+<td>80797</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job fielJobs.Test fired (by trigger MANUAL_TRIGGER.MT_e8fj9m4og9yr) at:  12:11:46 10/22/2009</td>
+</tr>
+
+<tr>
+<td>80797</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job fielJobs.Test execution complete at  12:11:46 10/22/2009 and reports: null</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Thu Oct 22 12:12:08 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>15</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>203</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>312</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>312</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>312</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>312</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>343</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/repositorios/tarjetafiel/SchedulerFiel/WebContent/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>422</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 0 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>422</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>16328</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = start</td>
+</tr>
+
+<tr>
+<td>18547</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = list</td>
+</tr>
+
+<tr>
+<td>19906</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = start</td>
+</tr>
+
+<tr>
+<td>59781</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = start</td>
+</tr>
+
+<tr>
+<td>73797</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>73812</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>73843</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ActionChainResult.execute(ActionChainResult.java:106)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.executeResult(DefaultActionInvocation.java:263)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:187)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>73843</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ActionChainResult.execute(ActionChainResult.java:106)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.executeResult(DefaultActionInvocation.java:263)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:187)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>73875</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = view</td>
+</tr>
+
+<tr>
+<td>80656</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.ActionSupport category">com.opensymphony.xwork.ActionSupport</td>
+<td title="Message">command is = </td>
+</tr>
+
+<tr>
+<td>85140</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = list</td>
+</tr>
+
+<tr>
+<td>162234</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED shutting down.</td>
+</tr>
+
+<tr>
+<td>162234</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED paused.</td>
+</tr>
+
+<tr>
+<td>162250</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED shutdown complete.</td>
+</tr>
+</table>
+<br>
+</body></html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Thu Oct 22 12:15:20 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>62</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>219</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>390</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/repositorios/tarjetafiel/SchedulerFiel/WebContent/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>500</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 1 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>515</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>9359</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  12:15:30 10/22/2009</td>
+</tr>
+
+<tr>
+<td>9359</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  12:15:30 10/22/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>13484</td>
+<td title="http-8080-5 thread">http-8080-5</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.ActionSupport category">com.opensymphony.xwork.ActionSupport</td>
+<td title="Message">command is = </td>
+</tr>
+
+<tr>
+<td>15219</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = list</td>
+</tr>
+
+<tr>
+<td>18000</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = list</td>
+</tr>
+
+<tr>
+<td>19859</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = list</td>
+</tr>
+
+<tr>
+<td>21687</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = list</td>
+</tr>
+
+<tr>
+<td>24359</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  12:15:45 10/22/2009</td>
+</tr>
+
+<tr>
+<td>24359</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  12:15:45 10/22/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>25875</td>
+<td title="http-8080-5 thread">http-8080-5</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = view</td>
+</tr>
+
+<tr>
+<td>27594</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = delete</td>
+</tr>
+
+<tr>
+<td>30500</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = start</td>
+</tr>
+
+<tr>
+<td>31750</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = list</td>
+</tr>
+
+<tr>
+<td>32547</td>
+<td title="http-8080-5 thread">http-8080-5</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.ActionSupport category">com.opensymphony.xwork.ActionSupport</td>
+<td title="Message">command is = </td>
+</tr>
+
+<tr>
+<td>38969</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED shutting down.</td>
+</tr>
+
+<tr>
+<td>38969</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED paused.</td>
+</tr>
+
+<tr>
+<td>38969</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED shutdown complete.</td>
+</tr>
+</table>
+<br>
+</body></html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Thu Oct 22 12:16:28 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>203</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>282</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>282</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>282</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>282</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>313</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/repositorios/tarjetafiel/SchedulerFiel/WebContent/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>391</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 1 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>391</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>1188</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  12:16:30 10/22/2009</td>
+</tr>
+
+<tr>
+<td>1188</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  12:16:30 10/22/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>16172</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  12:16:45 10/22/2009</td>
+</tr>
+
+<tr>
+<td>16172</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  12:16:45 10/22/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>31172</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  12:17:00 10/22/2009</td>
+</tr>
+
+<tr>
+<td>31172</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  12:17:00 10/22/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>43672</td>
+<td title="Thread-7 thread">Thread-7</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED shutting down.</td>
+</tr>
+
+<tr>
+<td>43672</td>
+<td title="Thread-7 thread">Thread-7</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED paused.</td>
+</tr>
+
+<tr>
+<td>43672</td>
+<td title="Thread-7 thread">Thread-7</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED shutdown complete.</td>
+</tr>
+</table>
+<br>
+</body></html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Thu Oct 22 12:22:23 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>187</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>266</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>266</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>266</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>266</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>281</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/repositorios/tarjetafiel/SchedulerFiel/WebContent/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 1 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>6031</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  12:22:30 10/22/2009</td>
+</tr>
+
+<tr>
+<td>6031</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  12:22:30 10/22/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>21031</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  12:22:45 10/22/2009</td>
+</tr>
+
+<tr>
+<td>21031</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  12:22:45 10/22/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>35984</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED shutting down.</td>
+</tr>
+
+<tr>
+<td>35984</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED paused.</td>
+</tr>
+
+<tr>
+<td>35984</td>
+<td title="http-8080-1 thread">http-8080-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED shutdown complete.</td>
+</tr>
+</table>
+<br>
+</body></html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:08:29 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+</table>
+<br>
+</body></html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:11:32 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+</table>
+<br>
+</body></html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:12:33 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>78</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>297</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:18:02 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>219</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:18:59 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>219</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:19:44 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>219</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:20:32 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>219</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:40:45 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>219</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:42:37 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>15</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>218</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+</table>
+<br>
+</body></html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:46:19 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>15</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>171</td>
+<td title="ContainerBackgroundProcessor[StandardEngine[Catalina]] thread">ContainerBackgroundProcessor[StandardEngine[Catalina]]</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:51:58 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>15</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>218</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:53:08 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>15</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>203</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:54:45 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>219</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:55:38 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>15</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>171</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+</table>
+<br>
+</body></html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Fri Oct 23 12:56:15 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>172</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+</table>
+<br>
+</body></html>

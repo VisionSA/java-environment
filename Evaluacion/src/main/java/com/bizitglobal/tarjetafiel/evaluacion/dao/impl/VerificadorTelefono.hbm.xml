@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.VerificadorTelefono" table="t_vis_eva_verif_telefonos" >
+	<id name="idVerifTelefono" type="java.lang.Long" column="c_id_eva_verif_telefono">
+		<generator class="increment" />
+	</id>
+
+	<many-to-one name="telefono" class="com.bizitglobal.tarjetafiel.general.negocio.Telefono" not-null="false" cascade="all">
+		<column name="c_id_telefono" />
+	</many-to-one>
+
+	<many-to-one name="verificador" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Verificador" not-null="false" cascade="save-update" >
+		<column name="c_id_verificador" />
+	</many-to-one>
+
+</class>
+</hibernate-mapping>

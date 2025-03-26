@@ -1,0 +1,896 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+<!-- ================================================================================================ -->
+<!-- ========================         DEFINICION DE DAOS DEL MODULO         ========================= -->
+<!-- ================================================================================================ -->
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.ActividadEvaluacionDaoHibernateImpl" id="actividadEvaluacionDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.AlertaSolicitudDaoHibernateImpl" id="alertaSolicitudDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.AlertaTipoIndividuoDaoHibernateImpl" id="alertaTipoIndividuoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.BancosDaoHibernateImpl" id="bancosDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.ClearingDaoHibernateImpl" id="clearingDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.ConfirmacionTelefonicaDaoHibernateImpl" id="confirmacionTelefonicaDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.DiaPagoDaoHibernateImpl" id="diaPagoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.DigitalDaoHibernateImpl" id="digitalDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.EducacionDaoHibernateImpl" id="educacionDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.EmailsDaoHibernateImpl" id="emailsDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.EstadosDaoHibernateImpl" id="estadosDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.IndividuoVehiculoDaoHibernateImpl" id="individuoVehiculoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.IndividuoDomicilioDaoHibernateImpl" id="individuoDomiciliosDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.IndividuoEvaluacionDaoHibernateImpl" id="individuoEvaluacionDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.InformeLaboralDaoHibernateImpl" id="informeLaboralDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.InformeParticularDaoHibernateImpl" id="informeParticularDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.ObservoLaboralDaoHibernateImpl" id="observoLaboralDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.ObservoSucursalDaoHibernateImpl" id="observoSucursalDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.ObservoDaoHibernateImpl" id="observoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.PromotorTelefonoDaoHibernateImpl" id="promotorTelefonoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.PromotorDaoHibernateImpl" id="promotorDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.CobradorDaoHibernateImpl" id="cobradorDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.SolicitudIndividuoDaoHibernateImpl" id="solicitudIndividuoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.SolicitudDaoHibernateImpl" id="solicitudDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.SolicLogDaoHibernateImpl" id="solicLogDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.TarjetaDaoHibernateImpl" id="tarjetaDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.TelefonosDaoHibernateImpl" id="telefonosDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.TipoClearingDaoHibernateImpl" id="tipoClearingDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.TipoIndividuoDaoHibernateImpl" id="tipoIndividuoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.VerificadorTelefonoDaoHibernateImpl" id="verificadorTelefonoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.VerificadorDaoHibernateImpl" id="verificadorDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.ViviendaEstadoDaoHibernateImpl" id="viviendaEstadoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.InfoParticularVehiculoDaoHibernateImpl" id="infoParticularVehiculoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.SolicitudImprimibleDaoImpl" id="solicitudImprimibleDao">
+	<property name="dataSource">
+		<ref bean="dataSource"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.EsquemaIndividuoDaoHibernateImpl" id="esquemaIndividuoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.TclienteDaoHibernateImpl" id="tclienteDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.CambioDiaPagoHistoricoDaoHibernateImpl" id="cambioDiaPagoHistoricoDao">
+	<property name="hibernateTemplate">
+		<ref bean="hibernateTemplate"/>
+	</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE ACTIVIDAD SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "actividadEvaluacionServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.ActividadEvaluacionServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="actividadEvaluacionDao" ref="actividadEvaluacionDao"/>
+</bean>
+
+<bean id = "actividadEvaluacionService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.ActividadEvaluacionService</value>
+</property>
+
+<property name = "target">
+<ref bean = "actividadEvaluacionServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE ALERTASSOLICITUDES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "alertaSolicitudServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.AlertaSolicitudServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="alertaSolicitudDao" ref="alertaSolicitudDao"/>
+</bean>
+
+<bean id = "alertaSolicitudService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.AlertaSolicitudService</value>
+</property>
+
+<property name = "target">
+<ref bean = "alertaSolicitudServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAALERTASTIPOINDIV SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "alertaTipoIndividuoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.AlertaTipoIndividuoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="alertaTipoIndividuoDao" ref="alertaTipoIndividuoDao"/>
+</bean>
+
+<bean id = "alertaTipoIndividuoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.AlertaTipoIndividuoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "alertaTipoIndividuoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVABANCOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "bancosServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.BancosServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="bancosDao" ref="bancosDao"/>
+</bean>
+
+<bean id = "bancosService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.BancosService</value>
+</property>
+
+<property name = "target">
+<ref bean = "bancosServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVACLEARINGS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "clearingServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.ClearingServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="clearingDao" ref="clearingDao"/>
+</bean>
+
+<bean id = "clearingService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.ClearingService</value>
+</property>
+
+<property name = "target">
+<ref bean = "clearingServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVACONFTELEFONICAS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "confirmacionTelefonicaServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.ConfirmacionTelefonicaServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="confirmacionTelefonicaDao" ref="confirmacionTelefonicaDao"/>
+</bean>
+
+<bean id = "confirmacionTelefonicaService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.ConfirmacionTelefonicaService</value>
+</property>
+
+<property name = "target">
+<ref bean = "confirmacionTelefonicaServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVADIASPAGO SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "diaPagoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.DiaPagoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="diaPagoDao" ref="diaPagoDao"/>
+</bean>
+
+<bean id = "diaPagoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.DiaPagoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "diaPagoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ==========================  DEFINICION DE CAMBIO DIA PAGO HISTORICO SERVICE  ============== -->
+<!-- ================================================================================================ -->
+<bean id = "cambioDiaPagoHistoricoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.CambioDiaPagoHistoricoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="cambioDiaPagoHistoricoDao" ref="cambioDiaPagoHistoricoDao"/>
+</bean>
+
+<bean id = "cambioDiaPagoHistoricoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.CambioDiaPagoHistoricoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "cambioDiaPagoHistoricoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVADIGITALES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "digitalServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.DigitalServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="digitalDao" ref="digitalDao"/>
+</bean>
+
+<bean id = "digitalService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.DigitalService</value>
+</property>
+
+<property name = "target">
+<ref bean = "digitalServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAEDUCACIONES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "educacionServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.EducacionServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="educacionDao" ref="educacionDao"/>
+</bean>
+
+<bean id = "educacionService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.EducacionService</value>
+</property>
+
+<property name = "target">
+<ref bean = "educacionServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAEMAILS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "emailsServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.EmailsServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="emailsDao" ref="emailsDao"/>
+</bean>
+
+<bean id = "emailsService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.EmailsService</value>
+</property>
+
+<property name = "target">
+<ref bean = "emailsServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAESTADOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "estadosServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.EstadosServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="estadosDao" ref="estadosDao"/>
+</bean>
+
+<bean id = "estadosService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.EstadosService</value>
+</property>
+
+<property name = "target">
+<ref bean = "estadosServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAINDIVEHICULOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "individuoVehiculoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.IndividuoVehiculoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="individuoVehiculoDao" ref="individuoVehiculoDao"/>
+</bean>
+
+<bean id = "individuoVehiculoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.IndividuoVehiculoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "individuoVehiculoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAINDIVDOMICILIOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "individuoDomicilioServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.IndividuoDomicilioServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="individuoDomiciliosDao" ref="individuoDomiciliosDao"/>
+</bean>
+
+<bean id = "individuoDomiciliosService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.IndividuoDomicilioService</value>
+</property>
+
+<property name = "target">
+<ref bean = "individuoDomicilioServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE INDIVIDUOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "individuoEvaluacionServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.IndividuoEvaluacionServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="individuoEvaluacionDao" ref="individuoEvaluacionDao"/>
+</bean>
+
+<bean id = "individuoEvaluacionService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.IndividuoEvaluacionService</value>
+</property>
+
+<property name = "target">
+<ref bean = "individuoEvaluacionServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAINFOLABORALES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "informeLaboralServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.InformalLaboralServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="informeLaboralDao" ref="informeLaboralDao"/>
+</bean>
+
+<bean id = "informeLaboralService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.InformeLaboralService</value>
+</property>
+
+<property name = "target">
+<ref bean = "informeLaboralServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAINFOPARTICULARES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "informeParticularServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.InformeParticularServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="informeParticularDao" ref="informeParticularDao"/>
+</bean>
+
+<bean id = "informeParticularService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.InformeParticularService</value>
+</property>
+
+<property name = "target">
+<ref bean = "informeParticularServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAOBSLABORALES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "observoLaboralServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.ObservoLaboralServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="observoLaboralDao" ref="observoLaboralDao"/>
+</bean>
+
+<bean id = "observoLaboralService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.ObservoLaboralService</value>
+</property>
+
+<property name = "target">
+<ref bean = "observoLaboralServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAOBSSUCURSALES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "observoSucursalServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.ObservoSucursalServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="observoSucursalDao" ref="observoSucursalDao"/>
+</bean>
+
+<bean id = "observoSucursalService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.ObservoSucursalService</value>
+</property>
+
+<property name = "target">
+<ref bean = "observoSucursalServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAOBSERVOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "observoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.ObservoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="observoDao" ref="observoDao"/>
+</bean>
+
+<bean id = "observoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.ObservoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "observoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAPROMOTELEFONOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "promotorTelefonoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.PromotorTelefonoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="promotorTelefonoDao" ref="promotorTelefonoDao"/>
+</bean>
+
+<bean id = "promotorTelefonoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.PromotorTelefonoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "promotorTelefonoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAPROMOTORES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "promotorServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.PromotorServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="promotorDao" ref="promotorDao"/>
+</bean>
+
+<bean id = "promotorService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.PromotorService</value>
+</property>
+
+<property name = "target">
+<ref bean = "promotorServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVACOBRADOR SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "cobradorServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.CobradorServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="cobradorDao" ref="cobradorDao"/>
+</bean>
+
+<bean id = "cobradorService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.CobradorService</value>
+</property>
+
+<property name = "target">
+<ref bean = "cobradorServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVASOLICITUDES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "solicitudIndividuoServiceTarge" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.SolicitudIndividuoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="solicitudIndividuoDao" ref="solicitudIndividuoDao"/>
+</bean>
+
+<bean id = "solicitudIndividuoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.SolicitudIndividuoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "solicitudIndividuoServiceTarge"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVASOLICLOG SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "solicLogServiceTarge" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.SolicLogServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="solicLogDao" ref="solicLogDao"/>
+</bean>
+
+<bean id = "solicLogService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.SolicLogService</value>
+</property>
+
+<property name = "target">
+<ref bean = "solicLogServiceTarge"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVASOLICITUDES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "solicitudServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.SolicitudServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="solicitudDao" ref="solicitudDao"/>
+</bean>
+
+<bean id = "solicitudService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.SolicitudService</value>
+</property>
+
+<property name = "target">
+<ref bean = "solicitudServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVATARJETAS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "tarjetaServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.TarjetaServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="tarjetaDao" ref="tarjetaDao"/>
+</bean>
+
+<bean id = "tarjetaService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.TarjetaService</value>
+</property>
+
+<property name = "target">
+<ref bean = "tarjetaServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVATELEFONOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "telefonoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.TelefonosServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="telefonosDao" ref="telefonosDao"/>
+</bean>
+
+<bean id = "telefonosService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.TelefonosService</value>
+</property>
+
+<property name = "target">
+<ref bean = "telefonoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVATIPOSCLEARINGS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "tipoClearingServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.TipoClearingServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="tipoClearingDao" ref="tipoClearingDao"/>
+</bean>
+
+<bean id = "tipoClearingService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.TipoClearingService</value>
+</property>
+
+<property name = "target">
+<ref bean = "tipoClearingServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVATIPOSINDIVIDUOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "tipoIndividuoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.TipoIndividuoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="tipoIndividuoDao" ref="tipoIndividuoDao"/>
+</bean>
+
+<bean id = "tipoIndividuoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.TipoIndividuoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "tipoIndividuoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAVERIFTELEFONOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "verificadorTelefonoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.VerificadorTelefonoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="verificadorTelefonoDao" ref="verificadorTelefonoDao"/>
+</bean>
+
+<bean id = "verificadorTelefonoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.VerificadorTelefonoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "verificadorTelefonoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAVERIFICADORES SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "verificadorServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.VerificadorServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="verificadorDao" ref="verificadorDao"/>
+</bean>
+
+<bean id = "verificadorService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.VerificadorService</value>
+</property>
+
+<property name = "target">
+<ref bean = "verificadorServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE EVAVIVESTADOS SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "viviendaEstadoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.ViviendaEstadoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="viviendaEstadoDao" ref="viviendaEstadoDao"/>
+</bean>
+
+<bean id = "viviendaEstadoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.ViviendaEstadoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "viviendaEstadoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE INFOPARTICULARVEHICULO SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "infoParticularVehiculoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.InfoParticularVehiculoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="infoParticularVehiculoDao" ref="infoParticularVehiculoDao"/>
+</bean>
+
+<bean id = "infoParticularVehiculoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.InfoParticularVehiculoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "infoParticularVehiculoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ==========================  DEFINICION DE SOLICITUDIMPRIMIBLE SERVICE  ========================= -->
+<!-- ================================================================================================ -->
+<bean id = "solicitudImprimibleServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.SolicitudImprimibleServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="solicitudImprimibleDao" ref="solicitudImprimibleDao"/>
+</bean>
+
+<bean id = "solicitudImprimibleService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.SolicitudImprimibleService</value>
+</property>
+
+<property name = "target">
+<ref bean = "solicitudImprimibleServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE ESQUEMA INDIVIDUO SERVICE  ============================== -->
+<!-- ================================================================================================ -->
+<bean id = "esquemaIndividuoServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.EsquemaIndividuoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="esquemaIndividuoDao" ref="esquemaIndividuoDao"/>
+</bean>
+
+<bean id = "esquemaIndividuoService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.EsquemaIndividuoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "esquemaIndividuoServiceTarget"/>
+</property>
+</bean>
+
+<!-- ================================================================================================ -->
+<!-- ===============================  DEFINICION DE TCLIENTE SERVICE  =============================== -->
+<!-- ================================================================================================ -->
+<bean id = "tclienteServiceTarget" class = "com.bizitglobal.tarjetafiel.evaluacion.service.impl.TclienteServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="tclienteDao" ref="tclienteDao"/>
+</bean>
+
+<bean id = "tclienteService" class = "org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.evaluacion.service.TclienteService</value>
+</property>
+
+<property name = "target">
+<ref bean = "tclienteServiceTarget"/>
+</property>
+</bean>
+
+</beans>

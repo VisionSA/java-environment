@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Cobros Externos"
+	 xmlns:pagofacil="modules.pagofacil.*" xmlns:modules="com.util.modules.*" verticalAlign="middle"
+	  horizontalAlign="center" creationComplete="onCreationComplete()">
+	
+	<pagofacil:MainEventMap/>
+	
+	<mx:VBox horizontalAlign="center" verticalAlign="middle" id="vboxPermisos">
+			<mx:Label text="Validando Permisos" id="labelPermisos" width="100%" textAlign="center" fontSize="30" color="#FF0000"/>			
+	</mx:VBox>
+	
+	<modules:VboxLoadModule module="modules/pagofacil/ProcesarPagoFacilModule.swf" label="Procesar archivo Cobros Externos"/>
+	<!--<mx:ToggleButtonBar dataProvider="viewPagosExternos" id="toggleButton" visible="false" includeInLayout="false"/>
+	<mx:ViewStack width="100%" height="100%" id="viewPagosExternos" visible="false" includeInLayout="false">		
+		<modules:VboxLoadModule module="modules/pagofacil/ProcesarPagoFarmacia.swf" label="Procesar archivo Farmacia"/>
+	</mx:ViewStack>-->
+	
+	<mx:Script>
+		<![CDATA[
+			import events.OperadorEvent;
+			import models.ApplicationModel;
+			import managers.PermisosManager;
+			
+			[Bindable]public var permisosManager:PermisosManager;
+			
+			[Bindable]public var applicationModel:ApplicationModel;
+			
+			private function onCreationComplete():void{
+				permisosManager.addEventListener("cobrosExternosFlex"+OperadorEvent.PERMISO_HABILITADO,function(evt:Event):void{
+					vboxPermisos.includeInLayout = false;
+					vboxPermisos.visible = false;
+					/* viewPagosExternos.includeInLayout = true;
+					viewPagosExternos.visible = true;
+					toggleButton.visible = true;
+					toggleButton.includeInLayout = true;   */
+				});
+				
+				permisosManager.addEventListener("cobrosExternosFlex"+OperadorEvent.PERMISO_DESHABILITADO,function(evt:Event):void{
+					labelPermisos.text = "Permiso Denegado";					
+				});
+				permisosManager.validarPermiso("cobrosExternosFlex",applicationModel.operador);
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

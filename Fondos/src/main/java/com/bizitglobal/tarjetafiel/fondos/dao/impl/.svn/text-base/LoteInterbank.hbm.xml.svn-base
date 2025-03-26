@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.LoteInterbank" table="T_VIS_FON_LOTE_INTERBANK" >
+	<id name="idLoteInterbank" type="java.lang.Long" column="C_ID_LOTE_INTERBANK">
+		<generator class="increment" />
+	</id>
+	
+	<property name="cabecera" type="java.lang.String" column="C_CABECERA" not-null="true" length="240"/>
+	<property name="fechaGenerado" type="java.util.Date" column="C_FECHA_GENERADO" not-null="true" length="3594"/>
+	<property name="fechaSolicitud" type="java.util.Date" column="C_FECHA_SOLICITUD" not-null="false" length="3594"/>
+	
+	<many-to-one name="bancoPropio" class="com.bizitglobal.tarjetafiel.fondos.negocio.BancoPropio" not-null="false" >
+		<column name="C_ID_BANCO_PROPIO" />
+	</many-to-one>
+	
+	<many-to-one name="operador" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="true" cascade="none">
+		<column name="C_ID_OPERADOR" />
+	</many-to-one>
+	
+	<set name="registrosUpload" inverse="true" cascade="all">
+          <key>
+    	      <column name="C_ID_LOTE_INTERBANK" precision="10" scale="0" not-null="false" />
+          </key>
+          <one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.RegistroUpload" />        
+    </set>
+</class>
+</hibernate-mapping>

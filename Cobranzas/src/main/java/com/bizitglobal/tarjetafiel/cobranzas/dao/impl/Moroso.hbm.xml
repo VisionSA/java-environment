@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.bizitglobal.tarjetafiel.cobranzas.negocio">
+  <class name="Moroso" table="t_vis_tra_clientes" >
+	<id name="idCliente" type="java.lang.Long" column="c_id_cliente">
+		<generator class="increment"/>
+	</id>
+    <property name="idPlanDeMora" type="java.lang.Long" column="c_id_plan_mora" /> 
+	
+	<property name="fechaMora" type="java.util.Date" column="c_fecha_mora" />
+  	
+  	<property name="diasEnMora" type="java.lang.Integer"/>
+ 
+  </class>
+</hibernate-mapping>

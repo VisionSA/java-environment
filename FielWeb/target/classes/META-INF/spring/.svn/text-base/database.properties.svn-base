@@ -1,0 +1,6 @@
+#Updated at Thu May 05 16:21:52 GMT-03:00 2011
+#Thu May 05 16:21:52 GMT-03:00 2011
+database.username=fiel
+database.password=terere
+database.url=jdbc\:oracle\:thin\:@192.168.0.2\:1521\:VISIONIS
+database.driverClassName=oracle.jdbc.OracleDriver

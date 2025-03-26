@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VboxComun xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"   
+	xmlns:effectClasses="org.efflex.mx.viewStackEffects.effectClasses.*" xmlns:viewStackEffects="org.efflex.mx.viewStackEffects.*" 
+	xmlns:comercio="views.categorias.comercio.*" xmlns:date="com.util.components.date.*" xmlns:mate="http://mate.asfusion.com/" 
+	xmlns:maps="views.categorias.comercio.maps.*" xmlns:textInput="com.util.components.textInput.*" label="Cta.Cte. Contable">
+<mx:DateFormatter id="formateador" formatString="DD/MM/YYYY"  />
+	<mx:NumberFormatter id="currencyFormatter" thousandsSeparatorTo="." thousandsSeparatorFrom="." decimalSeparatorFrom="," decimalSeparatorTo="," precision="2" rounding="nearest" useNegativeSign="false"/> 	
+<mx:Style>
+        .mySelectedButtonTextStyleName {
+            color: haloBlue;
+        }
+    </mx:Style>
+    
+	<mx:VBox  horizontalAlign="center" height="100%" width="100%" backgroundColor="#F8F2F2" shadowDirection="center" paddingRight="10" paddingLeft="10" 
+		paddingBottom="10" visible="true" backgroundAlpha="0.0">
+        <mx:VBox width="100%" height="100%">
+        	<mx:ApplicationControlBar  horizontalAlign="left" verticalAlign="middle" width="100%">
+        		
+        		     <mx:HBox width="100%" verticalAlign="middle">
+        		     	<mx:Label text="Fecha Desde" styleName="lblInfoBlanco"/>
+			        	<date:DateFiledMultiLan id="fecha"  formatString="DD/MM/YYYY" selectedDate="{new Date()}" />
+			        	
+			        	<mx:Label text="Nro movimiento:" styleName="lblInfoBlanco" includeInLayout="false" visible="false"/>
+			        	<mx:TextInput  id="txtNroMov" width="56" includeInLayout="false" visible="false"/>
+			        	<mx:Label text="Tipo concepto: " styleName="lblInfoBlanco" includeInLayout="false" visible="false"/>
+			        	<mx:TextInput id="txtTipoConc" width="56" includeInLayout="false" visible="false"/>
+			        	<mx:Button label="Buscar" click="buscarMovimientos()"/>
+			        	<mx:HBox horizontalAlign="right" borderStyle="solid" verticalAlign="middle">
+			        	    <mx:Label text="SALDO ACTUAL:" styleName="lblInfoBlanco" />
+        		            <mx:Text id="txtSaldoAnt" text="{currencyFormatter.format(ctaCteComercioModel.acumuladoContable)}" styleName="lblInfoBlanco"/>
+			        	</mx:HBox>
+			        	
+			        	<!--<mx:HBox width="100%" horizontalAlign="right" verticalAlign="middle">
+			        	  		<mx:RadioButtonGroup id="radiogroup2"/>
+			        	  		<mx:RadioButton label="Todos" groupName="radiogroup2" styleName="lblInfoBlanco" selected="true" change="cambiarModoVisualizacionConciliados(4)"/>
+			        	  		<mx:RadioButton label="Solo Conciliados" groupName="radiogroup2" styleName="lblInfoBlanco"  change="cambiarModoVisualizacionConciliados(3)"/>
+			        	</mx:HBox>-->
+			        	
+			         </mx:HBox>
+        	
+        	</mx:ApplicationControlBar>
+                	       
+   
+        
+        <!--<mx:HBox horizontalGap="0">			
+			<mx:Button label="Resumido" id="btnResumido" toggle="true" selected="true" enabled="{!this.btnResumido.selected}" click="btnDetalle.visible=false,viewStk.selectedIndex = 0" styleName="togleButton"/>
+			<mx:Button label="Detalle" id="btnDetalle" toggle="true" visible="false" click="{viewStk.selectedIndex = 1}" enabled="{!this.btnDetalle.selected}" styleName="togleButton"/>
+			
+			<mx:Button label="Composición" id="btnComposicion" toggle="true" visible="false" enabled="{!this.btnComposicion.selected}" styleName="togleButton"/>
+			        		        	
+        </mx:HBox>-->
+        <mx:ViewStack  height="100%" width="100%"  id="viewStk" >
+        	
+        	<comercio:ResumidoCtaCteContable label="ResumidoContable" id="resumidoContable"  verticalAlign="top" width="100%" height="100%"/>
+	    	<!--<comercio:DetalleCtaCteComercioView label="Detalle" id="detalle"/>--> 
+	        <!--	
+ 	        <cliente:ResumidoCtaCteView   label="Resumido" id="resumido"  verticalAlign="top" width="100%" height="100%"/>
+	        <cliente:DetalleCtaCteView label="Detalle" id="detalle"/> 
+	        <cliente:ComposicionDetalleCtaCteView id="composicion"  label="Composicion"/>
+	        --> 
+       </mx:ViewStack>
+       </mx:VBox>
+ </mx:VBox>
+ 
+ <mate:Listener type="restaurarCtaCteListener" receive="restaurar()"/>
+ <mate:Listener type="restaurarCtaCteComercio" receive="restaurarCtaCteComercio()"/>
+ 
+<!-- <mate:Listener receive="{viewStk.selectedIndex=1,
+ 	btnDetalle.visible = true,btnDetalle.selected = true,btnResumido.selected=false}" 
+ 	type="cambiarAVistaDetalleCtaCte"/>-->
+ 
+ <!--
+ <mate:Listener  receive="{viewStk.selectedIndex=2,composicion.setFocusGrilla(),
+ 	btnComposicion.visible = true,btnDetalle.selected = false,btnResumido.selected=false,btnComposicion.selected =true}"
+ 	type="cambiarAVistaComposicionCtaCte"/>	
+ -->
+ 
+	
+<mx:Script>
+	<![CDATA[
+		import views.categorias.comercio.models.CtaCteComercioModel;
+		import com.util.Fecha;
+		import mx.formatters.CurrencyFormatter;
+		import com.util.collections.ArrayUtil;
+		import mx.controls.DateField; 
+		import com.util.components.alert.AlertOk;
+       
+	        [Bindable]  public  var ctaCteComercioModel: CtaCteComercioModel; 
+             private function buscarMovimientos():void{
+             	ctaCteComercioModel.movimientoCtaCteSeleccionado= null;
+             	ArrayUtil.limpiarLista(ctaCteComercioModel.arrayMovientosContable);
+				ArrayUtil.limpiarLista(ctaCteComercioModel.arrayCOMDetallesCtaCte);
+				ArrayUtil.limpiarLista(ctaCteComercioModel.arrayCOMComposicionCtaCte);
+				this.restaurar();
+             	calcularSaldoAnterior();
+        	 }
+	         
+	         private function restaurarCtaCteComercio():void{
+             	ctaCteComercioModel.movimientoCtaCteSeleccionado= null;
+				ArrayUtil.limpiarLista(ctaCteComercioModel.arrayMovientosContable);
+				ArrayUtil.limpiarLista(ctaCteComercioModel.arrayCOMDetallesCtaCte);
+				ArrayUtil.limpiarLista(ctaCteComercioModel.arrayCOMComposicionCtaCte);
+				this.restaurar();
+        	 }
+	         
+	         private function cambiarModoVisualizacionConciliados(modo:int):void{
+	         	ctaCteComercioModel.modoConciliado = modo;
+	         	buscarMovimientos();
+	         }
+	         
+	         private function restaurar():void{
+	         	txtSaldoAnt.text = "0";
+	         	/* this.btnDetalle.visible = false;
+	         	this.btnDetalle.selected = false;
+	         	this.btnResumido.selected = true; */
+	         }
+	         
+	         private function getFechaDefault():Date{
+	        // le restamos 60  dias a la fecha de hoy
+               return  Fecha.quitarDias(new Date(),60);
+             }
+	         
+	         private function calcularSaldoAnterior() :void{
+	         	viewStk.selectedIndex = 0;
+	         	ctaCteComercioModel.buscarMovimientosContables(DateField.stringToDate(fecha.text, "DD/MM/YYYY"));
+	         }
+	  
+	]]>
+</mx:Script>
+
+</VboxComun>

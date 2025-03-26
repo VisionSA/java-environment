@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.Caja" table="T_VIS_FON_CAJAS" >
+	<id name="idCaja" type="java.lang.Long" column="C_ID_CAJA">
+		<generator class="increment"   />
+	</id>
+	
+	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="true" length="100"/>
+   	<property name="habilitada" type="java.lang.Character" column="C_HABILITADA" not-null="true" length="100"/>
+    <property name="fechaModificacion" type="java.util.Date" column="C_FECHA_ULTIMA_MODIF" not-null="false"/>
+	<property name="idPlanCuenta" type="java.lang.Long" column="C_ID_PLAN_CUENTA" not-null="false" />
+	
+  	<many-to-one name="operador" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="false" cascade="none">
+		<column name="C_ID_OPERADOR" />
+	</many-to-one>
+	
+	<many-to-one name="sucursal" class="com.bizitglobal.tarjetafiel.general.negocio.SucursalFiel" not-null="false" cascade="none">
+		<column name="C_ID_SUCURSAL" />
+	</many-to-one>
+	
+	<many-to-one name="impresora" class="com.bizitglobal.tarjetafiel.general.negocio.Impresora" not-null="false" cascade="none">
+		<column name="C_ID_IMPRESORA" />
+	</many-to-one>
+	
+	<many-to-one name="operadorDefault" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="false" cascade="none">
+		<column name="C_ID_OPERADOR_DEFAULT" />
+	</many-to-one>
+	
+	<many-to-one name="lugar" class="com.bizitglobal.tarjetafiel.fondos.negocio.Lugar" not-null="false" cascade="save-update">
+		<column name="C_ID_LUGAR" />
+	</many-to-one>
+	
+	<!-- cascade="all-delete-orphan" -->
+	<set name="cajaMPSet" inverse="false"  cascade="all-delete-orphan" lazy="false"   >
+		<key>
+			<column name="c_id_caja" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.CajaMP"/>
+	</set>
+	
+<!--
+	<set name="cajaAperturasSet" cascade="all-delete-orphan" lazy="false"  order-by="c_id_cajaapertura desc" >
+		<key>
+			<column name="c_id_cajaapertura" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.CajaApertura"/>
+	</set>  -->
+	
+	
+
+</class>
+</hibernate-mapping>

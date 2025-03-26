@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.ChequeConciliado" table="T_VIS_FON_CHEQUES_CONCILIADO" >
+	
+	<cache usage="read-write"/>
+	
+	<id name="idChequeConciliado" type="java.lang.Long" column="C_ID_CHEQUE_CONCILIADO">
+		<generator class="increment" />
+	</id>
+	
+	<property name="importeCancela" type="java.lang.Double" column="C_IMPORTE_CANCELA" not-null="true" />
+	<property name="fechaConcilia" type="java.util.Date" column="C_FECHA_CONCILIA" not-null="true" length="3594"/>
+	
+    <many-to-one name="detalleExtracto" class="com.bizitglobal.tarjetafiel.fondos.negocio.DetalleExtracto" not-null="false" >
+		<column name="C_ID_DETALLE_EXTRACTO" />
+	</many-to-one>
+
+    <many-to-one name="cheque" class="com.bizitglobal.tarjetafiel.fondos.negocio.Cheque" not-null="false" >
+		<column name="C_ID_CHEQUE" />
+	</many-to-one>
+		
+</class>
+</hibernate-mapping>

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.AsientoFondos" table="T_VIS_FON_ASIENTOS" >
+	
+	<cache usage="read-write"/>
+	<id name="idAsiento" type="java.lang.Long" column="C_ID_ASIENTO">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_ASIENTO_ID</param>
+		</generator>
+	</id>
+	
+	<property name="concepto" type="java.lang.String" column="C_CONCEPTO" not-null="true" length="40"/>
+	<property name="fecha" type="java.util.Date" column="C_FECHA" not-null="true" />
+	<property name="hora" type="java.lang.String" column="C_HORA" not-null="true" length="5"/>
+	<property name="cotabilizado" type="java.lang.Character" column="C_CONTABILIZADO" not-null="true" />
+    <property name="fechaContabilizado" type="java.util.Date" column="C_FECHA_CONTABILIZADO" not-null="false" length="3594"/>
+    
+  	<many-to-one name="operador" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="false" >
+		<column name="C_ID_OPERADOR" />
+	</many-to-one>
+	
+	<many-to-one name="asientoRev" class="com.bizitglobal.tarjetafiel.fondos.negocio.AsientoFondos" not-null="false" >
+		<column name="C_ID_ASIENTO_REV" />
+	</many-to-one>
+	
+	<set name="asientosItems" inverse="true" cascade="all"  order-by="C_NRO_RENG">
+		<key>
+			<column name="c_id_asiento" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.AsientoItem"/>
+	</set>
+    
+</class>
+</hibernate-mapping>

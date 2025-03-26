@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" 
+	xmlns:views="views.*" 
+	xmlns:maps="maps.*" 
+	xmlns:controller="controller.*" 
+	xmlns:business="business.*" xmlns:componentView="com.componentView.*" width="100%" height="100%" creationComplete="initApp()">
+
+    <mx:Style source="assets/styles/newStyle.css"/>
+    
+    <controller:ConciliacionController id="controller"/>
+    
+    <business:Services/>
+<!--@I3918-->    
+    <!--<componentView:Top width="100%" minHeight="5" verticalScrollPolicy="off"/>-->
+<!--@F3918-->    
+	<views:MenuView width="100%"/>
+	
+<!--@I3918-->	<mx:HBox width="100%" height="100%" styleName="modBackground" >
+		<mx:ModuleLoader id="modulo" width="100%" height="100%" horizontalAlign="center" 
+						 ready="modLoader_readyHandler(event)"
+						 error="modLoader_errorHandler(event)"
+						 unload="modLoader_unloadHandler(event)"/>	
+<!--@F3918-->	</mx:HBox>	
+	
+	<mx:Script>
+		<![CDATA[
+			import com.util.block.Block;
+			import com.util.block.ControlBlock;
+			import com.util.components.alert.AlertError;
+			
+			import model.ConciliacionModelLocator;
+			
+			import mx.core.Application;
+			import mx.events.ModuleEvent;
+			[Bindable]
+			private var modelo : ConciliacionModelLocator = ConciliacionModelLocator.getInstance();
+			
+			public function initApp():void{
+/*@I3918*/				//modelo.codigoOperador = 1212;
+/*@F3918*/				modelo.codigoOperador = Application.application.parameters.codigoOperador != ""?Application.application.parameters.codigoOperador:1212; 
+           }
+/*@I3918*/			
+			protected function modLoader_unloadHandler(event:ModuleEvent):void
+			{
+				//ManejadorPantallas.cerrarPop(this);
+			}
+			
+			protected function modLoader_readyHandler(event:ModuleEvent):void
+			{
+				ControlBlock.getInstance().remove();
+			}
+			
+			
+			protected function modLoader_errorHandler(event:ModuleEvent):void
+			{
+				ControlBlock.getInstance().remove();
+				AlertError.show("Error al cargar el módulo");
+			}
+/*@F3918*/			
+			]]>
+	</mx:Script>
+	
+</mx:Application>

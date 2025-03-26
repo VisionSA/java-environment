@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>ImpresionCheques</name>
+	<comment></comment>
+	<projects>
+		<project>Commons</project>
+		<project>Contabilidad</project>
+		<project>Fondos</project>
+		<project>General</project>
+		<project>Operador</project>
+		<project>PrintUtil</project>
+		<project>SchedulerUiWeb</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+</projectDescription>

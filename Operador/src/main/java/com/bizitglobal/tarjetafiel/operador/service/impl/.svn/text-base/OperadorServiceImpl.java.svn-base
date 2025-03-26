@@ -1,0 +1,276 @@
+package com.bizitglobal.tarjetafiel.operador.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import com.bizitglobal.tarjetafiel.commons.filtros.Filtro;
+import com.bizitglobal.tarjetafiel.operador.dao.OperadorDao;
+import com.bizitglobal.tarjetafiel.operador.dao.impl.OperadorDaoHibernateImpl;
+import com.bizitglobal.tarjetafiel.operador.exeption.OperadorDuplicateException;
+import com.bizitglobal.tarjetafiel.operador.exeption.OperadorException;
+import com.bizitglobal.tarjetafiel.operador.exeption.OperadorNotFoundException;
+import com.bizitglobal.tarjetafiel.operador.negocio.Operador;
+import com.bizitglobal.tarjetafiel.operador.negocio.Pagina;
+import com.bizitglobal.tarjetafiel.operador.negocio.Permiso;
+import com.bizitglobal.tarjetafiel.operador.negocio.Rol;
+import com.bizitglobal.tarjetafiel.operador.negocio.RolPaginaPermiso;
+import com.bizitglobal.tarjetafiel.operador.service.OperadorService;
+
+/**
+ * Implementación de la interface de servicios.
+ */
+public class OperadorServiceImpl implements OperadorService {
+	private OperadorDao operadorDao;
+	private PlatformTransactionManager transactionManager;
+	private TransactionTemplate transactionTemplate;
+
+	/* (non-Javadoc)
+	 * @see com.bizitglobal.tarjetafiel.operador.service.OperadorService#grabarOperador(com.bizitglobal.tarjetafiel.operador.negocio.Operador, java.util.Iterator)
+	 */
+	public void grabarOperador(final Operador unOperador) throws OperadorException {
+		
+		try {
+			transactionTemplate.execute(new TransactionCallbackWithoutResult(){
+				protected void doInTransactionWithoutResult(TransactionStatus arg0) {				
+					operadorDao.grabarOperador(unOperador);
+				}
+			});
+		} catch (DataIntegrityViolationException ex) {
+			String msg = "El operador ya existe en la base de datos.";
+			throw new OperadorDuplicateException(msg,ex);
+		} catch (Exception e) {
+			String msg = "El operador no pudo ser grabado.";
+			throw new OperadorException(msg,e);
+		}
+	}
+	public Operador getOperadorLogueado(Long codigo) throws Exception{
+		try {
+			return ((OperadorDaoHibernateImpl)operadorDao).getOperadorLogueado(codigo);
+		}catch (Exception ex){
+			throw ex;
+		}
+	}
+	/* (non-Javadoc)
+	 * @see com.bizitglobal.tarjetafiel.operador.service.OperadorService#leerOperador(java.lang.Integer, java.util.Iterator)
+	 */
+	public Operador leerOperador(final Long id) throws OperadorException {
+		try {
+			transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		      return (Operador) transactionTemplate.execute(new TransactionCallback() { 
+		    	  public Object doInTransaction(TransactionStatus status) {
+		    		  Operador operador = operadorDao.buscarOperador(id);
+					return operador;
+					}
+				});	 
+		} catch (HibernateObjectRetrievalFailureException ex) {
+			String msg = "El operador no existe en la base de datos.";
+			throw new OperadorNotFoundException(msg,ex);
+		} catch (Exception e) {
+			String msg = "El operador no pudo leerse.";
+			throw new OperadorException(msg,e);
+		}
+	}
+
+	/**
+	 * Necesario para el contexto de spring.
+	 * @return Un operador dao.
+	 */
+	public OperadorDao getOperadorDao() {
+		return operadorDao;
+	}
+	
+	/**
+	 * Necesario para el contexto de spring.
+	 * @param unOperadorDao
+	 */
+	public void setOperadorDao(OperadorDao unOperadorDao) {
+		operadorDao = unOperadorDao;
+	}
+
+	/**
+	 * Necesario para el contexto de spring. 
+	 * @param transactionManager
+	 */
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+		transactionTemplate = new TransactionTemplate(transactionManager);
+	}
+
+	/**
+	 * Necesario para el contexto de spring. 
+	 * @return
+	 */
+	public PlatformTransactionManager getTransactionManager() {
+		return transactionManager;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.bizitglobal.tarjetafiel.operador.service.OperadorService#getOperadores(java.util.Iterator)
+	 */
+	public List getOperadores() throws OperadorException {
+		try {
+			transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+			return (List) transactionTemplate.execute(new TransactionCallback() {
+				public Object doInTransaction(TransactionStatus status) {
+				List lista = operadorDao.listarTodos();
+				return lista;
+				}
+			});
+		} catch (Exception e) {
+			String msg = "El listado de operadores no se pudo leer.";
+			throw new OperadorException(msg,e);
+		}
+	}
+	
+	public List getOperadores(final Filtro filtro) throws OperadorException {
+	
+		try {
+			transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+			return (List) transactionTemplate.execute(new TransactionCallback() {
+				public Object doInTransaction(TransactionStatus status) {
+				List lista = operadorDao.listarTodos(filtro);
+				return lista;
+				}
+			});
+			} catch (Exception e) {
+			String msg = "El listado de operadores no se pudo leer.";
+			throw new OperadorException(msg,e);
+		}
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.bizitglobal.tarjetafiel.operador.service.OperadorService#borrarOperador(java.lang.Integer, java.util.Iterator)
+	 */
+	public void borrarOperador(final Long id) throws OperadorException {
+		
+		try {
+			transactionTemplate.execute(new TransactionCallbackWithoutResult(){
+				protected void doInTransactionWithoutResult(TransactionStatus arg0) {				
+					operadorDao.borrarOperador(id);
+				}
+			});
+			
+		} catch (Exception e) {
+			String msg = "El operador no pudo ser borrado.";
+			throw new OperadorException(msg,e);
+		}		
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.bizitglobal.tarjetafiel.operador.service.OperadorService#borrarOperador(com.bizitglobal.tarjetafiel.operador.negocio.Operador, java.util.Iterator)
+	 */
+	public void borrarOperador(Operador unOperador) throws OperadorException {
+		borrarOperador(unOperador.getCodigo());
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.bizitglobal.tarjetafiel.operador.service.OperadorService#login(java.lang.Integer, java.lang.String)
+	 */
+	public Operador login(String username) throws OperadorException {
+		Operador result = null;
+		Operador aux = null;
+		boolean encontrado = false;
+		List operadores = null;
+		
+		try {
+			operadores = getOperadores();
+			Iterator op = operadores.iterator();
+			
+			while (op.hasNext()) {
+				Operador ope = (Operador)op.next();
+				ope.getClave();
+				ope.getEstado();
+				ope.getUsername();
+			}
+		} catch (Exception e) {
+			String msg = "El login falla, no se pudieron listar los operadores";
+			throw new OperadorException(msg,e);
+		}
+		
+		Iterator listaOperadores = operadores.iterator();
+		System.out.println("buscando...");
+		
+		while(listaOperadores.hasNext() && !encontrado) {
+			aux = ((Operador)listaOperadores.next());
+			if(aux.getUsername().equals(username)) {
+				encontrado = true;
+				result = aux;
+			}
+		}
+		
+		return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.bizitglobal.tarjetafiel.operador.service.OperadorService#actualizarOperador(com.bizitglobal.tarjetafiel.operador.negocio.Operador, java.util.Iterator)
+	 */
+	public void actualizarOperador(final Operador unOperador) throws OperadorException {
+		
+		try {
+			transactionTemplate.execute(new TransactionCallbackWithoutResult(){
+				protected void doInTransactionWithoutResult(TransactionStatus arg0) {				
+					operadorDao.actualizarOperador(unOperador);
+				}
+			});
+						
+		} catch (Exception e) {
+			String msg = "No se pudo actualizar el operador.";
+			throw new OperadorException(msg,e);
+		}
+	}
+	
+	public List validarPermisoFlex(final Operador operador, final String pagina) throws Exception{
+		try{
+			List list = (List) transactionTemplate.execute(new TransactionCallback(){
+				
+				@Override
+				public Object doInTransaction(TransactionStatus arg0) {
+					
+					List list = new ArrayList();
+					List listIterate = operadorDao.validarPermisoDesdeFlex(operador, pagina);
+					if(listIterate.size() > 0){
+						for(Object obj : listIterate){
+							RolPaginaPermiso rolPaginaPermiso = (RolPaginaPermiso)obj;
+							RolPaginaPermiso permiso = new RolPaginaPermiso();
+							permiso.setPagina(new Pagina());
+							permiso.getPagina().setPagina(rolPaginaPermiso.getPagina().getPagina());
+							permiso.setPermiso(new Permiso());
+							permiso.getPermiso().setNombre(rolPaginaPermiso.getPermiso().getNombre());
+							permiso.getPermiso().setDescripcion(rolPaginaPermiso.getPermiso().getDescripcion());
+							permiso.setRol(new Rol());
+							permiso.getRol().setDescripcion(rolPaginaPermiso.getRol().getDescripcion());
+							list.add(permiso);
+						}
+					} else {
+						HashMap<String, String> hashMap = new HashMap<String, String>();
+						hashMap.put("paginaDenegada", pagina);
+						list.add(hashMap);
+					}
+					return list;
+				}
+			});
+			
+			if(list.size() == 0){
+				throw new Exception("No tiene permisos en esta pagina");
+			}
+			
+			return list;
+			
+		} catch (Exception e) {
+			throw new Exception("Ocurrio un error al validar el permiso",e);
+		}
+	}
+	
+}

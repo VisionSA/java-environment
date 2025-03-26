@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="LiquidacionCodComercio"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="567"
+		 columnSpacing="0"
+		 leftMargin="14"
+		 rightMargin="14"
+		 topMargin="14"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="URLImagen" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="subreport_comercio_trans" isForPrompting="true" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="URLImagen2" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="liquidacion_numero" isForPrompting="true" class="java.lang.Long">
+		<defaultValueExpression ><![CDATA[$P{liquidacion_numero}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="responsable_comercio" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{responsable_comercio}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nombre_comercial" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{nombre_comercial}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="domicilio_legal" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{domicilio_legal}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="codigo_comercio" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{codigo_comercio}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cuit" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{cuit}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="insc_ing_brutos" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{insc_ing_brutos}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="categoria_iva" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{categoria_iva}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="subreport_comercio_det" isForPrompting="true" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="fecha_liquidacion" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[$P{fecha_liquidacion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="liq1Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{liq1Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="total_liquidacion" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{total_liquidacion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="total_transacciones" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{total_transacciones}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="arancel" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{arancel}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="aceleramiento" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{aceleramiento}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cargos_varios" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{cargos_varios}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="iva" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{iva}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret1Importe" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{ret1Importe}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret2Importe" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{ret2Importe}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret3Importe" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{ret3Importe}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret4Importe" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{ret4Importe}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret5Importe" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{ret5Importe}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret6Importe" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{ret6Importe}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="liq2Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{liq2Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="liq3Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{liq3Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago1Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{pago1Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago2Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{pago2Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago3Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{pago3Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago4Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{pago4Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago1Fecha" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[$P{pago1Fecha}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago2Fecha" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[$P{pago2Fecha}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago3Fecha" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[$P{pago3Fecha}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago4Fecha" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[$P{pago4Fecha}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret1Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{ret1Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret2Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{ret2Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret3Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{ret3Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret4Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{ret4Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret5Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{ret5Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ret6Descripcion" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{ret6Descripcion}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago1Importe" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{pago1Importe}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago2Importe" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{pago2Importe}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago3Importe" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{pago3Importe}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago4Importe" isForPrompting="true" class="java.math.BigDecimal">
+		<defaultValueExpression ><![CDATA[$P{pago4Importe}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="subreport_comercio_pie" isForPrompting="true" class="net.sf.jasperreports.engine.JasperReport"/>
+	<queryString><![CDATA[select C_ESTADO as estado, C_IDLOTECOMERCIO  as idLoteComercio, C_FECHALOTE as fechaLote, C_NROCUOTA as nroCuota, C_IMPORTETOTAL as importeTotal, C_TITULO as titulo, C_ID_TRANASCCIONES as c_id_tranascciones, C_ARANCEL as arancel,  C_ACELERAMIENTO as aceleramiento, C_ESTADO1, C_IDLOTECOMERCIO1, C_FECHALOTE1, C_NROCUOTA1, C_IMPORTETOTAL1, C_TITULO1, C_ID_TRANASCCIONES1, C_ARANCEL1, C_ACELERAMIENTO1
+from table(SP_GET_DET_LIQ_CLIE($P{liquidacion_numero},1))]]></queryString>
+
+	<variable name="CONTROL" class="java.lang.String" resetType="Report" calculation="Nothing">
+	</variable>
+
+		<group  name="Firma" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="120"  isSplitAllowed="true" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="0"
+						y="-2"
+						width="336"
+						height="7"
+						key="subreport-1"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="liquidacion_numero">
+						<subreportParameterExpression><![CDATA[$P{liquidacion_numero}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="subreport_comercio">
+						<subreportParameterExpression><![CDATA[$P{subreport_comercio_trans}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{subreport_comercio_trans}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="346"
+						y="-2"
+						width="220"
+						height="7"
+						key="subreport-2"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="liquidacion_numero">
+						<subreportParameterExpression><![CDATA[$P{liquidacion_numero}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="subreport_comercio">
+						<subreportParameterExpression><![CDATA[$P{subreport_comercio_det}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="codigo_comercio">
+						<subreportParameterExpression><![CDATA[$P{codigo_comercio}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cuit">
+						<subreportParameterExpression><![CDATA[$P{cuit}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="insc_ing_brutos">
+						<subreportParameterExpression><![CDATA[$P{insc_ing_brutos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="fecha_liquidacion">
+						<subreportParameterExpression><![CDATA[$P{fecha_liquidacion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="categoria_iva">
+						<subreportParameterExpression><![CDATA[$P{categoria_iva}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="subreport_comercio_det">
+						<subreportParameterExpression><![CDATA[$P{subreport_comercio_det}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="liq1Descripcion">
+						<subreportParameterExpression><![CDATA[$P{liq1Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="total_liquidacion">
+						<subreportParameterExpression><![CDATA[$P{total_liquidacion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="total_transacciones">
+						<subreportParameterExpression><![CDATA[$P{total_transacciones}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="arancel">
+						<subreportParameterExpression><![CDATA[$P{arancel}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="aceleramiento">
+						<subreportParameterExpression><![CDATA[$P{aceleramiento}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cargos_varios">
+						<subreportParameterExpression><![CDATA[$P{cargos_varios}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="iva">
+						<subreportParameterExpression><![CDATA[$P{iva}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret1Importe">
+						<subreportParameterExpression><![CDATA[$P{ret1Importe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret2Importe">
+						<subreportParameterExpression><![CDATA[$P{ret2Importe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret3Importe">
+						<subreportParameterExpression><![CDATA[$P{ret3Importe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret4Importe">
+						<subreportParameterExpression><![CDATA[$P{ret4Importe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret5Importe">
+						<subreportParameterExpression><![CDATA[$P{ret5Importe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret6Importe">
+						<subreportParameterExpression><![CDATA[$P{ret6Importe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="liq2Descripcion">
+						<subreportParameterExpression><![CDATA[$P{liq2Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="liq3Descripcion">
+						<subreportParameterExpression><![CDATA[$P{liq3Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago1Descripcion">
+						<subreportParameterExpression><![CDATA[$P{pago1Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago2Descripcion">
+						<subreportParameterExpression><![CDATA[$P{pago2Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago3Descripcion">
+						<subreportParameterExpression><![CDATA[$P{pago3Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago4Descripcion">
+						<subreportParameterExpression><![CDATA[$P{pago4Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago1Fecha">
+						<subreportParameterExpression><![CDATA[$P{pago1Fecha}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago2Fecha">
+						<subreportParameterExpression><![CDATA[$P{pago2Fecha}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago3Fecha">
+						<subreportParameterExpression><![CDATA[$P{pago3Fecha}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago4Fecha">
+						<subreportParameterExpression><![CDATA[$P{pago4Fecha}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret1Descripcion">
+						<subreportParameterExpression><![CDATA[$P{ret1Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret2Descripcion">
+						<subreportParameterExpression><![CDATA[$P{ret2Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret3Descripcion">
+						<subreportParameterExpression><![CDATA[$P{ret3Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret4Descripcion">
+						<subreportParameterExpression><![CDATA[$P{ret4Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret5Descripcion">
+						<subreportParameterExpression><![CDATA[$P{ret5Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ret6Descripcion">
+						<subreportParameterExpression><![CDATA[$P{ret6Descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago1Importe">
+						<subreportParameterExpression><![CDATA[$P{pago1Importe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago2Importe">
+						<subreportParameterExpression><![CDATA[$P{pago2Importe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago3Importe">
+						<subreportParameterExpression><![CDATA[$P{pago3Importe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="pago4Importe">
+						<subreportParameterExpression><![CDATA[$P{pago4Importe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{subreport_comercio_det}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="34"
+						y="-22"
+						width="515"
+						height="142"
+						key="subreport-3"
+						positionType="FixRelativeToBottom"/>
+					<subreportParameter  name="cod_comercio">
+						<subreportParameterExpression><![CDATA[$P{codigo_comercio}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["/usr/local/apache-tomcat-6.0.20/webapps/Presentacion/WEB-INF/classes/com/bizitglobal/webapp/report/subreport_comercio_banner.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="120"  isSplitAllowed="true" >
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="140"
+						y="1"
+						width="283"
+						height="45"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="16"
+						y="76"
+						width="164"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{nombre_comercial}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="16"
+						y="92"
+						width="194"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{domicilio_legal}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="16"
+						y="56"
+						width="276"
+						height="18"
+						forecolor="#000000"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="12" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{responsable_comercio}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="29"  isSplitAllowed="false" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="531"
+						y="16"
+						width="36"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="360"
+						y="16"
+						width="170"
+						height="13"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Pagina " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="13"
+						y="4"
+						width="548"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-9"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[VISION S.A - Mendoza 360 Sur (5400) San Juan Tel. (0264) 429-3400 - C.U.I.T. 30-70704996-7 Ing. Brutos 000/070962/8 - IVA: Responsable Inscripto
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="7"
+						y="3"
+						width="5"
+						height="13"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="element-10"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</pageFooter>
+		<lastPageFooter>
+			<band height="175"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="12"
+						y="17"
+						width="545"
+						height="78"
+						backcolor="#CCCCCC"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Top">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="7" isBold="true" isUnderline="false"/>
+					</textElement>
+				<text><![CDATA[AUTORIZACIÓN TELEFÓNICA 08102223400 y 4293400 Lunes a Sábados de 8:30 a 21hs
+CONSULTAS a nuestro WhatsApp 2644293400 o a través de nuestra casilla de correo info@tarjetafiel.com
+LIQUIDACIONES DE PAGO Y CERTIFICADOS DE RETENCIÓN Ingrese a www.tarjetafiel.com y obtenga copia de sus liquidaciones de pago y certificados de retenciones.
+SUCURSALES
+Mendoza 360 (Sur) Local 4 – Edificio Torres de Cuyo – San Juan
+Av. España 521 (Sur) – Rawson
+San Juan 530 (Óptica San José) – Jáchal
+Uruguay 250 esq. Torrente (Radio San Antonio) – Media Agua]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="12"
+						y="2"
+						width="548"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-5"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Mensajes]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="7"
+						y="2"
+						width="5"
+						height="13"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="element-6"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="12"
+						y="94"
+						width="545"
+						height="29"
+						backcolor="#CCCCCC"
+						key="staticText-2"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Top">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="7" isBold="true" isUnderline="false"/>
+					</textElement>
+				<text><![CDATA[ASESOR COMERCIAL
+Mario Clavel Cel. 2645049417 Correo: mclavel@tarjetafiel.com]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="12"
+						y="120"
+						width="544"
+						height="16"
+						key="staticText-3"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Verdana" pdfFontName="Helvetica-Oblique" size="6" isItalic="true"/>
+					</textElement>
+				<text><![CDATA[Documento no válido para el cómputo de retenciones y/o percepciones como pago a cuenta de los impuestos detallados precedentemente - R.G. (AFIP) 796.
+Documento válido para el cómputo de retenciones de Ingresos Bruto practicadas bajo el sistema SIRTAC Resolución N° 1173-DGR-2020 Art. 10]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="531"
+						y="151"
+						width="36"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="360"
+						y="151"
+						width="170"
+						height="13"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Pagina " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="12"
+						y="138"
+						width="548"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-7"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[VISION S.A - Mendoza 360 Sur (5400) San Juan Tel. (0264) 429-3400 - C.U.I.T. 30-70704996-7 Ing. Brutos 000/070962/8 - IVA: Responsable Inscripto
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="7"
+						y="138"
+						width="5"
+						height="13"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="element-8"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" rightBorder="Thin" rightBorderColor="#000000" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</lastPageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

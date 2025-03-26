@@ -1,0 +1,220 @@
+package com.bizitglobal.tarjetafiel.planificadoremail.service.impl;
+
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
+
+import com.bizitglobal.tarjetafiel.commons.util.Convertidores;
+import com.bizitglobal.tarjetafiel.planificadoremail.exception.EnvioEmailException;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.EmailInCola;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.ValoresParanEmail;
+import com.bizitglobal.tarjetafiel.planificadoremail.service.RegistrationService;
+import com.bizitglobal.tarjetafiel.general.dao.IGenericDao;
+
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import java.io.DataOutputStream;
+import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.List;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+/***** @Id:6958 ******/
+public class SimpleRegistrationService implements RegistrationService {
+	private IGenericDao genericDao;
+	private JavaMailSender mailSender;
+	private JavaMailSender mailSender1;
+	private VelocityEngine velocityEngine;
+	private EmailInCola emailInCola;
+
+
+	// private EnvioEmailService envioEmailService = null;
+	// private static final String ENVIO_EMAIL_SERVICE_NAME = "envioEmailService";
+
+	public void setMailSender(JavaMailSender mailSender) {
+		this.mailSender = mailSender;
+	}
+
+
+	public void setVelocityEngine(VelocityEngine velocityEngine) {
+		this.velocityEngine = velocityEngine;
+	}
+
+
+	public String sendConfirmationEmail(final EmailInCola emailInCola) {
+		String envioMail = "P";
+		this.emailInCola = emailInCola;
+		String msj= "";
+		
+		if (emailInCola.getPlanProcesoEmail().getIdPlan().intValue() == 1) {
+		
+		 msj = 	"{";
+		
+		List lstValores = Convertidores.setToList(emailInCola
+				.getValoresParam());
+		Iterator<ValoresParanEmail> iterParam = lstValores.iterator();
+		while (iterParam.hasNext()) {
+			ValoresParanEmail valor = (ValoresParanEmail) iterParam
+					.next();
+			msj +=	"\""+valor.getNombre()+"\" : \"" + valor.getValor().trim().replace("\"","") + "\",";
+		}
+		
+		msj +=	"\"email\": \"" + emailInCola.getEmail() + "\"";
+		msj += " }";
+		System.out.println(" json ValoresParamEmail  " + msj );
+		
+		}
+		
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+				  
+//				  String msj = "" +
+//							"{" +
+//							    "\"token\" : \"" + token + "\"," +
+//							    "\"email\": \"" + email + "\"," +
+//							    "\"importe\": \"" + importe + "\"," +
+//							    "\"idOpercacion\": \"" + idOp + "\"" +
+//							"}";
+
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+				message.setTo(getEmailInCola().getEmail().trim());
+				message.setSubject(getEmailInCola().getAsunto());
+				if (emailInCola.getPlanProcesoEmail().getIdPlan().intValue() == 6) {
+					//message.setFrom(new InternetAddress("comunicaciones@tarjetafiel.com", "Tarjeta Fiel"));
+					message.setFrom(new InternetAddress("info@tarjetafiel.com", "Tarjeta Fiel"));
+				} else {
+					message.setFrom(new InternetAddress("info@tarjetafiel.com", "Tarjeta Fiel"));
+				}
+				
+			//	String msj = 	"{";
+//				int valor = 0;
+				VelocityContext context = new VelocityContext();
+				List lstValores = Convertidores.setToList(emailInCola
+						.getValoresParam());
+				Iterator<ValoresParanEmail> iterParam = lstValores.iterator();
+				while (iterParam.hasNext()) {
+					ValoresParanEmail valor = (ValoresParanEmail) iterParam
+							.next();
+					context.put(valor.getNombre(), valor.getValor());	
+				}	
+				
+				
+				StringWriter swOut = new StringWriter();
+				Boolean resultado = Velocity.evaluate(context, swOut,
+						"Velocity Log", getEmailInCola().getHistoricoPlan()
+								.getArchivoTemp());
+
+				message.setText(swOut.toString(), true);
+			}
+		};
+		if (emailInCola.getPlanProcesoEmail().getIdPlan().intValue() == 1) {
+			//this.mailSender1.send(preparator);
+			//envioMail =	getSendinBlue(emailInCola,msj);
+			envioMail =	getSendinBlue(emailInCola,msj);
+			
+		} else {
+			
+		 try{
+			
+		this.mailSender.send(preparator);
+		envioMail =  "E";
+		 }
+		 catch(Exception e){
+			 e.printStackTrace();
+			 envioMail =  "R";
+		 }
+		
+		}
+		
+		return envioMail;
+
+	}
+	
+	private String getSendinBlue(EmailInCola emailInCola, String msj){
+		 try{
+			 
+//			 String msj = "" +
+//						"{" +						    
+//						    "\"email\": \"" + emailInCola.getEmail() + "\"" +
+//						"}";
+			 
+			 // URL url = new URL("http://localhost:8080//envioEmail");
+			  URL url = new URL("http://192.168.0.10:8080/spring-boot-web/envioEmail");
+			  HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			  conn.setRequestMethod("POST");
+			  conn.setRequestProperty("Content-Type", "application/json");
+			  conn.setDoOutput(true);
+			  DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+			 // wr.writeBytes(URLEncoder.encode(myObject.toString(),"UTF-8"));
+			  wr.writeBytes(msj);
+			  wr.flush();
+			  wr.close();
+			  
+			  int responseCode = conn.getResponseCode();
+			  if (responseCode == 201 || responseCode == 200 ) {
+				 
+				  conn.disconnect();
+				  return "E";
+			  }
+			  else{
+				  conn.disconnect();
+				  return "R";
+			  }
+		 }
+		 catch(Exception e){
+			 e.printStackTrace();
+			 return "R";
+		 }
+	 }
+
+
+	public List buscarValores(EmailInCola emailInCola)
+			throws EnvioEmailException {
+		List resultado = null;
+		try {
+			String sql = " SELECT * FROM t_vis_pla_valores_param_email where c_id_emailincola = "
+					+ emailInCola.getIdEmail();
+			resultado = (List) this.genericDao.listarMapResulsetSql(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resultado;
+	}
+
+
+	public EmailInCola getEmailInCola() {
+		return emailInCola;
+	}
+
+
+	public void setEmailInCola(EmailInCola emailInCola) {
+		this.emailInCola = emailInCola;
+	}
+
+
+	public IGenericDao getGenericDao() {
+		return genericDao;
+	}
+
+
+	public void setGenericDao(IGenericDao genericDao) {
+		this.genericDao = genericDao;
+	}
+
+
+	public void setMailSender1(JavaMailSender mailSender1) {
+		this.mailSender1 = mailSender1;
+	}
+
+}

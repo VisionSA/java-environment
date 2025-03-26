@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.InformeParticular" table="t_vis_eva_info_particulares" >
+	<id name="idInfoParticular" type="java.lang.Long" column="c_id_info_particular">
+		<generator class="increment" />
+	</id>
+
+	<property name="antiguedad" type="java.lang.Long" column="c_antiguedad" not-null="false" length="512"/>
+
+	<property name="aplica" type="java.lang.String" column="c_aplica" not-null="false" length="1"/>
+
+	<property name="cuotaAlquiler" type="java.math.BigDecimal" column="c_cuota_alquiler" not-null="false" length="2562"/>
+
+	<property name="domCorregido" type="java.lang.String" column="c_dom_corregido" not-null="false" length="1"/>
+
+	<property name="fechaRecepcion" type="java.sql.Timestamp" column="c_fecha_recepcion" not-null="false" length="3594"/>
+
+	<property name="idOperador" type="java.lang.Long" column="c_id_operador" not-null="false" length="2560"/>
+
+	<many-to-one name="propietarioVivienda" class="com.bizitglobal.tarjetafiel.general.negocio.PropietarioVivienda" not-null="false" >
+		<column name="c_id_prop_vivienda" />
+	</many-to-one>
+
+	<many-to-one name="solicitudIndividuo" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.SolicitudIndividuo" not-null="true" >
+		<column name="c_id_solic_individuo" />
+	</many-to-one>
+
+	<many-to-one name="tipoVivienda" class="com.bizitglobal.tarjetafiel.general.negocio.TipoVivienda" not-null="false" >
+		<column name="c_id_tipo_vivienda" />
+	</many-to-one>
+
+	<many-to-one name="tipoZona" class="com.bizitglobal.tarjetafiel.general.negocio.TipoZona" not-null="false" >
+		<column name="c_id_tipo_zona" />
+	</many-to-one>
+
+	<many-to-one name="verificador" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Verificador" not-null="true" >
+		<column name="c_id_verificador" />
+	</many-to-one>
+
+	<many-to-one name="vinculo" class="com.bizitglobal.tarjetafiel.general.negocio.Vinculo" not-null="false" >
+		<column name="c_id_vinculo" />
+	</many-to-one>
+
+	<many-to-one name="viviendaEstado" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.ViviendaEstado" not-null="false" >
+		<column name="c_id_viv_estado" />
+	</many-to-one>
+
+	<property name="informante" type="java.lang.String" column="c_informante" not-null="false" length="50"/>
+
+	<property name="nombreCorregido" type="java.lang.String" column="c_nombre_corregido" not-null="false" length="1"/>
+
+	<property name="nroDocInform" type="java.lang.String" column="c_nro_doc_inform" not-null="false" length="8"/>
+
+	<property name="nroInforme" type="java.lang.String" column="c_nro_informe" not-null="false" length="13"/>
+
+	<property name="observacion" type="java.lang.String" column="c_observacion" not-null="false" length="255"/>
+
+	<property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="false" length="3594"/>
+
+	<set name="vehiculos" inverse="false" cascade="save-update"  >
+		<key>
+			<column name="c_id_info_particular" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.InfoParticularVehiculo"/>
+	</set>
+</class>
+</hibernate-mapping>

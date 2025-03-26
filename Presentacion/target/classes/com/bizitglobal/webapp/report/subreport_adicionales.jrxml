@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="subreport_adicionales"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="453"
+		 pageHeight="1700"
+		 columnWidth="453"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="CLIENTE" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[SELECT trim(cli.c_id_titular) as Cliente,indiv.c_apellido as "Apellido",
+SUBSTR (indiv.c_cuil,1,2) || '-' || SUBSTR (indiv.c_cuil,3,8)|| '-' || SUBSTR (indiv.c_cuil,11,11) as CUIL,
+indiv.c_nombres
+from t_vis_tra_clientes cli 
+inner join t_vis_eva_individuos indiv on cli.c_id_individuo=indiv.c_id_individuo
+and cli.c_id_titular = $P{CLIENTE}
+union
+SELECT trim(gar.c_id_cliente) as Cliente,indiv.c_apellido as "Apellido",
+SUBSTR (indiv.c_cuil,1,2) || '-' || SUBSTR (indiv.c_cuil,3,8)|| '-' || SUBSTR (indiv.c_cuil,11,11) as CUIL,
+indiv.c_nombres
+from t_vis_tra_clientes clte
+inner join t_vis_tra_garantes gar on gar.c_id_cliente = clte.c_id_Cliente
+inner join t_vis_eva_individuos indiv on gar.c_id_individuo=indiv.c_id_individuo
+and gar.c_id_cliente = $P{CLIENTE}]]></queryString>
+
+	<field name="CLIENTE" class="java.lang.String"/>
+	<field name="Apellido" class="java.lang.String"/>
+	<field name="CUIL" class="java.lang.String"/>
+	<field name="C_NOMBRES" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="18"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="452"
+						height="16"
+						key="textField-1"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["En la cuenta Nº " + " " +  $F{CLIENTE} + "  figuran como intervinientes las siguientes personas:"]]></textFieldExpression>
+				</textField>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="17"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="-2"
+						width="452"
+						height="19"
+						key="textField-2"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" lineSpacing="1_1_2">
+						<font fontName="Calibri" size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{C_NOMBRES} + " " +  $F{Apellido}  + ", CUIL N° " + $F{CUIL}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

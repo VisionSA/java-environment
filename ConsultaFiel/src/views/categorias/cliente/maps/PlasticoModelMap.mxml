@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import models.ApplicationModel;
+			import events.PlasticosEvent;
+			import views.categorias.cliente.modules.CambiarEstadoPlasticoView;
+			import events.OperadorEvent;
+			import views.categorias.cliente.modules.PlasticosXCliente;
+			import views.categorias.cliente.models.PlasticosModel;
+			import views.categorias.cliente.modules.PlasticosModule;
+			import managers.ClienteManager;
+		]]>
+	</mx:Script>
+	
+	<Injectors targets="{[PlasticosModule, CambiarEstadoPlasticoView]}" debug="true">
+		<ObjectBuilder generator="{PlasticosModel}">
+			
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="plasticosModel"/>
+	</Injectors>
+      
+   <EventHandlers type="{OperadorEvent.VALIDAR_PERMISO_PANTALLA}">
+   		<RemoteObjectInvoker instance="{operadorService}" method="validarPermisoFlex" arguments="{[event.operador,event.pantalla]}">
+   			<resultHandlers>
+   				<MethodInvoker generator="{PlasticosModel}" method="resultPermiso" arguments="{resultObject}"/>
+   			</resultHandlers>
+   			<faultHandlers>
+   				<MethodInvoker generator="{PlasticosModel}" method="faultPermisos" arguments="{fault}"/>
+   			</faultHandlers>
+   		</RemoteObjectInvoker>
+   </EventHandlers>
+   
+   <EventHandlers type="{PlasticosEvent.BUSCAR_ESTADOS_PLASTICOS}" debug="true">
+   		<RemoteObjectInvoker instance="{plasticoEstadoService}" method="listarEstadosPlasticoFlex" arguments="{event.filtro}">
+   			<resultHandlers>
+   				<MethodInvoker generator="{PlasticosModel}" method="resultEstadosPlastico" arguments="{lastReturn}"/>
+   			</resultHandlers>
+   			<faultHandlers>
+   				<MethodInvoker generator="{PlasticosModel}" method="fault" arguments="{fault}"/>
+   			</faultHandlers>
+   		</RemoteObjectInvoker>
+   </EventHandlers>
+   
+   <EventHandlers type="{PlasticosEvent.BUSCAR_LUGARES_PLASTICOS}" debug="true">
+   		<RemoteObjectInvoker instance="{plasticoLugarService}" method="listarPlasticoLugaresFlex" arguments="{event.filtro}">
+   			<resultHandlers>
+   				<MethodInvoker generator="{PlasticosModel}" method="resultLugaresPlastico" arguments="{lastReturn}"/>
+   			</resultHandlers>
+   			<faultHandlers>
+   				<MethodInvoker generator="{PlasticosModel}" method="fault" arguments="{fault}"/>
+   			</faultHandlers>
+   		</RemoteObjectInvoker>
+   </EventHandlers>
+   
+   
+   
+   <mx:RemoteObject destination="GenericDestination" source="operadorServiceTarget" id="operadorService"/>
+   <mx:RemoteObject id="plasticoEstadoService" destination="GenericDestination" source="plasticoEstadosServiceTarget"/>
+   <mx:RemoteObject id="plasticoLugarService" destination="GenericDestination" source="plasticoLugarServiceTarget"/>
+   
+</EventMap>

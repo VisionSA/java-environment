@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/" >
+	<mx:Script>
+		<![CDATA[
+		
+			
+			// para el modulo de cobradores. 
+						
+			import views.modulos.CobradoresPanelPartidos;
+			import events.ProvinciaEvent;
+			import events.PaisEvent;
+			import events.CobradoresEvent;
+
+			import views.modulos.CobradoresModule;
+			import manager.CobradoresManager;
+			import model.CobradoresModel;
+
+		]]>
+	</mx:Script>
+	
+	<Debugger level="{Debugger.ALL}"/>
+
+	
+	
+	<!-- para el modulo de cobradores -->
+	<Injectors target="{CobradoresPanelPartidos}"  debug="true">
+		<PropertyInjector source="{CobradoresModel}" targetKey="cobradoresModel"/>
+	</Injectors>
+	
+	<Injectors target="{CobradoresManager}"  debug="true" dispatcherType="global">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+	</Injectors>
+	
+
+	<!-- para el modulo de cobradores -->
+	<EventHandlers type="{ProvinciaEvent.BUSCAR_PARTIDOS_X_PROVINCIA}"  debug="true" > 
+		<RemoteObjectInvoker  instance="{partidoService}" method="listarPartidosXProvincia" arguments="{event.provincia}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="resultListarPartidosXProvincia" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{CobradoresEvent.GUARDAR_PARTIDOS_MODIFICADOS}"  debug="true" > 
+		<RemoteObjectInvoker  instance="{partidoService}" method="actualizarPartido" arguments="{event.partidoAActualizar}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="resultModificacionPartidos" />
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+
+	<EventHandlers type="{CobradoresEvent.BUSCAR_COBRADORES}" debug="true">
+		<RemoteObjectInvoker  instance="{cobradoresService}" method="getCobrador" arguments="{event.filtro}" debug="true" >
+			<resultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="resultListarCobradores" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{PaisEvent.BUSCAR_PAISES}"  debug="true">
+		<RemoteObjectInvoker  instance="{paisesService}" method="getPaisesConProvincias"  debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="resultListarPaises" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	
+	
+
+	<!-- para el modulo de cobradores -->
+	
+	<Injectors target="{CobradoresModel}"  debug="true" >
+		<PropertyInjector targetKey="cobradoresArray" source="{CobradoresManager}" sourceKey="cobradoresArray"/>
+		<PropertyInjector targetKey="paisesArray" source="{CobradoresManager}" sourceKey="paisesArray"/>
+		<PropertyInjector targetKey="provinciasArray" source="{CobradoresManager}" sourceKey="provinciasArray"/>
+		<PropertyInjector targetKey="partidosArray" source="{CobradoresManager}" sourceKey="partidosArray"/>
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+	</Injectors>
+	
+	
+
+	<!-- para el modulo de cobradores -->
+	<mx:RemoteObject id="cobradoresService" destination="GenericDestination" source="cobradorServiceTarget"/>
+	<mx:RemoteObject id="paisesService" destination="GenericDestination" source="paisServiceTarget"/>
+	<mx:RemoteObject id="provinciaService" destination="GenericDestination" source="provinciaServiceTarget"/>
+	<mx:RemoteObject id="partidoService" destination="GenericDestination" source="partidoServiceTarget"/>
+	
+</EventMap>

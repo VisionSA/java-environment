@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+	<class name="com.bizitglobal.tarjetafiel.operador.negocio.MenuItemRelacion" table="t_vis_seg_menu_item_item" lazy="false">
+		<id name="idMenuItemRelacion" column="c_id_menu_item_item" type="java.lang.Integer">
+			<generator class="increment"/>
+		</id>
+		
+		<many-to-one name="padre" column="c_id_menu_item_padre" 
+				class="com.bizitglobal.tarjetafiel.operador.negocio.MenuItem" />
+
+		<many-to-one name="hijo" column="c_id_menu_item_hijo" 
+				class="com.bizitglobal.tarjetafiel.operador.negocio.MenuItem" />
+			      
+	</class>
+</hibernate-mapping>

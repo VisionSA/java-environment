@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import views.categorias.comercio.models.ListaComercioModel;
+			import events.RetencionComEvent;
+			import managers.RetencionComManager;
+			import views.categorias.comercio.models.RetencionComercioModel;
+			import views.categorias.comercio.modules.RetencionComercioModule;
+		]]>
+	</mx:Script>
+	
+	<Injectors target="{RetencionComercioModule}">
+		<ObjectBuilder generator="{RetencionComercioModel}">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>		
+		<PropertyInjector source="{lastReturn}" targetKey="retencionComercioModel"/>
+	</Injectors>
+	
+	<EventHandlers type="{RetencionComEvent.BUSCAR_RETENCIONES_COMERCIO}">
+		<RemoteObjectInvoker instance="{retComercio}" method="getRetencionesComercio" arguments="{[event.idCodComercio,event.fechaDesde]}">
+			<resultHandlers>
+				<MethodInvoker generator="{RetencionComManager}" method="resultRetecionesList" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker method="fault" generator="{RetencionComManager}" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<mx:RemoteObject destination="GenericSessionDestination" source="retencionAComercioServiceTarget" id="retComercio"/>
+	
+</EventMap>
+

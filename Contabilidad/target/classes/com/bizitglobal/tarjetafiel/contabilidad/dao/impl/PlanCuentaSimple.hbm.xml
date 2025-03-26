@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+                               
+<hibernate-mapping>
+<class name="com.bizitglobal.tarjetafiel.contabilidad.negocio.PlanCuentaSimple" table="t_vis_cont_plan_cuenta" >
+	<id name="idPlanCuenta" type="java.lang.Long" column="c_id_plan_cuenta">
+		<generator class="increment" />
+	</id>
+	<property name="idPadre" type="java.lang.Long" column="c_id_padre" not-null="false" length="100"/>
+    <property name="estado" type="java.lang.String" column="estado" not-null="false" length="100"/>
+    <property name="titulo" type="java.lang.String" column="titulo" not-null="false" length="100"/>
+    
+</class>
+</hibernate-mapping>

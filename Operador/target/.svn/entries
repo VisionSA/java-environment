@@ -1,0 +1,71 @@
+9
+
+dir
+698
+https://testingpc/svn/testing/trunk/Operador/target
+https://testingpc/svn/testing
+
+
+
+2017-09-14T13:57:19.995359Z
+68
+gaston
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+Operador-1.0-SNAPSHOT.jar
+file
+
+
+
+
+2017-12-01T12:35:59.019632Z
+9a4deb6b41a3b788b09e23dcef3d72f6
+2017-09-14T13:57:19.995359Z
+68
+gaston
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+116693
+
+maven-archiver
+dir
+
+test-classes
+dir
+
+classes
+dir
+

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import views.categorias.comercio.modules.CtaCteComercioModule;
+			import events.CtaCteComercioEvent;
+			import views.categorias.comercio.models.ListaComercioModel;
+			import managers.ComercioManager;
+			import views.categorias.comercio.models.CtaCteComercioModel;
+			
+			import events.ComercioManagerEvent;
+			import managers.ComercioManager;
+			import events.ComercioEvent;
+			
+			//Interfaz incluida en el modulo
+			import views.categorias.comercio.ResumidoCtaCteComercioView;
+			
+		]]>
+	</mx:Script>
+	
+	<Injectors target="{CtaCteComercioModule}">
+		<ObjectBuilder generator="{CtaCteComercioModel}"/>
+		<PropertyInjector source="{lastReturn}" targetKey="ctaCteComercioModel"/>
+	</Injectors>
+	
+	<EventHandlers type="{CtaCteComercioEvent.BUSCAR_CTA_CTE_COMERCIO}">
+		<RemoteObjectInvoker instance="{ctaCteComercioService}" arguments="{[event.filtro,event.fechaDesde,event.idValue,event.buscarPorEmpresa]}" method="getCtaCteComercioSaldoFlex">
+			<resultHandlers>
+				<MethodInvoker generator="{CtaCteComercioModel}" method="resultCtaCteComercio" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{CtaCteComercioModel}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	
+	
+	<!-- ######################### COMERCIO #############################-->
+	<EventHandlers type="{ComercioEvent.BUSCAR_MOVIMIENTOS_CTA_CTE_COMERCIO}"> 
+		<MethodInvoker generator="{ComercioManager}" arguments="{[event.fechaDesde,event.idComercio, event.modoConciliado]}" method="buscarMovimientosCtaCte">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioManagerEvent.BUSCAR_MOVIMIENTOS_CTA_CTE_COMERCIO}">		
+		<RemoteObjectInvoker instance="{ctaCteComercioService}" method="getMovimientosCtaCte" arguments="{[event.fechaDesde,event.idComercio, event.modoConciliado]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultBuscarMovimientosCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+<!--@I8271-->	<EventHandlers type="{ComercioManagerEvent.BUSCAR_MOVIMIENTOS_COMP_SALDO_COMERCIO}">		
+		<RemoteObjectInvoker instance="{ctaCteComercioService}" method="getCompSaldoComercio" arguments="{[event.fechaDesde,event.idComercio, event.modoConciliado]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultBuscarCompSaldo" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+<!--@F8271-->	</EventHandlers>
+	
+	
+	<!--@I8271-->	<EventHandlers type="{ComercioManagerEvent.BUSCAR_CONTABLE_CTA_CTE_COMERCIO}">		
+						<RemoteObjectInvoker instance="{ctaCteComercioService}" method="getMovimientosContables" arguments="{[event.fechaDesde,event.idComercio, event.modoConciliado]}" >
+							<resultHandlers>
+								<MethodInvoker generator="{ComercioManager}" method="resultBuscarContable" arguments="{resultObject}"/>
+							</resultHandlers>
+							<faultHandlers>
+								<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+							</faultHandlers>
+						</RemoteObjectInvoker>		
+	<!--@F8271-->	</EventHandlers>
+	
+	
+	
+	<EventHandlers type="{ComercioEvent.BUSCAR_DETALLES_MOVIMIENTO_CTA_CTE_COMERCIO}"> 
+		<MethodInvoker generator="{ComercioManager}" arguments="{[event.idTransaccion,event.idComercio]}" method="buscarDetallesMovimientoCtaCte">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioManagerEvent.BUSCAR_DETALLES_MOVIMIENTO_CTA_CTE_COMERCIO}">	
+					<RemoteObjectInvoker instance="{ctaCteComercioService}" method="getDetallesMovimientoCtaCte" arguments="{[event.idComercio,event.idTransaccion]}" >					
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultBuscarDetallesMovimientoCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+<!--@I8271-->	<EventHandlers type="{ComercioManagerEvent.BUSCAR_DETALLES_MOVIMIENTO_REL_COMERCIO}">	
+		<RemoteObjectInvoker instance="{ctaCteComercioService}" method="getDetallesRELMovimientoCtaCte" arguments="{[event.idTransaccion]}" >					
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultBuscarDetallesRELMovimientoCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	
+	
+		
+	
+<!--@I8271-->	<EventHandlers type="{ComercioManagerEvent.BUSCAR_COMPOSICION_DETALLE_CTA_CTE_CLIENTE}">		
+			<RemoteObjectInvoker instance="{ctaCteCli}" method="getComposicionDetalleCtaCte" arguments="{[event.idTransaccion,event.idCliente,event.idConceptoDetalle]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultBuscarComposicionCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	
+	<EventHandlers type="{ComercioManagerEvent.BUSCAR_DETALLES_MCS_CTA_CTE_COMERCIO}">	
+		<RemoteObjectInvoker instance="{ctaCteComercioService}" method="getDetallesMovimientoCtaCte" arguments="{[event.idComercio,event.idTransaccion]}" >					
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultBuscarMCSComercioCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	
+	
+	
+	<!--@I8271-->	<EventHandlers type="{ComercioManagerEvent.BUSCAR_MCS_DETALLE_CTA_CTE_CLIENTE}">		
+						<RemoteObjectInvoker instance="{ctaCteCli}" method="getComposicionDetalleCtaCte" arguments="{[event.idTransaccion,event.idCliente,event.idConceptoDetalle]}" >
+							<resultHandlers>
+								<MethodInvoker generator="{ComercioManager}" method="resultBuscarMCSClienteCtaCte" arguments="{resultObject}"/>
+							</resultHandlers>
+							<faultHandlers>
+								<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+							</faultHandlers>
+						</RemoteObjectInvoker>		
+	<!--@F8271-->	</EventHandlers>
+	
+	<EventHandlers type="{ComercioManagerEvent.BUSCAR_DETALLES_COM_CTA_CTE_COMERCIO}">	
+		<RemoteObjectInvoker instance="{ctaCteComercioService}" method="getDetallesMovimientoCtaCte" arguments="{[event.idComercio,event.idTransaccion]}" >					
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultBuscarCOMComercioCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	
+	
+	
+	<!--@I8271-->	<EventHandlers type="{ComercioManagerEvent.BUSCAR_COM_DETALLE_CTA_CTE_CLIENTE}">		
+						<RemoteObjectInvoker instance="{ctaCteCli}" method="getComposicionDetalleCtaCte" arguments="{[event.idTransaccion,event.idCliente,event.idConceptoDetalle]}" >
+							<resultHandlers>
+								<MethodInvoker generator="{ComercioManager}" method="resultBuscarCOMClienteCtaCte" arguments="{resultObject}"/>
+							</resultHandlers>
+							<faultHandlers>
+								<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+							</faultHandlers>
+						</RemoteObjectInvoker>		
+	<!--@F8271-->	</EventHandlers>
+	
+	<!-- ######################### FIN COMERCIO #############################-->
+
+<!-- Remote Object Comercio -->
+  <mx:RemoteObject id="ctaCteComercioService" destination="GenericSessionDestination" source="ctaCteComercioServiceTarget"/>
+<!--@F8271-->	<mx:RemoteObject id="ctaCteCli" destination="GenericDestination" source="ctaCteClienteServiceTarget"/>
+  
+  <!--
+  <Injectors targets="{[CtaCteComercioModule,ResumidoCtaCteComercioView]}"> 
+		<ObjectBuilder generator="{CtaCteComercioModel}">
+		 <Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="CtaCteComercioModel"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="saldoAnterior" sourceKey="saldoAnteriorCtaCte" source="{ComercioManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="arrayMovientosCtaCteResumen" sourceKey="resultBuscarMovimientosCtaCte" source="{ComercioManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="arrayMovientoCtaCteDetalles" sourceKey="arrayMovientoCtaCteDetalles" source="{ComercioManager}"/>
+	</Injectors>
+	-->
+</EventMap>
+

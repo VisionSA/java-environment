@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.ObservoSucursal" table="t_vis_eva_obs_sucursales" >
+	<id name="idObsSucursal" type="java.lang.Long" column="c_id_obs_sucursal">
+		<generator class="increment" />
+	</id>
+
+	<many-to-one name="observoLaboral" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.ObservoLaboral" not-null="false" >
+		<column name="c_id_obs_laboral" />
+	</many-to-one>
+
+	<many-to-one name="sucEmpresa" class="com.bizitglobal.tarjetafiel.general.negocio.SucEmpresa" not-null="false" >
+		<column name="c_id_sucursal" />
+	</many-to-one>
+
+</class>
+</hibernate-mapping>

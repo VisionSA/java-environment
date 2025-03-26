@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onCreationComplete()" close="PopUpManager.removePopUp(this)" layout="vertical" title="Subir archivo cobro externo" horizontalAlign="center" verticalAlign="middle" xmlns:upload="com.util.upload.*" showCloseButton="true" width="428" height="252">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.events.CloseEvent;
+			import com.util.components.alert.AlertOk;
+			
+			[Bindable]public var manager:Manager;
+			
+			/* [Bindable]private var _tipoArchivo:String = "PF"; */
+			
+			[Bindable]private var _tipoArchivo:String = "";
+			
+			[Bindable]private var url:String;
+			
+			[Bindable]public var extensionFiltro;
+			 
+			[Bindable]public var nombreFiltro;
+			
+			private function uploadComplete():void{
+				manager.getFechaServidor(); 
+				AlertOk.show('El archivo se subio con éxito',closePopUp);	
+			}
+			
+			
+			
+			private function closePopUp (evt:CloseEvent):void{
+				 /* if (uploadComp.fileName.substring(0,2))   comentado por carlos */
+				/* if(_tipoArchivo == "PF"){
+					manager.listAllArchivos();	
+				} else {
+					manager.listAllArchivosFarmacia();
+				} */
+				/* la linea de abajo descomentada */
+				/* AlertOk.show(' closePopUp '); */	
+				
+				var dia:int;
+				var mes:int; 
+				var anio:int;
+				
+
+				if (uploadComp.fileName.substr(0,3) == "COB"   || uploadComp.fileName.substr(0,3) == "cob" ) 
+				{
+					dia = parseInt(uploadComp.fileName.substr(8,2));
+					mes = parseInt(uploadComp.fileName.substr(10,2));
+					anio = 2000 + parseInt(uploadComp.fileName.substr(12,2));		
+					/*  AlertOk.show('fecha servidor ' + manager.fechaServidor);  */
+			
+				} 
+				else  if (uploadComp.fileName.substr(0,4) == "0AJ2") 
+				{
+					dia = parseInt(uploadComp.fileName.substr(6,2));
+					mes = parseInt(uploadComp.fileName.substr(4,2));
+				
+					if (mes > parseInt(manager.fechaServidor.substr(2,2)) )
+					{
+						anio = parseInt(manager.fechaServidor.substr(4,4)) - 1;
+					}
+				
+					else 
+					{
+						anio = parseInt(manager.fechaServidor.substr(4,4));
+					}
+				/* AlertOk.show('fecha servidor ' + manager.fechaServidor); */		
+				} 
+			
+				else 
+				{
+					dia = parseInt(uploadComp.fileName.substr(2,2));
+					mes = parseInt(uploadComp.fileName.substr(4,2));
+					anio = 2000 + parseInt(uploadComp.fileName.substr(6,2));					
+				}
+			
+				uploadComp.file_path.text = ""; 
+				/* file_path.text = ""; */	
+				manager.fechaBuscar = new Date(anio,mes - 1, dia);
+				manager.listAllArchivos(new Date(anio,mes - 1, dia)); 
+				/* AlertOk.show('entrar '); */
+				PopUpManager.removePopUp(this);
+				/* AlertOk.show('salir '); */
+			}
+			
+			
+			
+			private function onCreationComplete():void{
+				var array:Array = Application.application.url.split("/");
+				/* uploadComp.uploadURL = "/" +array[3] + "/UploadFilePagoFacil"; */
+				uploadComp.uploadURL = "/" +array[3] + "/UploadCobroExterno";
+				manager.procesarListaTipoCobro();
+					
+				/* cmbTipoCobro.selectedIndex = 0;
+				AlertOk.show(manager.listaTipoCobro.length + " close" ); */
+				/* uploadComp.params = {"tipoArchivo" : cmbTipoCobro.selectedItem.nombreSufijo}; */
+			}
+			
+			
+			
+			public function set tipoArchivo(value:String):void{
+				_tipoArchivo = value;
+				/* uploadComp.params = {"tipoArchivo" : value}; */
+			}
+			
+			
+            
+            private function closeHandler(event:Event):void {
+                /* myLabel.text = "You selected: " +  ComboBox(event.target).selectedItem.label;
+                myData.text = "Data: " +  ComboBox(event.target).selectedItem.data; */
+                /* AlertOk.show(ComboBox(event.target).selectedItem.nombreSufijo + "close" ); */
+                uploadComp.params = {"tipoArchivo" : ComboBox(event.target).selectedItem.nombreSufijo};
+            }        
+		]]>
+		
+		
+	</mx:Script>
+	
+	
+	<!--<mx:HBox width="100%" horizontalAlign="center">
+			<mx:Label text="Subir Archivo "/>						
+		</mx:HBox>-->
+	
+	<mx:VBox width="378" horizontalAlign="left" >
+			<mx:Label text="Tipo de Archivo: "/>				
+			<mx:ComboBox id="cmbTipoCobro" labelField="nombre" dataProvider="{manager.listaTipoCobro}" width="151"  close="closeHandler(event)"  />
+	</mx:VBox>
+	
+	<upload:UploadFile id="uploadComp" nombreFiltro="{nombreFiltro}" extensionFiltro="{extensionFiltro}" combo = "{cmbTipoCobro}"  fileUploaded="uploadComplete()"  horizontalAlign="center" backgroundAlpha="1.0" verticalScrollPolicy="off" width="247"/>	
+
+</mx:TitleWindow>

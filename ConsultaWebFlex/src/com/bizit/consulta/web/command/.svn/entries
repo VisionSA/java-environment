@@ -1,0 +1,40 @@
+9
+
+dir
+132
+https://testingpc/svn/testing/trunk/ConsultaWebFlex/src/com/bizit/consulta/web/command
+https://testingpc/svn/testing
+
+
+
+2017-09-14T13:27:22.564695Z
+28
+gaston
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+comercio
+dir
+
+loginUsuario
+dir
+
+permisoWeb
+dir
+
+util
+dir
+

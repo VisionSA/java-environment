@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<consolePlugin/>
+	<!-- Appenders http://logback.qos.ch/manual/appenders.html -->
+	<appender name="CONSOLE"
+		class="ch.qos.logback.core.ConsoleAppender">
+	<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+
+      		<level>INFO</level>
+	      </filter>	
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%date{dd-MM-yyyy ;HH:mm:ss} [%thread] %-5level %logger - %msg%n -%ex{full}</Pattern>
+		</layout>
+	</appender>
+	 <appender name="VISIONISFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	      <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+	  	  <File>${catalina.home}/logs/webFiel.log</File>
+	      <layout class="ch.qos.logback.classic.PatternLayout">
+	      	<Pattern>%date [%thread] %-5level %logger - %msg%n</Pattern>
+	      </layout>
+		  <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+	      <maxIndex>1</maxIndex>
+	      	<FileNamePattern>webFiel%i.log</FileNamePattern>
+	      </rollingPolicy>
+		  <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+	    	  <MaxFileSize>5MB</MaxFileSize>
+	  	  </triggeringPolicy>
+  <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      		<level>INFO</level>
+	      </filter>
+
+    </appender>
+     <appender name="ERRORFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	      <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+	  	  <File>${catalina.home}/logs/error.log</File>
+	      <layout class="ch.qos.logback.classic.PatternLayout">
+	      	<Pattern>%date [%thread] %-5level %logger - %msg%n</Pattern>
+	      </layout>
+		  <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+	      <maxIndex>1</maxIndex>
+	      	<FileNamePattern>error%i.log</FileNamePattern>
+	      </rollingPolicy>
+		  <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+	    	  <MaxFileSize>5MB</MaxFileSize>
+	  	  </triggeringPolicy>	  	 
+	  	  <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      		<level>WARN</level>
+	      </filter>
+    </appender>
+    
+    <appender name="CALCULO_INTERES_COMPENSATORIO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	      <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+	  	  <File>${catalina.home}/logs/interesCompensatorio.log</File>
+	      <layout class="ch.qos.logback.classic.PatternLayout">
+	      	<Pattern>%date [%thread] %-5level %logger - %msg%n</Pattern>
+	      </layout>
+		  <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+	      <maxIndex>1</maxIndex>
+	      	<FileNamePattern>interesCompensatorio%i.log</FileNamePattern>
+	      </rollingPolicy>
+		  <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+	    	  <MaxFileSize>5MB</MaxFileSize>
+	  	  </triggeringPolicy>	  	 
+    </appender>
+    
+    <appender name="CALCULO_INTERES_COMPENSATORIO_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	      <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+	  	  <File>${catalina.home}/logs/interesCompensatorioError.log</File>
+	      <layout class="ch.qos.logback.classic.PatternLayout">
+	      	<Pattern>%date [%thread] %-5level %logger - %msg%n</Pattern>
+	      </layout>
+		  <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+	      <maxIndex>1</maxIndex>
+	      	<FileNamePattern>interesCompensatorioError%i.log</FileNamePattern>
+	      </rollingPolicy>
+		  <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+	    	  <MaxFileSize>5MB</MaxFileSize>
+	  	  </triggeringPolicy>	
+	  	  <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      		<level>ERROR</level>
+	      </filter>  	 
+    </appender>
+    
+	<root level="INFO">		
+		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="VISIONISFILE" />
+		<appender-ref ref="ERRORFILE" />
+	</root>
+	
+	<logger name="com.bizitglobal.tarjetafiel.transacciones.service.impl.CalculoInteresComServiceImpl" >
+    	<appender-ref ref="CALCULO_INTERES_COMPENSATORIO" />
+  	</logger>
+	
+	<logger name="com.bizitglobal.tarjetafiel.transacciones.service.impl.CalculoInteresComServiceImpl" >
+    	<appender-ref ref="CALCULO_INTERES_COMPENSATORIO_ERROR" />
+  	</logger>
+  	
+  	
+  	<appender name="SCHEDULER_FIEL_REGENERAR_TRANSACCION" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	      <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+	  	  <File>${catalina.home}/webapps/schedulerFielRegenerarTransaccion.log</File>
+	      <layout class="ch.qos.logback.classic.PatternLayout">
+	      	<Pattern>%date [%thread] %-5level %logger - %msg%n</Pattern>
+	      </layout>
+		  <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+	      <maxIndex>1</maxIndex>
+	      	<FileNamePattern>schedulerFielRegenerarTransaccion%i.log</FileNamePattern>
+	      </rollingPolicy>
+		  <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+	    	  <MaxFileSize>50MB</MaxFileSize>
+	  	  </triggeringPolicy>	  	 
+    </appender>
+	<logger name="com.bizitglobal.tarjetafiel.transacciones.service.impl.RegenerarMovimientoCtaCteTransaccionServiceImpl" >
+    	<appender-ref ref="SCHEDULER_FIEL_REGENERAR_TRANSACCION" />
+  	</logger>
+  	
+</configuration>

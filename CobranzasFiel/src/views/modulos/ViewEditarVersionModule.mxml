@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical"
+	creationComplete="init()" 
+	xmlns:modulos="views.modulos.*" 
+	xmlns:components="views.components.*">
+		
+	<mx:Script>
+		<![CDATA[
+			import views.components.ViewPanelEtapa;
+			import mx.collections.ArrayCollection;
+			import mx.modules.ModuleLoader;
+			import com.tarjetafiel.caja.vo.EtapaVersion;
+			import mx.core.Application;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import events.GenericPlanEvent;
+			import mx.managers.PopUpManager;
+			import model.CobranzasModelLocator;
+			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			private function salir():void {						
+				
+				//Para evitar confusion seteo el modelo de versionSeleccionada desde aqui
+				modelo.versionSeleccionada = null;
+				
+ 				Application.application.modulo.url = "views/modulos/EditarPlanModule.swf";
+			}
+			
+			private function init():void {		
+				new GenericPlanEvent(GenericPlanEvent.BUSCAR_ETAPAS_VERSION_EVENT,modelo.versionSeleccionada).dispatch();
+				
+				modelo.esNuevaVersion = false;
+				
+				if (modelo.listaAccionesDisponibles == null){
+					new GenericPlanEvent(GenericPlanEvent.BUSCAR_ACCIONES_DISPONIBLES_EVENT,null).dispatch();
+				}
+				
+				/* Se agrega la referencia al modelo para que pueda modificarse desde el command */
+				modelo.hBoxPaneles_vv = hBoxPaneles;
+					
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:DateFormatter id="df" formatString="DD/MM/YYYY"/>
+	
+	<mx:HBox>
+		<mx:Form>
+			<mx:FormItem label="Nombre:">
+				<mx:TextInput text="{modelo.versionSeleccionada.descripcion}" editable="false"/>
+			</mx:FormItem>
+			<mx:FormItem label="Vigencia Desde:">
+				<mx:DateField text="{df.format(modelo.versionSeleccionada.fechaDesde)}" formatString="DD/MM/YYYY" enabled="false"/>
+			</mx:FormItem>		
+		</mx:Form>
+		<mx:Form>
+			<mx:FormItem label="Filtro:">
+				<mx:TextArea width="245" text="{modelo.versionSeleccionada.queryClientesQueAplican}" editable="false"/>
+			</mx:FormItem>
+		</mx:Form>
+	</mx:HBox>
+
+
+	<!-- Por problemas con mx:Repeater los paneles de etapas se agregan a traves del command BuscarEtapasVersionCommand y se agregan como hijos al hBoxPaneles -->	
+	<mx:HBox id="hBoxPaneles" />
+	
+	<mx:HBox horizontalAlign="right" width="100%" paddingTop="10">
+		<mx:Button label="Salir" width="90" click="salir()"/>
+	</mx:HBox>		
+</mx:Module>

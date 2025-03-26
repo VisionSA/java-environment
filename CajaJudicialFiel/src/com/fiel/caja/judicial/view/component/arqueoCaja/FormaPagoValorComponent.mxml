@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  keyDown="if(event.keyCode == Keyboard.ENTER)this.focusManager.getNextFocusManagerComponent().setFocus()" 
+		  horizontalAlign="center" verticalAlign="middle">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.CajaArqueo;
+			import com.tarjetafiel.caja.vo.CajaCierre;
+			import com.tarjetafiel.caja.vo.FormaPagoValor;
+			
+			import mx.utils.StringUtil;
+			
+			[Bindable]private var _formaPagoValor:Object;		
+			
+			[Bindable]private var arqueo:CajaArqueo;
+			
+			[Bindable]private var _cajaCierre:CajaCierre;
+			
+			public function set formaPagoValor(valor:FormaPagoValor):void
+			{
+				_formaPagoValor = valor;																			
+			}
+			
+			public function set cajaCierre(cajaCierre:CajaCierre):void
+			{
+				if(txtCantidad){
+					txtCantidad.text = "0";					
+				}
+				_cajaCierre = cajaCierre;				
+				arqueo = new CajaArqueo();
+				arqueo.cajaCierre = cajaCierre;
+				cajaCierre.cajaArqueosList.push(arqueo);
+				arqueo.cajaCierre = _cajaCierre;
+				arqueo.formaPagoValor = FormaPagoValor(_formaPagoValor);
+				arqueo.monto = 0;																	
+				dispatchEvent(new Event("changedCajaCierre"));
+			}
+			
+			[Bindable (event="changedCajaCierre")]
+			public function get cajaCierre():CajaCierre
+			{
+				return _cajaCierre;
+			}
+			
+			public function changedCantidadValor():void
+			{
+				if(isNaN(Number(txtCantidad.text))){					
+					this.txtCantidad.text = "0";
+					changedMonto(_cajaCierre,arqueo,0,0);
+				} else {
+					var monto:Number = Number(txtCantidad.text) * _formaPagoValor.multiplo;
+					changedMonto(_cajaCierre,arqueo,monto,int(txtCantidad.text));
+				}				
+			}
+			
+			private function changedMonto(cajaCierre:CajaCierre,arqueo:CajaArqueo,monto:Number,cantidad:int):void{			
+				cajaCierre.totalArqueo -= arqueo.monto;
+				arqueo.monto = monto;
+				arqueo.cantidad = cantidad;
+				cajaCierre.totalArqueo += arqueo.monto;
+			}
+
+			protected function txtCantidad_focusInHandler(event:FocusEvent):void
+			{
+				txtCantidad.selectAll();
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+		<s:Label text="{_formaPagoValor.descripcion}" width="120"/>
+		<s:TextInput restrict="0-9" change="{changedCantidadValor()}" text="0" 
+					 focusIn="txtCantidad_focusInHandler(event)"
+					 focusOut="if(isNaN(Number(this.txtCantidad.text)) || StringUtil.trim(this.txtCantidad.text).toString() == '')this.txtCantidad.text = '0'"
+					 id="txtCantidad" width="120"/>		
+	</s:HGroup>
+	
+</s:VGroup>

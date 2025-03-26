@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+  	<!-- Define el data source como jndi
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jdbc/creditDB" value="java:comp/env/jdbc/myds" />
+	</bean>
+ 	-->
+ 	<bean id="springConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>file:${catalina.home}/webapps/contexto.properties</value>
+		</property>
+	</bean>
+	
+	<bean id="dataSource"
+      	class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName">
+			<value>${driverClassName}</value>
+		</property>
+		<property name="url" >
+			<value>${url}</value>
+		</property>
+		<property name="username">
+			<value>${username}</value>
+		</property>
+		<property name="password">
+			<value>${password}</value>
+		</property>
+		
+		<!-- DBCP connection pooling options -->
+		 <property name="initialSize" >
+		 	<value>${initialSize}</value>
+		 </property>
+		 
+		 <property name="maxActive">
+		 	<value>${maxActive}</value>
+		 </property>
+		 		 
+		 <property name="minIdle">
+		 	<value>${minIdle}</value>
+		 </property>
+		  
+		 <property name="maxWait">
+		 	<value>${maxWait}</value>
+		 </property>
+		  
+		 <property name="testWhileIdle">
+		 	<value>${testWhileIdle}</value>
+		 </property>
+		  
+		 <property name="validationQuery">
+		 	<value>${validationQuery}</value>
+		 </property>
+		  
+		 <property name="defaultAutoCommit">
+		 	<value>${defaultAutoCommit}</value>
+		 </property>
+		
+	</bean>
+	
+	<bean id="dataSource2"
+      	class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName">
+			<value>com.informix.jdbc.IfxDriver</value>
+		</property>
+		<property name="url" >
+			<value>jdbc:informix-sqli://192.168.1.99:1527/base:INFORMIXSERVER=servcomp</value>
+		</property>
+		<property name="username">
+			<value>informix</value>
+		</property>
+		<property name="password">
+			<value>informix</value>
+		</property>
+		
+		<!-- DBCP connection pooling options -->
+		 <property name="initialSize" value="2" />
+		 
+		 <property name="maxActive" value="10" />
+		 
+		 <property name="minIdle" value="2" />
+		  
+		 <property name="maxWait" value="2000" />
+		  
+		 <property name="testWhileIdle" value="true" />
+		  
+		 <property name="validationQuery" value="SELECT * FROM dual" />
+		  
+		 <property name="defaultAutoCommit" value="true" />
+		
+	</bean>
+</beans>

@@ -1,0 +1,1068 @@
+package com.bizitglobal.webapp.faces.beans.fondos;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+
+import javax.faces.component.html.HtmlSelectOneMenu;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+
+import com.bizitglobal.tarjetafiel.commons.filtros.Filtro;
+import com.bizitglobal.tarjetafiel.commons.interfaces.Paginacion;
+import com.bizitglobal.tarjetafiel.commons.util.Fecha;
+import com.bizitglobal.tarjetafiel.fondos.exception.ChequeEstadoException;
+import com.bizitglobal.tarjetafiel.fondos.exception.ChequeHistorialException;
+import com.bizitglobal.tarjetafiel.fondos.negocio.AsientoItem;
+import com.bizitglobal.tarjetafiel.fondos.negocio.Cheque;
+import com.bizitglobal.tarjetafiel.fondos.negocio.ChequeHistorial;
+import com.bizitglobal.tarjetafiel.general.exception.BancoException;
+import com.bizitglobal.webapp.faces.beans.BaseBean;
+import com.bizitglobal.webapp.faces.beans.util.PaginadorPorDemanda;
+import com.bizitglobal.webapp.faces.beans.util.ScrollBean;
+import com.bizitglobal.webapp.faces.util.Error;
+import com.bizitglobal.webapp.faces.util.Session;
+import com.bizitglobal.webapp.faces.util.Util;
+
+
+@SuppressWarnings({"rawtypes","unchecked"})
+public class ChequeBean extends BaseBean {
+	private static final Logger log = Logger.getLogger(ChequeBean.class);
+	private Filtro filtro = new Filtro();
+	private Cheque cheque;
+	private Long idChequeHidden;
+	private Long idCheque;
+	private String nroChequeDesde;
+	private String nroChequeHasta;
+	private Double importeDesde;
+	private Double importeHasta;
+	private Date fechaEmisionDesde;
+	private Date fechaEmisionHasta;
+	private Date fechaPagoDesde;
+	private Date fechaPagoHasta;
+	private Date fechaContable;
+	private Date fechaEstado;
+	private String beneficiario;
+	private String selectFiltro;
+	// //definicion de un list del objeto base
+	private List chequeList = new ArrayList();
+	// Listas para la presentacion(HtmlSelectItems).
+	private List bancoList = new ArrayList();
+	private List bancoItems = new ArrayList();
+	private List estadoList = new ArrayList();
+	private List estadoItems = new ArrayList();
+	private List historicoList = new ArrayList();
+	private List asientosDetalles;
+
+	// El array contiene los nombres de las columnas por ordenar
+	private List ordenItems = new ArrayList();
+	// private String[] ordenArray;
+
+	// private List operadorItems = new ArrayList();
+	//
+	// Objetos Relacionados.
+	private String idTipoSeleccionada;
+	private Long idEstadoSeleccionada;
+	private Long idBancoSeleccionada;
+	private Long idFormaPagoSeleccionada;
+	private Integer idOrdenSeleccionada;
+
+	private String focoHidden;
+	private PaginadorPorDemanda pagDeMov;
+	private HtmlSelectOneMenu conceptoHtml = new HtmlSelectOneMenu();
+	PopupAltaAsiento popupAltaAsiento;
+	private String busquedaHidden;
+	private String composicionHidden;
+
+	// Propiedad para ejecutar el popup del reporte.
+	private String popupReport = new String("");
+
+
+	public ChequeBean() {
+		super();
+		borrar();
+		try {
+			try {
+				filtro.reset();
+				filtro.agregarOrderBy("idChequeEstado");
+				estadoList = fondosService.getChequeEstadoService().getChequeEstados(filtro);
+			} catch (ChequeEstadoException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				bancoList = generalService.getBancoService().getBancos(new Filtro());
+			} catch (BancoException e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public String getPopupReport() {
+		String tempResult = popupReport;
+		popupReport = "";
+		return tempResult;
+	}
+
+
+	public void setPopupReport(String popupReport) {
+		this.popupReport = popupReport;
+	}
+
+
+	public Date getFechaContable() {
+		return fechaContable;
+	}
+
+
+	public void setFechaContable(Date fechaContable) {
+		this.fechaContable = fechaContable;
+	}
+
+
+	public Cheque getCheque() {
+		return cheque;
+	}
+
+
+	public void setCheque(Cheque cheque) {
+		this.cheque = cheque;
+	}
+
+
+	public Long getIdFormaPagoSeleccionada() {
+		return idFormaPagoSeleccionada;
+	}
+
+
+	public void setIdFormaPagoSeleccionada(Long idFormaPagoSeleccionada) {
+		this.idFormaPagoSeleccionada = idFormaPagoSeleccionada;
+	}
+
+
+	public HtmlSelectOneMenu getConceptoHtml() {
+		return conceptoHtml;
+	}
+
+
+	public void setConceptoHtml(HtmlSelectOneMenu conceptoHtml) {
+		this.conceptoHtml = conceptoHtml;
+	}
+
+
+	public List getChequeList() {
+		return chequeList;
+	}
+
+
+	public void setChequeList(List object) {
+		this.chequeList = object;
+	}
+
+
+	public String getFocoHidden() {
+		return focoHidden;
+	}
+
+
+	public void setFocoHidden(String focoHidden) {
+		this.focoHidden = focoHidden;
+	}
+
+
+	public Filtro getFiltro() {
+		return filtro;
+	}
+
+
+	public void setFiltro(Filtro filtro) {
+		this.filtro = filtro;
+	}
+
+
+	public Long getIdCheque() {
+		return idCheque;
+	}
+
+
+	public void setIdCheque(Long idCheque) {
+		this.idCheque = idCheque;
+	}
+
+
+	public List getConceptoItems() {
+		return estadoItems;
+	}
+
+
+	public void setConceptoItems(List conceptoItems) {
+		this.estadoItems = conceptoItems;
+	}
+
+
+	public PaginadorPorDemanda getPagDeMov() {
+		return pagDeMov;
+	}
+
+
+	public void setPagDeMov(PaginadorPorDemanda pagDeMov) {
+		this.pagDeMov = pagDeMov;
+	}
+
+
+	public PopupAltaAsiento getPopupAltaAsiento() {
+		return popupAltaAsiento;
+	}
+
+
+	public void setPopupAltaAsiento(PopupAltaAsiento popupAltaAsiento) {
+		this.popupAltaAsiento = popupAltaAsiento;
+	}
+
+
+	public List getAsientosDetalles() {
+		return asientosDetalles;
+	}
+
+
+	public void setAsientosDetalles(List asientosDetalles) {
+		this.asientosDetalles = asientosDetalles;
+	}
+
+
+	public List getBancoItems() {
+		return bancoItems;
+	}
+
+
+	public void setBancoItems(List bancoItems) {
+		this.bancoItems = bancoItems;
+	}
+
+
+	public Long getIdBancoSeleccionada() {
+		return idBancoSeleccionada;
+	}
+
+
+	public void setIdBancoSeleccionada(Long idBancoSeleccionada) {
+		this.idBancoSeleccionada = idBancoSeleccionada;
+	}
+
+
+	public Long getIdChequeHidden() {
+		return idChequeHidden;
+	}
+
+
+	public void setIdChequeHidden(Long idChequeHidden) {
+		this.idChequeHidden = idChequeHidden;
+	}
+
+
+	public List getHistoricoList() {
+		return historicoList;
+	}
+
+
+	public void setHistoricoList(List historicoList) {
+		this.historicoList = historicoList;
+	}
+
+
+	public String getSelectFiltro() {
+		return selectFiltro;
+	}
+
+
+	public void setSelectFiltro(String selectFiltro) {
+		this.selectFiltro = selectFiltro;
+	}
+
+
+	public String getIdTipoSeleccionada() {
+		return idTipoSeleccionada;
+	}
+
+
+	public void setIdTipoSeleccionada(String idTipoSeleccionada) {
+		this.idTipoSeleccionada = idTipoSeleccionada;
+	}
+
+
+	public String getNroChequeDesde() {
+		return nroChequeDesde;
+	}
+
+
+	public void setNroChequeDesde(String nroChequeDesde) {
+		this.nroChequeDesde = nroChequeDesde;
+	}
+
+
+	public Double getImporteDesde() {
+		return importeDesde;
+	}
+
+
+	public void setImporteDesde(Double importeDesde) {
+		this.importeDesde = importeDesde;
+	}
+
+
+	public Double getImporteHasta() {
+		return importeHasta;
+	}
+
+
+	public void setImporteHasta(Double importeHasta) {
+		this.importeHasta = importeHasta;
+	}
+
+
+	public String getNroChequeHasta() {
+		return nroChequeHasta;
+	}
+
+
+	public void setNroChequeHasta(String nroChequeHasta) {
+		this.nroChequeHasta = nroChequeHasta;
+	}
+
+
+	public List getEstadoItems() {
+		return estadoItems;
+	}
+
+
+	public void setEstadoItems(List estadoItems) {
+		this.estadoItems = estadoItems;
+	}
+
+
+	public Date getFechaEmisionDesde() {
+		return fechaEmisionDesde;
+	}
+
+
+	public void setFechaEmisionDesde(Date fechaEmisionDesde) {
+		this.fechaEmisionDesde = fechaEmisionDesde;
+	}
+
+
+	public Date getFechaEmisionHasta() {
+		return fechaEmisionHasta;
+	}
+
+
+	public void setFechaEmisionHasta(Date fechaEmisionHasta) {
+		this.fechaEmisionHasta = fechaEmisionHasta;
+	}
+
+
+	public Date getFechaPagoDesde() {
+		return fechaPagoDesde;
+	}
+
+
+	public void setFechaPagoDesde(Date fechaPagoDesde) {
+		this.fechaPagoDesde = fechaPagoDesde;
+	}
+
+
+	public Date getFechaPagoHasta() {
+		return fechaPagoHasta;
+	}
+
+
+	public void setFechaPagoHasta(Date fechaPagoHasta) {
+		this.fechaPagoHasta = fechaPagoHasta;
+	}
+
+
+	public Long getIdEstadoSeleccionada() {
+		return idEstadoSeleccionada;
+	}
+
+
+	public void setIdEstadoSeleccionada(Long idEstadoSeleccionada) {
+		this.idEstadoSeleccionada = idEstadoSeleccionada;
+	}
+
+
+	public Date getFechaEstado() {
+		return fechaEstado;
+	}
+
+
+	public void setFechaEstado(Date fechaEstado) {
+		this.fechaEstado = fechaEstado;
+	}
+
+
+	public String getBusquedaHidden() {
+		return busquedaHidden;
+	}
+
+
+	public void setBusquedaHidden(String busquedaHidden) {
+		this.busquedaHidden = busquedaHidden;
+	}
+
+
+	public String getComposicionHidden() {
+		return composicionHidden;
+	}
+
+
+	public void setComposicionHidden(String composicionHidden) {
+		this.composicionHidden = composicionHidden;
+	}
+
+
+	public List getOrdenItems() {
+		return ordenItems;
+	}
+
+
+	public void setOrdenItems(List ordenItems) {
+		this.ordenItems = ordenItems;
+	}
+
+
+	public Integer getIdOrdenSeleccionada() {
+		return idOrdenSeleccionada;
+	}
+
+
+	public void setIdOrdenSeleccionada(Integer idOrdenSeleccionada) {
+		this.idOrdenSeleccionada = idOrdenSeleccionada;
+	}
+
+
+	public String getBeneficiario() {
+		return beneficiario;
+	}
+
+
+	public void setBeneficiario(String beneficiario) {
+		this.beneficiario = beneficiario;
+	}
+
+
+	/************************************************************************
+	 * METODOS PARA EL PAGINADO REESCRITOS
+	 ************************************************************************/
+
+	public void cargarPagina(ValueChangeEvent e) {
+		historicoList.clear();
+		pagDeMov.cargarPagina(e);
+	}
+
+
+	public String primeraPagina() {
+		historicoList.clear();
+		return pagDeMov.primeraPagina();
+	}
+
+
+	public String ultimaPagina() {
+		historicoList.clear();
+		return pagDeMov.ultimaPagina();
+	}
+
+
+	public String paginaSiguiente() {
+		historicoList.clear();
+		return pagDeMov.paginaSiguiente();
+	}
+
+
+	public String paginaAnterior() {
+		historicoList.clear();
+		return pagDeMov.paginaAnterior();
+	}
+
+
+	/************************************************************************
+	 * ACCIONES DEL BEAN DE CHEQUE
+	 ************************************************************************/
+
+	public String inicializar() {
+		borrar();
+		if (Session.getBean("ScrollBean") != null)
+		{
+			ScrollBean bean = (ScrollBean) Session.getBean("ScrollBean");
+			bean.setHiddenScrollY(new Integer(0));
+		}
+		// popupAltaAsiento = new PopupAltaAsiento();
+		cargarItems();
+		return "";
+	}
+
+
+	private void cargarItems() {
+
+		if (estadoItems.size() != estadoList.size()) {
+			estadoItems.clear();
+			estadoItems.add(new SelectItem(new Long(0), "Seleccionar Estado"));
+			estadoItems.addAll(Util.cargarSelectItem(estadoList));
+		}
+		if (bancoItems.size() != bancoList.size()) {
+			bancoItems.clear();
+			bancoItems.add(new SelectItem(new Long(0), "Seleccione Banco"));
+			bancoItems.addAll(Util.cargarSelectItem(bancoList));
+		}
+		// if (operadorItems.size() != operadorList.size()) {
+		// operadorItems = new ArrayList();
+		// operadorItems.add(new SelectItem(new Long(0), "Seleccionar Operador"));
+		// operadorItems.addAll(Util.cargarSelectItem(operadorList));
+		// }
+
+		// String[] ordenAux = {
+		// "fechaEmision",
+		// "fechaPago",
+		// "numero",
+		// "beneficiario",
+		// "tipo",
+		// "importe",
+		// "banco",
+		// "bancoPropio"
+		// };
+		ordenItems.add(new SelectItem(new Integer(0), "Nunguno"));
+		ordenItems.add(new SelectItem(new Integer(1), "Fecha de emisión", "fechaEmision"));
+		ordenItems.add(new SelectItem(new Integer(2), "Fecha de Pago", "fechaPago"));
+		ordenItems.add(new SelectItem(new Integer(3), "Número", "numero"));
+		ordenItems.add(new SelectItem(new Integer(4), "Beneficiario", "beneficiario"));
+		ordenItems.add(new SelectItem(new Integer(5), "Tipo", "tipo"));
+		ordenItems.add(new SelectItem(new Integer(6), "Importe", "importe"));
+		ordenItems.add(new SelectItem(new Integer(7), "Banco", "banco"));
+		ordenItems.add(new SelectItem(new Integer(8), "Cuenta propia", "bancoPropio"));
+		// ordenArray = ordenAux;
+	}
+
+
+	public void grabar(ActionEvent event) {
+		try {
+			if (validar()) {
+				// movimiento.setConcepto((ConceptoGen)Util.buscarElemento(
+				// conceptoList, new ConceptoGen(idConceptoSeleccionada)));
+				// movimiento.setEstado(new Character('A'));
+				// movimiento.setFecha(new Date());
+				// movimiento.setImporte(monto);
+				// movimiento.setOperador(Session.getOperador());
+				// movimiento.setSigno(new Integer(1));
+				// // ARMO EL MEDIO DE PAGO
+				// MovimientoMP movimientoMP = new MovimientoMP();
+				// movimientoMP.setFormaPago((FormaPago)Util.buscarElemento(
+				// formaPagoList, new FormaPago(idFormaPagoSeleccionada)));
+				// movimientoMP.setMonto(monto);
+				// movimientoMP.setMovimiento(movimiento);
+				// movimiento.getMovimientosMP().add(movimientoMP);
+				// fondosService.getMovimientoService().grabarMovimiento(movimiento);
+				popup.setPopup(popup.ICONO_OK, "El movimiento ha sido almacenada exitosamente.");
+			}
+			else {
+				ScrollBean scrollBean = (ScrollBean) Session.getBean("ScrollBean");
+				scrollBean.borrar();
+			}
+		}
+		// catch (MovimientoDuplicateException e1) {
+		// popup.setPopup(popup.ICONO_FALLA, "Fallo el alta del movimiento.");
+		// e1.printStackTrace();
+		// }
+		// catch (MovimientoException e2) {
+		// popup.setPopup(popup.ICONO_FALLA, "Fallo el alta del movimiento.");
+		// e2.printStackTrace();
+		// }
+		catch (Exception e3) {
+			popup.setPopup(popup.ICONO_FALLA, "Fallo el alta del movimiento.");
+			e3.printStackTrace();
+		}
+	}
+
+
+	public void borrar() {
+		borrarBaseBean();
+		alta = true;
+		tituloLargo = "TARJETA FIEL";
+		tituloCorto = "Alta de Cheques";
+		cheque = new Cheque();
+		idCheque = null;
+		selectFiltro = "1";
+		chequeList.clear();
+		historicoList.clear();
+
+		fechaContable = new Date();
+		fechaEmisionHasta = new Date();
+		fechaPagoHasta = new Date();
+		Calendar fecha = Calendar.getInstance();
+		fecha.add(Calendar.MONTH, -1);
+		fechaEmisionDesde = fecha.getTime();
+		fechaPagoDesde = fecha.getTime();
+		fechaEstado = new Date();
+
+		estadoItems.clear();
+		idTipoSeleccionada = "0";
+		idEstadoSeleccionada = new Long(0);
+		idBancoSeleccionada = new Long(0);
+		idFormaPagoSeleccionada = new Long(0);
+		idOrdenSeleccionada = new Integer(1);
+		nroChequeDesde = null;
+		nroChequeHasta = null;
+		importeDesde = null;
+		importeHasta = null;
+		beneficiario = "";
+		asientosDetalles = new ArrayList();
+		ordenItems.clear();
+
+		busquedaHidden = "";
+		composicionHidden = "none";
+
+	}
+
+
+	public String cancelar() {
+		borrar();
+		return "inicio";
+	}
+
+
+	public boolean validar() {
+		error.borrar();
+
+		if (idFormaPagoSeleccionada == null || idFormaPagoSeleccionada.equals(new Long(0)))
+			error.agregar("Debe seleccionar un Medio de Pago");
+		// if(idEstadoSeleccionada == null || idEstadoSeleccionada.equals(new Long(0)))
+		// error.agregar("Debe seleccionar un Concepto");
+		if (fechaContable == null) {
+			error.agregar("La fecha contable es requerida");
+		} else {
+			if (generalService.getPeriodoEjercicioDao().buscarPeriodoActual().getFechaPeriodo().after(fechaContable))
+				error.agregar(Error.COMPROBANTE_FECHA_CONTABLE_MENOR_PERIODO);
+		}
+		// if (fechaContable.after(generalService.getPeriodoEjercicioDao().buscarPeriodoActual().getFechaCierre()))
+		// error.agregar(Error.COMPROBANTE_FECHA_CONTABLE_MAYOR_CIERRE);
+		// if(monto == null || monto.equals(new Double(0)))
+		// error.agregar("El monto de movimiento no puede ser 0(cero)");
+		//
+		return !error.hayErrores();
+	}
+
+
+	public String irANuevoCheque() {
+		return inicializar();
+	}
+
+
+	// public String irAModificarCaja() {
+	// alta = false;
+	// popup.borrar();
+	// tituloCorto = "Modificar Caja";
+	//
+	// return null;
+	// }
+
+	public String irAListarCheque() {
+		borrar();
+		tituloCorto = "Listado de Cheques";
+		cargarItems();
+		Session.redirect("/tarjetafiel/fondos/listarCheque.jsf");
+		return "";
+	}
+
+
+	public String verHistorico() {
+		error.borrar();
+		try {
+			log.info("ID Cheque SELECCIONADO: " + idChequeHidden);
+			Filtro filtro1 = new Filtro("cheque.idCheque", Filtro.IGUAL, idChequeHidden);
+			filtro1.agregarOrderBy("timestamp");
+			// filtro1.agregarCampoOperValor("idCheque", Filtro.DISTINTO, idChequeHidden);
+			// filtro1.agregarOrderBy("timestamp");
+			historicoList = fondosService.getChequeHistorialService().getChequeHistorials(filtro1);
+			Iterator iter = historicoList.iterator();
+			while (iter.hasNext()) {
+				ChequeHistorial historial = (ChequeHistorial) iter.next();
+				historial.getChequeEstado().getDescripcion();
+				historial.getCheque().getBeneficiario();
+			}
+		} catch (ChequeHistorialException e) {
+			error.agregar("No se pudo leer el histórico del cheque.");
+			e.printStackTrace();
+		}
+		Session.redirect("/tarjetafiel/fondos/listarCheque.jsf");
+		return "";
+	}
+
+
+	public String listarCheque() {
+		chequeList.clear();
+		historicoList.clear();
+		try {
+			filtro.reset();
+			filtro.agregarJoin("historial his");
+
+			if (idTipoSeleccionada != null && !idTipoSeleccionada.equals("0"))
+				filtro.agregarCampoOperValor("tipo", Filtro.LIKEXS, idTipoSeleccionada);
+			if (idBancoSeleccionada != null && !idBancoSeleccionada.equals(new Long(0)))
+				filtro.agregarCampoOperValor("banco.idBanco", Filtro.IGUAL, idBancoSeleccionada);
+
+			if (selectFiltro.equals("1")) {
+				if (idEstadoSeleccionada != null && !idEstadoSeleccionada.equals(new Long(0)))
+					filtro.agregarfuncion(" AND his.chequeEstado.idChequeEstado = " + idEstadoSeleccionada);
+				beneficiario = beneficiario.trim();
+				if (!beneficiario.equals(""))
+					filtro.agregarCampoOperValor("beneficiario", Filtro.LIKE, beneficiario);
+				if (nroChequeDesde != null && !nroChequeDesde.equals(""))
+					filtro.agregarCampoOperValor("numero", Filtro.MAYOR_IGUAL, nroChequeDesde);
+				if (nroChequeHasta != null && !nroChequeHasta.equals(""))
+					filtro.agregarCampoOperValor("numero", Filtro.MENOR_IGUAL, nroChequeHasta);
+				if (importeDesde != null && !importeDesde.equals(new Double(0)))
+					filtro.agregarCampoOperValor("importe", Filtro.MAYOR_IGUAL, importeDesde);
+				if (importeHasta != null && !importeHasta.equals(new Double(0)))
+					filtro.agregarCampoOperValor("importe", Filtro.MENOR_IGUAL, importeHasta);
+				if (fechaEmisionDesde != null)
+					filtro.agregarCampoOperValor("fechaEmision", Filtro.MAYOR_IGUAL, Filtro.getTO_DATE(fechaEmisionDesde));
+				if (fechaEmisionHasta != null)
+					filtro.agregarCampoOperValor("fechaEmision", Filtro.MENOR_IGUAL, Filtro.getTO_DATE(Fecha.addDias(fechaEmisionHasta, 1)));
+				if (fechaPagoDesde != null)
+					filtro.agregarCampoOperValor("fechaPago", Filtro.MAYOR_IGUAL, Filtro.getTO_DATE(fechaPagoDesde));
+				if (fechaPagoHasta != null)
+					filtro.agregarCampoOperValor("fechaPago", Filtro.MENOR_IGUAL, Filtro.getTO_DATE(Fecha.addDias(fechaPagoHasta, 1)));
+			} else {
+				if (idEstadoSeleccionada != null && !idEstadoSeleccionada.equals(new Long(0)))
+					filtro.agregarfuncion(" AND his.chequeEstado.idChequeEstado = " + idEstadoSeleccionada);
+				else
+					error.agregar("Para la composición se debe seleccionar un estado");
+
+				if (fechaEstado != null) {
+					filtro.agregarfuncion(" AND his.timestamp = (SELECT MAX(his1.timestamp)" +
+							" FROM obj.historial his1 " +
+							" WHERE his1.timestamp <= " + Filtro.getTO_DATE(fechaEstado) +
+							" AND his1.cheque.idCheque  = obj.idCheque) ");
+				} else
+					error.agregar("Para la composición se debe seleccionar una fecha de estado");
+			}
+
+			// filtro.agregarCampoOperValor("concepto", Filtro.IGUAL, idConceptoSeleccionada);
+
+			// filtro.agregarCampoOperValor("idCheque", Filtro.IN, "SELECT MAX(idCheque) FROM Cheque GROUP BY numero");
+
+			if (filtro.getCampos().size() == 0)
+				filtro.agregarCampoOperValor("idCheque", Filtro.NOTNULL, "");
+			if (idOrdenSeleccionada != null && !idOrdenSeleccionada.equals(new Integer(0))) {
+				SelectItem item = (SelectItem) ordenItems.get(idOrdenSeleccionada.intValue());
+				filtro.agregarOrderBy(item.getDescription());
+			}
+			// System.out.println("Listado de cheques: " + filtro.getHQL());
+			if (!error.hayErrores())
+				pagDeMov = new PaginadorPorDemanda(filtro, (Paginacion) fondosService.getChequeService(), chequeList, 20, error,
+						"/tarjetafiel/fondos/listarCheque.jsf");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// Session.redirect("/tarjetafiel/fondos/listarCheque.jsf");
+		return null;
+	}
+
+
+	public void exportarAPdf(ActionEvent ae) {
+		popupReport = "";
+		chequeList.clear();
+		historicoList.clear();
+		try {
+			if (!error.hayErrores()) {
+				// cargo de nuevo la tabla
+				pagDeMov = new PaginadorPorDemanda(filtro, (Paginacion) fondosService.getChequeService(), chequeList, 20, error,
+						"/tarjetafiel/fondos/listarCheque.jsf");
+				// llamamos al creador de jasper
+
+				Format dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+				// armamos bien el filtro
+				String filtroSQL = filtro.getSQL();
+				filtroSQL = reemplazarSqlListadoCheque(filtroSQL);
+				// armo los filtros y la llamada segun sea composicion o busqueda simple
+				if (selectFiltro.equals("1")) {
+					// formamos los parametros
+					String p1 = "?filtroSQL=" + filtroSQL;
+					String p2 = "&emision_desde_aca=" + dateFormat.format(fechaEmisionDesde);
+					String p3 = "&emision_hasta=" + dateFormat.format(fechaEmisionHasta);
+					String p4 = "&fecha_pago_desde=" + dateFormat.format(fechaPagoDesde);
+					String p5 = "&fecha_pago_hasta=" + dateFormat.format(fechaPagoHasta);
+					String p6 = "&URLImagen=" + Session.getHomePath() + "/img/fiel/logo_fiel.jpg";
+					//
+					HttpServletRequest request = Session.getRequest();
+					String page = request.getContextPath() + "/report/FondoListadoChequesPdf.jrxml";
+					System.out.println("page: " + page);
+					popupReport = "popup('" + page + p1 + p2 + p3 + p4 + p5 + p6 + "',1000,600)";
+					log.info(popupReport);
+				} else {
+					String p1 = "?filtroSQL=" + filtroSQL;
+					String p2 = "&estado_a_fecha=" + dateFormat.format(fechaEstado);
+					// busco y envio el nombre del estado filtrado.
+					String p3 = "&estado_nombre=" + idEstadoSeleccionada;
+					Iterator estadosIter = getEstadoItems().iterator();
+					while (estadosIter.hasNext()) {
+						SelectItem si = (SelectItem) estadosIter.next();
+						Long estadoValue = (Long) si.getValue();
+						if (estadoValue.equals(idEstadoSeleccionada)) {
+							p3 = "&estado_nombre=" + si.getLabel();
+							break;
+						}
+					}
+					String p4 = "&URLImagen=" + Session.getHomePath() + "/img/fiel/logo_fiel.jpg";
+					//
+					HttpServletRequest request = Session.getRequest();
+					String page = request.getContextPath() + "/report/FondoListadoChequesPdfComposicion.jrxml";
+					System.out.println("page: " + page);
+					popupReport = "popup('" + page + p1 + p2 + p3 + p4 + "',1000,600)";
+					log.info(popupReport);
+				}
+			}
+			System.out.println("popupReport: " + popupReport);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public void exportarAExcel(ActionEvent ae) {
+		popupReport = "";
+		chequeList.clear();
+		historicoList.clear();
+		try {
+			if (!error.hayErrores()) {
+				// traer todos los resultados de la busqueda...
+				// cargo de nuevo la tabla
+				pagDeMov = new PaginadorPorDemanda(filtro, (Paginacion) fondosService.getChequeService(), chequeList, 20, error,
+						"/tarjetafiel/fondos/listarCheque.jsf");
+				// llamamos al creador de jasper
+				HttpServletRequest request = Session.getRequest();
+				// armamos bien el filtro
+				String filtroSQL = filtro.getSQL();
+				filtroSQL = reemplazarSqlListadoCheque(filtroSQL);
+				// formamos los parametros
+				String p1 = "?filtroSQL=" + filtroSQL;
+				String p2 = "&AExcel=excel";// define el formato de exportacion a excel
+
+				String page = request.getContextPath() + "/report/FondoListadoChequesExcel.jrxml";
+
+				popupReport = "popup('" + page + p1 + p2 + "',1000,600)";
+				log.info(popupReport);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	private String reemplazarSqlListadoCheque(String filtroSQL) {
+		String result = "";
+		System.out.println("filtroSQL original: " + filtroSQL);
+		try {
+			result = filtroSQL.trim().replace("fechaEmision", "cheques.C_FECHA_EMISION");
+			result = result.replace("fechaPago", "cheques.C_FECHA_PAGO");
+			result = result.replace("tipo", "cheques.C_TIPO");
+			result = result.replace("numero", "cheques.C_NUMERO");
+			result = result.replace("beneficiario", "cheques.C_BENEFICIARIO");
+			result = result.replace("importe", "cheques.C_IMPORTE");
+			result = result.replace("banco.idBanco", "bancos.C_ID_BANCO");
+			// cambio strings de la composicion
+			result = result.replace("his1.cheque.idCheque", "his1.c_id_Cheque");
+			result = result.replace("obj.historial his1", "T_VIS_FON_CHEQUES_HISTORIAL his1");
+			result = result.replace("historial his1", "T_VIS_FON_CHEQUES_HISTORIAL his1");
+			result = result.replace("his.timestamp", "cheques_hist.c_timestamp");
+			result = result.replace("his1.timestamp", "his1.c_timestamp");
+			result = result.replace("his.chequeEstado.idChequeEstado", "cheques_hist.c_id_Cheque_Estado");// modifico el filtro por estado
+			result = result.replace("obj.idCheque", "cheques.C_ID_CHEQUE");
+			result = result.replace("idCheque ", "cheques.C_ID_CHEQUE ");
+			result = result.replace("cuentaPropia", "");// si en el order by viene eso se elimina para evitar error
+			// reemplazo los espacios por %20
+			result = result.replace(" ", "%20");
+			// se agregan caracteres de escape para javascript
+			result = result.replace("'", "\\'");
+			System.out.println("filtroSQL corregido: " + result);
+		} catch (Exception e) {
+			System.out.println("ERROR en reemplazarSqlListadoCheque");
+		}
+		return result;
+	}
+
+	// class ComparatorCuotas implements Comparator{
+	// public int compare(Object arg0, Object arg1) {
+	// if(((Cuota)arg0).getTotalCuota() < ((Cuota)arg1).getTotalCuota()){
+	// return 1;
+	// } else if(((Cuota)arg0).getTotalCuota() > ((Cuota)arg1).getTotalCuota()){
+	// return -1;
+	// }
+	// return 0;
+	// }
+	//
+	// }
+
+	public class PopupAltaAsiento {
+		private String concepto;
+		private Date fechaContable;
+
+
+		public PopupAltaAsiento() {
+			borrar();
+		}
+
+
+		public void borrar() {
+			concepto = "";
+			fechaContable = new Date();
+		}
+
+
+		public String getConcepto() {
+			return concepto;
+		}
+
+
+		public void setConcepto(String concepto) {
+			this.concepto = concepto.trim();
+		}
+
+
+		public Date getFechaContable() {
+			return fechaContable;
+		}
+
+
+		public void setFechaContable(Date fechaContable) {
+			this.fechaContable = fechaContable;
+		}
+
+	}
+
+	public class WrapperAsientoDetalle {
+		private AsientoItem asientoItem;
+		private int idAsienDetal;
+		private String denominacion;
+		private String debe = "";
+		private String haber = "";
+		private String centroCosto = "";
+		private Long idCentroCostoSeleccionado;
+		private boolean soyNuevo = false;
+		private boolean seBorra = false;
+
+
+		public WrapperAsientoDetalle() {
+			soyNuevo = true;
+			// idAsienDetal = ++numeroAsientoDetalleTabla;
+			// crearListaCentroCostos();
+		}
+
+
+		public WrapperAsientoDetalle(AsientoItem asientoItem) {
+			this.asientoItem = asientoItem;
+			soyNuevo = false;
+			denominacion = asientoItem.getPlanCuenta().getTitulo();
+			if (asientoItem.getSigno() != null) {
+				if (asientoItem.getSigno().compareTo(new Integer(1)) == 0) {
+					debe = String.valueOf(asientoItem.getImporte());
+				} else {
+					haber = String.valueOf(asientoItem.getImporte());
+				}
+			}
+		}
+
+
+		public AsientoItem getAsientoItem() {
+			return asientoItem;
+		}
+
+
+		public void setAsientoItem(AsientoItem asientoItem) {
+			this.asientoItem = asientoItem;
+		}
+
+
+		public int getIdAsienDetal() {
+			return idAsienDetal;
+		}
+
+
+		public void setIdAsienDetal(int idAsienDetal) {
+			this.idAsienDetal = idAsienDetal;
+		}
+
+
+		public String getDenominacion() {
+			return denominacion;
+		}
+
+
+		public void setDenominacion(String denominacion) {
+			this.denominacion = denominacion;
+		}
+
+
+		public String getDebe() {
+			return debe;
+		}
+
+
+		public void setDebe(String debe) {
+			this.debe = debe;
+		}
+
+
+		public String getHaber() {
+			return haber;
+		}
+
+
+		public void setHaber(String haber) {
+			this.haber = haber;
+		}
+
+
+		public String getCentroCosto() {
+			return centroCosto;
+		}
+
+
+		public void setCentroCosto(String centroCosto) {
+			this.centroCosto = centroCosto;
+		}
+
+
+		public Long getIdCentroCostoSeleccionado() {
+			return idCentroCostoSeleccionado;
+		}
+
+
+		public void setIdCentroCostoSeleccionado(Long idCentroCostoSeleccionado) {
+			this.idCentroCostoSeleccionado = idCentroCostoSeleccionado;
+		}
+
+
+		public boolean isSeBorra() {
+			return seBorra;
+		}
+
+
+		public void setSeBorra(boolean seBorra) {
+			this.seBorra = seBorra;
+		}
+
+	}
+}

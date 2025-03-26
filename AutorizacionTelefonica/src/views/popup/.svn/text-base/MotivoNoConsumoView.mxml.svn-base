@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" keyDown="if(event.keyCode == Keyboard.ESCAPE) removePopUp()"   title="Motivo Inhablitacion Consumo" verticalAlign="middle" horizontalAlign="center">
+	<mx:Form height="100%" width="100%">
+			<mx:FormItem label="Disponible:" visible="{clienteViewModel.mostrarMotivoDisponible}" includeInLayout="{clienteViewModel.mostrarMotivoDisponible}">
+				<mx:Label text="{clienteViewModel.labelMotivoDisponible}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Situacion Cobranza:" visible="{clienteViewModel.mostrarMotivoSituacionCobranza}" includeInLayout="{clienteViewModel.mostrarMotivoSituacionCobranza}">
+				<mx:Label text="{clienteViewModel.labelMotivoSituacionCobranza}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Situacion Comercial:" visible="{clienteViewModel.mostrarMotivoSituacionComercial}" includeInLayout="{clienteViewModel.mostrarMotivoSituacionComercial}">
+				<mx:Label text="{clienteViewModel.labelMotivoSituacionComercial}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Estado Plastico:" visible="{clienteViewModel.mostrarMotivoEstadoPlastico}" includeInLayout="{clienteViewModel.mostrarMotivoEstadoPlastico}">
+				<mx:Label text="{clienteViewModel.labelMotivoEstadoPlastico}"/>
+			</mx:FormItem>
+	</mx:Form>
+	<mx:Button label="Aceptar" click="removePopUp()"/>
+	
+<mx:Script>
+	<![CDATA[
+		import views.models.ClienteViewModel;
+		import mx.managers.PopUpManager;
+		public function removePopUp():void{
+			PopUpManager.removePopUp(this);
+		}
+		[Bindable]public var clienteViewModel:ClienteViewModel;
+		
+		
+		
+	]]>
+</mx:Script>	
+	
+</mx:Panel>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" 
+	width="692"
+	title="{'Datos de '+modelo.detalleTareaSeleccionada.apellidoCliente+' '+modelo.detalleTareaSeleccionada.nombreCliente}"
+	creationComplete="init()">
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Abogado;
+			import events.GenericAbogadosEvent;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import commands.BuscarDetallesTareasCommand;
+			import com.tarjetafiel.caja.vo.Cobrador;
+			import events.GenericTareasPendientesEvent;
+			import mx.managers.PopUpManager;
+			import model.CobranzasModelLocator;
+			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			
+			private function init() : void {
+				
+				if (modelo.tareaSeleccionada.idAccion==8){
+					modelo.esCobradorValido = false;					
+					modelo.cobradorSeleccionadoACambiar = null;
+					
+					modelo.cobrador = new Cobrador();
+					modelo.cobrador.apellido = modelo.detalleTareaSeleccionada.apellidoCobrador;
+					modelo.cobrador.nombre = modelo.detalleTareaSeleccionada.nombreCobrador;
+					
+					if (modelo.listaCobradoresCambio == null){					
+						new GenericTareasPendientesEvent(GenericTareasPendientesEvent.BUSCAR_COBRADORES_PARA_CAMBIO_EVENT,null).dispatch();	
+					}
+				}else if (modelo.tareaSeleccionada.idAccion == 15){
+					
+					modelo.esAbogadoValido = false;
+					modelo.abogadoSeleccionadoACambiar = null;
+					
+					new GenericAbogadosEvent(GenericAbogadosEvent.BUSCAR_ABOGADO_CLIENTE_TAREA_EVENT,modelo.detalleTareaSeleccionada.idEjecucionPlan).dispatch();
+					
+					if (modelo.listaAbogadosCambio == null){
+						new GenericAbogadosEvent(GenericAbogadosEvent.BUSCAR_ABOGADOS_PARA_CAMBIO_EVENT,null).dispatch();
+					}
+				}
+				
+				new GenericTareasPendientesEvent(GenericTareasPendientesEvent.BUSCAR_DOMICILIO_INDIVIDUO_EVENT,modelo.detalleTareaSeleccionada.idIndividuo).dispatch();
+								
+			}
+			
+			private function salir() : void {
+				//new GenericTareasPendientesEvent(GenericTareasPendientesEvent.BUSCAR_DETALLES_TAREAS_EVENT,modelo.tareaSeleccionada).dispatch();
+				//modelo.detalleTareaSeleccionada = null;
+				PopUpManager.removePopUp(this);
+			} 
+			
+			private function datosCobradores(obj : Object) : String {
+				if (obj.idCobrador == -1){
+					return obj.apellido;	
+				}else {
+					return obj.apellido + ", " + obj.nombre;	
+				}
+				
+			}
+			
+			private function seleccionarCobrador():void {
+				var obj : Object = new Object();
+				obj.cobCombo = modelo.listaCobradoresCambio.getItemAt(cboCobradores.selectedIndex);
+				obj.cobSelected = modelo.detalleTareaSeleccionada.cobrador.cobrador;
+				
+				new GenericTareasPendientesEvent(GenericTareasPendientesEvent.SELECCIONAR_COBRADOR_EVENT,obj).dispatch();
+			}			
+			
+			private function cambiarCobrador():void {
+				Alert.yesLabel = "SI";
+ 				Alert.noLabel = "NO";
+ 				Alert.show("Esta Seguro?","Cambiar Cobrador",Alert.YES | Alert.NO,this,confirmarCambioCobrador,null,Alert.NO);
+			}
+			
+			private function confirmarCambioCobrador(eventObj:CloseEvent):void {
+				
+				if (eventObj.detail==Alert.YES) {
+					new GenericTareasPendientesEvent(GenericTareasPendientesEvent.CAMBIAR_COBRADOR_EVENT,modelo.cobradorSeleccionadoACambiar).dispatch();		
+				}
+				
+			}
+			
+			
+			private function datosAbogados(obj : Object) : String {
+				var ab : Abogado = Abogado(obj);
+				
+				if (ab.idColaborador == -1){
+					return ab.apellido;	
+				}else {
+					return ab.apellido + ", " + ab.nombres;	
+				}
+				
+			}
+			
+			private function seleccionarAbogado():void {
+				
+				var obj : Object = new Object();
+				obj.abogCombo = modelo.listaAbogadosCambio.getItemAt(cboAbogados.selectedIndex);
+				obj.abogSelected = modelo.abogadoClienteTarea;
+				new GenericAbogadosEvent(GenericAbogadosEvent.SELECCIONAR_ABOGADO_CAMBIO_EVENT,obj).dispatch();
+			}
+			
+			
+			private function cambiarAbogado():void {
+				Alert.yesLabel = "SI";
+ 				Alert.noLabel = "NO";
+ 				Alert.show("Esta Seguro?","Cambiar Abogado",Alert.YES | Alert.NO,this,confirmarCambioAbogado,null,Alert.NO);
+			}
+			
+			private function confirmarCambioAbogado(eventObj:CloseEvent):void {
+				
+				if (eventObj.detail==Alert.YES) {
+					var obj : Object = new Object();
+					obj.idEjecucionPlan = modelo.detalleTareaSeleccionada.idEjecucionPlan;
+					obj.idAbogIN = modelo.abogadoSeleccionadoACambiar.idColaborador;
+					new GenericAbogadosEvent(GenericAbogadosEvent.CAMBIAR_ABOGADO_CLIENTE_TAREA_EVENT,obj).dispatch();		
+				}
+				
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:HBox width="100%" horizontalAlign="center">
+		<mx:Panel width="35%" height="100%" layout="vertical" title="Información General">
+			<mx:Form width="100%">
+				<mx:FormItem label="Nro. Cuenta:">
+					<mx:TextInput editable="false" text="{modelo.detalleTareaSeleccionada.idUsuario}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Apellido:">
+					<mx:TextInput editable="false" text="{modelo.detalleTareaSeleccionada.apellidoCliente}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Nombre:">
+					<mx:TextInput editable="false" text="{modelo.detalleTareaSeleccionada.nombreCliente}"/>
+				</mx:FormItem>
+			</mx:Form>
+		</mx:Panel>
+		<mx:Panel width="65%" layout="vertical" title="Cobrador Asignado" visible="{modelo.tareaSeleccionada.idAccion == 8}" includeInLayout="{modelo.tareaSeleccionada.idAccion == 8}">
+			<mx:Form width="100%">
+				<mx:FormItem label="Apellido:" width="100%">
+					<mx:TextInput editable="false" text="{modelo.cobrador.apellido}" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="Nombre:" width="100%">
+					<mx:TextInput editable="false" text="{modelo.cobrador.nombre}" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="Cambiar por:" width="100%">
+					<mx:ComboBox id="cboCobradores" dataProvider="{modelo.listaCobradoresCambio}" labelFunction="datosCobradores" width="100%" change="seleccionarCobrador()"/>
+				</mx:FormItem>
+			</mx:Form>
+			<mx:HBox width="100%" horizontalAlign="right">
+				<mx:Button label="Cambiar" enabled="{modelo.esCobradorValido}" click="cambiarCobrador()"/>
+			</mx:HBox>
+		</mx:Panel>
+		
+		<mx:Panel width="65%" layout="vertical" title="Abogado Asignado" visible="{modelo.tareaSeleccionada.idAccion == 15}" includeInLayout="{modelo.tareaSeleccionada.idAccion == 15}">
+			<mx:Form width="100%">
+				<mx:FormItem label="Apellido:" width="100%">
+					<mx:TextInput editable="false" text="{modelo.abogadoClienteTarea.apellido}" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="Nombre:" width="100%">
+					<mx:TextInput editable="false" text="{modelo.abogadoClienteTarea.nombres}" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="Cambiar por:" width="100%">
+					<mx:ComboBox id="cboAbogados" dataProvider="{modelo.listaAbogadosCambio}" labelFunction="datosAbogados" width="100%" change="seleccionarAbogado()"/>
+				</mx:FormItem>
+			</mx:Form>
+			<mx:HBox width="100%" horizontalAlign="right">
+				<mx:Button label="Cambiar" enabled="{modelo.esAbogadoValido}" click="cambiarAbogado()"/>
+			</mx:HBox>
+		</mx:Panel>
+		
+	</mx:HBox>
+	
+	<mx:Panel width="100%" layout="vertical" title="Domicilio Cliente">
+		<mx:HBox width="100%">
+			<mx:Form width="50%">
+				<mx:FormItem label="Calle:" width="100%">
+					<mx:TextInput editable="false" width="100%" text="{modelo.domicilioIndividuo.calleNombre}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Numero:">
+					<mx:TextInput editable="false"  width="100%" text="{modelo.domicilioIndividuo.calleNumero}"/>
+				</mx:FormItem>
+				<mx:FormItem label="piso:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.piso}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Dto:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.depto}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Manzana:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.manzana}"/>
+				</mx:FormItem>
+				<mx:FormItem label="MonoBlock:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.monoblock}"/>
+				</mx:FormItem>			
+				<mx:FormItem label="Barrio:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.barrio.descripcion}"/>
+				</mx:FormItem>
+			</mx:Form>
+		
+			<mx:Form width="50%">
+				<mx:FormItem label="Provincia:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.localidad.provincia.nombre}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Partido:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.localidad.partido.descripcion}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Localidad:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.localidad.nombre}"/>
+				</mx:FormItem>
+				<mx:FormItem label="CP:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.codigoPostal}"/>
+				</mx:FormItem>
+				<mx:FormItem label="CPA2:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.cpa2}"/>
+				</mx:FormItem>
+				
+				<mx:FormItem label="Area Sector:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.areaSector}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Generico:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.generico}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Orientacion:">
+					<mx:TextInput editable="false" text="{modelo.domicilioIndividuo.orientacion}"/>
+				</mx:FormItem>
+				
+			</mx:Form>
+		</mx:HBox>
+		
+		<mx:HBox width="100%" horizontalAlign="right">
+			<mx:Button label="Iniciar Tramite Cambio Domicilio" />
+		</mx:HBox>
+	</mx:Panel>
+	
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button label="Salir" width="75" click="salir()"/>
+	</mx:ControlBar>
+	
+</mx:TitleWindow>

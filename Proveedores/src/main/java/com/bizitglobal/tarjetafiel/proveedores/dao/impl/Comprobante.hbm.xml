@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping>
+    <class name="com.bizitglobal.tarjetafiel.proveedores.negocio.Comprobante" table="t_vis_prov_comprobantes"  >
+        <id name="idComprobante" type="java.lang.Long" column="c_id_comprobante">
+            <generator class="increment" />
+        </id>
+        <property name="nroCorto" type="java.lang.Integer" column="c_nro_corto" not-null="true" length="4" />
+        <property name="nroLargo" type="java.lang.Integer" column="c_nro_largo" not-null="true" length="8" />
+        <property name="fechaEmision" type="java.sql.Timestamp" column="c_fecha_emision" not-null="true" length="3594" />
+        <property name="fechaContable" type="java.sql.Timestamp" column="c_fecha_contable" not-null="true" length="3594" />
+        <property name="observacion" type="java.lang.String" column="c_observacion" />
+        <property name="montoGrabado" type="java.math.BigDecimal" column="c_monto_grabado" not-null="true" length="10" />
+        <property name="montoNoGrabado" type="java.math.BigDecimal" column="c_monto_no_grabado" length="10" />
+        <property name="importeNeto" type="java.math.BigDecimal" column="c_importe_neto" not-null="true" length="10" />
+        <property name="totalImpuestos" type="java.math.BigDecimal" column="c_total_impuestos" length="10" />
+        <property name="importeTotal" type="java.math.BigDecimal" column="c_importe_total" not-null="true" length="10" />
+        <property name="contabilizado" type="java.lang.Character" column="c_contabilizado" not-null="true" length="1" />
+        <property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="true" length="3594" />
+        <property name="conceptoAsiento" type="java.lang.String" column="c_concepto_asiento" length="100" />
+        <property name="signo" type="java.lang.Integer" column="c_signo" not-null="true" length="4" />
+        <property name="totalExclusion" type="java.math.BigDecimal" column="c_total_exclusion" length="10" />
+        <property name="totalRetencion" type="java.math.BigDecimal" column="c_total_retencion" length="10" />
+        <property name="fechaPagado" type="java.sql.Timestamp" column="c_fecha_pago" length="3594" />
+        <property name="enFondos" type="java.lang.Character" column="c_en_fondos" not-null="true" length="1" />        
+		<!-- Associations -->
+        <many-to-one name="tipoComprobante" class="com.bizitglobal.tarjetafiel.general.negocio.TipoComprobante" not-null="true"    >
+            <column name="c_id_tipo_cte" />
+        </many-to-one>
+        <many-to-one name="movimiento" class="com.bizitglobal.tarjetafiel.fondos.negocio.Movimiento" not-null="false" cascade="save-update">
+			<column name="C_ID_MOVIMIENTO" />
+		</many-to-one>
+        <set name="proveedorImpuestos" inverse="false" cascade="all"    >
+            <key>
+                <column name="c_id_comprobante" />
+            </key>
+            <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorImpuesto" />
+        </set>
+        <set name="cuotaComprobantes" inverse="false" cascade="all"    >
+            <key>
+                <column name="c_id_comprobante" />
+            </key>
+            <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.CuotaComprobante" />
+        </set>
+        <set name="asientos" inverse="false" cascade="all"    >
+            <key>
+                <column name="c_id_comprobante" />
+            </key>
+            <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.AsientoContable" />
+        </set>
+        <set name="retenciones" inverse="false" cascade="save-update"    >
+            <key>
+                <column name="c_id_comprobante" />
+            </key>
+            <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.ProvCompRetencion" />
+        </set>
+        <many-to-one name="proveedor" class="com.bizitglobal.tarjetafiel.proveedores.negocio.Proveedor" not-null="true"    >
+            <column name="c_id_proveedor" />
+        </many-to-one>
+        <many-to-one name="provPedidoPor" class="com.bizitglobal.tarjetafiel.proveedores.negocio.Proveedor"    >
+            <column name="c_id_prov_pedido_por" />
+        </many-to-one>
+        <many-to-one name="compRevertido" class="com.bizitglobal.tarjetafiel.proveedores.negocio.Comprobante"    >
+            <column name="c_cte_revertido" />
+        </many-to-one>
+        <many-to-one name="operador" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="true"    >
+            <column name="c_id_operador" />
+        </many-to-one>
+         <many-to-one name="formaPago" class="com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorFormaPago" not-null="false"    >
+            <column name="c_id_prov_forma_pago" />
+        </many-to-one>
+        <set name="docAdjuntos" inverse="false" cascade="all"    >
+            <key>
+                <column name="c_id_comprobante" />
+            </key>
+            <one-to-many class="com.bizitglobal.tarjetafiel.proveedores.negocio.DocumentoAdjunto" />
+        </set>
+    </class>
+</hibernate-mapping>

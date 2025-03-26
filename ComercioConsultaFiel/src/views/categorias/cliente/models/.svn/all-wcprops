@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models
+END
+AdelantoEfectivoModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/AdelantoEfectivoModel.as
+END
+PlasticosXClienteModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/PlasticosXClienteModel.as
+END
+EncabezadoClienteModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/EncabezadoClienteModel.as
+END
+TramiteWorkflowModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/TramiteWorkflowModel.as
+END
+GeneralClienteModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/GeneralClienteModel.as
+END
+PlasticosModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/PlasticosModel.as
+END
+LineaCreditoModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/LineaCreditoModel.as
+END
+AgendaClienteModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/AgendaClienteModel.as
+END
+CtaCteClienteModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/CtaCteClienteModel.as
+END
+RepactacionModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/RepactacionModel.as
+END
+ComposicionSaldoClienteModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/ComposicionSaldoClienteModel.as
+END
+BaseModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/BaseModel.as
+END
+ResumenCtaClienteModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/testing/!svn/ver/23/trunk/ComercioConsultaFiel/src/views/categorias/cliente/models/ResumenCtaClienteModel.as
+END

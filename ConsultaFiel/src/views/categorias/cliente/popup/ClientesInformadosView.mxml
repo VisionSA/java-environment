@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ESCAPE) removePopUp()" 
+				creationComplete="init()" layout="vertical" showCloseButton="true" close="PopUpManager.removePopUp(this)"
+				horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/" xmlns:ns1="com.util.paginacion.*" height="400"
+				title="Tareas Pendientes Arreglar Clientes" width="1100" xmlns:maps1="maps.*">
+	
+	<maps1:AgendaModelMap/>
+	
+	<mx:VBox paddingBottom="0" paddingLeft="0" paddingRight="0" width="100%" height="90%"
+			 paddingTop="0">
+		<mx:HBox  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+				  paddingTop="0" height="100%" width="100%" horizontalAlign="right" verticalAlign="middle" >
+			<mx:Form width="100%" height="100%"  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					 paddingTop="0">
+				<mx:HBox>
+					
+					 <mx:Label text="Operador"/>
+					<mx:ComboBox id="cmbOperadores" prompt="Seleccione..." 
+								 dataProvider="{agendaModel.arrayOperadores}" labelField="nombreCompleto"   creationComplete="crearOperador()" width="250" />
+					
+					<mx:Button label="Buscar" width="90" click="buscarControlCliente()"/>
+				</mx:HBox>
+				<mx:AdvancedDataGrid id="adg1" designViewDataType="flat"   
+									 dataProvider="{modelo.listaControlClientes}" width="100%"  height="100%" rowHeight="20"
+									 paddingBottom="0" paddingLeft="0" paddingRight="0" 
+									 paddingTop="0" doubleClick="{this.seleccionarCliente()}" doubleClickEnabled="true">
+					<mx:columns>
+						
+						
+						
+						<mx:AdvancedDataGridColumn headerText="Cliente" width="40" sortable="false" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{data.clienteTransaccion.idCliente}" textAlign="right"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="fecha" width="40" sortable="false" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.dateFormatter.format(data.fecha)}" textAlign="left"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Apellido Nombre" width="80" sortable="false" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.getApellidoNombre(data.clienteTransaccion)}" textAlign="left"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Domicilo" width="50" sortable="false" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{(data.c1 == 1)?'X':''}" textAlign="center"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="DatosLaboral" width="50" sortable="false" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{(data.c2 == 1)?'X':''}" textAlign="center"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Telefono" width="50" sortable="false" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{(data.c3 == 1)?'X':''}" textAlign="center"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						
+						<mx:AdvancedDataGridColumn headerText="Tel.Laboral" width="50" sortable="false" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{(data.c5 == 1)?'X':''}" textAlign="center"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Rev.Linea" width="50" sortable="false" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{(data.c6 == 1)?'X':''}" textAlign="center"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Comercial" width="50" sortable="false" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.getEstadoCliente(data.clienteTransaccion)}" textAlign="left"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Cobranza" width="50" sortable="false" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.getCobranzaCliente(data.clienteTransaccion)}" textAlign="left"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						
+						
+						
+						
+						
+					</mx:columns>
+				</mx:AdvancedDataGrid>	
+				
+			</mx:Form>
+		</mx:HBox>
+	</mx:VBox>
+	<mx:VBox paddingBottom="0" paddingLeft="0" paddingRight="0" width="100%" height="10%"
+			 paddingTop="0">
+		<mx:HBox width="100%" horizontalAlign="center">	
+			
+			<mx:Button label="Salir" width="90" click="removePopUp()"/>
+		</mx:HBox>
+	</mx:VBox>
+	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YY"/>
+		
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ArreglaControlClienteNew;
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.tarjetafiel.caja.vo.Email;
+			import com.tarjetafiel.caja.vo.Eventos;
+			import com.tarjetafiel.caja.vo.EventosCliente;
+			import com.tarjetafiel.caja.vo.Operador;
+			import com.tarjetafiel.proveedorconexion.event.ClientesGeneralEvent;
+			import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+			import com.util.components.alert.AlertOk;
+			import com.util.paginacion.PaginacionEvent;
+			import mx.utils.StringUtil;
+			
+			import managers.ClienteManager;
+			
+			import models.ApplicationModel;
+			
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.utils.StringUtil;
+			
+			import views.categorias.cliente.models.EncabezadoClienteModel;
+			import views.categorias.models.AgendaModel;
+			
+			import com.tarjetafiel.caja.vo.EstadoCliente;
+			
+			
+			[Bindable] public  var agendaModel : AgendaModel;
+			[Bindable]
+			private var modelo : ModelLocatorGeneral = ModelLocatorGeneral.getInstance();
+			[Bindable]public var encabezadoClienteModel:EncabezadoClienteModel;	
+			
+			
+			public var idCliente:Number;
+			
+			
+		    private function init():void {
+				/* this.txtDescripcion.setFocus(); */
+			}
+			
+			
+			
+			public function buscarControlCliente():void{
+				//popUpVisible = false;
+				/* cleanData(); */
+				
+				
+				modelo.operador = (cmbOperadores.selectedItem as Operador).codigo;
+				new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_CONTROLCLIENTE_EVENT,null,null).dispatch();
+			}
+			
+			public function removePopUp():void{
+				//popUpVisible = false;
+				/* cleanData(); */
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function crearOperador():void{
+				var idOperadorAsigTemp:Number;
+				
+				idOperadorAsigTemp = Application.application.parameters.codigoOperador;
+				var index:int = new int();
+				index = 0;
+				
+				if(this.agendaModel.arrayOperadores && this.agendaModel.arrayOperadores.length > 0){
+					for each (var element:Operador in this.agendaModel.arrayOperadores)
+					{
+						
+						if(element.codigo == idOperadorAsigTemp)
+						{
+							
+							cmbOperadores.selectedItem = this.agendaModel.arrayOperadores.getItemAt(index);
+						
+							break;
+						} else {
+							index++;
+						}
+					}
+				}
+			}
+			
+			
+			public function getEstadoCliente(data:Object):String{
+				var clienteTransaccion:ClienteTransaccion = data as ClienteTransaccion;
+				var estadoCliente1:EstadoCliente;
+				return clienteTransaccion.estadoCliente.descripcion;
+			}
+			
+			public function getApellidoNombre(data:Object):String{
+				var clienteTransaccion:ClienteTransaccion = data as ClienteTransaccion;
+				
+				return StringUtil.trim(clienteTransaccion.individuo.apellido) + " , " + StringUtil.trim(clienteTransaccion.individuo.nombres);
+			}
+			
+			public function getCobranzaCliente(data:Object):String{
+				var clienteTransaccion:ClienteTransaccion = data as ClienteTransaccion;
+				return clienteTransaccion.estadoCobranza.descripcion;
+			}
+			
+			
+			private function onCreationComplete():void{
+				
+							agendaModel.initComboOperadores();
+			/*@F4053*/			}
+			
+			
+			private function seleccionarCliente():void {
+				var buscarPor:String= ClienteManager.BUSQ_POR_NRO_CUENTA;
+				var varControlClienteNew:ArreglaControlClienteNew;
+				var varClienteTransaccion:ClienteTransaccion;
+				varControlClienteNew = adg1.selectedItem as ArreglaControlClienteNew;
+				varClienteTransaccion = varControlClienteNew.clienteTransaccion;
+				encabezadoClienteModel.seleccionarClienteArregla(varClienteTransaccion,null,buscarPor);
+				PopUpManager.removePopUp(this);
+				//this.encabezadoClienteModel.buscarCliente(encabezadoClienteModel.clienteSeleccionado.individuo.cuil, buscarPor);	       		
+			}
+			
+		
+				
+		
+			
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

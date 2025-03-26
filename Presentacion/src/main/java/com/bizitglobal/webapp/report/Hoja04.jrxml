@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Hoja04"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="561"
+		 pageHeight="841"
+		 columnWidth="561"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="URLImagen" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[select * from t_vis_tra_clientes WHERE c_id_cliente = 1]]></queryString>
+
+	<field name="C_ID_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_SUCURSAL" class="java.math.BigDecimal"/>
+	<field name="C_ID_INDIVIDUO" class="java.math.BigDecimal"/>
+	<field name="C_LIMITE_CREDITO" class="java.math.BigDecimal"/>
+	<field name="C_SALDO_LINEA" class="java.math.BigDecimal"/>
+	<field name="C_ID_ESTADO_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_OPERADOR_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_OPERADOR_COBRANZA" class="java.math.BigDecimal"/>
+	<field name="C_ID_ESTADO_COBRANZA" class="java.math.BigDecimal"/>
+	<field name="C_HABILITADO_CONSUMO" class="java.lang.String"/>
+	<field name="C_ID_OPER_HAB_CONSUMO" class="java.math.BigDecimal"/>
+	<field name="C_CICLO" class="java.math.BigDecimal"/>
+	<field name="C_ADICIONAL" class="java.math.BigDecimal"/>
+	<field name="C_ID_TITULAR" class="java.math.BigDecimal"/>
+	<field name="C_FECHA_ESTADO_CLIENTE" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_ESTADO_COBRANZA" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_HABILITADO_CONSUMO" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_ALTA" class="java.sql.Timestamp"/>
+	<field name="C_NRO_SOLICITUD" class="java.lang.String"/>
+	<field name="C_CLIENTE_VIEJO" class="java.math.BigDecimal"/>
+	<field name="V_NOMBRE" class="java.lang.String"/>
+	<field name="V_DOMICILIO" class="java.lang.String"/>
+	<field name="V_LOCALIDAD" class="java.lang.String"/>
+	<field name="V_COD_POST" class="java.lang.String"/>
+	<field name="V_PROVINCIA" class="java.lang.String"/>
+	<field name="C_FECHA_MORA" class="java.sql.Timestamp"/>
+	<field name="C_ID_PLAN_MORA" class="java.math.BigDecimal"/>
+	<field name="C_CAMBIO_ESTADO_COB" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="60"  isSplitAllowed="true" >
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="149"
+						y="10"
+						width="283"
+						height="45"
+						key="image-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="770"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="3"
+						width="548"
+						height="737"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Calibri" size="9"/>
+					</textElement>
+				<text><![CDATA[d. El usuario titular y sus usuarios adicionales deberán a su vencimiento, o en su caso al quedar desvinculados del contrato, devolver los plásticos al emisor, haciéndose cargo del costo administrativo mensual que surge hasta que opere el vencimiento. En su caso de no ser devueltas las tarjetas emitidas se comprometen a efectuar la destrucción de las mismas bajo su exclusiva responsabilidad.
+e. Los tarjetahabientes responderán solidariamente por todas las operaciones realizadas a través del sistema, ya sea mediante el uso de la tarjeta, del PIN en la red de cajeros adheridos, por cupones, por carta, por teléfono, o por cualquier medio escrito, oral, electrónico, o de cualquier índole que VISION S.A. incorpore en el futuro para beneficio de los usuarios del sistema. En tal sentido, dichas transacciones podrán acreditarse a través de cualquier medio de prueba entre los cuales y de manera simplemente enunciativa se mencionan: comprobantes emitidos por terminales de captura de datos (POS) y cupones intervenidos por máquinas estampadoras, en ambos casos, se encuentren o no firmados por el tarjetahabiente; comprobantes emitidos por cajeros automáticos, registros de procesamiento de datos emitidos por cada una de las entidades administradoras de las redes de cajeros automáticos o de tarjetas de crédito que emita VISION S.A.; registros de procesamiento de datos emitidos por entidades bancarias; estados o resúmenes de cuenta, pedidos de bienes o servicios realizados por escrito, telefónicamente o por internet, circulares o notas de toda índole, sus copias o microfilmaciones u otros medios técnicos actuales o futuros.
+f. El TITULAR, su/s adicional/es y el/los fiador/es declara/n conocer que en relación a la operatoria y control de las transacciones cursadas por medio de atención telefónica, VISION S.A. cumple con las recomendaciones del Banco Central de la República Argentina mediante la comunicación “B” 9042 – Sección 6.6.
+4. Límite de compra y límite de crédito. La emisión de las tarjetas al TITULAR y su/s adicional/es así como la determinación del límite de compra y de crédito a asignar se realizará de acuerdo a criterios objetivos de evaluación del riesgo crediticio, sin perjuicio de los restantes requisitos necesarios para el perfeccionamiento de este contrato. El monto máximo mensual e inicial para compras será indicado en la solicitud de tarjeta de crédito. El monto máximo para retiro de dinero equivale al 15% del monto máximo mensual para compras. Tanto el límite de compra mensual como el de crédito y cualquier otro que se asigne en el futuro, serán informados por tarjeta FIEL mensualmente en cada resumen que se emita. El EMISOR está facultado para adecuar prudencialmente los límites asignados a la cuenta de tarjeta de crédito. El TITULAR es el único que puede solicitar la adecuación de los límites de la cuenta de tarjeta siendo facultad del EMISOR solicitar el respaldo documental suficiente cuando se le requiera un aumento en cualquiera de los límites antedichos. El EMISOR está facultado para ampliar transitoriamente todos o algunos de los límites asignados no estando obligado a hacerlo por requerimiento del TITULAR y/o su/s adicional/es. En el caso que cualquiera de los límites asignados fuera superado, el EMISOR podrá rechazar las operaciones, anularlas o pedir al comercio la retención de la tarjeta.
+5. Liquidación y Resumen. VISION S.A. realizará mensualmente la liquidación de las transacciones, comisiones, cargos, intereses, impuestos y demás conceptos que deban liquidarse con motivo del presente contrato. A partir de dicha liquidación Tarjeta FIEL mensualmente confeccionará y enviará, a opción del TITULAR, al domicilio y/o a la dirección de correo electrónico que en este contrato se encuentra determinada para tal fin un resumen detallado de las operaciones realizadas en el período anterior por los tarjetahabientes, con la suficiente anticipación, de modo que permita efectuar el pago en la fecha prevista en el resumen para su vencimiento. Atento a la importancia fundamental que las partes le acuerdan al cumplimiento puntual de las obligaciones emergentes del presente contrato, en caso de no recepción del resumen con una anticipación mínima de 5 (cinco) días hábiles antes del vencimiento acordado e informado a los USUARIOS en el resumen anterior, los tarjetahabientes deberán realizar el correspondiente reclamo ante el EMISOR antes de que opere el vencimiento del resumen, para lo cual dispondrá de un canal de comunicación telefónico durante las 24 horas del día que le permitirá obtener el saldo adeudado total a vencer y el pago mínimo correspondiente. Las partes acuerdan que a todos los efectos de este contrato, la información comunicada a través del resumen, constituirá comunicación fehaciente. El TITULAR, su/s adicional/es y el/los fiadores ACEPTAN como medio válido de comunicación de avisos y/o promociones el envío por parte de tarjeta FIEL de correos electrónicos y/o SMS.
+Tarjeta FIEL establecerá todos los meses e informará en cada resumen mensual:
+a. Los montos máximos autorizados de compras.
+b. La fecha de vencimiento del resumen actual y del próximo a emitirse.
+c. La fecha de cierre de operaciones del resumen actual y del próximo a emitirse.
+d. El importe total del resumen y el importe de pago mínimo actual.
+e. Las tasas de intereses compensatorios, punitorios y otras comisiones y cargos administrativos.
+6. Pago del resumen. El plazo para el pago del Resumen en ningún caso será inferior a diez (10) días corridos desde la fecha de corte mensual de las operaciones realizadas con la tarjeta. El TITULAR se obliga a abonar con dinero en efectivo en la fecha establecida como vencimiento en el resumen, todos los conceptos liquidados en el mismo con motivo del uso de la tarjeta. El lugar de pago de los resúmenes será el del domicilio de las sucursales FIEL o el lugar o medio que el EMISOR indique fehacientemente en el resumen a la fecha o en el futuro.
+7. Impugnación del resumen. Todo resumen, así como los conceptos liquidados e incluidos en él, se considerarán aceptados y conformados por el TITULAR, si transcurridos treinta (30) días de la fecha de recepción del mismo para el pago de los importes que arroje, no los objetare ni los impugnare. La impugnación parcial del resumen no obstará al pago mínimo o proporcional, según corresponda, calculado sobre los rubros no cuestionados, que deberá/n ser abonados íntegramente en la fecha prevista. El saldo del resumen no impugnado se considerará aceptado y será la deuda líquida del TITULAR y de su/s adicional/es y eventualmente del/los fiador/es, todo ello con sus ajustes e intereses que se generen hasta el pago efectivo y cancelatorio. No existiendo impugnación en los plazos legales establecidos, VISION S.A. queda autorizada para la digitalización de todo comprobante de consumo, transacción, cargo o gasto liquidado e incluido en el resumen en cuestión, no siendo procedente reclamos futuros al respecto.
+8. Desconocimiento de cupones. El TITULAR podrá realizar desconocimiento de cupones en las oficinas del EMISOR, mediante nota detallando claramente el error atribuido y aportando todo dato que sirva para esclarecerlo. Una vez que el EMISOR se expida se acreditará el importe al TITULAR si la resolución es favorable al mismo. Asimismo se deja constancia que no se adelantarán los fondos ante el reclamo. Debiéndose proceder para el pago del resumen en el cual se encuentran dichos cupones de acuerdo a lo indicado en el punto 7 (impugnación del resumen) de este contrato.
+9. Pago Mínimo. El pago mínimo es la exigencia mínima de pago mensual y puede o no coincidir con el total del saldo liquidado en el resumen. El pago mínimo a efectuar será el indicado mensualmente en cada resumen de cuenta. El pago mínimo estará compuesto por el 50% de las transacciones 50% de las transacciones mensuales en un pago o cuotas devengadas en transacciones financiadas, más  ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="504"
+						y="746"
+						width="43"
+						height="12"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[5]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="746"
+						width="171"
+						height="12"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Visión SA - Mendoza 360 Sur - San Juan]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="250"
+						y="746"
+						width="43"
+						height="12"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[v/7.1]]></text>
+				</staticText>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

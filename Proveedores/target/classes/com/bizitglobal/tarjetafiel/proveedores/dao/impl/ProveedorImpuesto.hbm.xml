@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorImpuesto" table="t_vis_prov_impuestos"  >
+    <id name="idProvImpuesto" type="java.lang.Long" column="c_id_prov_impuesto">
+        <generator class="increment" />
+    </id>
+
+    <property name="importe" type="java.math.BigDecimal" column="c_importe" not-null="true" length="10"/>
+    
+    <property name="esPercepcion" type="java.lang.String" column="c_es_percepcion" not-null="true" length="1"/>    
+
+    <!-- Associations -->
+    <many-to-one name="impuesto"    
+    			 class="com.bizitglobal.tarjetafiel.impuestos.negocio.Impuesto" 
+    			 not-null="true" 
+    			 cascade="none">
+        <column name="c_id_impuesto" />
+    </many-to-one>
+
+    <many-to-one name="comprobante"    
+    			 class="com.bizitglobal.tarjetafiel.proveedores.negocio.Comprobante" 
+    			 cascade="none">
+        <column name="c_id_comprobante" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

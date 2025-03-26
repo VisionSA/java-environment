@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="horizontal" verticalAlign="top" horizontalAlign="center"
+	 verticalGap="10" horizontalGap="0" title="Detalle de Cliente Titular">	
+		
+	<mx:Form>
+		<mx:FormItem label="Nro. Documento:" styleName="tituloBusquedas">
+			<mx:TextInput styleName="textInputNegroMediano" text="{_cliente.cliente.individuo.nroDocumento}" editable="false"  width="170"/>
+		</mx:FormItem>
+		<mx:FormItem label="Cuenta.:" styleName="tituloBusquedas">
+			<mx:TextInput styleName="textInputNegroMediano" text="{_cliente.cliente.idCliente}" editable="false"  width="170"/>
+		</mx:FormItem>
+		<mx:FormItem label="Estado Cobranza:" styleName="tituloBusquedas">
+			<mx:TextInput editable="false" styleName="textInputNegroMediano" text="{_cliente.labelEstadoCobranza}" width="170"/>
+		</mx:FormItem>
+		<mx:FormItem label="Estado Comercial:" styleName="tituloBusquedas">
+			<mx:TextInput editable="false" styleName="textInputNegroMediano" text="{_cliente.labelEstadoComercial}" width="170"/>
+		</mx:FormItem>
+	</mx:Form>
+	
+	<mx:Form>
+		<mx:FormItem label="Limite Crédito:" styleName="tituloBusquedas">
+			<mx:TextInput styleName="textInputAzulMediano" editable="false" text="{FormatUtil.formatMoneda(_cliente.cliente.limiteCredito)}" width="170"/>
+		</mx:FormItem>
+		<mx:FormItem label="Saldo en Linea:" styleName="tituloBusquedas">
+			<mx:TextInput styleName="textInputAzulMediano" editable="false" text="{FormatUtil.formatMoneda(_cliente.cliente.saldoLinea)}" width="170"/>
+		</mx:FormItem>
+		<mx:FormItem label="Disponible:" styleName="tituloBusquedas">
+			<mx:TextInput styleName="textInputRojoMediano" editable="false" text="{FormatUtil.formatMoneda(_cliente.disponible)}" width="170"/>
+		</mx:FormItem>
+	</mx:Form>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.model.ClienteModel;
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.util.format.FormatUtil;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			[Bindable]private var _cliente:ClienteModel = ModelLocator.getInstance().clienteSeleccionado;
+		]]>
+	</mx:Script>
+</mx:Panel>

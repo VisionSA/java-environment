@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.CondImpuesto" table="t_vis_prov_cond_impuestos"  >
+    <id name="idCondImpuestos" type="java.lang.Long" column="c_id_cond_impuestos">
+        <generator class="increment" />
+    </id>
+
+    <property name="cuit" type="java.lang.String" column="c_cuit" not-null="true" length="11"/>
+
+    <property name="denominacion" type="java.lang.String" column="c_deniminacion" not-null="true" length="30"/>
+
+    <property name="impGanancias" type="java.lang.String" column="c_imp_ganancias" not-null="true" length="2"/>
+
+    <property name="impIva" type="java.lang.String" column="c_imp_iva" not-null="true" length="2"/>
+
+    <property name="monotributo" type="java.lang.String" column="c_monotributo" not-null="true" length="2"/>
+
+    <property name="integranteSoc" type="java.lang.String" column="c_integrante_soc" not-null="true" length="1"/>
+
+    <property name="empleador" type="java.lang.String" column="c_empleador" not-null="true" length="1"/>
+
+    <property name="activo" type="java.lang.String" column="c_activo" not-null="true" length="1"/>
+
+    <!-- Associations -->
+    <many-to-one name="proveedor"    
+    			 class="com.bizitglobal.tarjetafiel.proveedores.negocio.Proveedor" 
+    			 not-null="true" 
+    			 cascade="save-update">
+        <column name="c_id_proveedor" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

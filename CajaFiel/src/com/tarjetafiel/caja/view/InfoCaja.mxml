@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" styleName="hboxInfoCaja">
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.model.ModelLocator;
+		]]>
+	</mx:Script>
+	<mx:Label text="Cod. Cajero: " styleName="lblInfoCaja"/>					
+	<mx:TextInput   editable="false" styleName="txtInfoCaja"
+	text="{ModelLocator.getInstance().operadorModel.operador.codigo.toString()}"/>
+	<mx:Label text="Cajero: " styleName="lblInfoCaja"/>					
+	<mx:TextInput editable="false" 
+	text="{ModelLocator.getInstance().operadorModel.operador.nombre + ', ' + 
+	ModelLocator.getInstance().operadorModel.operador.nombre}" styleName="txtInfoCaja"/>
+	<mx:Label text="Fecha Ultimo Cierre: " styleName="lblInfoCaja"/>					
+	<mx:TextInput styleName="txtInfoCaja" editable="false" text="{dateFormatter.format(ModelLocator.getInstance().cajaModel.caja.fechaModificacion)}" />
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormatter"/>
+	<mx:Label text="Caja: " styleName="lblInfoCaja"/>					
+	<mx:TextInput   editable="false" styleName="txtInfoCaja"
+	text="{ModelLocator.getInstance().cajaModel.cajaApertura.caja.idCaja + ' - ' + ModelLocator.getInstance().cajaModel.cajaApertura.caja.descripcion}"/>
+	
+</mx:HBox>

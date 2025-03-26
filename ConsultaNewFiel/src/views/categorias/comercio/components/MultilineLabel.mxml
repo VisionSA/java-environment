@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Label xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UITextField;
+			
+			[Bindable]
+			public var autoSize:String = TextFieldAutoSize.CENTER
+			
+			
+			override protected function createChildren() : void
+			{
+				// Create a UITextField to display the label.
+				if (!textField)
+				{
+					textField = new UITextField();
+					textField.styleName = this;
+					addChild(DisplayObject(textField));
+				}
+				super.createChildren();
+				textField.multiline = true;
+				textField.wordWrap = true;
+				textField.autoSize = autoSize;
+			}
+		]]>
+	</mx:Script>
+</mx:Label>

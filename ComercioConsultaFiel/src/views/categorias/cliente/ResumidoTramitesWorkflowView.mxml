@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox   xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"    horizontalAlign="center" verticalAlign="top">
+       	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat"  doubleClickEnabled="true" width="100%" height="100%"   doubleClick="this.cambiarVistaDetalle()"  
+       		dataProvider="{tramiteWorkflowModel.arrayTramites}">
+					<mx:columns>
+					     <mx:AdvancedDataGridColumn  headerText="N° Tramite" dataField="idTramite" />
+					     <mx:AdvancedDataGridColumn  headerText="Proceso" dataField="proceso.titulo" />
+					     <mx:AdvancedDataGridColumn  headerText="Estado" dataField="estado.descripcion" />
+					     
+					     <mx:AdvancedDataGridColumn headerText="Fecha inicio real" dataField="fechaInicioReal" formatter="{dateFormatter}"/>			                
+			             </mx:AdvancedDataGridColumn>
+			             <mx:AdvancedDataGridColumn headerText="Fecha fin real" dataField="fechaFinReal" formatter="{dateFormatter}"/>			                
+			             </mx:AdvancedDataGridColumn>
+			             
+			             <mx:AdvancedDataGridColumn  headerText="Operador" dataField="operador.apellido" />
+			             		                 
+			        </mx:columns>
+		</mx:AdvancedDataGrid>
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY" />
+  
+<mx:Script>
+	<![CDATA[
+		import views.categorias.cliente.models.TramiteWorkflowModel;
+		import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+		import com.util.Fecha;
+		import mx.effects.easing.Back;
+		import com.tarjetafiel.caja.vo.Tramite;
+		import com.tarjetafiel.caja.vo.Tarea;
+		import mx.controls.Alert;
+		import views.categorias.cliente.models.CtaCteClienteModel;
+		
+		     [Bindable]private var  _tramiteWorkflowModel:TramiteWorkflowModel;
+		     public var primero: Boolean=true; 
+		     public var acumulado:  Number=0;
+		     
+		     [Bindable (event="changedTramiteWorkflowModel")]
+		     public function get tramiteWorkflowModel():TramiteWorkflowModel{
+		     	return _tramiteWorkflowModel;
+		     }
+		     
+		     public function set tramiteWorkflowModel(target:TramiteWorkflowModel):void{
+		     	_tramiteWorkflowModel = target;
+		     	dispatchEvent(new Event("changedTramiteWorkflowModel"));
+		     }
+		     
+		     public function formatFechaString(fecha:String):String{
+		     	var date:Date = new Date();
+		     	date.setTime(Date.parse(fecha));
+		     	var dateFormatter:DateFormatter = new DateFormatter();
+		     	dateFormatter.formatString = "DD/MM/YYYY";
+		     	return dateFormatter.format(date);
+		     }
+		     
+		     public  function cambiarVistaDetalle():void{
+		     	if(adg1.selectedItem){
+		     		var movim : Tramite = Tramite(adg1.selectedItem);
+		     		tramiteWorkflowModel.tramiteSeleccionado = movim;
+		     		tramiteWorkflowModel.dispatcher.dispatchEvent(new Event("cambiarAVistaDetalleTramite"));
+		     	}
+		     }
+		     	
+		
+			
+			
+	]]>
+</mx:Script>
+
+	
+</mx:VBox>

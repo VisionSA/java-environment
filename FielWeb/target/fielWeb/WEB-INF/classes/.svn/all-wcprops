@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/fielWeb/WEB-INF/classes
+END
+builddef.lst
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/fielWeb/WEB-INF/classes/builddef.lst
+END
+log4j.properties
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/fielWeb/WEB-INF/classes/log4j.properties
+END

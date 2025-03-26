@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/" >
+	<mx:Script>
+		<![CDATA[
+		
+		    // para el modulo de planes.
+		    
+			import views.modulos.PanelEtapa;
+			import model.AccionModel;
+			import manager.AccionManager;
+			import events.AccionEvent;
+			import mx.events.FlexEvent;
+			import manager.EtapaManager;
+			import events.EtapaEvent;
+			import model.EtapaModel;
+			import events.PlanEvent;
+			import views.modulos.ModuloAltaPlan;
+			import manager.PlanManager;
+			import model.PlanModel;
+			
+			
+			// para el modulo de cobradores. 
+						
+		/*	import views.modulos.CobradoresPanelPartidos;
+			import events.ProvinciaEvent;
+			import events.PaisEvent;
+			import events.CobradoresEvent;
+
+			import views.modulos.CobradoresModule;
+			import manager.CobradoresManager;
+			import model.CobradoresModel;*/
+
+		]]>
+	</mx:Script>
+	
+	<Debugger level="{Debugger.ALL}"/>
+	
+	<!-- para el modulo de planes -->
+	
+	<Injectors target="{ModuloAltaPlan}" >
+		<ObjectBuilder generator="{PlanModel}" registerTarget="true" />
+		<PropertyInjector source="{lastReturn}" targetKey="planModel"/>
+		<ObjectBuilder generator="{EtapaModel}" />
+		<PropertyInjector source="{lastReturn}" targetKey="etapaModel"/>
+		<ObjectBuilder generator="{AccionModel}" />
+		<PropertyInjector source="{lastReturn}" targetKey="accionModel"/>
+	</Injectors>
+	
+	<Injectors target="{PanelEtapa}">
+		<ObjectBuilder generator="{PlanModel}" registerTarget="true" />
+		<PropertyInjector source="{lastReturn}" targetKey="planModel"/>
+	</Injectors>
+	
+	
+	
+	<!-- para el modulo de cobradores
+	<Injectors target="{CobradoresPanelPartidos}"  debug="true">
+		<PropertyInjector source="{CobradoresModel}" targetKey="cobradoresModel"/>
+	</Injectors>
+	
+	<Injectors target="{CobradoresManager}"  debug="true" dispatcherType="global">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+	</Injectors>
+	 -->
+	
+    <!-- para el modulo de planes -->
+	<EventHandlers type="{PlanEvent.REFRESCAR_PLAN}">
+		<MethodInvoker generator="{PlanManager}" method="editarPlan" arguments="{event.plan}"/>
+	</EventHandlers>
+
+	<EventHandlers type="{PlanEvent.NEW_PLAN}">
+		<RemoteObjectInvoker instance="{planService}" method="grabarPlan" arguments="{event.plan}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="resultGrabarPlan" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{PlanEvent.BORRAR_PLAN}">
+		<RemoteObjectInvoker instance="{planService}" method="borrarPlan" arguments="{event.plan}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="resultBorrarPlan" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{PlanEvent.CAMBIAR_ESTADO_PLAN}">
+		<RemoteObjectInvoker instance="{planService}" method="cambiarEstadoPlan" arguments="{event.plan}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="resultCambiarEstadoPlan" />
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{PlanEvent.MARCAR_PLAN_POR_DEFECTO}">
+		<RemoteObjectInvoker instance="{planService}" method="marcarPlanPorDefecto" arguments="{event.plan}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="resultMarcarPlanPorDefecto" />
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{PlanEvent.GUARDAR_NUEVA_VERSION}">
+		<RemoteObjectInvoker instance="{planService}" method="guardarNuevaVersion" arguments="{[event.plan, event.planVersion]}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="resultGrabarNuevaVersion" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{PlanEvent.BORRAR_VERSION}">
+		<RemoteObjectInvoker instance="{planService}" method="borrarVersion" arguments="{event.planVersion}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="resultBorrarVersion" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{PlanEvent.BUSCAR_PLANES}">
+		<RemoteObjectInvoker instance="{planService}" method="getPlan" arguments="{event.filtro}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="resultArrayPlanes" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{EtapaEvent.BUSCAR_ETAPAS}">
+		<RemoteObjectInvoker  instance="{etapaService}" method="listarEtapas" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{EtapaManager}" method="resultArrayEtapas" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{EtapaManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{AccionEvent.BUSCAR_ACCIONES}">
+		<RemoteObjectInvoker  instance="{accionService}" method="listarAcciones" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{AccionManager}" method="resultArrayAcciones" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{AccionManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{PlanEvent.BUSCAR_CONCEPTOS}">
+		<RemoteObjectInvoker  instance="{conceptoService}" method="getCabecerasConcepto"  debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="resultArrayConceptos" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{PlanManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{PlanEvent.CREAR_PLAN}">
+		<MethodInvoker generator="{PlanManager}" method="crearNuevoPlan" arguments="{event.listaEtapas}"/>
+	</EventHandlers>
+	
+	
+	<!-- para el modulo de cobradores 
+	
+
+	<EventHandlers type="{CobradoresEvent.BUSCAR_COBRADORES}" debug="true">
+		<RemoteObjectInvoker  instance="{cobradoresService}" method="listar" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="resultListarCobradores" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{PaisEvent.BUSCAR_PAISES}"  debug="true">
+		<RemoteObjectInvoker  instance="{paisesService}" method="getPaisesConProvincias"  debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="resultListarPaises" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ProvinciaEvent.BUSCAR_PROVINCIA}"  debug="true" > 
+		<RemoteObjectInvoker  instance="{provinciaService}" method="listar" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="resultListarProvincias" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{CobradoresManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>-->
+	
+	
+	
+	<!-- para el modulo de planes -->
+	
+	<Injectors target="{PlanManager}">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+	</Injectors>
+	
+	<Injectors target="{PlanModel}">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+		<PropertyInjector targetKey="planesArray" source="{PlanManager}" sourceKey="planesArray"/>
+		<PropertyInjector targetKey="conceptosArray" source="{PlanManager}" sourceKey="conceptosArray"/>
+		<PropertyInjector targetKey="plan" source="{PlanManager}" sourceKey="plan"/>
+		<PropertyInjector targetKey="planVersionAlta" source="{PlanManager}" sourceKey="planVersionAlta"/>
+	</Injectors>
+	
+	<Injectors target="{EtapaModel}">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+		<PropertyInjector targetKey="etapasArray" source="{EtapaManager}" sourceKey="etapasArray"/>
+	</Injectors>
+
+	<Injectors target="{AccionModel}">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+		<PropertyInjector targetKey="accionesArray" source="{AccionManager}" sourceKey="accionesArray"/>
+	</Injectors>
+	
+	<!-- para el modulo de cobradores
+	
+	<Injectors target="{CobradoresModel}"  debug="true" >
+		<PropertyInjector targetKey="cobradoresArray" source="{CobradoresManager}" sourceKey="cobradoresArray"/>
+		<PropertyInjector targetKey="paisesArray" source="{CobradoresManager}" sourceKey="paisesArray"/>
+		<PropertyInjector targetKey="provinciasArray" source="{CobradoresManager}" sourceKey="provinciasArray"/>
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+	</Injectors> -->
+	
+	
+	<!-- para el modulo de planes -->
+	<mx:RemoteObject id="accionService" destination="GenericDestination" source="accionServiceTarget"/>
+    <mx:RemoteObject id="etapaService" destination="GenericDestination" source="etapaServiceTarget"/>
+	<mx:RemoteObject id="planService" destination="GenericDestination" source="planServiceTarget"/>
+	<mx:RemoteObject id="planVersionService" destination="GenericDestination" source="planVersionServiceTarget"/>
+	<mx:RemoteObject id="conceptoService" destination="GenericDestination" source="conceptoServiceTarget"/>	
+	
+	<!-- para el modulo de cobradores 
+	<mx:RemoteObject id="cobradoresService" destination="GenericDestination" source="cobradoresServiceTarget"/>
+	<mx:RemoteObject id="paisesService" destination="GenericDestination" source="paisServiceTarget"/>
+	<mx:RemoteObject id="provinciaService" destination="GenericDestination" source="provinciaServiceTarget"/>-->
+	
+</EventMap>

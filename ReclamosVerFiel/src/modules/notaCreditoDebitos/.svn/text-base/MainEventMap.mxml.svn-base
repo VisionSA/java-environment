@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import models.ApplicationModel;
+			import managers.PermisosManager;
+			import modules.notaCreditoDebitos.events.NotaCreditoDebitoEvent;
+		]]>
+	</mx:Script>
+	
+	<Debugger level="{Debugger.DEBUG}"/>
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.BUSCAR_CLIENTE}" >
+		<RemoteObjectInvoker instance="{clienteTransaccionService}" method="buscarClienteFlex" arguments="{event.idCliente}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultBusquedaCliente" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.BUSCAR_EMPRESA}" >
+		<RemoteObjectInvoker instance="{empresaService}" method="getEmpresaFlex" arguments="{event.codPosnet}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultBusquedaEmpresa" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.BUSCAR_CONSUMOS}">
+		<RemoteObjectInvoker instance="{notaCreditoDebitoService}" method="buscarCosumosCliente" 
+			arguments="{[event.idCliente,event.fechaDesde,event.fechaHasta,event.estadoImpacto]}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultBuscarConsumos" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.BUSCAR_CONSUMOS_COD_POSNET}">
+		<RemoteObjectInvoker instance="{notaCreditoDebitoService}" method="buscarCosumosCodPosnet" 
+			arguments="{[event.codPosnet,event.fechaDesde,event.fechaHasta]}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultBuscarConsumos" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.BUSCAR_CONSUMOS_LIQ_CLIENTE}">
+		<RemoteObjectInvoker instance="{notaCreditoDebitoService}" method="buscarCosumosLiquidacion" 
+			arguments="{[event.idLiqCliente]}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultBuscarConsumos" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.BUSCAR_PAGOS}">
+		<RemoteObjectInvoker instance="{notaCreditoDebitoService}" method="buscarPagosCliente" 
+			arguments="{[event.idCliente,event.fechaDesde,event.fechaHasta]}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultBuscarConsumos" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.REALIZAR_NC_CONSUMO}">
+		<RemoteObjectInvoker instance="{notaCreditoDebitoService}" method="notaCreditoConsumo" arguments="{[event.idCliente,event.idTransaccion,event.operador,event.estadoImpacto]}">
+			<resultHandlers >
+				<MethodInvoker generator="{Manager}" method="resultNCConsumo"/>	
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.REALIZAR_ND_PAGO}">
+		<RemoteObjectInvoker instance="{notaCreditoDebitoService}" method="notaDebitoAnulacionPago" arguments="{[event.idCliente,event.idClienteDestino,event.idTransaccion,event.operador]}">
+			<resultHandlers >
+				<MethodInvoker generator="{Manager}" method="resultNDPago"/>	
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.REALIZAR_NC_IVA_CLIENTE}">
+		<RemoteObjectInvoker instance="{notaCreditoDebitoService}" method="notaCreditoIvaCliente" arguments="{[event.idCliente,event.importe,event.operador]}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultNotaCreditoIvaCliente"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.REALIZAR_NC_SIN_IVA_CLIENTE}">
+		<RemoteObjectInvoker instance="{notaCreditoDebitoService}" method="notaCreditoSinIvaCliente" arguments="{[event.idCliente,event.importe,event.operador]}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultNotaCreditoIvaCliente"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.REALIZAR_ND_IVA_CLIENTE}">
+		<RemoteObjectInvoker instance="{notaCreditoDebitoService}" method="notaDebitoIvaCliente" arguments="{[event.idCliente,event.importe,event.operador]}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultNotaDebitoIvaCliente"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{NotaCreditoDebitoEvent.REALIZAR_ND_SIN_IVA_CLIENTE}">
+		<RemoteObjectInvoker instance="{notaCreditoDebitoService}" method="notaDebitoSinIvaCliente" arguments="{[event.idCliente,event.importe,event.operador]}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultNotaDebitoIvaCliente"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<Injectors targets="{[NotaCreditoDebitoIvaCom,BusquedaCliente,NotaCreditoConsumo,NotaDebitoPago,PopUpClienteDestinoAnuPago]}">
+		<ObjectBuilder generator="{Manager}">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector targetKey="manager" source="{lastReturn}"/>
+	</Injectors>
+	
+	<Injectors target="{NotaCreditoDebitoView}">
+		
+		<ObjectBuilder generator="{PermisosManager}">
+			<Property source="{scope.dispatcher}" targetKey="dispatcher"/>
+		</ObjectBuilder>		
+		
+		<PropertyInjector targetKey="permisosManager" source="{lastReturn}"/>
+		
+		<ObjectBuilder generator="{ApplicationModel}">			
+		</ObjectBuilder>
+		
+		<PropertyInjector targetKey="applicationModel" source="{lastReturn}"/>
+		
+	</Injectors>
+	
+	<Injectors target="{Manager}">
+		<ObjectBuilder generator="{ApplicationModel}"/>
+		<PropertyInjector targetKey="applicationModel" source="{lastReturn}"/>
+	</Injectors>
+	
+	<mx:RemoteObject id="empresaService" source="empresaServiceTarget" destination="GenericDestination"/>
+	
+	<mx:RemoteObject id="clienteTransaccionService" source="clienteTransaccionServiceTarget" destination="GenericDestination"/>
+	
+	<mx:RemoteObject id="notaCreditoDebitoService" source="notaCreditoDebitoServiceTarget" destination="GenericDestination"/>
+		
+</EventMap>
+

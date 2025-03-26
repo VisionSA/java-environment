@@ -1,0 +1,6 @@
+Fecha: %fecha% %hora% Recibo: %recibo%
+Caja: %caja%  Trans.:%transaccion%
+Operador: %operador%
+Cuenta: %cuenta%
+%nombre-cliente%
+

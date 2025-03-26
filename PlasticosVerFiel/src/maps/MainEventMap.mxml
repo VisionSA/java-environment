@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import com.asfusion.mate.utils.debug.Debugger;
+			
+			import events.OperadorEvent;
+			
+			import managers.PermisosManager;
+			
+			import models.ApplicationModel;
+			
+			import modules.pagofacil.EditarReclamo;
+			import modules.pagofacil.ListarReclamo;
+			import modules.pagofacil.NuevoReclamo;
+			import modules.pagofacil.NuevoReclamoComercio;
+			import modules.pagofacil.EditarReclamoComercio;
+			import modules.pagofacil.ListarReclamoComercio;
+			import modules.pagofacil.ProcesarPagoFacilModule;
+			import modules.pagofacil.UploadArchivo;
+			
+			import mx.events.FlexEvent;
+			
+		]]>
+	</mx:Script>
+	
+	
+	<Debugger level="{Debugger.ALL}" />
+	
+	<!-- ######################### CLIENTE #############################-->
+	
+	<EventHandlers type="{FlexEvent.APPLICATION_COMPLETE}" debug="true">		
+		<MethodInvoker generator="{ApplicationModel}" method="buscarConfiguracionModo"/>
+	</EventHandlers>
+	
+		<!-- LOGIN -->
+   	<EventHandlers type="{OperadorEvent.BUSCAR_OPERADOR_LOGUEADO}">
+   		<RemoteObjectInvoker instance="{operadorService}" method="getOperadorLogueado" arguments="{event.codigoOperador}">
+   			<resultHandlers>
+   				<MethodInvoker generator="{ApplicationModel}" method="resultOperadorLogueado" arguments="{resultObject}"/>
+   			</resultHandlers>
+   			<faultHandlers>
+   				<MethodInvoker generator="{ApplicationModel}" method="faultConsultaOperador" arguments="{fault}"/>   				
+   			</faultHandlers>
+   		</RemoteObjectInvoker>
+   	</EventHandlers>   	
+   	<!-- LOGIN -->
+	
+	<Injectors targets="{[PlasticosVerFiel,ProcesarPagoFacilModule,EditarReclamo,ListarReclamo,NuevoReclamo,UploadArchivo,NuevoReclamoComercio,EditarReclamoComercio,ListarReclamoComercio]}">
+		<ObjectBuilder generator="{ApplicationModel}" >
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector targetKey="applicationModel" source="{lastReturn}"/>
+	</Injectors>
+	
+	 <!--<EventHandlers type="{OperadorEvent.VALIDAR_PERMISO_PANTALLA}">
+   		<RemoteObjectInvoker instance="{operadorService}" method="validarPermisoFlex" arguments="{[event.operador,event.pantalla]}">
+   			<resultHandlers>
+   				<MethodInvoker generator="{PermisosManager}" method="resultPermiso" arguments="{resultObject}"/>
+   			</resultHandlers>
+   			<faultHandlers>
+   				<MethodInvoker generator="{PermisosManager}" method="faultPermisos" arguments="{fault}"/>
+   			</faultHandlers>
+   		</RemoteObjectInvoker>
+   </EventHandlers>-->
+   
+  <mx:RemoteObject id="operadorService" destination="GenericSessionDestination" source="operadorServiceTarget"/>
+ 
+</EventMap>
+

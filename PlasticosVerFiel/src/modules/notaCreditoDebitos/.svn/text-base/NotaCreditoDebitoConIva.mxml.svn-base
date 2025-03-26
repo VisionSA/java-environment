@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="horizontal" width="100%" height="100%" xmlns:notaCreditoDebitos="modules.notaCreditoDebitos.*">
+	<mx:Script>
+		<![CDATA[
+			import modules.notaCreditoDebitos.events.NotaCreditoDebitoEvent;
+		]]>
+	</mx:Script>
+	<mx:VBox width="50%" height="100%">
+		<mx:ApplicationControlBar width="100%">
+			<notaCreditoDebitos:BusquedaCliente/>						
+		</mx:ApplicationControlBar>		
+		<notaCreditoDebitos:NotaCreditoDebitoIvaCom label="Nota Crédito Cliente" tipoNota="NC" typeEvent="{NotaCreditoDebitoEvent.REALIZAR_NC_IVA_CLIENTE}"/>
+		<mx:HRule width="100%"/>
+		<notaCreditoDebitos:NotaCreditoDebitoIvaCom label="Nota Débito Cliente" tipoNota="ND" typeEvent="{NotaCreditoDebitoEvent.REALIZAR_ND_IVA_CLIENTE}"/>
+	</mx:VBox>
+	<mx:VRule height="100%"/>
+	<mx:VBox width="50%" height="100%" enabled="false">
+		<mx:ApplicationControlBar width="100%">
+			<notaCreditoDebitos:BusquedaComercio/>			
+		</mx:ApplicationControlBar>
+		<notaCreditoDebitos:NotaCreditoDebitoIvaCom label="Nota Crédito Comercio" tipoNota="NC" isCliente="false"/>
+		<mx:HRule width="100%"/>
+		<notaCreditoDebitos:NotaCreditoDebitoIvaCom label="Nota Débito Comercio" tipoNota="ND" isCliente="false"/>
+	</mx:VBox>	
+</mx:Module>

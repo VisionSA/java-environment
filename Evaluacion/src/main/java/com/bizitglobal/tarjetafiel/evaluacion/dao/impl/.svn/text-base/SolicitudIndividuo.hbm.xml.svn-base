@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.SolicitudIndividuo" table="t_vis_eva_solic_individuos" >
+	<id name="idSolicitudIndividuo" type="java.lang.Long" column="c_id_solic_individuo">
+		<generator class="increment" />
+	</id>
+
+	<many-to-one name="individuoEvaluacion" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.IndividuoEvaluacion" not-null="false" cascade="save-update">
+		<column name="c_id_individuo" />
+	</many-to-one>
+
+	<many-to-one name="solicitud" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Solicitud" not-null="true" cascade="save-update">
+		<column name="c_id_solicitud" />
+	</many-to-one>
+
+	<many-to-one name="tipoIndividuo" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.TipoIndividuo" not-null="true" cascade="none">
+		<column name="c_id_tipo_individuo" />
+	</many-to-one>
+
+	<property name="observacion" type="java.lang.String" column="c_observacion" not-null="false" length="2048"/>
+
+    <property name="activo" type="java.lang.String" column="c_activo" not-null="false" length="1"/>
+	
+	<property name="confTelLaboral" type="java.lang.String" column="c_conftel_labroral" not-null="false" length="2048"/>
+	
+	<property name="confTelParticular" type="java.lang.String" column="c_conftel_particular" not-null="false" length="2048"/>
+	
+	<property name="aceptado" type="java.lang.String" column="c_aceptado" not-null="false" length="1"/>
+	
+	<property name="nuevo" type="java.lang.String" column="c_nuevo" not-null="false" length="1"/>
+	
+	<set name="clearings" inverse="false" cascade="save-update"  >
+		<key>
+			<column name="c_id_solic_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Clearing"/>
+	</set>
+	<set name="confTelefonicas" inverse="false" cascade="none"  >
+		<key>
+			<column name="c_id_solic_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.ConfirmacionTelefonica"/>
+	</set>
+	<set name="infoLaborales" inverse="false" cascade="none"  >
+		<key>
+			<column name="c_id_solic_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.InformeLaboral"/>
+	</set>
+	<set name="infoParticulares" inverse="false" cascade="none"  >
+		<key>
+			<column name="c_id_solic_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.InformeParticular"/>
+	</set>
+</class>
+</hibernate-mapping>

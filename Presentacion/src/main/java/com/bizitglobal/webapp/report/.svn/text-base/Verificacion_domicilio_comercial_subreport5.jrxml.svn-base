@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Verificacion_domicilio_comercial_subreport0"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="IdIndividuo" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[select distinct t_vis_eva_individuos.c_apellido as apellido, 
+    t_vis_eva_individuos.c_nombres as nombre, 
+    t_vis_gen_tipos_documentos.c_descripcion as tipodocum, 
+    t_vis_eva_individuos.c_nro_documento as docum, 
+    t_vis_gen_domicilios.c_calle_nombre as calle, 
+    t_vis_gen_domicilios.c_calle_numero as nro, 
+    nvl(t_vis_gen_domicilios.c_piso,0) as piso, 
+    nvl(t_vis_gen_domicilios.c_depto,'') as depto, 
+    nvl(t_vis_gen_domicilios.c_manzana,'') as manzana, 
+    t_vis_gen_barrios.c_descripcion as barrio, 
+    t_vis_gen_localidades.c_nombre as localidad 
+from t_vis_eva_individuos, 
+    t_vis_gen_tipos_documentos, 
+  --  t_vis_eva_indiv_domicilios, 
+    t_vis_gen_domicilios, 
+    t_vis_gen_barrios, 
+    t_vis_gen_localidades 
+where 
+    t_vis_eva_individuos.c_id_tipo_documento = t_vis_gen_tipos_documentos.c_id_tipo_documento and
+    t_vis_eva_individuos.c_id_domicilio = t_vis_gen_domicilios.c_id_domicilio and
+    t_vis_gen_domicilios.c_id_barrio = t_vis_gen_barrios.c_id_barrio and
+    t_vis_gen_localidades.c_id_localidad = t_vis_gen_domicilios.c_id_localidad and 
+    t_vis_eva_individuos.c_id_individuo = $P{IdIndividuo}]]></queryString>
+
+	<field name="apellido" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="tipodocum" class="java.lang.String"/>
+	<field name="docum" class="java.lang.String"/>
+	<field name="calle" class="java.lang.String"/>
+	<field name="nro" class="java.lang.String"/>
+	<field name="piso" class="java.lang.Integer"/>
+	<field name="depto" class="java.lang.String"/>
+	<field name="manzana" class="java.lang.String"/>
+	<field name="barrio" class="java.lang.String"/>
+	<field name="localidad" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="23"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="2"
+						width="93"
+						height="14"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Apellido y Nombre:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="93"
+						y="2"
+						width="194"
+						height="14"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{apellido}.concat(" "+ $F{nombre}.trim() ).trim()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="298"
+						y="2"
+						width="159"
+						height="14"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tipodocum}.concat(": "+ $F{docum}.trim()).trim()]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

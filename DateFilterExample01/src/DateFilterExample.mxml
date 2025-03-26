@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" verticalAlign="top"
+				horizontalAlign="center" paddingTop="0" viewSourceURL="srcview/index.html">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			
+			private function videoDisplay_creationComplete() : void
+			{
+				var camera:Camera = Camera.getCamera();
+				
+				if (camera) 
+				{
+					videoDisplay.attachCamera(camera);                    
+				} 
+				else 
+				{
+					Alert.show("Oops, we can't find your camera.");
+				}
+			}
+			
+			private function capture_click() : void
+			{
+				var snap:BitmapData = new BitmapData(320, 240, true);
+				var snapBmp:Bitmap = new Bitmap(snap);
+				
+				snapBmp.width = 320;
+				snapBmp.height = 240;
+				
+				if(snapshotHolder.numChildren > 0)
+					snapshotHolder.removeChildAt(0);
+				
+				snapshotHolder.addChild(snapBmp);                
+				snap.draw(videoDisplay);
+			}
+		]]>
+		
+	</mx:Script>
+	<mx:HBox>
+		<mx:Panel title="Video">
+			<mx:VideoDisplay id="videoDisplay" creationComplete="videoDisplay_creationComplete();" width="320" height="240" />        
+		</mx:Panel>
+		
+		<mx:Panel title="Snapshot">
+			<mx:UIComponent id="snapshotHolder" width="320" height="240" />
+		</mx:Panel>
+		
+	</mx:HBox>
+	<mx:HBox>
+		<mx:Button label="reload camera" click="videoDisplay_creationComplete();"/>
+		<mx:Button label="capture" click="capture_click();"/>    
+	</mx:HBox>
+	
+	<mx:HBox>
+		<mx:Panel title="Thumbnails">
+			<mx:UIComponent id="snapshotHolderTN" width="128" height="96" />
+		</mx:Panel>
+	</mx:HBox>
+	
+	
+</mx:Application>
+

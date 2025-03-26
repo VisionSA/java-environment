@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onCreationComplete()" preinitialize="preInit()" horizontalAlign="center" verticalAlign="middle" paddingBottom="5" paddingTop="5" paddingLeft="5" paddingRight="5" borderStyle="solid" verticalGap="0">			
+	<mx:HBox verticalAlign="middle" horizontalAlign="center" width="100%" horizontalGap="0">
+		<mx:LinkButton label="Anterior" click="clickAnterior()" enabled="{_paginador.pagina != 0}"/>
+		<mx:Spacer width="10"/>
+		<mx:LinkButton label="Siguiente" click="clickSiguiente()" enabled="{_paginador.pagina != _paginador.cantidadPaginas}"/>
+		<mx:Spacer width="10"/>
+		<mx:Label text="Página Actual:"/>
+		<mx:TextInput id="paginaActual" restrict="1-9" width="80" keyDown="if(event.keyCode == Keyboard.ENTER)this.validarPaginaIngresada()"/>
+		<mx:Spacer width="10"/>
+		<mx:Label text="Total de Páginas:"/>
+		<mx:TextInput id="cantidadPaginas" editable="false" width="80"/>
+		<mx:Spacer width="10"/>
+		<mx:Label text="Registros Página:"/>
+		<mx:TextInput id="registrosPagina" editable="false" width="80"/>
+	</mx:HBox>
+	<mx:Metadata>
+		[Event(name="paginar", type="com.util.paginacion.PaginacionEvent")]
+	</mx:Metadata>	
+	<mx:Script>
+		<![CDATA[
+			import com.util.components.alert.AlertWarning;
+			import mx.controls.Alert;
+			
+			[Bindable]private var _paginador:Paginador;
+			public var cantidadRegistros:int = 10;			
+			
+			public function preInit():void{
+				_paginador = new Paginador();
+				_paginador.cantidadRegistros = this.cantidadRegistros;
+				_paginador.pagina = 0;
+				_paginador.cantidadPaginas = 0;				
+			}
+			
+			public function onCreationComplete():void{
+											
+				this.paginaActual.text = paginador.pagina.toString();
+				this.cantidadPaginas.text = "0";
+				this.registrosPagina.text = paginador.cantidadRegistros.toString();				
+								
+			}
+			
+			public function validarPaginaIngresada():void{
+				if(Number(this.paginaActual.text) > Number(this.cantidadPaginas.text)){
+					AlertWarning.show("La página actual no puede ser mayor que el total de páginas.");
+					this.paginaActual.text = (this._paginador.pagina + 1).toString();
+				} else {
+					
+					this._paginador.pagina = Number(this.paginaActual.text) - 1; 
+					this.dispatchEvent(new PaginacionEvent(PaginacionEvent.PAGINAR,this._paginador));
+				}
+			}
+			
+			public function set paginador(paginador:Paginador):void{
+				_paginador = paginador;				
+				_paginador.cantidadRegistros = this.cantidadRegistros;
+				_paginador.pagina = 0;
+				_paginador.cantidadPaginas = 0;								
+				//this._paginador.addEventListener(PaginacionEvent.PAGINAR_COMPLETADO, paginacionCompletada);								
+			}
+			
+			public function get paginador():Paginador{
+				return _paginador;
+			}
+			
+			private function clickSiguiente():void{				
+				if(_paginador.pagina < _paginador.cantidadPaginas){
+					this._paginador.pagina += 1;
+					var pag:int = this._paginador.pagina + 1;
+					this.paginaActual.text = (pag).toString();
+					this.dispatchEvent(new PaginacionEvent(PaginacionEvent.PAGINAR,this._paginador));			
+				}	
+			}
+			
+			private function clickAnterior():void{
+				if(_paginador.pagina > 0){
+					this._paginador.pagina -= 1;
+					var pag:int = this._paginador.pagina;
+					if(this._paginador.pagina == 0){
+						this.paginaActual.text = "1";	
+					} else {
+						this.paginaActual.text = (pag + 1).toString();
+					}
+						
+					this.dispatchEvent(new PaginacionEvent(PaginacionEvent.PAGINAR,this._paginador));
+				}
+				
+			}  
+			
+			public function paginacionCompleta(paginador:Paginador):void{
+					this._paginador = paginador;		
+					this.paginaActual.text = (this._paginador.pagina + 1).toString();
+					this.cantidadPaginas.text = (this._paginador.cantidadPaginas + 1).toString();
+					//this.registrosPagina.text = _paginador.cantidadRegistros.toString();
+			}
+			
+			
+		]]>
+	</mx:Script>
+</mx:VBox>

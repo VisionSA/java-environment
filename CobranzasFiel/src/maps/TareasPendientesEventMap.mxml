@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/" >
+	<mx:Script>
+		<![CDATA[
+			import views.components.DetalleDeTareas;
+			import events.TareasPendientesEvent;
+
+			import views.modulos.TareasPendientesModule;
+			import manager.TareasPendientesManager;
+			import model.TareasPendientesModel;
+			import events.BarraMenuEvent;
+			import views.MenuView;
+		]]>
+	</mx:Script>
+	
+	<Injectors targets="{[TareasPendientesModule, DetalleDeTareas]}" >
+		<ObjectBuilder generator="{TareasPendientesModel}" registerTarget="true" />
+			<PropertyInjector source="{lastReturn}" targetKey="tareasPendientesModel"/>
+	</Injectors>
+	
+	<EventHandlers type="{TareasPendientesEvent.BUSCAR_TAREAS_PENDIENTES}"  debug="true" > 
+		<RemoteObjectInvoker  instance="{tareaPendienteService}" method="listaTareasPendientes" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{TareasPendientesManager}" method="resultBuscarTareasPendientes" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{TareasPendientesManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{TareasPendientesEvent.BUSCAR_DETALLES_TAREA_PENDIENTE}"  debug="true" > 
+		<RemoteObjectInvoker  instance="{tareaPendienteService}" method="listarDetallesTarea" arguments="{event.tareaPendiente}" debug="true">
+			<resultHandlers>
+				<MethodInvoker generator="{TareasPendientesManager}" method="resultBuscarDetallesTareasPendientes" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{TareasPendientesManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	
+	<Injectors target="{TareasPendientesManager}">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+	</Injectors>
+	
+	<Injectors target="{TareasPendientesModel}">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+		<PropertyInjector targetKey="tareasPendientesArray" source="{TareasPendientesManager}" sourceKey="tareasPendientesArray"/>
+		<PropertyInjector targetKey="detallesTareasPendientes" source="{TareasPendientesManager}" sourceKey="detallesTareasPendientes"/>
+	</Injectors>
+
+	
+	
+	<mx:RemoteObject id="tareaPendienteService" destination="GenericDestination" source="tareaPendienteServiceTarget"/>
+	
+</EventMap>

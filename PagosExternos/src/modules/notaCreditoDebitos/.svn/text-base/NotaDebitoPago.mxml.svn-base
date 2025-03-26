@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="100%" height="100%" 
+	xmlns:date="com.util.components.date.*" xmlns:notaCreditoDebitos="modules.notaCreditoDebitos.*">
+	<mx:ApplicationControlBar width="100%" >		
+		<mx:VBox width="100%" resizeEffect="{resizeEff}">
+			<notaCreditoDebitos:BusquedaCliente/>
+			<mx:HRule width="100%"/>
+			<mx:HBox visible="{manager.busquedaConsumosVisible}" includeInLayout="{manager.busquedaConsumosVisible}" horizontalAlign="left" verticalAlign="middle">
+				<mx:Label text="Fecha Desde:" styleName="lblInfoCaja"/>
+				<date:DateFiledMultiLan id="dateDesde" selectedDate="{Fecha.quitarDias(new Date(),30)}"/>
+				<mx:Label text="Fecha Hasta:" styleName="lblInfoCaja"/>
+				<date:DateFiledMultiLan id="dateHasta" selectedDate="{new Date()}"/>				
+				<mx:Button label="Buscar Pagos" click="{manager.buscarConsumos(dateDesde.selectedDate,dateHasta.selectedDate,null,true)}"/>
+				<mx:CheckBox label="Solo Pagos" visible="false" includeInLayout="false" selected="true" styleName="lblInfoCaja" id="chkSoloPagos" change="manager.changedChkSloPagos(chkSoloPagos.selected)"/>				
+			</mx:HBox>			
+		</mx:VBox>		
+	</mx:ApplicationControlBar>
+	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" width="100%" height="100%" dataProvider="{manager.pagos}">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Fecha Pago" dataField="fecha" formatter="{dateFormatter}"/>
+			<mx:AdvancedDataGridColumn headerText="Descripción" dataField="comercio"/>
+			<mx:AdvancedDataGridColumn headerText="Transacción" dataField="transaccion"/>
+			<mx:AdvancedDataGridColumn headerText="Cod. Autor." dataField="codigo"/>
+			<mx:AdvancedDataGridColumn headerText="Cuotas" dataField="cuota"/>
+			<mx:AdvancedDataGridColumn headerText="Importe" dataField="importe" formatter="{currFormat}"/>
+			<mx:AdvancedDataGridColumn headerText="Realizar ND Pago">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:HBox verticalAlign="middle" horizontalAlign="center" width="100%">
+							<mx:LinkButton label="Realizar ND Pago" click="outerDocument.realizarNc(data)"/>
+						</mx:HBox>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+	<mx:CurrencyFormatter id="currFormat" currencySymbol="$" rounding="nearest" precision="2"/>	
+	
+	<mx:Resize id="resizeEff"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.skins.halo.BusyCursor;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import com.util.Fecha;
+			
+			[Bindable]public var manager:Manager;
+			private var popUpAnuPago:PopUpClienteDestinoAnuPago = new PopUpClienteDestinoAnuPago();
+			
+			
+			public function realizarNc(data:Object):void{
+				
+				manager.soloPagos = true;			
+				manager.pagoAnular = this.adg1.selectedItem;
+				manager.busquedaClienteDestinoVis = true;
+				PopUpManager.addPopUp(popUpAnuPago,Application.application as DisplayObject,true);
+				PopUpManager.centerPopUp(popUpAnuPago);
+				
+				
+			}
+			
+			
+			
+		]]>
+	</mx:Script>
+	
+</mx:Module>

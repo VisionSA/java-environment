@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.CajaMP" table="T_VIS_FON_CAJAS_MP">
+	
+	
+	<id name="idCajaMP" type="java.lang.Long" column="C_ID_CAJAMP">
+		<generator class="increment" />
+	</id>
+	
+	<property name="habilitado" type="java.lang.Character" column="C_HABILITADO" not-null="true" />
+	<!-- property name="idPlanCuenta" type="java.lang.Long" column="C_ID_PLAN_CUENTA" not-null="false" /-->
+	
+    <many-to-one name="caja" class="com.bizitglobal.tarjetafiel.fondos.negocio.Caja" not-null="false" cascade="none">
+		<column name="C_ID_CAJA" />
+	</many-to-one>
+	
+	<many-to-one name="formaPago" class="com.bizitglobal.tarjetafiel.general.negocio.FormaPago" not-null="false" >
+		<column name="C_ID_FORMA_PAGO" />
+	</many-to-one>
+	
+	<many-to-one name="planCuentaDos" class="com.bizitglobal.tarjetafiel.contabilidad.negocio.PlanCuentaDos" not-null="false" >
+		<column name="C_ID_PLAN_CUENTA" />
+	</many-to-one>
+	
+	
+</class>
+</hibernate-mapping>

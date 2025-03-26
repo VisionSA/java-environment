@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.DetalleExtracto" table="T_VIS_FON_DETALLE_EXTRACTO" >
+	<id name="idDetalleExtracto" type="java.lang.Long" column="C_ID_DETALLE_EXTRACTO">
+		<generator class="increment" />
+	</id>
+	
+	<property name="registro" type="java.lang.String" column="C_REGISTRO" not-null="true" length="150"/>
+	<property name="tipoRegistro" type="java.lang.Character" column="C_TIPO_REGISTRO" not-null="true" />
+	<property name="fechaProceso" type="java.util.Date" column="C_FECHA_PROCESO" not-null="true" length="3594"/>
+	<property name="nroComprobante" type="java.lang.String" column="C_NRO_COMPROBANTE" not-null="true" length="12" />
+	<property name="importe" type="java.lang.Double" column="C_IMPORTE" not-null="true" />
+	<property name="nroCuentaCorto" type="java.lang.String" column="C_NRO_CTA_CORTO" not-null="false" length="2"/>
+	<property name="conciliado" type="java.lang.Character" column="C_CONCILIADO" not-null="false" />
+	<property name="concepto" type="java.lang.String" column="C_CONCEPTO" not-null="false" length="30"/>
+	<property name="fechaMovimiento" type="java.util.Date" column="C_FECHA_MOVIMIENTO" not-null="true" length="3594"/>
+	<property name="fechaValor" type="java.util.Date" column="C_FECHA_VALOR" not-null="true" length="3594"/>
+	<property name="signo" type="java.lang.Character" column="C_SIGNO" not-null="false" />
+	<property name="codigoOperacion" type="java.lang.String" column="C_CODIGO_OPERACION" not-null="false" length="3"/>
+<!--/*@I3918*/-->	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="false" length="50"/><!--/*@F3918*/-->
+	<property name="sucursalOrigen" type="java.lang.String" column="C_SUCURSAL_ORIGEN" not-null="false" length="5"/>
+	<property name="codigoDepositante" type="java.lang.String" column="C_CODIGO_DEPOSITANTE" not-null="false" length="8"/>
+	<property name="nroCuenta" type="java.lang.String" column="C_NRO_CUENTA" not-null="false" length="17"/>
+	<property name="codigoOperacionBanco" type="java.lang.String" column="C_COD_OPERACION_BANCO" not-null="false" length="5"/>
+	<property name="fechaMovimientoCadena" type="java.lang.Long" column="C_FECHA_MOV_CADENA" not-null="true"/>
+	
+    <many-to-one name="extractoBancario" class="com.bizitglobal.tarjetafiel.fondos.negocio.ExtractoBancario" not-null="false" >
+		<column name="C_ID_EXTRACTO_BANCARIO" />
+	</many-to-one>
+	
+	<many-to-one name="bancoPropio" class="com.bizitglobal.tarjetafiel.fondos.negocio.BancoPropio" not-null="false" >
+		<column name="C_ID_BANCO_PROPIO" />
+	</many-to-one>
+		
+</class>
+</hibernate-mapping>

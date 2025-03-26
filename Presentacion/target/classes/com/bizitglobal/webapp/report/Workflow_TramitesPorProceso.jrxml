@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="TotalTramitesXProceso"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="792"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="20"
+		 topMargin="29"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="campo_fecha" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="fecha_desde" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="URLImagen" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[SELECT PROC.C_ID_PROCESO, PROC.C_TITULO, nvl(EST1.CANT_TRAM,0) NUEVOS, nvl(EST2.CANT_TRAM,0) INICIADOS, nvl(EST3.CANT_TRAM,0) ENPROCESO, nvl(EST4.CANT_TRAM,0) CANCELADOS, nvl(EST5.CANT_TRAM,0) RECHAZADOS, nvl(EST6.CANT_TRAM,0) FINALIZADOS, nvl(TOT.CANT_TRAM,0) TOTAL
+FROM T_BIZ_WFL_PROCESOS PROC FULL JOIN
+(
+SELECT TRA.C_ID_PROCESO, COUNT(*) CANT_TRAM
+from T_BIZ_WFL_TRAMITES TRA
+where TRA.C_ID_ESTADO = 1
+AND 
+(
+  ($P{campo_fecha} = 'C_FECHA_INICIO' AND TRUNC(TRA.C_FECHA_INICIO) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_INICIO_REAL' AND TRUNC(TRA.C_FECHA_INICIO_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN' AND TRUNC(TRA.C_FECHA_FIN) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN_REAL' AND TRUNC(TRA.C_FECHA_FIN_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+)
+GROUP BY TRA.C_ID_PROCESO, TRA.C_ID_ESTADO
+) EST1 ON PROC.C_ID_PROCESO = EST1.C_ID_PROCESO FULL JOIN
+(
+SELECT TRA.C_ID_PROCESO, COUNT(*) CANT_TRAM
+FROM T_BIZ_WFL_TRAMITES TRA
+WHERE TRA.C_ID_ESTADO = 2
+AND 
+(
+  ($P{campo_fecha} = 'C_FECHA_INICIO' AND TRUNC(TRA.C_FECHA_INICIO) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_INICIO_REAL' AND TRUNC(TRA.C_FECHA_INICIO_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN' AND TRUNC(TRA.C_FECHA_FIN) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN_REAL' AND TRUNC(TRA.C_FECHA_FIN_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+)
+GROUP BY TRA.C_ID_PROCESO, TRA.C_ID_ESTADO
+) EST2 ON PROC.C_ID_PROCESO = EST2.C_ID_PROCESO  FULL JOIN
+(
+SELECT TRA.C_ID_PROCESO, COUNT(*) CANT_TRAM
+FROM T_BIZ_WFL_TRAMITES TRA
+WHERE TRA.C_ID_ESTADO = 3
+AND 
+(
+  ($P{campo_fecha} = 'C_FECHA_INICIO' AND TRUNC(TRA.C_FECHA_INICIO) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_INICIO_REAL' AND TRUNC(TRA.C_FECHA_INICIO_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN' AND TRUNC(TRA.C_FECHA_FIN) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN_REAL' AND TRUNC(TRA.C_FECHA_FIN_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+)
+GROUP BY TRA.C_ID_PROCESO, TRA.C_ID_ESTADO
+) EST3 ON PROC.C_ID_PROCESO = EST3.C_ID_PROCESO FULL JOIN
+(
+SELECT TRA.C_ID_PROCESO, COUNT(*) CANT_TRAM
+FROM T_BIZ_WFL_TRAMITES TRA
+WHERE TRA.C_ID_ESTADO = 4
+AND 
+(
+  ($P{campo_fecha} = 'C_FECHA_INICIO' AND TRUNC(TRA.C_FECHA_INICIO) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_INICIO_REAL' AND TRUNC(TRA.C_FECHA_INICIO_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN' AND TRUNC(TRA.C_FECHA_FIN) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN_REAL' AND TRUNC(TRA.C_FECHA_FIN_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+)
+GROUP BY TRA.C_ID_PROCESO, TRA.C_ID_ESTADO
+) EST4 ON PROC.C_ID_PROCESO = EST4.C_ID_PROCESO FULL JOIN
+(
+SELECT TRA.C_ID_PROCESO, COUNT(*) CANT_TRAM
+FROM T_BIZ_WFL_TRAMITES TRA
+WHERE TRA.C_ID_ESTADO = 5
+AND 
+(
+  ($P{campo_fecha} = 'C_FECHA_INICIO' AND TRUNC(TRA.C_FECHA_INICIO) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_INICIO_REAL' AND TRUNC(TRA.C_FECHA_INICIO_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN' AND TRUNC(TRA.C_FECHA_FIN) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN_REAL' AND TRUNC(TRA.C_FECHA_FIN_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+)
+GROUP BY TRA.C_ID_PROCESO, TRA.C_ID_ESTADO
+) EST5 ON PROC.C_ID_PROCESO = EST5.C_ID_PROCESO FULL JOIN
+(
+SELECT TRA.C_ID_PROCESO, COUNT(*) CANT_TRAM
+FROM T_BIZ_WFL_TRAMITES TRA
+WHERE TRA.C_ID_ESTADO = 6
+AND 
+(
+  ($P{campo_fecha} = 'C_FECHA_INICIO' AND TRUNC(TRA.C_FECHA_INICIO) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_INICIO_REAL' AND TRUNC(TRA.C_FECHA_INICIO_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN' AND TRUNC(TRA.C_FECHA_FIN) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+  OR
+  ($P{campo_fecha} = 'C_FECHA_FIN_REAL' AND TRUNC(TRA.C_FECHA_FIN_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+)
+GROUP BY TRA.C_ID_PROCESO, TRA.C_ID_ESTADO
+) EST6 ON PROC.C_ID_PROCESO = EST6.C_ID_PROCESO FULL JOIN
+(
+SELECT TRA.C_ID_PROCESO, COUNT(*) CANT_TRAM
+from t_biz_wfl_tramites tra
+WHERE
+($P{campo_fecha} = 'C_FECHA_INICIO' AND TRUNC(TRA.C_FECHA_INICIO) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+OR
+($P{campo_fecha} = 'C_FECHA_INICIO_REAL' AND TRUNC(TRA.C_FECHA_INICIO_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+OR
+($P{campo_fecha} = 'C_FECHA_FIN' AND TRUNC(TRA.C_FECHA_FIN) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+OR
+($P{campo_fecha} = 'C_FECHA_FIN_REAL' AND TRUNC(TRA.C_FECHA_FIN_REAL) BETWEEN TRUNC($P{fecha_desde}) AND TRUNC($P{fecha_hasta}))
+GROUP BY TRA.C_ID_PROCESO
+) TOT on PROC.C_ID_PROCESO = TOT.C_ID_PROCESO
+ORDER BY PROC.C_ID_PROCESO]]></queryString>
+
+	<field name="C_ID_PROCESO" class="java.lang.Integer"/>
+	<field name="C_TITULO" class="java.lang.String"/>
+	<field name="NUEVOS" class="java.lang.Integer"/>
+	<field name="INICIADOS" class="java.lang.Integer"/>
+	<field name="ENPROCESO" class="java.lang.Integer"/>
+	<field name="CANCELADOS" class="java.lang.Integer"/>
+	<field name="RECHAZADOS" class="java.lang.Integer"/>
+	<field name="FINALIZADOS" class="java.lang.Integer"/>
+	<field name="TOTAL" class="java.lang.Integer"/>
+
+	<variable name="SUM_1" class="java.lang.Integer" resetType="Report" calculation="Sum">
+	</variable>
+	<variable name="debeFinal" class="java.math.BigDecimal" resetType="Report" calculation="Nothing">
+	</variable>
+	<variable name="haberFinal" class="java.lang.String" resetType="Report" calculation="Nothing">
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="40"  isSplitAllowed="false" >
+				<staticText>
+					<reportElement
+						x="1"
+						y="4"
+						width="251"
+						height="30"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Informe de Totales de Tramites por Proceso]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="24"
+						width="79"
+						height="13"
+						forecolor="#000000"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Fecha Desde: ]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="24"
+						width="80"
+						height="13"
+						forecolor="#000000"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{fecha_desde}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="171"
+						y="24"
+						width="79"
+						height="13"
+						forecolor="#000000"
+						key="staticText-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Fecha Hasta: ]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="251"
+						y="24"
+						width="80"
+						height="13"
+						forecolor="#000000"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{fecha_hasta}]]></textFieldExpression>
+				</textField>
+				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="705"
+						y="4"
+						width="86"
+						height="30"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="26"  isSplitAllowed="true" >
+				<rectangle radius="0" >
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="5"
+						width="790"
+						height="20"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-1"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="2"
+						y="6"
+						width="30"
+						height="18"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Nro]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="33"
+						y="6"
+						width="223"
+						height="18"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Nombre de Proceso]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="333"
+						y="6"
+						width="75"
+						height="18"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="10" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Iniciados]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="257"
+						y="6"
+						width="75"
+						height="18"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="10" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Nuevos]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="485"
+						y="6"
+						width="75"
+						height="18"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="10" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Cancelados]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="409"
+						y="6"
+						width="75"
+						height="18"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="10" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[En Proceso]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="561"
+						y="6"
+						width="75"
+						height="18"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="10" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Rechazados]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="713"
+						y="6"
+						width="75"
+						height="18"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="10" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="637"
+						y="6"
+						width="75"
+						height="18"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="10" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Finalizados]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="33"
+						y="2"
+						width="223"
+						height="12"
+						key="textField-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isItalic="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{C_TITULO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="2"
+						y="2"
+						width="30"
+						height="12"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="10" isItalic="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{C_ID_PROCESO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="333"
+						y="2"
+						width="65"
+						height="12"
+						key="textField-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isItalic="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{INICIADOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="257"
+						y="2"
+						width="65"
+						height="12"
+						key="textField-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isItalic="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{NUEVOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="485"
+						y="2"
+						width="65"
+						height="12"
+						key="textField-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isItalic="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{CANCELADOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="409"
+						y="2"
+						width="65"
+						height="12"
+						key="textField-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isItalic="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{ENPROCESO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="561"
+						y="2"
+						width="65"
+						height="12"
+						key="textField-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isItalic="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{RECHAZADOS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="713"
+						y="2"
+						width="65"
+						height="12"
+						key="textField-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isItalic="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{TOTAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="637"
+						y="2"
+						width="65"
+						height="12"
+						key="textField-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isItalic="false" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{FINALIZADOS}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="16"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="753"
+						y="3"
+						width="36"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Courier New" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="3"
+						width="209"
+						height="13"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="579"
+						y="3"
+						width="170"
+						height="13"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Pagina " + $V{PAGE_NUMBER} + " de "]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="2"
+						width="792"
+						height="1"
+						forecolor="#000000"
+						key="line-3"/>
+					<graphicElement stretchType="NoStretch" pen="2Point"/>
+				</line>
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

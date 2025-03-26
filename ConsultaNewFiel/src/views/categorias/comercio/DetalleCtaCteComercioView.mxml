@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" creationComplete="this.setFocusGrilla()" 
+	xmlns="views.categorias.*" show="this.obtenerDetalleMovimiento()" horizontalAlign="center" verticalGap="6" 
+	verticalAlign="top" xmlns:comercio="views.categorias.comercio.*">
+         
+         
+         <mx:HBox width="100%">
+         	    <mx:Text   text="{ctaCteComercioModel.movimientoCtaCteSeleccionado.idTransaccion}"  styleName="lblInfoBlanco"/>
+         	    <mx:Text   text="{ctaCteComercioModel.movimientoCtaCteSeleccionado.fechaReal}"  styleName="lblInfoBlanco"/>
+         	    <mx:Text   text="{currencyFormatter.format(ctaCteComercioModel.movimientoCtaCteSeleccionado.importe)}"  styleName="lblInfoBlanco"/>
+         	    <mx:Text   text="{ctaCteComercioModel.movimientoCtaCteSeleccionado.descripcionSucursal}"  styleName="lblInfoBlanco"/>
+         </mx:HBox>
+         
+      <mx:AdvancedDataGrid sortableColumns="false" id="adg1" designViewDataType="flat" dataProvider="{ctaCteComercioModel.arrayMovientoCtaCteDetalles}" height="100%" width="100%">
+					<mx:columns>
+					     <mx:AdvancedDataGridColumn headerText="Id Detalle concepto" dataField="codigoConcepto"/>
+					     <mx:AdvancedDataGridColumn headerText="Codigo Autorizacion" dataField="codigoAutorizacion"/>
+					     <mx:AdvancedDataGridColumn headerText="Descripcion" dataField="descripcionConcepto"/>
+						 <mx:AdvancedDataGridColumn headerText="Importe" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.currencyFormatter.format(data.importe)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			        </mx:columns>
+		</mx:AdvancedDataGrid>
+		
+		<mx:CurrencyFormatter  id="currencyFormatter" currencySymbol="$"  useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="."
+		 rounding="nearest" precision="2" decimalSeparatorFrom="," decimalSeparatorTo=","    alignSymbol="left"/>  
+		
+<mx:Script>
+	<![CDATA[
+		import mx.controls.Alert;
+		import com.util.components.alert.AlertOk;
+		import com.tarjetafiel.caja.vo.MovimientoCtaCteComercioDetalle;
+		import views.categorias.comercio.models.CtaCteComercioModel; 
+	   [Bindable]public var  ctaCteComercioModel:CtaCteComercioModel;
+		
+		private function obtenerDetalleMovimiento():void{
+		    ctaCteComercioModel.buscarDetallesMovimiento();  		
+		}
+		
+		public function setFocusGrilla():void{
+			if(this.adg1){
+				this.adg1.setFocus();
+			}
+		} 
+		
+	]]>
+</mx:Script>
+			
+	
+</mx:VBox>
+

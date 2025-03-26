@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+                       "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<!-- DEFINICION DEL DATA SOURCE -->
+	<import resource="classpath:../dataSource.xml" />
+
+	<!-- DEFINICION DEL SESSION FACTORY -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/sessionFactory.xml" />
+
+	<!-- DEFINICION DEL HIBERNATE TEMPLATE, TRANSACTION MANAGER, ETC... -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/commonContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE EVALUACIóN -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/evaluacion/evaluacionContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE TRANSACCIONES -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/transacciones/transaccionesContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE OPERADOR -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/operador/operadorContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE TPARAMETROS -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/tparametros/tparametrosContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE GENERAL -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/general/generalContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE PROVEEDOR -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/proveedores/proveedorContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE IMPUESTOS -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/impuestos/impuestoContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE CONTABILIDAD -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/contabilidad/contabilidadContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE FONDOS -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/fondos/fondosContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE COBRANZAS -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/cobranzas/cobranzasContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE WORKFLOW -->
+	<import resource="classpath:/com/bizitglobal/workflow/workflowContext.xml" />
+
+	<!-- DEFINICION DEL CONTEXT DE TRAMSACCIONADOR -->
+	<import
+		resource="classpath:/com/visionis/transaccionador/transaccionadorContext.xml" />
+
+
+	<bean id="archivoLiqComercioServiceTarget"
+		class="com.bizitglobal.webapp.service.impl.ArchivoLiqComercioServiceImpl">
+		<property name="archivoCuponesService" ref="archivoCuponesServiceTarget" />
+	</bean>
+	<bean id="archivoLiqComercioService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true">
+		<property name="target" ref="archivoLiqComercioServiceTarget"></property>
+		<property name="transactionManager" ref="myTxManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="getArchivoLiqComercio">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+		</bean>
+<!-- @I6247--> 
+	<bean id="autorizacionEcoService"
+	class="com.bizitglobal.webapp.service.impl.AutorizacionEcoServiceImpl">
+	<property name="notaCreditoDebitoService" ref="notaCreditoDebitoServiceTarget" />
+	</bean>
+<!-- @F6247--> 
+
+<!-- @I8683--> 
+<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	<property name="host" value="smtp.gmail.com" />
+	<property name="port" value="587" />
+	<property name="username" value="info@tarjetafiel.com" />
+	<property name="password" value="vision2014" />
+	
+ 
+ 
+
+	<property name="javaMailProperties">
+	   <props>
+       	      <prop key="mail.smtp.auth">true</prop>
+       	      <prop key="mail.smtp.starttls.enable">true</prop>
+       	      <prop key="mail.mime.charset">ISO-8859-1</prop>
+       	   </props>
+	</property>
+</bean>
+<!-- @F8683-->
+
+<!-- DEFINICION DEL CONTEXT DE PLANIFICADOREMAIL -->
+	<import
+		resource="classpath:/com/bizitglobal/tarjetafiel/planificadoremail/planificadorEmailContext.xml" />
+
+	
+	<import
+		resource="classpath:../presentacionContext.xml" />
+
+</beans>

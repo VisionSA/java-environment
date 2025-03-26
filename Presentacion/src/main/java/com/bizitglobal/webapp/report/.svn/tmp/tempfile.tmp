@@ -1,0 +1,2113 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="LiquidacionClientesBuena"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="595"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="12"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isFloatColumnFooter="true"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="true">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.bizitglobal.webapp.faces.beans.util.*" />
+	<import value="net.sf.jasperreports.engine.design.JasperDesign" />
+
+	<parameter name="fechaEspecial" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fechaResumenAnterior" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="liquidacion_numero" isForPrompting="true" class="java.lang.Long"/>
+	<parameter name="cuenta_nro" isForPrompting="true" class="java.lang.Long"/>
+	<parameter name="nombre" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="direccion" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="descripcion" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cp" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="ciudad" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="codBarr" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="codBarrDos" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="codBarrTres" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="desc1" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="desc2" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="desc3" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="desc4" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="desc5" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="desc6" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="desc7" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tna1" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tna2" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tna3" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tna4" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tna5" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tna6" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tna7" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="cft1" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="cft2" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="cft3" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="cft4" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="cft5" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="cft6" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="cft7" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="adi1" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="adi2" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="adi3" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="f_ven_1" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="f_ven_2" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="f_ven_3" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="f_ven_4" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="f_ven_5" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="f_ven_6" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="m_ven_1" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="m_ven_2" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="m_ven_3" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="m_ven_4" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="m_ven_5" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="m_ven_6" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="cierre1" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="cierre2" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="cierre3" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="vencim1" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="vencim2" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="vencim3" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="credito" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="saldo" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="disponible" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="total_resumen" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="mensaje1" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="mensaje2" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="mensaje3" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="mensaje4" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="mensaje5" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="mensaje6" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="1cuota" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="2cuota" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="3cuota" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="f_1_ven" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="f_2_ven" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="f_3_ven" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="m_1_ven" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="m_2_ven" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="m_3_ven" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="URLLogo1" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="total_pagar" isForPrompting="true" class="java.math.BigDecimal"/>
+	<parameter name="URLLogo2" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="URLLogo3" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="revista" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="URLFeria" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="subreport_resumen_detalle" isForPrompting="true" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="subreport_resumen_totales" isForPrompting="true" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="manzana" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="generico" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tea1" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tea2" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tea3" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tea4" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tea5" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="tea6" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfsi1" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfsi2" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfsi3" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfsi4" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfsi5" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfsi6" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfci1" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfci2" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfci3" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfci4" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfci5" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="cfci6" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[select  (select nvl(max(c_id_cliente),0) 
+from t_vis_gen_envio_resumen where c_id_cliente = $P{cuenta_nro}) envio_mail,
+trim(sp_email_cliente($P{cuenta_nro})) tiene_email
+from dual]]></queryString>
+
+	<field name="ENVIO_MAIL" class="java.math.BigDecimal"/>
+	<field name="TIENE_EMAIL" class="java.lang.String"/>
+
+
+		<group  name="grupo" isReprintHeaderOnEachPage="true" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="13"  isSplitAllowed="true" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="42"
+						y="0"
+						width="340"
+						height="12"
+						key="subreport-1"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="liquidacion_numero">
+						<subreportParameterExpression><![CDATA[$P{liquidacion_numero}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cuenta_nro">
+						<subreportParameterExpression><![CDATA[$P{cuenta_nro}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="nombre">
+						<subreportParameterExpression><![CDATA[$P{nombre}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="fechaEspecial">
+						<subreportParameterExpression><![CDATA[$P{fechaEspecial}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="total_pagar">
+						<subreportParameterExpression><![CDATA[$P{total_pagar}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="URLLogo2">
+						<subreportParameterExpression><![CDATA[$P{URLLogo2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="fechaResumenAnterior">
+						<subreportParameterExpression><![CDATA[$P{fechaResumenAnterior}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="direccion">
+						<subreportParameterExpression><![CDATA[$P{direccion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="descripcion">
+						<subreportParameterExpression><![CDATA[$P{descripcion}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cp">
+						<subreportParameterExpression><![CDATA[$P{cp}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ciudad">
+						<subreportParameterExpression><![CDATA[$P{ciudad}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="codBarr">
+						<subreportParameterExpression><![CDATA[$P{codBarr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="codBarrDos">
+						<subreportParameterExpression><![CDATA[$P{codBarrDos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="codBarrTres">
+						<subreportParameterExpression><![CDATA[$P{codBarrTres}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="desc1">
+						<subreportParameterExpression><![CDATA[$P{desc1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="desc2">
+						<subreportParameterExpression><![CDATA[$P{desc2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="desc3">
+						<subreportParameterExpression><![CDATA[$P{desc3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="desc4">
+						<subreportParameterExpression><![CDATA[$P{desc4}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="desc5">
+						<subreportParameterExpression><![CDATA[$P{desc5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="desc6">
+						<subreportParameterExpression><![CDATA[$P{desc6}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="desc7">
+						<subreportParameterExpression><![CDATA[$P{desc7}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="tna1">
+						<subreportParameterExpression><![CDATA[$P{tna1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="tna2">
+						<subreportParameterExpression><![CDATA[$P{tna2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="tna3">
+						<subreportParameterExpression><![CDATA[$P{tna3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="tna4">
+						<subreportParameterExpression><![CDATA[$P{tna4}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="tna5">
+						<subreportParameterExpression><![CDATA[$P{tna5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="tna6">
+						<subreportParameterExpression><![CDATA[$P{tna6}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="tna7">
+						<subreportParameterExpression><![CDATA[$P{tna7}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cft1">
+						<subreportParameterExpression><![CDATA[$P{cft1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cft2">
+						<subreportParameterExpression><![CDATA[$P{cft2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cft3">
+						<subreportParameterExpression><![CDATA[$P{cft3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cft4">
+						<subreportParameterExpression><![CDATA[$P{cft4}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cft5">
+						<subreportParameterExpression><![CDATA[$P{cft5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cft6">
+						<subreportParameterExpression><![CDATA[$P{cft6}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cft7">
+						<subreportParameterExpression><![CDATA[$P{cft7}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="adi1">
+						<subreportParameterExpression><![CDATA[$P{adi1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="adi2">
+						<subreportParameterExpression><![CDATA[$P{adi2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="adi3">
+						<subreportParameterExpression><![CDATA[$P{adi3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_1">
+						<subreportParameterExpression><![CDATA[$P{f_ven_1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_2">
+						<subreportParameterExpression><![CDATA[$P{f_ven_2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_3">
+						<subreportParameterExpression><![CDATA[$P{f_ven_3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_4">
+						<subreportParameterExpression><![CDATA[$P{f_ven_4}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_5">
+						<subreportParameterExpression><![CDATA[$P{f_ven_5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_6">
+						<subreportParameterExpression><![CDATA[$P{f_ven_6}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_1">
+						<subreportParameterExpression><![CDATA[$P{m_ven_1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_2">
+						<subreportParameterExpression><![CDATA[$P{m_ven_2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_3">
+						<subreportParameterExpression><![CDATA[$P{m_ven_3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_4">
+						<subreportParameterExpression><![CDATA[$P{m_ven_4}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_5">
+						<subreportParameterExpression><![CDATA[$P{m_ven_5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_6">
+						<subreportParameterExpression><![CDATA[$P{m_ven_6}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cierre1">
+						<subreportParameterExpression><![CDATA[$P{cierre1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cierre2">
+						<subreportParameterExpression><![CDATA[$P{cierre2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cierre3">
+						<subreportParameterExpression><![CDATA[$P{cierre3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="vencim1">
+						<subreportParameterExpression><![CDATA[$P{vencim1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="vencim2">
+						<subreportParameterExpression><![CDATA[$P{vencim2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="vencim3">
+						<subreportParameterExpression><![CDATA[$P{vencim3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="credito">
+						<subreportParameterExpression><![CDATA[$P{credito}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="saldo">
+						<subreportParameterExpression><![CDATA[$P{saldo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="disponible">
+						<subreportParameterExpression><![CDATA[$P{disponible}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="total_resumen">
+						<subreportParameterExpression><![CDATA[$P{total_resumen}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="mensaje1">
+						<subreportParameterExpression><![CDATA[$P{mensaje1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="mensaje2">
+						<subreportParameterExpression><![CDATA[$P{mensaje2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="mensaje3">
+						<subreportParameterExpression><![CDATA[$P{mensaje3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="mensaje4">
+						<subreportParameterExpression><![CDATA[$P{mensaje4}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="mensaje5">
+						<subreportParameterExpression><![CDATA[$P{mensaje5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="mensaje6">
+						<subreportParameterExpression><![CDATA[$P{mensaje6}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="1cuota">
+						<subreportParameterExpression><![CDATA[$P{1cuota}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="2cuota">
+						<subreportParameterExpression><![CDATA[$P{2cuota}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="3cuota">
+						<subreportParameterExpression><![CDATA[$P{3cuota}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_1_ven">
+						<subreportParameterExpression><![CDATA[$P{f_1_ven}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_2_ven">
+						<subreportParameterExpression><![CDATA[$P{f_2_ven}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_3_ven">
+						<subreportParameterExpression><![CDATA[$P{f_3_ven}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_1_ven">
+						<subreportParameterExpression><![CDATA[$P{m_1_ven}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_2_ven">
+						<subreportParameterExpression><![CDATA[$P{m_2_ven}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_3_ven">
+						<subreportParameterExpression><![CDATA[$P{m_3_ven}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="URLLogo1">
+						<subreportParameterExpression><![CDATA[$P{URLLogo1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="URLLogo3">
+						<subreportParameterExpression><![CDATA[$P{URLLogo3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="revista">
+						<subreportParameterExpression><![CDATA[$P{revista}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="URLFeria">
+						<subreportParameterExpression><![CDATA[$P{URLFeria}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="subreport_resumen_detalle">
+						<subreportParameterExpression><![CDATA[$P{subreport_resumen_detalle}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="subreport_resumen_totales">
+						<subreportParameterExpression><![CDATA[$P{subreport_resumen_totales}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="manzana">
+						<subreportParameterExpression><![CDATA[$P{manzana}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="generico">
+						<subreportParameterExpression><![CDATA[$P{generico}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{subreport_resumen_detalle}]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="385"
+						y="0"
+						width="168"
+						height="12"
+						key="subreport-2"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="cuenta_nro">
+						<subreportParameterExpression><![CDATA[$P{cuenta_nro}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cierre1">
+						<subreportParameterExpression><![CDATA[$P{cierre1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cierre2">
+						<subreportParameterExpression><![CDATA[$P{cierre2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="cierre3">
+						<subreportParameterExpression><![CDATA[$P{cierre3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="vencim1">
+						<subreportParameterExpression><![CDATA[$P{vencim1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="vencim2">
+						<subreportParameterExpression><![CDATA[$P{vencim2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="vencim3">
+						<subreportParameterExpression><![CDATA[$P{vencim3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_1">
+						<subreportParameterExpression><![CDATA[$P{f_ven_1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_2">
+						<subreportParameterExpression><![CDATA[$P{f_ven_2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_3">
+						<subreportParameterExpression><![CDATA[$P{f_ven_3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_4">
+						<subreportParameterExpression><![CDATA[$P{f_ven_4}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_5">
+						<subreportParameterExpression><![CDATA[$P{f_ven_5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_ven_6">
+						<subreportParameterExpression><![CDATA[$P{f_ven_6}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_1">
+						<subreportParameterExpression><![CDATA[$P{m_ven_1}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_2">
+						<subreportParameterExpression><![CDATA[$P{m_ven_2}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_3">
+						<subreportParameterExpression><![CDATA[$P{m_ven_3}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_4">
+						<subreportParameterExpression><![CDATA[$P{m_ven_4}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_5">
+						<subreportParameterExpression><![CDATA[$P{m_ven_5}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="m_ven_6">
+						<subreportParameterExpression><![CDATA[$P{m_ven_6}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="credito">
+						<subreportParameterExpression><![CDATA[$P{credito}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="saldo">
+						<subreportParameterExpression><![CDATA[$P{saldo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="disponible">
+						<subreportParameterExpression><![CDATA[$P{disponible}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="total_resumen">
+						<subreportParameterExpression><![CDATA[$P{total_resumen}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="1cuota">
+						<subreportParameterExpression><![CDATA[$P{1cuota}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="2cuota">
+						<subreportParameterExpression><![CDATA[$P{2cuota}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="3cuota">
+						<subreportParameterExpression><![CDATA[$P{3cuota}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="total_pagar">
+						<subreportParameterExpression><![CDATA[$P{total_pagar}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_1_ven">
+						<subreportParameterExpression><![CDATA[$P{f_1_ven}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_2_ven">
+						<subreportParameterExpression><![CDATA[$P{f_2_ven}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="f_3_ven">
+						<subreportParameterExpression><![CDATA[$P{f_3_ven}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="codBarr">
+						<subreportParameterExpression><![CDATA[$P{codBarr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{subreport_resumen_totales}]]></subreportExpression>
+				</subreport>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="262"  isSplitAllowed="true" >
+				<image  scaleImage="RetainShape" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="43"
+						y="0"
+						width="508"
+						height="261"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLLogo1}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="39"
+						width="255"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-306"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="11" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{nombre}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="53"
+						width="310"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-307"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{direccion}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="79"
+						width="310"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-308"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{descripcion}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="92"
+						width="310"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-309"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($P{ciudad}.trim().equals( "PROVINCIA INCOMPLETO" ) ) ? new Boolean(false)  : new Boolean(true)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{ciudad}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="114"
+						y="100"
+						width="0"
+						height="0"
+						key="staticText-3"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($F{TIENE_EMAIL} == null ||  ( $F{TIENE_EMAIL} != null && ($P{revista}.equals("R")
+|| $F{ENVIO_MAIL}.intValue() != 0  )))
+ ? new Boolean(true)  : new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Static Text]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="85"
+						y="120"
+						width="100"
+						height="19"
+						key="rectangle-1"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($F{TIENE_EMAIL} == null ||  ( $F{TIENE_EMAIL} != null && ($P{revista}.equals("R")
+|| $F{ENVIO_MAIL}.intValue() != 0  )))
+ ? new Boolean(true)  : new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="124"
+						y="121"
+						width="0"
+						height="19"
+						key="line-1"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($F{TIENE_EMAIL} == null ||  ( $F{TIENE_EMAIL} != null && ($P{revista}.equals("R")
+|| $F{ENVIO_MAIL}.intValue() != 0  )))
+ ? new Boolean(true)  : new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="124"
+						y="130"
+						width="62"
+						height="0"
+						key="line-2"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($F{TIENE_EMAIL} == null ||  ( $F{TIENE_EMAIL} != null && ($P{revista}.equals("R")
+|| $F{ENVIO_MAIL}.intValue() != 0  )))
+ ? new Boolean(true)  : new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="111"
+						y="100"
+						width="0"
+						height="0"
+						key="staticText-4"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($F{TIENE_EMAIL} == null ||  ( $F{TIENE_EMAIL} != null && ($P{revista}.equals("R")
+|| $F{ENVIO_MAIL}.intValue() != 0  )))
+ ? new Boolean(true)  : new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Static Text]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="124"
+						y="121"
+						width="61"
+						height="9"
+						key="staticText-5"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($F{TIENE_EMAIL} == null ||  ( $F{TIENE_EMAIL} != null && ($P{revista}.equals("R")
+|| $F{ENVIO_MAIL}.intValue() != 0  )))
+ ? new Boolean(true)  : new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+						<font fontName="Arial" pdfFontName="Helvetica" size="5" isBold="false"/>
+					</textElement>
+				<text><![CDATA[FRANQUEO A PAGAR]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="206"
+						y="124"
+						width="19"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-314"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($P{revista}.trim().equals( "S" )  ) ? new Boolean(false)  : new Boolean(true)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="11" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{revista}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="85"
+						y="121"
+						width="39"
+						height="19"
+						key="staticText-11"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($F{TIENE_EMAIL} == null ||  ( $F{TIENE_EMAIL} != null && ($P{revista}.equals("R")
+|| $F{ENVIO_MAIL}.intValue() != 0  )))
+ ? new Boolean(true)  : new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+						<font fontName="Arial" pdfFontName="Helvetica" size="5" isBold="false"/>
+					</textElement>
+				<text><![CDATA[CORREO ARGENTINO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="124"
+						y="129"
+						width="61"
+						height="10"
+						key="staticText-12"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($F{TIENE_EMAIL} == null ||  ( $F{TIENE_EMAIL} != null && ($P{revista}.equals("R")
+|| $F{ENVIO_MAIL}.intValue() != 0  )))
+ ? new Boolean(true)  : new Boolean(false)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+						<font fontName="Arial" pdfFontName="Helvetica" size="5" isBold="false"/>
+					</textElement>
+				<text><![CDATA[CTA N° 17507F001]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="66"
+						width="310"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-320"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($P{manzana}.trim().equals( "MANZANA INCOMPLETO" ) ) ? new Boolean(false)  : new Boolean(true)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{manzana}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="105"
+						width="310"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-321"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($P{generico}.trim().equals( "GENERICO INCOMPLETO" ) ) ? new Boolean(false)  : new Boolean(true)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{generico}.toUpperCase()]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="44"  isSplitAllowed="false" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="385"
+						y="2"
+						width="160"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-315"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{codBarrDos}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="497"
+						y="16"
+						width="42"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-316"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Hoja " + $V{PAGE_NUMBER} + "/"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="536"
+						y="16"
+						width="16"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-317"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" +  ($V{PAGE_NUMBER}.intValue() - 1)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="386"
+						y="16"
+						width="60"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-318"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Liq: " + $P{liquidacion_numero}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="446"
+						y="16"
+						width="51"
+						height="9"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-319"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Cta: " + $P{cuenta_nro}]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="47"
+						y="2"
+						width="319"
+						height="30"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="barcode-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch" pen="None" fill="Solid" />
+					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(2,$P{codBarrDos},false,false,null,0,0)]]></imageExpression>
+				</image>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="830"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="322"
+						y="84"
+						width="96"
+						height="26"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-28"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+<<<<<<< .mine
+						x="325"
+						y="84"
+						width="42"
+						height="26"
+=======
+						x="337"
+						y="84"
+						width="34"
+						height="26"
+>>>>>>> .r542
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-21"/>
+<<<<<<< .mine
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+=======
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+>>>>>>> .r542
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Tasa Nominal Anual]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="466"
+						y="84"
+						width="49"
+						height="26"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-24"/>
+<<<<<<< .mine
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+=======
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+>>>>>>> .r542
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[con IVA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="418"
+						y="84"
+						width="49"
+						height="26"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-23"/>
+<<<<<<< .mine
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+=======
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+>>>>>>> .r542
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[sin IVA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+<<<<<<< .mine
+						x="374"
+						y="84"
+						width="43"
+						height="26"
+=======
+						x="381"
+						y="84"
+						width="38"
+						height="26"
+>>>>>>> .r542
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-22"/>
+<<<<<<< .mine
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+=======
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+>>>>>>> .r542
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Tasa Efectiva Anual]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="43"
+						y="-498"
+						width="527"
+						height="19"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-310"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["N° Liquidación: " + $P{liquidacion_numero} + ". N° de Cuenta: " + $P{cuenta_nro}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="42"
+						y="28"
+						width="510"
+						height="13"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-1"/>
+					<box topBorder="Thin" topBorderColor="#666666" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#666666"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[INFORMACIÓN DE INTERÉS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="42"
+						y="28"
+						width="5"
+						height="13"
+						forecolor="#000000"
+						backcolor="#666666"
+						key="element-2"/>
+					<box topBorder="Thin" topBorderColor="#666666" leftBorder="Thin" leftBorderColor="#666666" rightBorder="Thin" rightBorderColor="#666666" bottomBorder="Thin" bottomBorderColor="#666666"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[]]></text>
+				</staticText>
+				<image  scaleImage="RetainShape" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="43"
+						y="561"
+						width="508"
+						height="260"
+						key="image-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLLogo3}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement
+						x="89"
+						y="51"
+						width="426"
+						height="19"
+						forecolor="#666666"
+						key="staticText-57"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($P{2cuota}.doubleValue() <= 0 ) ? new Boolean(false)  : new Boolean(true)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[• Cancele su resumen en cuotas: Las cuotas no incluyen IVA sobre intereses. El Interés Compensatorio y/o Punitorio del 2do y 3er Vencimiento serán debitados en su próximo resumen.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="335"
+						width="426"
+						height="28"
+						forecolor="#666666"
+						key="staticText-58"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[• Los intereses punitorios se calculan desde la fecha de vencimiento del resumen de cuenta anterior. Se cuenta con 30 días desde la fecha de la recepción del resumen de cuenta, para controlar los conceptos que se incluyen en el mismo; se considera aceptado en el caso de no registrarse objeciones en dicho lapso.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+<<<<<<< .mine
+						y="288"
+=======
+						y="290"
+>>>>>>> .r542
+						width="426"
+						height="44"
+						forecolor="#666666"
+						key="staticText-59"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[• Los intereses se computarán: a) sobre los saldos financiados entre la fecha de vencimiento del resumen mensual actual y la del primer resumen mensual anterior donde surgiera el saldo adeudado; b) entre la fecha  de la extracción dineraria y la fecha de vencimiento del pago del resumen mensual; c) desde las fechas  pactadas para la cancelación total o parcial del crédito hasta el pago efectivo; d) desde el vencimiento hasta el  pago cuando se operasen reclamos, no aceptados o justificados por la emisora y consentidos por el titular.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+<<<<<<< .mine
+						y="273"
+=======
+						y="275"
+>>>>>>> .r542
+						width="426"
+						height="13"
+						forecolor="#666666"
+						key="staticText-60"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[• Los pagos fuera de término darán origen a intereses por mora, y eventual cancelación de la tarjeta.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="366"
+						width="426"
+						height="11"
+						forecolor="#666666"
+						key="staticText-62"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[• El IVA discriminado no puede computarse como crédito fiscal.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="381"
+						width="426"
+						height="11"
+						forecolor="#333333"
+						key="staticText-63"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[• Defensa al Consumidor San Juan:
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="391"
+						width="426"
+						height="10"
+						forecolor="#666666"
+						key="staticText-64"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[Centro Cívico - 4° Piso - Núcleo 6 - (0264) 430 6400/05 y/o 0-800-333-3366.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="446"
+						width="426"
+						height="11"
+						forecolor="#333333"
+						key="staticText-65"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[• Servicio de Atención al Usuario de Servicios Financieros - Comunicación “A” 5388 del BCRA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="459"
+						width="220"
+						height="35"
+						forecolor="#666666"
+						key="staticText-66"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[Canales de Comunicación para efectuar consultas y reclamos:
+• 0810-222-3400 - Lunes a Sábados de 8:30 a 22:00
+• Por Fax: (0264) 429-3414]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="309"
+						y="459"
+						width="206"
+						height="35"
+						forecolor="#666666"
+						key="staticText-67"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[• Vía mail: info@tarjetafiel.com; www.tarjetafiel.com
+• Personalmente: casa central o cualquiera de nuestras sucursales, en horarios habilitados.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="526"
+						width="57"
+						height="28"
+						forecolor="#333333"
+						key="staticText-68"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[LUGARES
+DE PAGO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="154"
+						y="526"
+						width="56"
+						height="8"
+						forecolor="#666666"
+						key="staticText-69"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Top">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Casa Central]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="154"
+						y="535"
+						width="56"
+						height="19"
+						forecolor="#666666"
+						key="staticText-70"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Mendoza 360 (S)
+(0264) 429-3400]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="222"
+						y="526"
+						width="56"
+						height="8"
+						forecolor="#666666"
+						key="staticText-71"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Top">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Receptorías]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="222"
+						y="535"
+						width="56"
+						height="19"
+						forecolor="#666666"
+						key="staticText-72"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Jáchal | Rawson
+Media Agua]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="287"
+						y="523"
+						width="56"
+						height="31"
+						forecolor="#666666"
+						key="staticText-73"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Top" lineSpacing="1_1_2">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[• Pago Fácil
+• Rapipago
+• Red Banelco]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="346"
+						y="523"
+						width="80"
+						height="31"
+						forecolor="#666666"
+						key="staticText-74"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Top" lineSpacing="1_1_2">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[• Red Link
+• Linkpagos.com
+• Pagomiscuentas.com]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="429"
+						y="526"
+						width="91"
+						height="28"
+						forecolor="#333333"
+						key="staticText-75"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[SOLICITÁ TU RESUMEN VÍA MAIL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="404"
+						width="426"
+						height="41"
+						forecolor="#333333"
+						key="staticText-76"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[• Usted puede consultar el “Régimen de Transparencia” elaborado por el Banco Central de la República Argentina sobre la base de la información proporcionada por los sujetos obligados a fin de comparar los costos y características de los productos y servicios financieros ingresando a http://www.bcra.gob.ar/Informacion_usuario/iaureg010000.asp]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="51"
+						width="426"
+						height="19"
+						forecolor="#666666"
+						key="staticText-77"
+						positionType="Float">
+							<printWhenExpression><![CDATA[($P{2cuota}.doubleValue() > 0 ) ? new Boolean(false)  : new Boolean(true)]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[• El Interés Compensatorio y/o Punitorio del 2do y 3er Vencimiento serán debitados en su próximo resumen.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="90"
+						y="137"
+						width="232"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Interés Punitorio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="90"
+						y="152"
+						width="232"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Adelanto en Efectivo, Refinanciaciones y Repactaciones]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="90"
+						y="122"
+						width="232"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-7"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Interés Compensatorio e Interés 2° y 3° Vencimiento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="419"
+<<<<<<< .mine
+						y="73"
+=======
+						y="72"
+>>>>>>> .r542
+						width="96"
+						height="12"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-8"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Costo Financiero Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="109"
+						width="424"
+						height="13"
+						forecolor="#666666"
+						key="staticText-78"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[• Tasas de financiación del próximo periodo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+<<<<<<< .mine
+						y="236"
+=======
+						y="241"
+>>>>>>> .r542
+						width="426"
+						height="32"
+						forecolor="#666666"
+						key="staticText-79"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[• Composición del Pago Mínimo: el pago mínimo estará compuesto por el 60% de las transacciones mensuales en un pago o cuotas devengadas en transacciones financiadas, más el 100% de las transacciones de adelantos en efectivo, refinanciaciones y repactaciones de saldos, intereses, cargos, comisiones e impuestos nacionales y provinciales.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="497"
+						width="426"
+						height="10"
+						forecolor="#666666"
+						key="staticText-80"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[Razón Social: Visión SA – CUIT 30-70704996-7 Ingresos Brutos N° 000-070962-8.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="89"
+						y="509"
+						width="426"
+						height="10"
+						forecolor="#666666"
+						key="staticText-81"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" size="7"/>
+					</textElement>
+				<text><![CDATA[Domicilio Legal: Mendoza Sur 360 – Local 4 – Edificio Torres de Cuyo – (5400) San Juan.]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="466"
+						y="152"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-337"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfci3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="466"
+						y="137"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-338"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfci2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="466"
+						y="122"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-339"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfci1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="418"
+						y="152"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-336"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfsi3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="418"
+						y="137"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-335"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfsi2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="418"
+						y="122"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-334"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfsi1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="370"
+						y="152"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-327"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tea3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="370"
+						y="137"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-326"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tea2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="370"
+						y="122"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-325"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tea1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="322"
+						y="152"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-324"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tna3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="322"
+						y="137"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-323"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tna2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="322"
+						y="122"
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-322"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tna1}]]></textFieldExpression>
+				</textField>
+<<<<<<< .mine
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="90"
+						y="199"
+						width="232"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Interés Punitorio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="90"
+						y="214"
+						width="232"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Adelanto en Efectivo, Refinanciaciones y Repactaciones]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="90"
+						y="184"
+						width="232"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-27"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Interés Compensatorio e Interés 2° y 3° Vencimiento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="171"
+						width="424"
+						height="13"
+						forecolor="#666666"
+						key="staticText-82"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[• Tasas de financiación aplicadas en el periodo actual]]></text>
+				</staticText>
+=======
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="90"
+						y="203"
+						width="232"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Interés Punitorio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="90"
+						y="218"
+						width="232"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Adelanto en Efectivo, Refinanciaciones y Repactaciones]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="90"
+						y="188"
+						width="232"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="element-27"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Interés Compensatorio e Interés 2° y 3° Vencimiento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="175"
+						width="424"
+						height="13"
+						forecolor="#666666"
+						key="staticText-82"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[• Tasas de financiación aplicadas en el periodo actual]]></text>
+				</staticText>
+>>>>>>> .r542
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="466"
+<<<<<<< .mine
+						y="214"
+=======
+						y="218"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-340"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfci6}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="466"
+<<<<<<< .mine
+						y="199"
+=======
+						y="203"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-341"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfci5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="466"
+<<<<<<< .mine
+						y="184"
+=======
+						y="188"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-342"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfci4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="418"
+<<<<<<< .mine
+						y="214"
+=======
+						y="218"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-343"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfsi6}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="418"
+<<<<<<< .mine
+						y="199"
+=======
+						y="203"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-344"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfsi5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="418"
+<<<<<<< .mine
+						y="184"
+=======
+						y="188"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-345"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="12" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{cfsi4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="370"
+<<<<<<< .mine
+						y="214"
+=======
+						y="218"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-346"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tea6}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="370"
+<<<<<<< .mine
+						y="199"
+=======
+						y="203"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-347"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tea5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="370"
+<<<<<<< .mine
+						y="184"
+=======
+						y="188"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-348"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tea4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="322"
+<<<<<<< .mine
+						y="214"
+=======
+						y="218"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-349"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tna6}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="322"
+<<<<<<< .mine
+						y="199"
+=======
+						y="203"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-350"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tna5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="322"
+<<<<<<< .mine
+						y="184"
+=======
+						y="188"
+>>>>>>> .r542
+						width="49"
+						height="16"
+						forecolor="#666666"
+						backcolor="#FFFFFF"
+						key="textField-351"
+						positionType="Float"/>
+					<box topBorder="Thin" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{tna4}]]></textFieldExpression>
+				</textField>
+			</band>
+		</summary>
+</jasperReport>

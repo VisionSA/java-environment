@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" resize="PopUpManager.centerPopUp(this)" keyDown="keyPress(event)" verticalAlign="middle" xmlns:ns1="com.util.components.date.*" xmlns:ns2="com.util.components.textInput.*" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" title="Cheque" xmlns:controles="com.tarjetafiel.caja.view.clientes.controles.*" layout="vertical" creationComplete="elegirTipoCheque()">
+
+			<mx:Form id="frmDatosPrincipales" width="100%" height="100%" visible="{!ModelLocator.getInstance().chequeModel.esChequePropio}" enabled="{!chequeModel.mostrarDatosCheque}" includeInLayout="{!ModelLocator.getInstance().chequeModel.esChequePropio}">
+				<mx:FormItem label="* Nro. Banco:">
+					<mx:HBox verticalAlign="middle">
+						<mx:TextInput id="txtNumeroBanco" text="{chequeModel.cheque.banco.idBanco}" restrict="0-9" 
+							maxChars="3" enter="this.buscarBanco(),txtSucursal.setFocus()"/>
+						<mx:TextInput text="{chequeModel.cheque.banco.descripcion}" editable="false" />	
+					</mx:HBox>					
+				</mx:FormItem>	
+				<mx:FormItem label="Sucursal:" id="frmItemSucursal" visible="{chequeModel.cheque.banco != null}">
+					<mx:TextInput restrict="0-9" id="txtSucursal" text="{chequeModel.cheque.sucursalBanco}" 
+						enter="changedVisibleFrmItem(frmItemPlaza,true),txtPlaza.setFocus()" maxChars="3" focusOut="focusOutNumeroCheque(3,txtSucursal)"/>
+				</mx:FormItem>
+				<mx:FormItem label="Plaza" id="frmItemPlaza" visible="{chequeModel.esModificable}" includeInLayout="{chequeModel.esModificable}">
+					<mx:HBox verticalAlign="middle" >
+						<mx:TextInput restrict="0-9" text="{chequeModel.cheque.codigoPostal}"  editable="{frmDatosPrincipales.enabled}" focusOut="focusOutNumeroCheque(4,txtPlaza)" enter="txtDv1.setFocus()" id="txtPlaza" maxChars="4"/>
+						<mx:Label text="Dig. ver"/>
+						<mx:TextInput restrict="0-9" text="{chequeModel.cheque.DV1}"  editable="{frmDatosPrincipales.enabled}" id="txtDv1" enter="changedVisibleFrmItem(frmItemCheque,true),txtNumeroCheque.setFocus()" maxChars="1"/>	
+					</mx:HBox>			
+				</mx:FormItem>
+				<mx:FormItem label="Nro. Cheque" id="frmItemCheque" visible="{chequeModel.esModificable}" includeInLayout="{chequeModel.esModificable}">
+					<mx:HBox verticalAlign="middle" >
+						<mx:TextInput restrict="0-9" text="{chequeModel.cheque.numero}"  editable="{frmDatosPrincipales.enabled}"  focusOut="focusOutNumeroCheque(8,txtNumeroCheque)" id="txtNumeroCheque" enter="txtDv2.setFocus()" maxChars="8"/>
+						<mx:Label text="Dig. ver"/>
+						<mx:TextInput restrict="0-9" text="{chequeModel.cheque.DV2}" editable="{frmDatosPrincipales.enabled}" id="txtDv2" enter="changedVisibleFrmItem(frmItemCuenta,true),txtNumeroCuenta.setFocus()" maxChars="1"/>	
+					</mx:HBox>			
+				</mx:FormItem>
+				<mx:FormItem label="Nro. Cuenta"  id="frmItemCuenta" visible="{chequeModel.esModificable}" includeInLayout="{chequeModel.esModificable}">
+					<mx:HBox verticalAlign="middle" >
+						<mx:TextInput restrict="0-9" text="{chequeModel.cheque.cuenta}"  editable="{frmDatosPrincipales.enabled}" focusOut="focusOutNumeroCheque(11,txtNumeroCuenta)" enter="txtDv3.setFocus()" id="txtNumeroCuenta" maxChars="11"/>
+						<mx:Label text="Dig. ver"/>
+						<mx:TextInput restrict="0-9" text="{chequeModel.cheque.DV3}" editable="{frmDatosPrincipales.enabled}" id="txtDv3" enter="validarExisteCheque()" maxChars="1"/>	
+					</mx:HBox>			
+				</mx:FormItem>										
+			</mx:Form>
+			
+			<mx:Form id="frmChequesPropios" width="100%" height="100%" visible="{ModelLocator.getInstance().chequeModel.esChequePropio}" enabled="{!chequeModel.mostrarDatosCheque}" includeInLayout="{ModelLocator.getInstance().chequeModel.esChequePropio}">
+				<mx:FormItem label="Banco(Suc):">
+					<mx:ComboBox id="cboBancosPropios" dataProvider="{ModelLocator.getInstance().bancoModel.arrayBancosPropios}" labelFunction="getStrBancoPropio" change="cargarDatosBancoPropio(event)" />
+				</mx:FormItem>
+				<mx:FormItem label="Cuenta:" width="100%">
+					<mx:TextInput id="txtCuentaBancoPropio" text="{(cboBancosPropios.selectedItem as BancoPropio).numeroCuenta}" editable="false"/>
+				</mx:FormItem>
+				<mx:FormItem label="Numero Cheque:" width="100%">
+					<mx:HBox verticalAlign="middle" >
+						<mx:TextInput restrict="0-9" id="txtNumeroChequePropio" enter="txtDv2ChequePropio.setFocus()" maxChars="8" focusOut="focusOutNumeroCheque(8,txtNumeroChequePropio)"/>
+						<mx:Label text="Dig. ver"/>
+						<mx:TextInput restrict="0-9" id="txtDv2ChequePropio" maxChars="1" enter="getChequePropioByFiltro()"/>	
+					</mx:HBox>
+				</mx:FormItem>
+			</mx:Form>
+			
+
+	
+	<mx:Form width="100%" id="frmDatosRestantes" visible="{chequeModel.mostrarDatosCheque}" includeInLayout="{chequeModel.mostrarDatosCheque}">		
+		<mx:FormItem label="* Beneficiario:" width="300" horizontalAlign="center">
+			<mx:TextInput id="txtBeneficiario" text="{chequeModel.cheque.beneficiario}" editable="{chequeModel.esModificable}" width="100%" change="validarRequeridos()"/>
+		</mx:FormItem>
+		<mx:FormItem label="* Fecha emisión:" horizontalAlign="center">
+			<ns1:DateFiledMultiLan id="dateFechaEmision" selectedDate="{chequeModel.cheque.fechaEmision}"  enabled="{chequeModel.esModificable}" change="validarRequeridos()"/>
+		</mx:FormItem>
+		<mx:FormItem label="* Fecha pago:" horizontalAlign="center">
+			<ns1:DateFiledMultiLan id="dateFechaPago" selectedDate="{chequeModel.cheque.fechaPago}" enabled="{chequeModel.esModificable}" change="validarRequeridos()"/>
+		</mx:FormItem>
+		<mx:FormItem label="Cruzado:" horizontalAlign="center">
+			<controles:CheckBoxCustom id="chkCruzado" selected="{chequeModel.cheque.esCruzado == 'S'}" value="{chequeModel.cheque.esCruzado}" enabled="{chequeModel.esModificable}"/>
+		</mx:FormItem>
+		<mx:FormItem label="No a la orden:" horizontalAlign="center">
+			<controles:CheckBoxCustom id="chkNoOrden" selected="{chequeModel.cheque.noOrden == 'S'}" value="{chequeModel.cheque.noOrden}" enabled="{chequeModel.esModificable}"/>
+		</mx:FormItem>
+		<mx:FormItem label="* Importe:" horizontalAlign="center">
+			<ns2:TextInputMoneda id="txtImporte" text="{chequeModel.cheque.importe}" editable="{chequeModel.esModificable}" change="validarRequeridos()"/>
+		</mx:FormItem>
+		<mx:FormItem label="Estado Cheque:" horizontalAlign="center" includeInLayout="{chequeModel.cheque.chequeEstado != null}" visible="{chequeModel.cheque.chequeEstado != null}" >
+			<mx:VBox>
+				<mx:Label text="{chequeModel.cheque.chequeEstado.descripcion}" color="#38A123" fontWeight="bold" includeInLayout="{chequeModel.chequeEstadoValido}" visible="{chequeModel.chequeEstadoValido}"/>
+				<mx:Label text="{chequeModel.cheque.chequeEstado.descripcion}" color="#F62B0F" fontWeight="bold" includeInLayout="{!chequeModel.chequeEstadoValido}" visible="{!chequeModel.chequeEstadoValido}"/>				
+			</mx:VBox>
+		</mx:FormItem>
+		<mx:FormItem label="Conciliado: " horizontalAlign="center" includeInLayout="{chequeModel.cheque.conciliado != null}" visible="{chequeModel.cheque.conciliado != null}" >
+			<mx:VBox>
+				<mx:Label text="No" color="#38A123" fontWeight="bold" includeInLayout="{chequeModel.cheque.conciliado=='N'}" visible="{chequeModel.cheque.conciliado=='N'}"/>
+				<mx:Label  text="Si" color="#F62B0F" fontWeight="bold" includeInLayout="{chequeModel.cheque.conciliado=='S'}" visible="{chequeModel.cheque.conciliado=='S'}"/>
+			</mx:VBox>
+		</mx:FormItem>
+		<mx:FormItem includeInLayout="{!chequeModel.esChequeValido}" visible="{!chequeModel.esChequeValido}">
+			<mx:Label text="No puede ser tomado en cuenta como forma de pago" color="#F62B0F" fontWeight="bold"/>
+		</mx:FormItem>		
+	</mx:Form>
+	<mx:HBox id="hBoxBotones" width="100%" horizontalAlign="left" paddingBottom="5" paddingTop="5">
+		<mx:Button label="Aceptar - Ctrl + A" click="agregarChequeAMedios()" enabled="{chequeModel.esChequeValido}" id="btnAceptar"/>
+		<mx:Button label="Cancelar" click="this.cancelar()" />
+	</mx:HBox>
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ValidationResultEvent;
+			import com.tarjetafiel.caja.vo.FormaPago;
+			import com.tarjetafiel.caja.model.ArqueoCajaModel;
+			import com.tarjetafiel.caja.model.CajaModel;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import mx.core.IFlexDisplayObject;
+			import com.tarjetafiel.caja.event.GeneralCajaFieldEvent;
+			import com.tarjetafiel.caja.model.BancoModel;
+			import com.tarjetafiel.caja.view.clientes.MediosDePagos;
+			import com.tarjetafiel.caja.vo.BancoPropio;
+			import com.tarjetafiel.caja.event.BancoEvent;
+			import mx.events.ItemClickEvent;
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import mx.controls.Alert;
+			import com.util.components.alert.AlertError;
+			import com.tarjetafiel.caja.model.ChequeEstadoModel;
+			import com.tarjetafiel.caja.model.PagoModel;
+			import mx.utils.ObjectUtil;
+			import com.tarjetafiel.caja.model.ChequeModel;
+			import com.tarjetafiel.caja.event.ChequeEvent;
+			import com.tarjetafiel.caja.vo.ChequeEstado;
+			import com.util.components.alert.AlertWarning;
+			import mx.events.CloseEvent;
+			import com.tarjetafiel.caja.vo.Banco;
+			import com.tarjetafiel.caja.vo.MovimientoMP;
+			import com.tarjetafiel.caja.vo.Cheque;	
+			
+			[Bindable]private var chequeModel:ChequeModel = ModelLocator.getInstance().chequeModel;
+			[Bindable]private var pagoModel:PagoModel = ModelLocator.getInstance().pagoModel;
+			[Bindable]private var bancoModel:BancoModel = ModelLocator.getInstance().bancoModel;
+			[Bindable]private var cajaModel:ArqueoCajaModel = ModelLocator.getInstance().arqueoCajaModel;
+			
+			public function buscarBanco():void{
+				new GeneralCajaFieldEvent(GeneralCajaFieldEvent.GET_BANCO_BY_ID_EVENT,txtNumeroBanco.text).dispatch();
+			}
+			
+			public function focusOutNumeroCheque(longitud:int,txt:TextInput):void{
+				for(var i:int = txt.text.length;i<longitud;i++){
+					txt.text = "0" + txt.text; 
+				}
+			}
+						
+			private function changedVisibleFrmItem(frmItem:FormItem, visibie:Boolean):void{
+				frmItem.visible = visibie;
+				frmItem.includeInLayout = visibie;				
+			}
+
+			
+			public function init():void{
+				
+				this.txtNumeroBanco.setFocus();
+				
+			}
+			
+			public function keyPress(evt:KeyboardEvent):void{
+				if(evt.keyCode == Keyboard.ESCAPE){
+					cancelar();					
+				} else if(evt.ctrlKey && String.fromCharCode(evt.charCode).toUpperCase() == "A" ){					
+					agregarChequeAMedios();
+					this.hBoxBotones.visible = false;
+					this.hBoxBotones.includeInLayout = false;
+				}
+			}
+			
+			public function validarExisteCheque():void{
+				chequeModel.cheque.sucursalBanco = txtSucursal.text;
+				chequeModel.cheque.codigoPostal = txtPlaza.text;
+				chequeModel.cheque.DV1 = parseInt(txtDv1.text);
+				chequeModel.cheque.numero = txtNumeroCheque.text;
+				chequeModel.cheque.DV2 = parseInt(txtDv2.text);
+				chequeModel.cheque.cuenta = txtNumeroCuenta.text;
+				chequeModel.cheque.DV3 = parseInt(txtDv3.text);
+				new GeneralCajaFieldEvent(GeneralCajaFieldEvent.VER_EXITE_CHEQUE_EVENT,this).dispatch();
+			}
+			
+			private function agregarChequeAMedios():void{							
+				if(chequeModel.existeCheque){ /* Los cheques que ya existen en la base son validados desde el modelo - Habilita o deshabilita botón Aceptar*/
+					if (chequeModel.esChequeValido){
+						if (chequeModel.esChequePropio){ /* Los cheques propios no son necesario validar fechas */
+							/* Los cheques propios que son aceptados por el sistema, todos pasan a estado ANULADO */
+							/* chequeModel.cheque.chequeEstado = ModelLocator.getInstance().chequeEstadoModel.getChequeEstado(ChequeEstadoModel.ANULADO);*/
+							agregarChequeAMediosDePago();	
+						}else {
+							if (validarFechas()){
+								/* Los cheques de terceros existentes q son aceptados por el sistema pasan automaticamente a estado en Cartera */
+								chequeModel.cheque.chequeEstado = ModelLocator.getInstance().chequeEstadoModel.getChequeEstado(ChequeEstadoModel.CARTERA);
+								agregarChequeAMediosDePago();
+							}else {
+								Alert.show("Debe ingrear un cheque válido")
+							}
+						}						
+						cancelar();	/* Cierra Pop Up */
+					}		
+				}else { /* Cheque tercero nuevo */
+					if (validarFechas()){
+						if(validar()){
+							if (!ModelLocator.getInstance().pagoModel.esModificarCheque){ /* Valores ya seteados cuando se ingresa por primera vez*/
+								ModelLocator.getInstance().chequeModel.mp.formaPago = ModelLocator.getInstance().formaPagoCajaModel.getFormaPago(2);
+								chequeModel.cheque.tipo = "T";
+								chequeModel.cheque.chequeEstado = ModelLocator.getInstance().chequeEstadoModel.getChequeEstado(ChequeEstadoModel.CARTERA);
+							}
+							chequeModel.cheque.beneficiario = txtBeneficiario.text;
+							chequeModel.cheque.importe = Number(txtImporte.text);
+							if (chkCruzado.selected){
+								chequeModel.cheque.esCruzado = 'S';	
+							}
+							if (chkNoOrden.selected){
+								chequeModel.cheque.noOrden = 'S';	
+							}													
+							chequeModel.cheque.fechaEmision = dateFechaEmision.selectedDate;
+							chequeModel.cheque.fechaPago = dateFechaPago.selectedDate;							 
+							agregarChequeAMediosDePago();												
+							cancelar();	/* Cierra Pop Up */
+						} else {
+							AlertWarning.show("Debe completar los campos obligatorios (*)");
+						}					
+					}
+				}
+			}
+			
+			private function agregarChequeAMediosDePago():void{
+				if(!pagoModel.esModificarCheque){
+					ModelLocator.getInstance().chequeModel.mp.cheque = chequeModel.cheque;
+					ModelLocator.getInstance().chequeModel.mp.monto = chequeModel.cheque.importe;
+					ModelLocator.getInstance().chequeModel.mp.formaPago = new FormaPago();
+					ModelLocator.getInstance().chequeModel.mp.formaPago.idFormaPago = 2;
+					ModelLocator.getInstance().chequeModel.mp.formaPago.descripcion = "Cheque";
+					pagoModel.addMedio(ModelLocator.getInstance().chequeModel.mp)					
+				} else {
+					pagoModel.importePgado -= ModelLocator.getInstance().chequeModel.mp.monto;
+					ModelLocator.getInstance().chequeModel.mp.monto = chequeModel.cheque.importe;
+					pagoModel.importePgado += ModelLocator.getInstance().chequeModel.mp.monto;
+					ModelLocator.getInstance().liqClienteModel.selectLiqAPagar(pagoModel.importePgado);
+				}
+			}
+						
+			private function validarFechas():Boolean{
+				if(dateFechaEmision.selectedDate > new Date()){
+					AlertError.show("La fecha de emisión no puede ser mayor a la fecha del día");
+					return false;
+				}
+				
+				if(dateFechaPago.selectedDate && dateFechaEmision.selectedDate){
+					if(Math.floor((dateFechaPago.selectedDate.getTime() - dateFechaEmision.selectedDate.getTime())/86400000) == 0){
+						AlertError.show("La fecha de pago no puede ser igual que la fecha de emisión");
+						return false;
+					}
+					
+					if(Math.floor((dateFechaPago.selectedDate.getTime() - dateFechaEmision.selectedDate.getTime())/86400000) > 360){
+						AlertError.show("La diferencia entre la fecha de emisión y la fecha de pago no puede ser mayor a 360 dias");
+						return false;
+					}
+					
+					trace("-Fecha de pago – hoy >= (-25) " + Math.floor((new Date().getTime() - dateFechaPago.selectedDate.getTime())/86400000)); 
+					/*if(Math.floor((new Date().getTime() - dateFechaPago.selectedDate.getTime())/86400000) < -25){
+						AlertError.show("La fecha de pago debe ser menor a 25 dias respecto de la fecha del dia");
+						return false;
+					}*/
+					
+					if(Math.floor((new Date().getTime() - dateFechaPago.selectedDate.getTime())/86400000) > 25 &&
+						Math.floor((new Date().getTime() - dateFechaPago.selectedDate.getTime())/86400000) != 0){
+						AlertError.show("El cheque esta vencido");
+						return false;
+					}			
+				}
+				
+				
+				return true;
+			}
+			
+			private function validar():Boolean{
+				return this.txtBeneficiario.text != "" &&
+					   Number(this.txtImporte.text) > 0 &&
+					   this.txtNumeroCheque.text != "" &&
+					   this.dateFechaEmision.selectedDate != null &&
+					   this.dateFechaPago.selectedDate != null;
+			}
+			
+						
+			private function cancelar():void{
+				/* Seteo Valores por defecto */
+				pagoModel.chkPagoCheque = false;
+				chequeModel.existeCheque = false;
+				chequeModel.mostrarDatosCheque = false;
+				chequeModel.esChequePropio = false;
+				chequeModel.esChequeValido = false;
+				chequeModel.cheque = null;
+				ModelLocator.getInstance().chequeModel.mp = null;
+				
+				/* Close Pop UP*/
+				PopUpManager.removePopUp(this);
+			}					
+            
+            private function getStrBancoPropio(item:Object):String{
+            	var bp : BancoPropio = item as BancoPropio;
+            	return bp.banco.descripcion+"("+bp.numeroSucursal+")";
+            }
+            
+            private function cargarDatosBancoPropio(event:Event):void {
+            	var bp : BancoPropio = event.currentTarget.selectedItem as BancoPropio;
+            }
+			
+			private function elegirTipoCheque():void{
+				if(pagoModel.esModificarCheque){					
+					
+					chequeModel.mostrarDatosCheque = true;
+					chequeModel.esModificable = true;
+					chequeModel.esChequeValido = true;
+					chequeModel.esChequePropio = false;					
+					
+				}else {
+					var vent : IFlexDisplayObject = PopUpManager.createPopUp(this,ViewElegirTipoCheque,true);
+					PopUpManager.centerPopUp(vent);				
+					ModelLocator.getInstance().chequeModel.cheque = new Cheque();
+					ModelLocator.getInstance().chequeModel.mp = new MovimientoMP();
+					txtNumeroBanco.setFocus();
+				}				
+			}
+			
+			private function getChequePropioByFiltro():void{
+				var obj : Object = new Object();
+				obj.bp = bancoModel.arrayBancosPropios.getItemAt(cboBancosPropios.selectedIndex) as BancoPropio;
+				obj.numero = txtNumeroChequePropio.text;
+				obj.digVal = Number(txtDv2ChequePropio.text);				
+				new GeneralCajaFieldEvent(GeneralCajaFieldEvent.GET_CHEQUE_BY_FILTRO_EVENT,obj).dispatch();				
+			}			
+			
+			public function validarRequeridos(): void{
+				
+				if (!chequeModel.existeCheque){
+					if(txtBeneficiario.text.length > 0 &&
+					txtImporte.text.length > 0 &&
+					dateFechaEmision.text.length > 0 &&
+					dateFechaPago.text.length > 0){
+						chequeModel.esChequeValido = true;		
+					}else {
+						chequeModel.esChequeValido = false;
+					}
+				}				
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:TitleWindow>

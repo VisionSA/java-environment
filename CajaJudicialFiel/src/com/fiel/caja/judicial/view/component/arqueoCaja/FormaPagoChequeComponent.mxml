@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 verticalAlign="top" horizontalAlign="center"
+		 width="100%" height="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			[Bindable]
+			private var modelo:CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			[Bindable]
+			public var cajaMp:CajaMP;
+			
+		]]>
+	</fx:Script>
+	<mx:HRule width="100%"/>
+	<s:Label styleName="lblInfo" text="Cuenta {cajaMp.planCuentaDos.titulo}"/>		
+	<mx:HRule width="100%"/>
+	<s:List id="tlChequesEnCaja" width="100%" height="100%"
+			dataProvider="{modelo.arrChequesEnCaja}" itemRenderer="com.fiel.caja.judicial.view.renderer.chequeItemRenderer">
+		<s:layout>
+			<s:TileLayout requestedColumnCount="4" horizontalGap="3" rowAlign="justifyUsingHeight"
+						  columnAlign="justifyUsingWidth" horizontalAlign="center"/>
+		</s:layout>
+	</s:List>
+</s:VGroup>

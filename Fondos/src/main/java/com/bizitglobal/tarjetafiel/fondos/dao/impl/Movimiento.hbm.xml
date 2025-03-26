@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.Movimiento" table="T_VIS_FON_MOVIMIENTOS" >
+	
+	<cache usage="read-write"/>
+	
+	<id name="idMovimiento" type="java.lang.Long" column="C_ID_MOVIMIENTO">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_MOVIMIENTO_ID</param>
+		</generator>	
+	</id>
+	
+	<!-- property name="tipo" type="java.lang.Character" column="C_TIPO" not-null="true" /-->
+	<property name="signo" type="java.lang.Integer" column="C_SIGNO" not-null="true" />
+	<property name="fecha" type="java.util.Date" column="C_FECHA" not-null="true" length="3594"/>
+	<property name="fechaAsiento" type="java.util.Date" column="C_FECHA_ASIENTO" not-null="true" length="3594"/>
+	<property name="importe" type="java.lang.Double" column="C_IMPORTE" not-null="true" />
+	<property name="estado" type="java.lang.Character" column="C_ESTADO" not-null="true" />
+	<property name="ticket" type="java.lang.String" column="C_TICKET" not-null="false" />
+	<property name="codigoExterno" type="java.lang.String" column="C_CODIGO_EXTERNO" not-null="false" />
+	
+	<many-to-one name="operador" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="true" cascade="none">
+		<column name="C_ID_OPERADOR" />
+	</many-to-one>
+ 
+    <many-to-one name="concepto" class="com.bizitglobal.tarjetafiel.general.negocio.ConceptoGen" not-null="true" cascade="none">
+		<column name="C_ID_CONCEPTO" />
+	</many-to-one>
+	 
+    <many-to-one name="caja" class="com.bizitglobal.tarjetafiel.fondos.negocio.Caja" not-null="false" cascade="none">
+		<column name="C_ID_CAJA" />
+	</many-to-one>
+	 
+    <many-to-one name="cajaApertura" class="com.bizitglobal.tarjetafiel.fondos.negocio.CajaApertura" not-null="false" cascade="none">
+		<column name="C_ID_CAJAAPERTURA" />
+	</many-to-one>
+	
+	<set name="movimientosMP" inverse="true" cascade="all-delete-orphan" >
+          <key>
+    	      <column name="C_ID_MOVIMIENTO" precision="10" scale="0" not-null="false" />
+          </key>
+          <one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.MovimientoMP" />        
+    </set>
+	
+</class>
+</hibernate-mapping>

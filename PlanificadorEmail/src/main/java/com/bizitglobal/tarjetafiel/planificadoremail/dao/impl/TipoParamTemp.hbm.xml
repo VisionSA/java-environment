@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.planificadoremail.negocio.TipoParamTemp" table="T_VIS_PLA_TIPO_PARAMTEMP" >
+	
+	<cache usage="read-write"/>
+	<id name="idTipo" type="java.lang.Long" column="C_ID_TIPO ">
+	</id>
+	
+	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="true"  length="100"/>
+	
+	
+</class>
+</hibernate-mapping>

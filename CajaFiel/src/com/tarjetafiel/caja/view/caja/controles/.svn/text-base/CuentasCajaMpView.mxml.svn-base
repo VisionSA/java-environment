@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%"
+	 height="100%" label="{currentState == 'cheque' ? 'Cheques en caja' : cajaMp.planCuentaDos.titulo}"
+	  creationComplete="onCreationComplete()" horizontalAlign="center" verticalAlign="top" paddingBottom="10" paddingRight="10" paddingLeft="10" paddingTop="10" xmlns:textInput="com.util.components.textInput.*" currentState="otro">
+	
+	<mx:states>
+		<mx:State name="otro">
+			<mx:AddChild>
+				<mx:VBox horizontalAlign="center" verticalAlign="top" width="100%" height="100%">
+					<mx:HRule width="100%"/>
+					<mx:Label styleName="lblInfo" text="Cuenta {cajaMp.planCuentaDos.titulo}"/>		
+					<mx:HRule width="100%"/>	
+					<mx:VBox id="vBoxformaPago" horizontalAlign="center" verticalAlign="top" width="100%" height="100%">
+					</mx:VBox>			
+					<mx:HRule width="100%"/>
+					<mx:HBox horizontalAlign="center" verticalAlign="middle">
+						<mx:Label styleName="lblInfo" text="Total:"/>
+						<textInput:TextInputMoneda text="{_cajaCierre.totalArqueo}" editable="false" width="120"/>	
+						<mx:Label styleName="lblInfo" text="Diferencia:" visible="{arqueoCajaModel.mostrarDiferencia}" includeInLayout="{arqueoCajaModel.mostrarDiferencia}"/>
+						<textInput:TextInputMoneda text="{_cajaCierre.diferencia}"  editable="false" visible="{arqueoCajaModel.mostrarDiferencia}" includeInLayout="{arqueoCajaModel.mostrarDiferencia}" fontWeight="bold" color="#DC0000" width="120"/>
+					</mx:HBox>		
+				</mx:VBox>		
+			</mx:AddChild>		
+		</mx:State>
+		<mx:State name="cheque">
+			<mx:AddChild>
+				<mx:VBox horizontalAlign="center" verticalAlign="top" width="100%" height="100%">
+					<mx:Label styleName="lblInfo" text="Cheques en caja"/>
+					<mx:AdvancedDataGrid height="100%" width="100%" id="dgEnCaja" 
+						designViewDataType="flat" horizontalScrollPolicy="auto" 
+						dataProvider="{chequeModel.chequesEnCajaList}" sortableColumns="false">
+						<mx:columns>
+							<mx:AdvancedDataGridColumn headerText="Nro" dataField="numero"/>
+							<mx:AdvancedDataGridColumn headerText="Banco" >
+								<mx:itemRenderer>
+									<mx:Component>
+										<mx:Label text="{data.banco.descripcion}"/>
+									</mx:Component>
+								</mx:itemRenderer>
+							</mx:AdvancedDataGridColumn>
+							<mx:AdvancedDataGridColumn headerText="Tipo" dataField="tipo"/>
+							<mx:AdvancedDataGridColumn headerText="Importe" dataField="importe" formatter="{currencyFormatter}" width="100"/>
+						</mx:columns>
+					</mx:AdvancedDataGrid>	
+				</mx:VBox>				
+			</mx:AddChild>
+		</mx:State>
+	</mx:states>
+	<mx:CurrencyFormatter id="currencyFormatter" precision="2" rounding="nearest" currencySymbol="$"/>
+	
+	<mx:Binding source="chequeModel.chequesEnCajaList.toArray()" destination="_cajaMp.chequesEnCajaList"/>
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.model.ChequeModel;
+			import com.tarjetafiel.caja.event.ChequeEvent;
+			
+			import com.tarjetafiel.caja.event.CajaArqueoEvent;
+			import com.tarjetafiel.caja.vo.CajaCierre;
+			import com.tarjetafiel.caja.vo.FormaPagoValor;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.model.ArqueoCajaModel;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			
+			[Bindable]private var arqueoCajaModel:ArqueoCajaModel = ModelLocator.getInstance().arqueoCajaModel;
+			
+			[Bindable]private var _cajaMp:CajaMP;
+			
+			[Bindable]private var _cajaCierre:CajaCierre;
+			
+			[Bindable]private var chequeModel:ChequeModel = ModelLocator.getInstance().chequeModel;
+			
+			[Bindable (event="changedCajaMpEvent")]
+			public function get cajaMp():CajaMP{
+				return _cajaMp;
+			}
+			
+			public function set cajaMp(target:CajaMP):void{
+				_cajaMp = target;
+				_cajaMp.caja = ModelLocator.getInstance().cajaModel.caja;
+				_cajaCierre = new CajaCierre();	
+				_cajaCierre.caja = _cajaMp;
+				arqueoCajaModel.addCajaCierre(_cajaCierre);																			
+			}
+			
+			private function onCreationComplete():void{
+				if(_cajaMp.formaPago.idFormaPago != 2){
+					currentState = "otro"
+					for each(var formaPago:FormaPagoValor in arqueoCajaModel.formaPagoValoresList){
+						if((formaPago.formaPago.idFormaPago == _cajaMp.formaPago.idFormaPago)){
+																										
+							var formaPagoValorComp:FormaPagoValorComp = new FormaPagoValorComp();							
+							formaPagoValorComp.formaPagoValor = formaPago;						
+							formaPagoValorComp.cajaCierre = _cajaCierre;
+							this.vBoxformaPago.addChild(formaPagoValorComp);
+													
+						}
+					}
+					dispatchEvent(new Event("changedCajaMpEvent"));
+					dispatchEvent(new Event("changedCajaCierre"));	
+				} else {
+					currentState = "cheque";									
+					new ChequeEvent(ChequeEvent.LIST_CHEQUES_EN_CAJA).dispatch();
+				}
+			}
+			
+			public function set cajaCierre(cajaCierre:CajaCierre):void{
+				if(_cajaMp.formaPago.idFormaPago != 2){
+					_cajaCierre = cajaCierre;
+					_cajaCierre.totalArqueo = 0;
+					_cajaCierre.caja = _cajaMp;							
+					for each(var formaPago:FormaPagoValorComp in vBoxformaPago.getChildren()){					
+						formaPago.cajaCierre = _cajaCierre;
+					}						
+					dispatchEvent(new Event("changedCajaCierre"));
+				} else {
+					new ChequeEvent(ChequeEvent.LIST_CHEQUES_EN_CAJA).dispatch();
+				}			
+			}
+			
+			[Bindable (event="changedCajaCierre")]
+			public function get cajaCierre():CajaCierre{
+				return _cajaCierre;
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

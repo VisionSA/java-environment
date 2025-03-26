@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" horizontalAlign="center" verticalAlign="middle">
+	<mx:DataGrid dataProvider="{ModelLocator.getInstance().bancoModel.arrayBancos}">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Descripcion" dataField="descripcion"/>
+			<mx:DataGridColumn headerText="Codigo" dataField="codigo"/>			
+		</mx:columns>
+	</mx:DataGrid>
+	<mx:TextInput text="{ModelLocator.getInstance().bancoModel.bancoSelec.descripcion}"/>
+	<mx:TextInput text="{ModelLocator.getInstance().bancoModel.bancoSelec.codigo}"/>	
+	<mx:Button label="Button" click="this.callBuscarBancos()"/>
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import com.tarjetafiel.caja.event.BancoEvent;
+			private function callBuscarBancos():void {
+				var evt:BancoEvent = new BancoEvent(BancoEvent.BUSCAR_BANCOS,new Filtro());
+				evt.dispatch();
+			}
+		]]>
+	</mx:Script>
+</mx:Module>

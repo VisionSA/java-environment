@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import models.ApplicationModel;
+			import managers.PermisosManager;
+		]]>
+	</mx:Script>
+	
+	<Debugger level="{Debugger.DEBUG}"/>
+	
+	<Injectors targets="{[ProcesarPagoFacilModule,ProcesarPagoFarmacia]}" debug="true">
+		<ObjectBuilder generator="{Manager}">
+			<Property source="{scope.dispatcher}" targetKey="dispatcher"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="manager"/>
+	</Injectors>
+	
+	<Injectors target="{CobrosExternosView}">
+		
+		<ObjectBuilder generator="{PermisosManager}">
+			<Property source="{scope.dispatcher}" targetKey="dispatcher"/>
+		</ObjectBuilder>		
+		
+		<PropertyInjector targetKey="permisosManager" source="{lastReturn}"/>
+		
+		<ObjectBuilder generator="{ApplicationModel}">			
+		</ObjectBuilder>
+		
+		<PropertyInjector targetKey="applicationModel" source="{lastReturn}"/>
+		
+	</Injectors>
+	
+	
+	
+	<EventHandlers type="{ProcesarPagoEvent.PROCESAR_LISTA_TIPO_COBRO}">
+		<RemoteObjectInvoker instance="{archivoCobroExternoService}" method="listTipoCobro" >
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultListAllTipoCobro" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ProcesarPagoEvent.BUSCAR_ARCHIVOS}">
+		<RemoteObjectInvoker instance="{archivoCobroExternoService}" method="listAll" arguments="{[event.filtro,event.paginador]}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultListAllArchivos" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ProcesarPagoEvent.BUSCAR_ARCHIVOS_FARMACIA}">
+		<RemoteObjectInvoker instance="{procesarArchivoService}" method="listPagoFarmacia" arguments="{[event.fecha,event.paginador]}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultListAllArchivosFarmacia" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	
+<!-- @I4662 -->	<EventHandlers type="{ProcesarPagoEvent.OBTENER_FECHA_SERVIDOR}">
+		<RemoteObjectInvoker instance="{archivoCobroExternoService}" method="getFechaServidor" >
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="functionFechaServidor" arguments="{resultObject}"/> 
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+<!-- @F4662 -->	</EventHandlers>
+	
+	
+	
+	<EventHandlers type="{ProcesarPagoEvent.PROCESAR_LISTA_CUENTAS}">
+		<RemoteObjectInvoker instance="{archivoCobroExternoService}" method="listarCuentasCobradas" arguments="{event.idArchivo}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="listarCuentasCobradas" arguments="{resultObject}"/> 
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ProcesarPagoEvent.PROCESAR_PAGO}">
+		<RemoteObjectInvoker instance="{procesarArchivoService}" method="procesarArchivoCobroExterno" arguments="{event.archivo}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultProcesarArchivo" />
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ProcesarPagoEvent.PROCESAR_PAGO_FARMACIA}">
+		<RemoteObjectInvoker instance="{procesarArchivoService}" method="registrarPagoFarmacia" arguments="{event.archivoFarmacia}">
+			<resultHandlers>
+				<MethodInvoker generator="{Manager}" method="resultProcesarArchivoFarmacia" />
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{Manager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<mx:RemoteObject id="procesarArchivoService" destination="GenericDestination" source="procesarCobroExterno"/>
+	
+	<mx:RemoteObject id="archivoCobroExternoService" destination="GenericDestination" source="archivoCobroExternoServiceTarget"/>
+	
+	<mx:RemoteObject id="archivoFarmaciaService" destination="GenericDestination" source="archivoFarmaciaServiceTarget"/>
+	
+</EventMap>
+

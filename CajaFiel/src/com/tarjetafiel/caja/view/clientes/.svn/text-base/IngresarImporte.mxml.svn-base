@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="this.keyPress(event)" horizontalAlign="center" verticalAlign="middle" title="Ingrese Importe" xmlns:textInput="com.util.components.textInput.*" width="250">
+	<textInput:TextInputMoneda id="txtImporte" text="0" fontSize="30" width="100%" fontWeight="bold"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import com.tarjetafiel.caja.event.PagoEvent;
+			import com.util.components.alert.AlertWarning;
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+	
+			public var importeIngresado:Number;
+			public var estado:String;
+						
+			public static const ACTUALIZAR:String = "actualizar";
+			public static const NUEVO:String = "nuevo";
+			
+			public function keyPress(evt:KeyboardEvent):void{
+				if(evt.keyCode == Keyboard.ENTER){
+					if(Number(this.txtImporte.text) == 0){
+						AlertWarning.show("El importe debe ser mayor a cero");
+					} else {
+						this.importeIngresado = Number(this.txtImporte.text);
+						this.txtImporte.text = "0";						
+						this.dispatchEvent(new CloseEvent(CloseEvent.CLOSE));
+						PopUpManager.removePopUp(this);
+					}
+				} else if(evt.keyCode == Keyboard.ESCAPE){
+					this.txtImporte.text = "0";
+					this.importeIngresado = 0;
+					this.dispatchEvent(new CloseEvent(CloseEvent.CLOSE));
+					PopUpManager.removePopUp(this);
+				}
+			}
+		]]>
+	</mx:Script>	
+</mx:Panel>

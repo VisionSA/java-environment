@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ESCAPE)PopUpManager.removePopUp(this)" close="PopUpManager.removePopUp(this)" layout="vertical" title="Detalle de Liquidacion" showCloseButton="true" horizontalAlign="center" verticalAlign="middle" width="100%" height="300" paddingBottom="8" paddingLeft="8" paddingRight="8" paddingTop="8">
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.model.ModelLocator;
+			 import mx.managers.PopUpManager; 
+		]]>
+	</mx:Script>
+	<mx:Label styleName="titulos14" text="{'Periodo desde: ' + dateFormat.format(ModelLocator.getInstance().liqComercioModel.liqComercioLPSelect.periodoDesde) + ' - Periodo Hasta: ' + dateFormat.format(ModelLocator.getInstance().liqComercioModel.liqComercioLPSelect.periodoHasta)}"/>
+	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" dataProvider="{ModelLocator.getInstance().liqComercioModel.liqComercioLPSelect.detallesLiqComercioDet}" width="100%" height="100%">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Fecha Pago" >
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{outerDocument.dateFormat.format(data.fechaPago)}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Total de cuotas" dataField="totalCuotas" formatter="{currencyFormat}"/>
+			<mx:AdvancedDataGridColumn headerText="Días Diferimiento" dataField="diasDiferimiento"/>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	<mx:DateFormatter id="dateFormat" formatString="DD/MM/YYYY"/>
+	<mx:CurrencyFormatter currencySymbol="$" id="currencyFormat" rounding="none" precision="2"/>
+</mx:TitleWindow>

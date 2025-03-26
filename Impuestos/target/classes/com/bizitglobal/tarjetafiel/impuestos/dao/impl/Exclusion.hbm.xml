@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.impuestos.negocio.Exclusion" table="t_vis_imp_ret_exclusion">
+    <id name="idExclusion" type="java.lang.Long" column="c_id_ret_exclusion">
+        <generator class="increment" />
+    </id>
+
+    <property name="descripcion" type="java.lang.String" column="c_descripcion" not-null="true" length="100"/>
+
+    <property name="fechaDesde" type="java.sql.Timestamp" column="c_fecha_desde" length="3594"/>    
+
+    <property name="fechaHasta" type="java.sql.Timestamp" column="c_fecha_hasta" length="3594"/>    
+
+	<property name="porcentaje" type="java.lang.Float" column="c_porcentaje" length="10"/>
+	
+	<property name="nroCertificado" type="java.lang.String" column="c_nro_certificado" length="20"/>
+
+	<property name="periodoFiscal" type="java.lang.String" column="c_periodo_fiscal" length="4"/>
+
+	<property name="resolucionGral" type="java.lang.String" column="c_res_gral" length="50"/>
+
+	<property name="estado" type="java.lang.String" column="c_estado" length="30"/>
+
+	<property name="nroLegajo" type="java.lang.String" column="c_nro_legajo" length="20"/>
+
+	<property name="fechaEmcion" type="java.sql.Timestamp" column="c_fecha_emision" length="3594"/>    
+	
+    <!-- Associations -->
+    <many-to-one name="individuo" class="com.bizitglobal.tarjetafiel.impuestos.negocio.Individuo" not-null="true"  >
+        <column name="c_id_individuo" />
+    </many-to-one>
+	
+	<many-to-one name="tipoImpuesto" class="com.bizitglobal.tarjetafiel.impuestos.negocio.TipoImpuesto" not-null="true"  >
+        <column name="c_id_tipo_impuesto" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

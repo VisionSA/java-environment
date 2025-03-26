@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:modules="com.util.modules.*" xmlns:pagofacil="modules.pagofacil.*" xmlns:notaCreditoDebitos="modules.notaCreditoDebitos.*">
+	<mx:ToggleButtonBar dataProvider="viewStack" width="100%"/>
+	<mx:ViewStack width="100%" height="100%" id="viewStack">
+		<notaCreditoDebitos:NotaCreditoDebitoView/>
+		<pagofacil:CobrosExternosView/>
+	</mx:ViewStack>
+</mx:VBox>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:mx="http://www.adobe.com/2006/mxml"			   
+			   minWidth="955" minHeight="600" creationComplete="init()"
+			   viewSourceURL="srcview/index.html">
+	<fx:Script>
+		<![CDATA[
+		import com.adobe.viewsource.ViewSource;
+		
+		import mx.collections.ArrayCollection;
+		import mx.core.FlexGlobals;
+		
+		[Bindable]
+		private var items:ArrayCollection;
+		
+		private function init():void
+		{
+		
+		items = new ArrayCollection();
+		items.addItem(new SimpleItem("Charlie", true));
+		items.addItem(new SimpleItem("Brandon", true));
+		items.addItem(new SimpleItem("Kevin", false));
+		items.addItem(new SimpleItem("Mike", true));
+		items.addItem(new SimpleItem("Joker", false));
+		}
+		]]>
+	</fx:Script>
+	<mx:DataGrid dataProvider="{items}" editable="true"
+				 width="50%" height="100%">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Name" dataField="name"
+							   editable="false" />
+			<mx:DataGridColumn headerText="Is Guapo" 
+							   dataField="guapo" itemEditor="{ComboEditor}" 
+							   editorDataField="newValue" width="125"/>
+		</mx:columns>
+	</mx:DataGrid>
+</s:Application>

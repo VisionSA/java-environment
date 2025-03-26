@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.ExtractoBancarioTipoMovimiento" table="T_VIS_FON_TIPO_MOV_EXTRACTO" >
+	<id name="idTipoMovimiento" type="java.lang.Long" column="C_ID_TIPO_MOV">
+		<generator class="increment" />
+	</id>
+
+	<property name="codigoOperacion" type="java.lang.String" column="C_CODIGO_OPERACION" not-null="true" length="10"/>
+	<property name="tipoMovimiento" type="java.lang.Character" column="C_TIPO_MOV" not-null="true" />
+<!--/*@I3918*/-->	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="true" /><!--/*@F3918*/-->
+	
+	<many-to-one name="banco" class="com.bizitglobal.tarjetafiel.general.negocio.Banco" not-null="true">
+		<column name="C_ID_BANCO" />
+	</many-to-one>
+	
+</class>
+</hibernate-mapping>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" 
+  width="100%" height="100%" horizontalAlign="center" >
+  <mx:Script>
+    <![CDATA[
+      override public function set data(value:Object):void
+      {
+        super.data = value;
+        newValue = value.guapo;
+      }
+    ]]>
+  </mx:Script>
+  <mx:Boolean id="newValue" />
+  <mx:ComboBox width="100%" height="100%" id="dd" selectedIndex="{data.guapo ? 0 : 1}"
+    change="{newValue = (dd.selectedIndex == 0)}">
+    <mx:dataProvider>
+      <mx:Array>
+        <mx:String>Yes</mx:String>
+        <mx:String>No</mx:String>
+      </mx:Array>
+    </mx:dataProvider>
+  </mx:ComboBox>
+</mx:Box>

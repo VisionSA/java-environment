@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+                       "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+ 
+ 
+  <!-- ================================================================================================ 
+ ========================         DEFINICION DE DAOS DEL MODULO         ========================= 
+ ================================================================================================ -->
+  
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.PlanCuentaDosDaoHibernateImpl" id="planCuentaDosDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+  
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.AsientoDaoHibernateImpl" id="asientoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.AsientoProveedorDaoHibernateImpl" id="asientoProveedorDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.AsientoClienteDaoHibernateImpl" id="asientoClienteDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.AsientoComercioDaoHibernateImpl" id="asientoComercioDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ <!-- @I4933 -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.general.dao.impl.GenericDaoImpl" id="genericDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ <!-- @F4933 -->
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.LoteDaoHibernateImpl" id="loteDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.BalanceDaoHibernateImpl" id="balanceDao">
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ 
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.AsientoDetalleDaoHibernateImpl" id="asientoDetalleDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.LoteDetalleDaoHibernateImpl" id="loteDetalleDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+  
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.CentroCostosDaoHibernateImpl" id="centroCostosDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.DocAdjuntoDaoHibernateImpl" id="docAdjuntoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.CentroCostoAsientoDaoHibernateImpl" id="centroCostoAsientoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.OrigenDaoHibernateImpl" id="origenDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.RenglonLibroMayorDaoHibernateImpl" id="renglonLibroMayorDao">
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.TipoAsientoDaoHibernateImpl" id="tipoAsientoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.dao.impl.EjercicioDaoHibernateImpl" id="ejercicioDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE PLAN CUENTA SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id = "planCuentaDosServiceTarget" class = "com.bizitglobal.tarjetafiel.contabilidad.service.impl.PlanCuentaDosServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="planCuentaDao" ref="planCuentaDosDao"/>
+</bean>
+
+<bean id = "planCuentaDosService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.PlanCuentaDosService</value>
+</property>
+
+<property name = "target">
+<ref bean = "planCuentaDosServiceTarget"/>
+</property>
+</bean>
+
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE EJERCICIO SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id = "ejercicioServiceTarget" class = "com.bizitglobal.tarjetafiel.contabilidad.service.impl.EjercicioServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="ejercicioDao" ref="ejercicioDao"/>
+</bean>
+
+<bean id = "ejercicioService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.EjercicioService</value>
+</property>
+
+<property name = "target">
+<ref bean = "ejercicioServiceTarget"/>
+</property>
+</bean>
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE ASIENTO SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="asientoServiceTarget" class="com.bizitglobal.tarjetafiel.contabilidad.service.impl.AsientoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+<property name="asientoDao" ref="asientoDao"/>
+</bean>
+
+<bean id = "asientoService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.AsientoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "asientoServiceTarget"/>
+</property>
+</bean>
+
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE BALANCE SERVICE           ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="balanceServiceTarget" class="com.bizitglobal.tarjetafiel.contabilidad.service.impl.BalanceServiceImpl">
+<property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+<property name="balanceDao" ref="balanceDao"/>
+</bean>
+
+<bean id = "balanceService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.BalanceService</value>
+</property>
+
+<property name = "target">
+<ref bean = "balanceServiceTarget"/>
+</property>
+</bean>
+
+
+
+
+
+
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE LOTE SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="loteServiceTarget" class="com.bizitglobal.tarjetafiel.contabilidad.service.impl.LoteServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+<property name="loteDao" ref="loteDao"/>
+</bean>
+
+<bean id = "loteService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.LoteService</value>
+</property>
+
+<property name = "target">
+<ref bean = "loteServiceTarget"/>
+</property>
+</bean>
+
+
+<!-- ======================================================================================================== 
+ =======================           DEFINICION DE ASIENTO PROVEEDOR            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="asientoProveedorServiceTarget" class="com.bizitglobal.tarjetafiel.contabilidad.service.impl.AsientoProveedorServiceImpl">
+<property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+<property name="asientoProveedorDao" ref="asientoProveedorDao"/>
+</bean>
+
+<bean id = "asientoProveedorService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.AsientoProveedorService</value>
+</property>
+
+<property name = "target">
+<ref bean = "asientoProveedorServiceTarget"/>
+</property>
+</bean>
+
+<!-- ======================================================================================================== 
+ =======================           DEFINICION DE LOTE CLIENTE SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="asientoClienteServiceTarget" class="com.bizitglobal.tarjetafiel.contabilidad.service.impl.AsientoClienteServiceImpl">
+<property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+<property name="asientoClienteDao" ref="asientoClienteDao"/>
+</bean>
+
+<bean id ="asientoClienteService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.AsientoClienteService</value>
+</property>
+
+<property name = "target">
+<ref bean = "asientoClienteServiceTarget"/>
+</property>
+</bean>
+
+<!-- ======================================================================================================== 
+ =======================           DEFINICION DE LOTE COMERCIO SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="asientoComercioServiceTarget" class="com.bizitglobal.tarjetafiel.contabilidad.service.impl.AsientoComercioServiceImpl">
+<property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+<property name="asientoComercioDao" ref="asientoComercioDao"/>
+</bean>
+
+<bean id ="asientoComercioService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.AsientoComercioService</value>
+</property>
+
+<property name = "target">
+<ref bean = "asientoComercioServiceTarget"/>
+</property>
+</bean>
+
+
+
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE ASIENTO DETALLE SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="asientoDetalleServiceTarget" class="com.bizitglobal.tarjetafiel.contabilidad.service.impl.AsientoDetalleServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+<property name="asientoDetalleDao" ref="asientoDetalleDao"/>
+</bean>
+
+<bean id = "asientoDetalleService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.AsientoDetalleService</value>
+</property>
+
+<property name = "target">
+<ref bean = "asientoDetalleServiceTarget"/>
+</property>
+</bean>
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE LOTE DETALLE SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="loteDetalleServiceTarget" class="com.bizitglobal.tarjetafiel.contabilidad.service.impl.LoteDetalleServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+<property name="loteDetalleDao" ref="loteDetalleDao"/>
+</bean>
+
+<bean id = "loteDetalleService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.LoteDetalleService</value>
+</property>
+
+<property name = "target">
+<ref bean = "loteDetalleServiceTarget"/>
+</property>
+</bean>
+
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE CENTRO COSTOS SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id = "centroCostosServiceTarget" class = "com.bizitglobal.tarjetafiel.contabilidad.service.impl.CentroCostosServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="centroCostosDao" ref="centroCostosDao"/>
+</bean>
+
+<bean id = "centroCostosService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.CentroCostosService</value>
+</property>
+
+<property name = "target">
+<ref bean = "centroCostosServiceTarget"/>
+</property>
+</bean>
+
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE DOCADJUNTO SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id = "docAdjuntoServiceTarget" class = "com.bizitglobal.tarjetafiel.contabilidad.service.impl.DocAdjuntoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+<property name="docAdjuntoDao" ref="docAdjuntoDao"/>
+</bean>
+
+<bean id = "docAdjuntoService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.DocAdjuntoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "docAdjuntoServiceTarget"/>
+</property>
+</bean>
+
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE CENTRO COSTO ASIENTO SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id = "centroCostoAsientoServiceTarget" class = "com.bizitglobal.tarjetafiel.contabilidad.service.impl.CentroCostoAsientoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="centroCostoAsientoDao" ref="centroCostoAsientoDao"/>
+</bean>
+
+<bean id = "centroCostoAsientoService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.CentroCostoAsientoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "centroCostoAsientoServiceTarget"/>
+</property>
+</bean>
+
+
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE ORIGEN SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="origenServiceTarget" class = "com.bizitglobal.tarjetafiel.contabilidad.service.impl.OrigenServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="origenDao" ref="origenDao"/>
+</bean>
+
+<bean id = "origenService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.OrigenService</value>
+</property>
+
+<property name = "target">
+<ref bean = "origenServiceTarget"/>
+</property>
+</bean>
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE RENGLON LIBRO MAYOR SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="renglonLibroMayorServiceTarget" class="com.bizitglobal.tarjetafiel.contabilidad.service.impl.RenglonLibroMayorServiceImpl">
+<property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+<property name="renglonLibroMayorDao" ref="renglonLibroMayorDao"/>
+</bean>
+
+<bean id = "renglonLibroMayorService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.RenglonLibroMayorService</value>
+</property>
+
+<property name = "target">
+<ref bean = "renglonLibroMayorServiceTarget"/>
+</property>
+</bean>
+
+
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE TIPOASIENTO SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+
+<bean id="tipoAsientoServiceTarget" class = "com.bizitglobal.tarjetafiel.contabilidad.service.impl.TipoAsientoServiceImpl">
+<property name="transactionManager" ref="myTxManager"/>
+<property name="tipoAsientoDao" ref="tipoAsientoDao"/>
+</bean>
+
+<bean id = "tipoAsientoService" class="org.springframework.aop.framework.ProxyFactoryBean">
+<property name = "proxyInterfaces">
+<value>com.bizitglobal.tarjetafiel.contabilidad.service.TipoAsientoService</value>
+</property>
+
+<property name = "target">
+<ref bean = "tipoAsientoServiceTarget"/>
+</property>
+</bean>
+
+<!-- @I4933 -->
+ <!-- ========================================================================================================= 
+ ===========================  DEFINICION DE PasajeService SERVICE  ============================ 
+ ======================================================================================================== -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.contabilidad.service.impl.PasajeServiceImpl" id="generacionPasajeServiceTarget">
+    <property name="genericDao" ref="genericDao"></property>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="generarPasajeService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.contabilidad.service.PasajeService</value>
+  </property>
+  <property name="target">
+   <ref bean="generacionPasajeServiceTarget"/>
+  </property>
+ </bean>
+<!-- @F4933 -->
+
+</beans>
+

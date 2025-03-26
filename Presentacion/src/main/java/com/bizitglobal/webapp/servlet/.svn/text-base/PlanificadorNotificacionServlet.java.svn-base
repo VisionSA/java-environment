@@ -1,0 +1,190 @@
+package com.bizitglobal.webapp.servlet;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Date;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.EmailInCola;
+import com.bizitglobal.tarjetafiel.planificadoremail.service.EnvioEmailService;
+import com.bizitglobal.tarjetafiel.planificadoremail.service.PlanProcesoEmailService;
+import com.bizitglobal.tarjetafiel.transacciones.service.PlasticoClienteService;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.Content;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.apache.log4j.Logger;
+import org.jfree.util.Log;
+import org.json.JSONObject;
+
+
+public class PlanificadorNotificacionServlet extends HttpServlet implements javax.servlet.Servlet {
+	/***** @Id:I6958 ******/
+	
+	private static Logger logger = Logger.getLogger(PlanificadorNotificacionServlet.class);
+	private static final long serialVersionUID = -9166416935188731214L;
+
+	private static final String ENVIO_EMAIL_SERVICE_NAME = "envioEmailService";
+	private static final String PLAN_PROCESO_SERVICE_NAME = "planProcesoEmailService";
+	private static final String PLASTICO_CLIENTE_SERVICE_NAME = "plasticoClienteService";
+	private EnvioEmailService envioEmailService = null;
+	private PlanProcesoEmailService planProcesoEmailService = null;
+	private PlasticoClienteService plasticoClienteService = null;
+
+
+	/*
+	 * (non-Java-doc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#HttpServlet()
+	 */
+	public PlanificadorNotificacionServlet() {
+		super();
+	}
+
+
+	/*
+	 * (non-Java-doc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		execute(request, response);
+	}
+
+
+	/*
+	 * (non-Java-doc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		execute(request, response);
+	}
+
+
+	private void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String result = null;
+
+		try {
+
+			System.out.println("Sending POST to FCM");
+
+			String apiKey = "AAAAQdfTYG8:APA91bGtsO_6Pz-JO6MVTykDO8p3dRrrIXtl0Ah3_6kQ0N1bUhO5JOv8z9v9ne4PrIyZNBFNk2Fgl-hUxUsRJrMy9juo4j--8dwgjUf02ZWFaBTB4LPMv8VO6EKE0bTmdco039A7rzWS";// "AIzaSyAQQUlFwB3P4Q3Aa53CdugcCk-Cni_NXxc";        
+
+			ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+			envioEmailService = (EnvioEmailService) appContext.getBean(ENVIO_EMAIL_SERVICE_NAME);
+			plasticoClienteService = (PlasticoClienteService) appContext.getBean(PLASTICO_CLIENTE_SERVICE_NAME);
+
+			EmailInCola emailInCola = new EmailInCola();
+			emailInCola = envioEmailService.buscarNextNotificacion();
+ 
+			while (emailInCola != null) {
+				// emailInCola.setEstado(EmailInCola.ESTADO_EMAIL_COLA);
+				// envioEmailService.actualizarEmailInCola(emailInCola);
+
+				emailInCola.setEstado(EmailInCola.ESTADO_EMAIL_INICIADO);
+				envioEmailService.actualizarEmailInCola(emailInCola);
+
+				String msj = "" +
+					"{" +
+						"\"registration_ids\" : [\"" + emailInCola.getEmail() + "\"]" +
+						",\"notification\" : " +
+						"{" +
+							"\"title\":\"Tarjeta Fiel\"," +
+							"\"body\":\"" + emailInCola.getAsunto() + "\"" +
+						"}" +
+					"}";
+
+				// 1. URL
+				URL url = new URL("https://fcm.googleapis.com/fcm/send");
+
+				// 2. Open connection
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+				// 3. Specify POST method
+				conn.setRequestMethod("POST");
+
+				// 4. Set the headers
+				conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+				conn.setRequestProperty("Authorization", "key=" + apiKey);
+
+				conn.setDoOutput(true);
+
+				// 5. Add JSON data into POST request body
+				DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+				wr.writeBytes(msj);
+
+				// 5.1 Send the request
+				wr.flush();
+
+				// 5.2 close
+				wr.close();
+
+				// 6. Get the response
+				int responseCode = conn.getResponseCode();
+				logger.info("\nSending 'POST' request to URL : " + url);
+				logger.info("Response Code : " + responseCode);
+
+				if (responseCode == 200) {
+
+					BufferedReader in = new BufferedReader(
+							new InputStreamReader(conn.getInputStream()));
+					String inputLine;
+					StringBuffer response1 = new StringBuffer();
+
+					while ((inputLine = in.readLine()) != null) {
+						response1.append(inputLine);
+					}
+					in.close();
+
+					// 7. Print result
+					logger.info(response1.toString());
+
+					JSONObject json = new org.json.JSONObject(response1.toString());
+					Long success = json.getLong("success");
+					Long failure = json.getLong("failure");
+					Long canonical_ids = json.getLong("canonical_ids");
+
+					if (success == 1 && failure == 0 && canonical_ids == 0) {
+						emailInCola.setFecEnvio(new Date());
+						emailInCola.setEstado(EmailInCola.ESTADO_EMAIL_ENVIADO);
+					} else {
+						emailInCola.setEstado("B");
+						plasticoClienteService.bajarNotificacionApp(emailInCola.getEmail().trim());
+					}
+					emailInCola.setPendiente(false);
+					envioEmailService.actualizarEmailInCola(emailInCola);
+				}
+				else{
+					emailInCola.setEstado("X");
+					emailInCola.setPendiente(false);
+					envioEmailService.actualizarEmailInCola(emailInCola);
+				}
+
+				emailInCola = envioEmailService.buscarNextNotificacion();
+			}
+
+			// planProcesoEmailService = (PlanProcesoEmailService)appContext.getBean(PLAN_PROCESO_SERVICE_NAME);
+			// List<PlanProcesoEmail> planes = planProcesoEmailService.findAll();
+			// for (PlanProcesoEmail planProcesoEmail : planes) {
+			// envioEmailService.correrPlanEnviarLiqByEmail(planProcesoEmail.getIdPlan());
+			// }
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+
+	}
+
+}

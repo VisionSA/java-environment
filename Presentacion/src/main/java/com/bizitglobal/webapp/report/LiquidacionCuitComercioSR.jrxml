@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="liqCodComercio"
+		 columnCount="2"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="420"
+		 columnWidth="287"
+		 columnSpacing="0"
+		 leftMargin="10"
+		 rightMargin="10"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.bizitglobal.webapp.faces.beans.util.*" />
+	<import value="net.sf.jasperreports.engine.design.JasperDesign" />
+
+	<parameter name="liquidacion_numero" isForPrompting="true" class="java.lang.Long"/>
+	<queryString><![CDATA[Select idLoteComercio as idLoteComercio, fechaLote as fechaLote, nroCuota as nroCuota, importeTotal as importeTotal, titulo as titulo, idTransacciones as idTransacciones, fechaTran as fechaTran,
+      arancel as arancel, aceleramiento as aceleramiento,estado as estado, codigoPosnet as codigoPosnet from (
+
+Select TO_CHAR(a.c_id_lote_comercio) as idLoteComercio, a.c_fecha_lote as fechaLote, tra.c_cant_cuotas as nroCuota, nvl(sum( case  when a.c_id_concepto_detalle IN (17)  and a.c_estado_impacto like 'C' 
+      then a.c_importe end ),0) as importeTotal,
+       b.c_numero_liquidacion as titulo, tra.c_nro_cupon as idTransacciones, tra.c_fecha_real as fechaTran,
+      nvl(sum( case  when a.c_id_concepto_detalle IN (20) 
+       then a.c_importe end ),0) as arancel,
+      nvl(sum( case  when a.c_id_concepto_detalle IN (18) 
+       then a.c_importe end ),0) as aceleramiento,
+      'ACEPTADAS' as estado, d.c_codigo_posnet || ': ' || suc.c_descripcion as codigoPosnet
+      from  ((t_vis_tra_ctacte_comercios a inner join t_vis_tra_liq_comercios b 
+      on a.c_id_liq_comercio = b.c_id_liq_comercio) inner join t_vis_tra_liquidaciones c on c.c_id_liquidacion = b.c_numero_liquidacion)
+      inner join t_vis_tra_cod_comercios d on d.c_id_cod_comercio = a.c_id_cod_comercio
+      inner join t_vis_tra_transacciones tra on tra.c_id_tranascciones = a.c_id_tranascciones
+      inner join t_vis_gen_suc_empresas suc on d.c_id_sucursal = suc.c_id_sucursal
+      where c.c_id_liquidacion =  $P{liquidacion_numero}  and a.c_estado_impacto Like 'C'
+      Group By a.c_id_lote_comercio,a.c_fecha_lote,tra.c_cant_cuotas,b.c_numero_liquidacion,tra.c_nro_cupon,d.c_codigo_posnet, tra.c_fecha_real, suc.c_descripcion
+ 
+ UNION
+ 
+ -- me trae todos los otros campos que no son consumos, como por ejemplo los cargos por transferencias bancarias....
+ Select TO_CHAR(cdet.c_nombre) as idLoteComercio, a.c_fecha_lote as fechaLote, TO_CHAR(a.c_nro_cuota) as nroCuota, a.c_importe as importeTotal,
+       b.c_numero_liquidacion as titulo, '0' as idTransacciones, a.c_fecha_facturacion as fechaTran,
+      0 as arancel,
+      0 as aceleramiento,
+      'ACEPTADAS' as estado, d.c_codigo_posnet || ': ' || suc.c_descripcion as codigoPosnet
+      from  ((t_vis_tra_ctacte_comercios a inner join t_vis_tra_liq_comercios b 
+      on a.c_id_liq_comercio = b.c_id_liq_comercio) inner join t_vis_tra_liquidaciones c on c.c_id_liquidacion = b.c_numero_liquidacion)
+      inner join t_vis_tra_cod_comercios d on d.c_id_cod_comercio = a.c_id_cod_comercio
+      inner join t_vis_gen_suc_empresas suc on d.c_id_sucursal = suc.c_id_sucursal
+      inner join t_vis_tra_conceptos_detalle cdet on a.c_id_concepto_detalle = cdet.c_id_concepto_detalle
+      where c.c_id_liquidacion =  $P{liquidacion_numero} and a.c_estado_impacto Like 'C' and a.c_id_concepto_detalle Not in (17,18,19,20,21)
+      Group By cdet.c_nombre,a.c_fecha_lote,a.c_nro_cuota,b.c_numero_liquidacion,d.c_codigo_posnet, a.c_fecha_facturacion, suc.c_descripcion,a.c_importe
+      
+ UNION   
+    
+    Select TO_CHAR(a.c_id_lote_comercio) as idLoteComercio, a.c_fecha_lote as fechaLote, tra.c_cant_cuotas as nroCuota, nvl(sum( case  when a.c_id_concepto_detalle IN (17)  and a.c_estado_impacto like 'R' 
+      then a.c_importe end ),0) as importeTotal,
+       b.c_numero_liquidacion as titulo, tra.c_nro_cupon as idTransacciones, tra.c_fecha_real as fechaTran,
+      nvl(sum( case  when a.c_id_concepto_detalle IN (20) 
+       then a.c_importe end ),0) as arancel,
+      nvl(sum( case  when a.c_id_concepto_detalle IN (18) 
+       then a.c_importe end ),0) as aceleramiento,
+      'RECHAZADAS' as estado, d.c_codigo_posnet || ': ' || suc.c_descripcion as codigoPosnet
+      from  ((t_vis_tra_ctacte_comercios a inner join t_vis_tra_liq_comercios b 
+      on a.c_id_liq_comercio = b.c_id_liq_comercio) inner join t_vis_tra_liquidaciones c on c.c_id_liquidacion = b.c_numero_liquidacion)
+      inner join t_vis_tra_cod_comercios d on d.c_id_cod_comercio = a.c_id_cod_comercio
+      inner join t_vis_tra_transacciones tra on tra.c_id_tranascciones = a.c_id_tranascciones
+      inner join t_vis_gen_suc_empresas suc on d.c_id_sucursal = suc.c_id_sucursal
+      where c.c_id_liquidacion =  $P{liquidacion_numero} and a.c_estado_impacto Like 'R'
+      Group By a.c_id_lote_comercio,a.c_fecha_lote,tra.c_cant_cuotas,b.c_numero_liquidacion,tra.c_nro_cupon,d.c_codigo_posnet, tra.c_fecha_real, suc.c_descripcion
+ )
+
+ order by 11, 10 ASC, 1 Desc]]></queryString>
+
+	<field name="idLoteComercio" class="java.lang.Long"/>
+	<field name="fechaLote" class="java.sql.Timestamp"/>
+	<field name="nroCuota" class="java.lang.Integer"/>
+	<field name="importeTotal" class="java.math.BigDecimal"/>
+	<field name="titulo" class="java.math.BigDecimal"/>
+	<field name="idTransacciones" class="java.lang.Long"/>
+	<field name="fechaTran" class="java.sql.Timestamp"/>
+	<field name="arancel" class="java.math.BigDecimal"/>
+	<field name="aceleramiento" class="java.math.BigDecimal"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="codigoPosnet" class="java.lang.String"/>
+
+
+		<group  name="codigoPosnet" >
+			<groupExpression><![CDATA[$F{codigoPosnet}]]></groupExpression>
+			<groupHeader>
+			<band height="25"  isSplitAllowed="true" >
+				<rectangle radius="0" >
+					<reportElement
+						mode="Opaque"
+						x="15"
+						y="0"
+						width="270"
+						height="15"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="element-22"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="15"
+						y="0"
+						width="270"
+						height="15"
+						forecolor="#FFFFFF"
+						backcolor="#000000"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Courier New" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{codigoPosnet}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="estado" >
+			<groupExpression><![CDATA[$F{estado}]]></groupExpression>
+			<groupHeader>
+			<band height="25"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="37"
+						y="0"
+						width="250"
+						height="15"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Courier New" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["TRANSACCIONES " + $F{estado}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="15"
+						y="15"
+						width="60"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Número Lote]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="75"
+						y="15"
+						width="30"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[F.Lote]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="105"
+						y="15"
+						width="25"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[N.C]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="130"
+						y="15"
+						width="30"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[F.Lote]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="160"
+						y="15"
+						width="15"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Cuo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="175"
+						y="15"
+						width="40"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Importe]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="215"
+						y="15"
+						width="30"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Aranc]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="245"
+						y="15"
+						width="30"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Acel]]></text>
+				</staticText>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="10"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="15"
+						y="0"
+						width="60"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Long"><![CDATA[$F{idLoteComercio}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="75"
+						y="0"
+						width="30"
+						height="10"
+						forecolor="#000000"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{fechaLote}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="105"
+						y="0"
+						width="25"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Long"><![CDATA[$F{idTransacciones}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="130"
+						y="0"
+						width="30"
+						height="10"
+						forecolor="#000000"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{fechaTran}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="160"
+						y="0"
+						width="15"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{nroCuota}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="175"
+						y="0"
+						width="40"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{importeTotal}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="215"
+						y="0"
+						width="30"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{arancel}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="245"
+						y="0"
+						width="30"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{aceleramiento}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

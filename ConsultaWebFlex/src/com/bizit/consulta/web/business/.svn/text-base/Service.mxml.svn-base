@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cairngorm:ServiceLocator xmlns:cairngorm="com.adobe.cairngorm.business.*" xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:s="library://ns.adobe.com/flex/spark" >
+	<mx:Script>
+		<![CDATA[
+			import com.bizit.consulta.web.model.FielWebModelLocator;
+			[Bindable]
+			private var modelo:FielWebModelLocator = FielWebModelLocator.getInstance();
+		]]>
+	</mx:Script>
+	
+	<s:ChannelSet id="remotingChannels">
+		<s:AMFChannel id="amf" url="{modelo.AMFChannelDefinition}"/>
+	</s:ChannelSet>
+	
+	<s:RemoteObject
+		channelSet="{remotingChannels}"
+		destination="permisoWebService" 
+		id="permisoWebService" />
+	
+	<s:RemoteObject
+		channelSet="{remotingChannels}"
+		destination="usuarioWebService" 
+		id="usuarioWebService"/>
+	
+	<s:RemoteObject
+		channelSet="{remotingChannels}"
+		destination="emailService" 
+		id="emailService"/>
+	
+	<s:RemoteObject
+		channelSet="{remotingChannels}"
+		destination="comercioService" 
+		id="comercioService"/>	
+	
+</cairngorm:ServiceLocator>

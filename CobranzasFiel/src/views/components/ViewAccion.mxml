@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox 
+	xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import events.GenericPlanEvent;
+			import mx.managers.PopUpManager;
+			import mx.core.IFlexDisplayObject;
+			import com.tarjetafiel.caja.vo.AccionVersion;
+			import mx.collections.Sort;
+			import mx.controls.DataGrid;
+			import model.CobranzasModelLocator;
+			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			[Bindable]
+			public var accionVersion : AccionVersion;
+			
+			private function modificarAccion():void {
+				
+				new GenericPlanEvent(GenericPlanEvent.SELECCIONAR_ACCION_VERSION_EVENT,accionVersion).dispatch();				
+				
+				modelo.esNuevaAccion = false;
+				var vent : IFlexDisplayObject = PopUpManager.createPopUp(this,ViewNuevaAccion,true);
+				PopUpManager.centerPopUp(vent);
+			}
+			
+			private function eliminarAccion():void {
+				var obj: Object = new Object();
+				obj.ele = accionVersion;				
+				obj.lista = (this.parentDocument as ViewPanelEtapa).accionesDG as ArrayCollection;
+				new GenericPlanEvent(GenericPlanEvent.ELIMINAR_ACCION_VERSION_EVENT,obj).dispatch();
+				
+			}
+					
+	
+		]]>
+	</mx:Script>
+	
+	<mx:HBox  id="cajaLabelAccion" horizontalAlign="center" verticalAlign="middle" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+		<mx:HBox horizontalScrollPolicy="off" verticalScrollPolicy="off">
+			<mx:Form>
+				<mx:FormItem label="Descripc:">
+					<mx:TextInput id="inptDescripcion" width="120" text="{accionVersion.accion.descripcion}" editable="false"/>					
+				</mx:FormItem>
+				<mx:FormItem label="Día:">
+					<mx:TextInput id="inptDias" width="40" textAlign="right" text="{accionVersion.dias}" editable="false"/>
+				</mx:FormItem>
+			</mx:Form>			
+		</mx:HBox>		
+		<mx:VBox horizontalScrollPolicy="off" verticalScrollPolicy="off" horizontalAlign="right" visible="{modelo.esNuevaVersion}">			
+			<mx:LinkButton icon="@Embed(source='../../img/modif.png')" toolTip="Modificar Acción" click="modificarAccion()"/>
+			<mx:LinkButton icon="@Embed(source='../../img/stop_22x22.png')" toolTip="Eliminar Acción" click="eliminarAccion()"/>
+		</mx:VBox>
+	</mx:HBox>
+</mx:VBox>

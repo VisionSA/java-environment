@@ -1,0 +1,176 @@
+package com.bizitglobal.webapp.servlet;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.bizitglobal.tarjetafiel.operador.negocio.Operador;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ResumenApp;
+import com.bizitglobal.tarjetafiel.operador.service.OperadorService;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ClienteTransaccion;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.PlasticoCliente;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.PlasticoEstado;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.PlasticoOperacion;
+import com.bizitglobal.tarjetafiel.transacciones.service.ClienteTransaccionService;
+import com.bizitglobal.tarjetafiel.transacciones.service.PlasticoClienteService;
+import com.bizitglobal.tarjetafiel.transacciones.service.PlasticoEstadosService;
+
+
+public class GrabarMailClienteApp extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
+	private static final long serialVersionUID = 6584463924824216356L;
+
+	private static final String PLASTICO_CLIENTE_SERVICE_NAME = "plasticoClienteService";
+	private static final String CLIENTE_SERVICE_NAME = "clienteTransaccionService";
+	private static final String PLASTICO_ESTADO_SERVICE_NAME = "plasticoEstadosServiceTarget";
+	private PlasticoClienteService plasticoClienteService = null;
+	private ClienteTransaccionService clienteTransaccionService = null;
+	private PlasticoEstadosService plasticoEstadosService = null;
+	private List<PlasticoCliente> listaCuenta = new ArrayList<PlasticoCliente>();
+	private ClienteTransaccion ultimoTitular;
+	private PlasticoOperacion plasticoOperacion;
+
+
+	/*
+	 * (non-Java-doc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#HttpServlet()
+	 */
+	public GrabarMailClienteApp() {
+		super();
+	}
+
+
+	/*
+	 * (non-Java-doc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+
+
+	/*
+	 * (non-Java-doc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	 public void doPost(HttpServletRequest req, HttpServletResponse resp)
+		      throws IOException  {
+		
+
+		try {
+			
+
+			ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+			Operador operadorAutomatico = ((OperadorService) appContext.getBean("operadorService")).leerOperador(1212l);
+			plasticoClienteService = (PlasticoClienteService) appContext.getBean(PLASTICO_CLIENTE_SERVICE_NAME);
+			clienteTransaccionService = (ClienteTransaccionService) appContext.getBean(CLIENTE_SERVICE_NAME);
+			plasticoEstadosService = (PlasticoEstadosService) appContext.getBean(PLASTICO_ESTADO_SERVICE_NAME);
+			PlasticoEstado estadoActivado = plasticoEstadosService.leerPlasticoEstado(1L);
+			PlasticoEstado estadoDesactivado = plasticoEstadosService.leerPlasticoEstado(2L);
+			
+			resp.setHeader("Access-Control-Allow-Origin", "*");
+			  resp.setHeader("Access-Control-Allow-Methods", "POST");
+			  resp.setContentType("application/json");
+			  
+			  StringBuilder jb = new StringBuilder();
+			  String line = null;
+			  BufferedReader reader = req.getReader();
+			  while ((line = reader.readLine()) != null){
+			      jb.append(line);
+			  }
+			  JSONObject obj = new JSONObject(jb.toString());
+			  
+			  
+			  Long idCliente = new Long(obj.get("idCliente").toString());
+			  String email = (obj.get("email").toString());
+			  
+
+		//	List<ResumenApp> listaTarjetas = plasticoClienteService.buscarRegistraMailApp(idCliente);
+//			if (!listaTarjetas.isEmpty()) {
+//				for (ResumenApp p : listaTarjetas) {
+					clienteTransaccionService.agregarEmailApp(email, idCliente, "", "");
+//				}
+//
+//			}
+
+			//resp.getWriter().println("{" + "\"cvu\":\"" + codigoBarraTres + "\"" +"}");	
+			resp.setStatus(200);
+			resp.getWriter().println("{\"result\": \"OK\"}");
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			  resp.getWriter().println("{}");
+			  resp.setStatus(500);
+			
+		} 
+
+	}
+
+
+//	private void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		response.setContentType("text/html;charset=UTF-8");
+//		PrintWriter out = response.getWriter();
+//
+//		try {
+//			out.print("Test!!!<br>");
+//
+//			ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+//			Operador operadorAutomatico = ((OperadorService) appContext.getBean("operadorService")).leerOperador(1212l);
+//			plasticoClienteService = (PlasticoClienteService) appContext.getBean(PLASTICO_CLIENTE_SERVICE_NAME);
+//			clienteTransaccionService = (ClienteTransaccionService) appContext.getBean(CLIENTE_SERVICE_NAME);
+//			plasticoEstadosService = (PlasticoEstadosService) appContext.getBean(PLASTICO_ESTADO_SERVICE_NAME);
+//			PlasticoEstado estadoActivado = plasticoEstadosService.leerPlasticoEstado(1L);
+//			PlasticoEstado estadoDesactivado = plasticoEstadosService.leerPlasticoEstado(2L);
+//
+//			List<ResumenApp> listaTarjetas = plasticoClienteService.buscarRegistraMailApp();
+//			if (!listaTarjetas.isEmpty()) {
+//				for (ResumenApp p : listaTarjetas) {
+//					clienteTransaccionService.agregarEmailApp(p.getMail(), p.getIdcliente(), p.getRegistro(), p.getValor());
+//				}
+//
+//			}
+//
+//			out.print("Result: <b>Todo correcto</b>");
+//		} catch (Exception e) {
+//			out.print("Error grabar mail app!!!");
+//			e.printStackTrace();
+//		} finally {
+//			out.close();
+//		}
+//
+//	}
+
+	// private void activarCuenta(Operador operadorAutomatico, PlasticoEstado estadoActivado, PlasticoEstado estadoDesactivado)
+	// throws Exception, PlasticoClienteException {
+	// ultimoTitular.setDiaCierre(clienteTransaccionService.getDiaPagoCliente(ultimoTitular.getIdCliente()));
+	// plasticoClienteService.activarPlasticos(listaCuenta, ultimoTitular, estadoActivado, estadoDesactivado, plasticoOperacion,operadorAutomatico);
+	// }
+	//
+	// private void nuevoCiclo(PlasticoCliente p) throws ClienteTransaccionException {
+	// listaCuenta.clear();
+	// if(p.esPlasticoTitular())
+	// ultimoTitular = p.getClienteTransaccion();
+	// else
+	// ultimoTitular = clienteTransaccionService.leerCliente(p.getClienteTransaccion().getIdTitular());
+	// plasticoOperacion = p.getOperacion();
+	// listaCuenta.add(p);
+	// }
+	//
+	// private boolean pertenece(PlasticoCliente p){
+	// Long idTitular = p.esPlasticoTitular() ? p.getClienteTransaccion().getIdCliente() : p.getClienteTransaccion().getIdTitular();
+	// return (ultimoTitular.getIdCliente().equals(idTitular))
+	// && plasticoOperacion.getIdPlasticoOperacion().equals(p.getOperacion().getIdPlasticoOperacion());
+	// }
+}

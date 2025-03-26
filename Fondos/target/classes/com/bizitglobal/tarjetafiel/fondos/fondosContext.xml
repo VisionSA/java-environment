@@ -1,0 +1,838 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+                       "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+ <!-- ================================================================================================ 
+ ========================         DEFINICION DE DAOS DEL MODULO         ========================= 
+ ================================================================================================ -->
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.CajaDaoHibernateImpl" id="cajaDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.FormaPagoValorDaoHibernateImpl" id="formaPagoValorDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.AsientoFondosDaoHibernateImpl" id="asientoFondosDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.LibroMayorFondosDaoHibernateImpl" id="libroMayorFondosDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+  <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.AsientoItemDaoHibernateImpl" id="asientoItemDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.BancoPropioDaoHibernateImpl" id="bancoPropioDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.ChequeraDaoHibernateImpl" id="chequeraDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.CajaAperturaDaoHibernateImpl" id="cajaAperturaDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean> 
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.CajaArqueoDaoHibernateImpl" id="cajaArqueoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+  
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.CajaCierreDaoHibernateImpl" id="cajaCierreDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.CajaMPDaoHibernateImpl" id="cajaMPDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.ChequeDaoHibernateImpl" id="chequeDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean> 
+   
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.ChequeConciliadoDaoHibernateImpl" id="chequeConciliadoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.ChequeEstadoDaoHibernateImpl" id="chequeEstadoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.ChequeHistorialDaoHibernateImpl" id="chequeHistorialDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean> 
+  
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.ChequeLugarDaoHibernateImpl" id="chequeLugarDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.DetalleExtractoDaoHibernateImpl" id="detalleExtractoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean> 
+  
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.ExtractoBancarioDaoHibernateImpl" id="extractoBancarioDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+  
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.LugarDaoHibernateImpl" id="lugarDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.LoteInterbankDaoHibernateImpl" id="loteInterbankDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean> 
+  
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.EstadoInterbankDaoHibernateImpl" id="estadoInterbankDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean> 
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.MovimientoDaoHibernateImpl" id="movimientoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+  
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.MovimientoMPDaoHibernateImpl" id="movimientoMPDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.general.dao.impl.ConceptoGenDaoHibernateImpl" id="conceptoGenDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.general.dao.impl.FormaPagoDaoHibernateImpl" id="formaPagoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.RegistroUploadDaoHibernateImpl" id="registroUploadDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>  
+
+ <bean
+  class="com.bizitglobal.tarjetafiel.operador.dao.impl.OperadorDaoHibernateImpl" id="operadorDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.general.dao.impl.ParametroSistemaDaoHibernateImpl" id="parametroSistemaDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.AcreditacionFondoDaoHibernateImpl" id="acreditacionFondoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+
+<bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.AcreditacionFondoDetalleDaoHibernateImpl" id="acreditacionFondoDetalleDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.ExtractoBancarioTipoMovimientoDaoHibernateImpl" id="extractoBancarioTipoMovimientoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.MovimientoConciliableDaoHibernateImpl" id="movimientoConciliableDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.ConciliacionFondoDaoHibernateImpl" id="conciliacionFondoDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.dao.impl.ConciliacionFondoCabeceraDaoHibernateImpl" id="conciliacionFondoCabeceraDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+  
+ <!-- ================================================================================================== 
+ =========================      DEFINICION DE PARAMETROSISTEMA SERVICE       =========================== 
+ =================================================================================================== -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.general.service.impl.ParametroSistemaServiceImpl" id="parametroSistemaServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="parametroSistemaDao" ref="parametroSistemaDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="parametroSistemaService1">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.general.service.ParametroSistemaService</value>
+  </property>
+  <property name="target">
+   <ref bean="parametroSistemaServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- ===============================================================================================
+ ===============================  DEFINICION DE CAJA SERVICE  =======================================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.CajaServiceImpl" id="cajaServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="cajaDao" ref="cajaDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="cajaService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.CajaService</value>
+  </property>
+  <property name="target">
+   <ref bean="cajaServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE FORMAS PAGO VALOR SERVICE  ========================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.FormaPagoValorServiceImpl" id="formaPagoValorServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="formaPagoValorDao" ref="formaPagoValorDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="formaPagoValorService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.FormaPagoValorService</value>
+  </property>
+  <property name="target">
+   <ref bean="formaPagoValorServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE ASIENTO SERVICE  ==================================== 
+ ================================================================================================ -->
+ <bean 
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.AsientoFondosServiceImpl" id="asientoFondosServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="asientoFondosDao" ref="asientoFondosDao"/>
+  <property name="conceptoGenDao" ref="conceptoGenDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="asientoFondosService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.AsientoFondosService</value>
+  </property>
+  <property name="target">
+   <ref bean="asientoFondosServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE ASIENTO ITEM SERVICE  =============================== 
+ ================================================================================================ -->
+ <bean 
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.AsientoItemServiceImpl" id="asientoItemServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="asientoItemDao" ref="asientoItemDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="asientoItemService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.AsientoItemService</value>
+  </property>
+  <property name="target">
+   <ref bean="asientoItemServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE BANCO PROPIO SERVICE  ===============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.BancoPropioServiceImpl" id="bancoPropioServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="bancoPropioDao" ref="bancoPropioDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="bancoPropioService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.BancoPropioService</value>
+  </property>
+  <property name="target">
+   <ref bean="bancoPropioServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CHEQUERA SERVICE  ===================================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.ChequeraServiceImpl" id="chequeraServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="chequeraDao" ref="chequeraDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="chequeraService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.ChequeraService</value>
+  </property>
+  <property name="target">
+   <ref bean="chequeraServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CAJA APERTURA SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.CajaAperturaServiceImpl" id="cajaAperturaServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="transactionManagerSpring" ref="myTxManagerSpring"/>
+  <property name="cajaAperturaDao" ref="cajaAperturaDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="cajaAperturaService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.CajaAperturaService</value>
+  </property>
+  <property name="target">
+   <ref bean="cajaAperturaServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CAJA ARQUEO SERVICE  ================================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.CajaArqueoServiceImpl" id="cajaArqueoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="cajaArqueoDao" ref="cajaArqueoDao"/>
+  <property name="cajaCierreDao" ref="cajaCierreDao"/>  
+  <property name="asientoItemDao" ref="asientoItemDao"/>
+  <property name="movimientoMPDao" ref="movimientoMPDao"/>
+  <property name="movimientoDao" ref="movimientoDao"/>
+  <property name="cajaAperturaDao" ref="cajaAperturaDao"/>
+  <property name="conceptoGenDao" ref="conceptoGenDao"/>
+  <property name="parametroSistemaService1" ref="parametroSistemaService1"/>  
+</bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="cajaArqueoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.CajaArqueoService</value>
+  </property>
+  <property name="target">
+   <ref bean="cajaArqueoServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CAJA CIERRE SERVICE  ================================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.CajaCierreServiceImpl" id="cajaCierreServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="cajaCierreDao" ref="cajaCierreDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="cajaCierreService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.CajaCierreService</value>
+  </property>
+  <property name="target">
+   <ref bean="cajaCierreServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CAJA MP SERVICE  ====================================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.CajaMPServiceImpl" id="cajaMPServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="cajaMPDao" ref="cajaMPDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="cajaMPService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.CajaMPService</value>
+  </property>
+  <property name="target">
+   <ref bean="cajaMPServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CHEQUE SERVICE  =====================================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.ChequeServiceImpl" id="chequeServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="chequeDao" ref="chequeDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="chequeService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.ChequeService</value>
+  </property>
+  <property name="target">
+   <ref bean="chequeServiceTarget"/>
+  </property>
+ </bean>
+   
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CHEQUE CONCILIADO SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.ChequeConciliadoServiceImpl" id="chequeConciliadoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="chequeConciliadoDao" ref="chequeConciliadoDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="chequeConciliadoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.ChequeConciliadoService</value>
+  </property>
+  <property name="target">
+   <ref bean="chequeConciliadoServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CHEQUE ESTADO SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.ChequeEstadoServiceImpl" id="chequeEstadoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="chequeEstadoDao" ref="chequeEstadoDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="chequeEstadoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.ChequeEstadoService</value>
+  </property>
+  <property name="target">
+   <ref bean="chequeEstadoServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CHEQUE HISTORIAL SERVICE  ===========================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.ChequeHistorialServiceImpl" id="chequeHistorialServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="chequeHistorialDao" ref="chequeHistorialDao"/>
+  <property name="chequeEstadoDao" ref="chequeEstadoDao"/>
+  <property name="operadorDao" ref="operadorDao"/>
+  <property name="asientoFondosDao" ref="asientoFondosDao"/>
+  <property name="conceptoGenDao" ref="conceptoGenDao"/>
+  <property name="formaPagoDao" ref="formaPagoDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="chequeHistorialService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.ChequeHistorialService</value>
+  </property>
+  <property name="target">
+   <ref bean="chequeHistorialServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CHEQUE LUGAR SERVICE  ===============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.ChequeLugarServiceImpl" id="chequeLugarServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="chequeLugarDao" ref="chequeLugarDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="chequeLugarService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.ChequeLugarService</value>
+  </property>
+  <property name="target">
+   <ref bean="chequeLugarServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE DETALLE EXTRACTO SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.DetalleExtractoServiceImpl" id="detalleExtractoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="detalleExtractoDao" ref="detalleExtractoDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="detalleExtractoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.DetalleExtractoService</value>
+  </property>
+  <property name="target">
+   <ref bean="detalleExtractoServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE EXTRACTO BANCARIO SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.ExtractoBancarioServiceImpl" id="extractoBancarioServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="extractoBancarioDao" ref="extractoBancarioDao"/>
+  <property name="bancoPropioDao" ref="bancoPropioDao"/>
+  <property name="detalleExtractoDao" ref="detalleExtractoDao"/>
+  
+  <property name="chequeHistorialDao" ref="chequeHistorialDao"/>
+  <property name="conciliacionFondoCabeceraDao" ref="conciliacionFondoCabeceraDao"/>
+  <property name="extractoBancarioTipoMovimientoDao" ref="extractoBancarioTipoMovimientoDao"/>
+  
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="extractoBancarioService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.ExtractoBancarioService</value>
+  </property>
+  <property name="target">
+   <ref bean="extractoBancarioServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE LUGAR SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.LugarServiceImpl" id="lugarServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="lugarDao" ref="lugarDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="lugarService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.LugarService</value>
+  </property>
+  <property name="target">
+   <ref bean="lugarServiceTarget"/>
+  </property>
+ </bean>
+  
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE LOTE INTERBANK SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.LoteInterbankServiceImpl" id="loteInterbankServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="loteInterbankDao" ref="loteInterbankDao"/>
+  <property name="bancoPropioDao" ref="bancoPropioDao"/>
+  <property name="operadorDao" ref="operadorDao"></property>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="loteInterbankService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.LoteInterbankService</value>
+  </property>
+  <property name="target">
+   <ref bean="loteInterbankServiceTarget"/>
+  </property>
+ </bean>
+    
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE MOVIMIENTO SERVICE  ================================= 
+ ================================================================================================ -->
+ <bean 
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.MovimientoServiceImpl" id="movimientoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="movimientoDao" ref="movimientoDao"/>
+  <property name="asientoItemDao" ref="asientoItemDao"/>
+  <property name="movimientoMPDao" ref="movimientoMPDao"/>    
+  <property name="conceptoGenDao" ref="conceptoGenDao"/>
+  <property name="lugarDao" ref="lugarDao"/>
+  <property name="chequeLugarDao" ref="chequeLugarDao"/>
+  <!-- <property name="chequeHistorialDao" ref="chequeHistorialDao"/> -->
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="movimientoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.MovimientoService</value>
+  </property>
+  <property name="target">
+   <ref bean="movimientoServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- ================================================================================================ 
+ ===============================  DEFINICION DE MOVIMIENTO MP SERVICE  =============================== 
+ ================================================================================================ -->
+ <bean 
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.MovimientoMPServiceImpl" id="movimientoMPServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="movimientoMPDao" ref="movimientoMPDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="movimientoMPService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.MovimientoMPService</value>
+  </property>
+  <property name="target">
+   <ref bean="movimientoMPServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE REGISTRO UPLOAD SERVICE  ============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.RegistroUploadServiceImpl" id="registroUploadServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="registroUploadDao" ref="registroUploadDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="registroUploadService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.RegistroUploadService</value>
+  </property>
+  <property name="target">
+   <ref bean="registroUploadServiceTarget"/>
+  </property>
+ </bean>
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE LIBRO MAYOR SERVICE            ======================= 
+ ======================================================================================================== -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.LibroMayorFondosServiceImpl" id="libroMayorFondosServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+<property name="libroMayorFondosDao" ref="libroMayorFondosDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="libroMayorFondosService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.LibroMayorFondosService</value>
+  </property>
+  <property name="target">
+   <ref bean="libroMayorFondosServiceTarget"/>
+  </property>
+ </bean> 
+ 
+ 
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE ACREDITACIONES SERVICE            ======================= 
+ ======================================================================================================== -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.AcreditacionFondoServiceImpl" id="acreditacionFondoServiceTarget">
+  	<property name="transactionManager" ref="myTxManager"/>
+	<property name="acreditacionFondoDao" ref="acreditacionFondoDao"/>
+	<property name="chequeDao" ref="chequeDao"/>
+	
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="acreditacionFondoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.AcreditacionFondoService</value>
+  </property>
+  <property name="target">
+   <ref bean="acreditacionFondoServiceTarget"/>
+  </property>
+ </bean> 
+ 
+ <!-- ======================================================================================================== 
+ =======================           DEFINICION DE ACREDITACION DETALLE SERVICE            ======================= 
+ ======================================================================================================== -->
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.AcreditacionFondoDetalleServiceImpl" id="acreditacionFondoDetalleServiceTarget">
+  	<property name="transactionManager" ref="myTxManager"/>
+	<property name="acreditacionFondoDetalleDao" ref="acreditacionFondoDetalleDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="acreditacionFondoDetalleService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.AcreditacionFondoDetalleService</value>
+  </property>
+  <property name="target">
+   <ref bean="acreditacionFondoDetalleServiceTarget"/>
+  </property>
+ </bean> 
+ 
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE EXTRACTO BANCARIO TIPO MOVIMIENTO SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.ExtractoBancarioTipoMovimientoServiceImpl" id="extractoBancarioTipoMovimientoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="extractoBancarioTipoMovimientoDao" ref="extractoBancarioTipoMovimientoDao"/>
+  
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="extractoBancarioTipoMovimientoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.ExtractoBancarioTipoMovimientoService</value>
+  </property>
+  <property name="target">
+   <ref bean="extractoBancarioTipoMovimientoServiceTarget"/>
+  </property>
+ </bean>
+
+<!-- =============================================================================================== 
+ ===============================  DEFINICION DE MOVIMIENTO CONCILIABLE SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.MovimientoConciliableServiceImpl" id="movimientoConciliableServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="movimientoConciliableDao" ref="movimientoConciliableDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="movimientoConciliableService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.MovimientoConciliableService</value>
+  </property>
+  <property name="target">
+   <ref bean="movimientoConciliableServiceTarget"/>
+  </property>
+ </bean>
+
+<!-- =============================================================================================== 
+ ===============================  DEFINICION DE CONCILIACION FONDO SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.ConciliacionFondoServiceImpl" id="conciliacionFondoServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="conciliacionFondoDao" ref="conciliacionFondoDao"/>
+  <property name="detalleExtractoDao" ref="detalleExtractoDao"/>
+  <property name="movimientoConciliableDao" ref="movimientoConciliableDao"/>
+  <property name="conciliacionFondoCabeceraDao" ref="conciliacionFondoCabeceraDao"/>
+  <property name="chequeHistorialDao" ref="chequeHistorialDao"/>
+  <property name="chequeDao" ref="chequeDao"/>
+<!--@I3918-->  <property name="operadorDao" ref="operadorDao"/>
+<!--@F3918-->  
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="conciliacionFondoService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.ConciliacionFondoService</value>
+  </property>
+  <property name="target">
+   <ref bean="conciliacionFondoServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- =============================================================================================== 
+ ===============================  DEFINICION DE CONCILIACION FONDO SERVICE  ==============================
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.fondos.service.impl.ConciliacionFondoCabeceraServiceImpl" id="conciliacionFondoCabeceraServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="conciliacionFondoCabeceraDao" ref="conciliacionFondoCabeceraDao"/>
+  <property name="detalleExtractoDao" ref="detalleExtractoDao"/>
+  <property name="movimientoConciliableDao" ref="movimientoConciliableDao"/>
+  <property name="chequeHistorialDao" ref="chequeHistorialDao"/>
+  <property name="conciliacionFondoDao" ref="conciliacionFondoDao"/>
+  <property name="chequeDao" ref="chequeDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="conciliacionFondoCabeceraService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.fondos.service.ConciliacionFondoCabeceraService</value>
+  </property>
+  <property name="target">
+   <ref bean="conciliacionFondoCabeceraServiceTarget"/>
+  </property>
+ </bean>
+ 
+ </beans>
+ 
+ 

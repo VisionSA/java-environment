@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.RegistroUpload" table="T_VIS_FON_REGISTRO_UPLOAD" >
+	<id name="idRegistroUpload" type="java.lang.Long" column="C_ID_REGISTRO_UPLOAD">
+		<generator class="increment" />
+	</id>
+	
+	<property name="registro" type="java.lang.String" column="C_REGISTRO" not-null="true" length="240"/>
+	<property name="orden" type="java.lang.Integer" column="C_ORDEN" not-null="true"/>
+	
+	<many-to-one name="loteInterbank" class="com.bizitglobal.tarjetafiel.fondos.negocio.LoteInterbank" not-null="true" >
+		<column name="C_ID_LOTE_INTERBANK" />
+	</many-to-one>
+	<many-to-one name="cheque" class="com.bizitglobal.tarjetafiel.fondos.negocio.Cheque" not-null="true" >
+		<column name="C_ID_CHEQUE" />
+	</many-to-one>
+</class>
+</hibernate-mapping>

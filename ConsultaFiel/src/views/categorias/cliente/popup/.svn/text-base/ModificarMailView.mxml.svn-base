@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ESCAPE) removePopUp()"  creationComplete="init()" layout="vertical" showCloseButton="true" close="PopUpManager.removePopUp(this)" horizontalAlign="left" xmlns:mate="http://mate.asfusion.com/" xmlns:ns1="com.util.paginacion.*" width="550" height="250" title=" E-MAIL">
+	<mx:EmailValidator id="mailValidator" source="{txtEmail}" property="text" required="true" invalidCharError="Caracter incorrecto" invalidDomainError="Formato de mail incorrecto"
+					   invalidIPDomainError="Formato de mail incorrecto" invalidPeriodsInDomainError="Formato de mail incorrecto" missingAtSignError="Formato de mail incorrecto"
+					   missingPeriodInDomainError="Formato de mail incorrecto" missingUsernameError="Formato de mail incorrecto"/>
+	<mx:VBox paddingTop="0" height="100%" width="100%">
+		<mx:HBox  paddingRight="0" paddingLeft="0" height="100%" width="100%" horizontalAlign="left" verticalAlign="top" >
+			<mx:Form width="100%" height="100%"  paddingBottom="0" verticalGap="0">
+				<mx:FormItem label="Apellido y Nombre: " styleName="tituloBusquedas" width="100%">
+					<mx:Label id="txtEmailModificar"  text="{apellidoNombre}" styleName="lblInfo"/>					
+				</mx:FormItem>
+				<mx:FormItem label="e-mail: " styleName="tituloBusquedas" width="100%">
+					<mx:Label id="txtEmailExiste"  text="{email.email}" styleName="lblInfo"/>					
+				</mx:FormItem>
+				<mx:FormItem label="Fec. Alta: " styleName="tituloBusquedas" width="100%">
+					<mx:Label id="txtEmailFecha"  text="{dateFormatter.format(email.fechaAlta)}" styleName="lblInfo"/>					
+				</mx:FormItem>
+				<mx:FormItem label="Operador: " styleName="tituloBusquedas" width="100%">
+					<mx:Label id="txtEmailOperador"  text="{email.operador.apellido + ', '+ email.operador.nombre  }" styleName="lblInfo"/>					
+				</mx:FormItem>
+				
+				<mx:FormItem label="e-mail nuevo: " styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtEmail" maxChars="50" errorString="" styleName="lblInfo"/>
+				</mx:FormItem>
+				<!--<mx:FormItem label="DESCRIPCION: " styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtDescrip" maxChars="10"/>
+				</mx:FormItem>-->
+			</mx:Form>
+		</mx:HBox>
+	</mx:VBox>
+	<mx:VBox width="100%" paddingTop="10">
+		<mx:HBox width="100%" horizontalAlign="center">	
+			<mx:Button label="Modificar" width="90" click="guardar()"/>
+			<mx:Button label="Eliminar" width="90" click="eliminarMail(email,idIndividuo)"/>
+			<mx:Button label="Salir" width="90" click="removePopUp()"/>
+		</mx:HBox>
+	</mx:VBox>
+		
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.tarjetafiel.caja.vo.Email;
+			import com.util.components.alert.AlertOk;
+			import com.util.paginacion.PaginacionEvent;
+			
+			import managers.ClienteManager;
+			import mx.events.CloseEvent;
+			
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			import mx.validators.ValidationResult;
+			import com.util.components.alert.AlertOk;
+			import com.util.components.alert.AlertYesNo;
+			
+			import views.categorias.cliente.models.GeneralClienteModel;
+			
+			[Bindable]public var generalClienteModel:GeneralClienteModel;
+			
+			[Bindable]public var idIndividuo:Number;
+			
+			[Bindable]public var apellidoNombre:String;
+			
+			[Bindable]public var email:Email;
+						
+		    private function init():void {
+				this.txtEmail.setFocus();
+			}
+			
+			public function removePopUp():void{
+				//popUpVisible = false;
+				cleanData();
+				PopUpManager.removePopUp(this);
+			}
+			
+			/**
+			 * @id 35
+			 * permite  eliminar  email a la lista
+			 * */
+			public function eliminarMail(email:Email,id:Number):void{
+				AlertYesNo.show("¿Confirma eliminar email ?",function (evt:CloseEvent):void{
+					if(evt.detail == Alert.YES){
+						eliminarMail1(email,id);	
+					}
+				});												
+			}
+			
+			
+			public function eliminarMail1(data:Email,id:Number):void{ 
+				var mail:Email = data as Email;
+				 this.generalClienteModel.eliminarMail(mail.idEmail,id);
+				 this.removePopUp();
+				
+			}
+			
+			
+			public function guardar():void {
+				//controlo el campo txtEmail
+				var valido:ValidationResultEvent = mailValidator.validate(txtEmail.text);
+				if (valido.type==ValidationResultEvent.VALID)
+				{
+					
+					//creo el objeto mail para guardar
+					var mail:Email = new Email();
+					mail.email=this.txtEmail.text;
+					/* mail.descripcion=this.txtDescrip.text; */
+					/* mail.operador = Application.application.parameters.codigoOperador; */
+					
+					
+					//Alert.show("email.idEmail " + email.idEmail);
+					generalClienteModel.modificarMail(email.idEmail,mail,idIndividuo);
+					this.removePopUp();
+				}
+			}
+		
+			private function cleanData():void {
+				//creo el objeto mail para guardar
+				this.txtEmail.text = "";
+				/* this.txtDescrip.text = ""; */
+				this.txtEmail.errorString="";
+			}
+			
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

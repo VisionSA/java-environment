@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"  
+				creationComplete="init()" layout="vertical" 
+				showCloseButton="true" close="PopUpManager.removePopUp(this)" 
+				horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/" 
+				xmlns:ns1="com.util.paginacion.*" 
+				height="160" title="Asignar Gestión" width="400" 
+				resizeEffect="{resize}" verticalScrollPolicy="off" 
+				initialize="init()"  
+				keyDown="pressKey(event)" 
+				horizontalScrollPolicy="off"
+				>
+	
+	<mx:VBox paddingTop="10" height="100%" width="100%">
+		
+		<mx:HBox paddingRight="10" paddingLeft="10" height="100%" width="100%">
+			<mx:Label text="Operador:" styleName="tituloBusquedas" width="80" textAlign="right" paddingTop="2"/>
+			<mx:ComboBox id="cmbOperador" selectedIndex="0"
+						 dataProvider="{listaOperadores}" 
+						 change="cambioIndexOperador(event)" width="180"/>
+		</mx:HBox>
+		<mx:HBox paddingRight="10" paddingLeft="10" paddingTop="5" height="100%" width="100%">
+			<mx:Label text="Nro Cliente:" styleName="tituloBusquedas" width="80" textAlign="right" paddingTop="5"/>
+			<mx:TextInput id="txtIdCliente" maxChars="50" width="80"  restrict="0-9" change="txtIdCliente_changeHandler(event)"/>
+			<mx:Label styleName="tituloBusquedas" width="100%" text="{manager.nombreCliente}"/>
+		</mx:HBox>
+
+	</mx:VBox>
+	
+	
+	<mx:VBox width="100%" paddingTop="10" >
+		<mx:HBox width="100%" horizontalAlign="right" paddingRight="10">	
+			<mx:Button label="Asignar" width="90" click="guardar()"  visible="{((manager.nombreCliente  != '')?true:false) }"/>
+			<mx:Button label="Cancelar" width="90" click="PopUpManager.removePopUp(this)" />
+		</mx:HBox>
+		<mx:Label height="10"/>
+	</mx:VBox>
+	
+	
+	<mx:Resize id="resize"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.GestionCliente;
+			import com.tarjetafiel.caja.vo.GestionClienteLog;
+			import com.util.components.alert.AlertOk;
+			
+			import modules.principal.Manager;
+			
+			import mx.controls.Alert;
+			import mx.effects.Resize;
+			import mx.events.CloseEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ListEvent;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]public var manager:Manager;
+			
+			private var listaOperadores:Array = new Array("Gimenez Aaron","Mayer Franco","Juan Manuel Lage","Oficina","Descartar");
+			
+		    private function init():void {
+
+			}
+			
+			public function initCombo():void {
+				
+			}
+			
+			protected function cambioIndexOperador(event:Event):void
+			{
+				
+			}
+			
+			public function cleanData():void {
+				
+			}
+			
+			public function guardar():void {
+				
+				var gestionClienteLog:GestionClienteLog = new GestionClienteLog();
+				gestionClienteLog.idGestion = 0;
+				gestionClienteLog.idEstadoGestion = 1;
+				gestionClienteLog.idOperador = manager.operador.codigo;
+					
+				var gestionCliente:GestionCliente = new GestionCliente();
+				gestionCliente.idCliente = Number(this.txtIdCliente.text);
+				gestionCliente.idTipoGestion = 1;
+				switch(this.cmbOperador.selectedIndex){
+					case 0:
+						gestionCliente.idOperador = 1267; //Gimenez Aaron
+						break;
+					case 1:
+						gestionCliente.idOperador = 1270; //Mayer Franco
+						break;
+					case 2:
+						gestionCliente.idOperador = 1272; //Juan Manuel Lage
+						break;
+					case 3:
+						gestionCliente.idOperador = 1256; //Sistemas
+						break;
+					case 4:
+						gestionCliente.idOperador = 0; //Descartar
+						break
+				}
+				
+				manager.guardarGestionCliente(gestionCliente,gestionClienteLog);
+				manager.buscarGestionVigente();
+				manager.buscarGestionVencida();
+				PopUpManager.removePopUp(this);
+
+			}
+			
+			public function buscarCliente():void{
+				var idCliente:Number = Number(this.txtIdCliente.text);
+				manager.buscarNombreCliente(idCliente);
+			}
+			
+			private function pressKey(event:KeyboardEvent):void{
+				if(event.keyCode == Keyboard.ESCAPE) { 
+					PopUpManager.removePopUp(this);
+				}
+				else{
+					if (event.keyCode == Keyboard.ENTER) {
+						if(this.txtIdCliente.text==""){
+							AlertOk.show("Complete el campo Nro Cliente");
+						}
+						else buscarCliente();
+					}
+				}
+			}
+
+
+			protected function txtIdCliente_changeHandler(event:Event):void
+			{
+				manager.nombreCliente = "";
+			}
+
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

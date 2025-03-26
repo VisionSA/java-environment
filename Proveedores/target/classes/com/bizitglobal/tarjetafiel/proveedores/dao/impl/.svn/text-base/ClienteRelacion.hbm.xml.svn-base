@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.ClienteRelacion" table="t_vis_prov_clie_relaciones"  >
+    <id name="idClienteProveedor" type="java.lang.Long" column="c_id_prov_clie_relacion">
+        <generator class="increment" />
+    </id>
+
+    <property name="idCliente" type="long" column="c_id_cliente" not-null="true" length="11"/>
+
+    <property name="observacion" type="java.lang.String" column="c_observacion" length="100"/>
+
+    <!-- Associations -->
+   <many-to-one name="proveedor"    
+                class="com.bizitglobal.tarjetafiel.proveedores.negocio.Proveedor" 
+                not-null="true" 
+                cascade="save-update">
+        <column name="c_id_proveedor" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

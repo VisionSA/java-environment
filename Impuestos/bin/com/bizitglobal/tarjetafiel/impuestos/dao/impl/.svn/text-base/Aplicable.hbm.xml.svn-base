@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.impuestos.negocio.Aplicable" table="t_vis_imp_aplicables">
+    <id name="idAplicable" type="java.lang.Long" column="c_id_aplicable">
+        <generator class="increment" />
+    </id>
+
+    <property name="descripcion" type="java.lang.String" column="c_descripcion" length="50"/>
+</class>
+
+</hibernate-mapping>

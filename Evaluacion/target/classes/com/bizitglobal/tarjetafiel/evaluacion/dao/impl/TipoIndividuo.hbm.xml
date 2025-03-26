@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.TipoIndividuo" table="t_vis_eva_tipos_individuos" >
+	<id name="idTipoIndividuo" type="java.lang.Long" column="c_id_tipo_individuo">
+		<generator class="increment" />
+	</id>
+
+	<property name="descripcion" type="java.lang.String" column="c_descripcion" not-null="false" length="50"/>
+
+	<set name="alertasTipoIndiv" inverse="false" cascade="none"  >
+		<key>
+			<column name="c_id_tipo_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.AlertaTipoIndividuo"/>
+	</set>
+	<set name="solicIndividuos" inverse="false" cascade="none"  >
+		<key>
+			<column name="c_id_tipo_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.SolicitudIndividuo"/>
+	</set>
+</class>
+</hibernate-mapping>

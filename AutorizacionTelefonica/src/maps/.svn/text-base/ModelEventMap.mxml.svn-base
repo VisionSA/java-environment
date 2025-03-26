@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import views.CodigoAutorizacionView;
+			import views.popup.MotivoNoConsumoView;
+			import views.models.BusquedaComercioViewModel;
+			import views.popup.BusquedaComercioView;
+			import views.CargaDatosView;
+			import managers.ConfirmacionConsumoManager;
+			import com.tarjetafiel.caja.business.transacciones.PosnetParser;
+			import com.tarjetafiel.caja.business.transacciones.ManagerTransactions;
+			import views.models.ConfirmacionConsumoViewModel;
+			import views.popup.ConfirmacionConsumoView;
+			import managers.SimuladorManager;
+			import views.popup.SimuladorView;
+			import views.models.SimuladorViewModel;
+			import managers.ClienteManager;
+			import views.models.ClienteViewModel;
+			import views.ClienteView;
+			import managers.ComercioManager;
+			import views.models.ComercioViewModel;
+			import views.ComercioView;
+			import com.asfusion.mate.utils.debug.Debugger;
+			import com.asfusion.mate.utils.debug.Debugger;
+			
+		]]>
+	</mx:Script>	
+	
+	<Injectors targets="{[ClienteView,CargaDatosView,MotivoNoConsumoView]}">
+		<ObjectBuilder generator="{ClienteViewModel}" >
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="clienteViewModel"/>
+	</Injectors>
+	
+	<Injectors targets="{[ClienteViewModel,SimuladorViewModel,ConfirmacionConsumoViewModel]}">		
+		<PropertyInjector targetKey="cliente" sourceKey="cliente" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{ClienteViewModel}">		
+		<PropertyInjector targetKey="titular" sourceKey="titular" source="{ClienteManager}"/>
+	</Injectors>
+	
+	
+	
+	<Injectors targets="{[SimuladorView,CargaDatosView,ConfirmacionConsumoView]}">
+		<ObjectBuilder generator="{SimuladorViewModel}" >
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="simuladorViewModel"/>
+	</Injectors>
+	
+	<Injectors targets="{[SimuladorViewModel,ConfirmacionConsumoViewModel]}">
+		<PropertyInjector targetKey="arrayCuotas" source="{SimuladorManager}" sourceKey="arrayCuotas"/>
+	</Injectors>	
+
+	
+   	<Injectors target="{SimuladorViewModel}">		
+		<PropertyInjector targetKey="listaPrecioSelected" sourceKey="listaPrecioSelected" source="{ComercioViewModel}"/>
+	</Injectors>
+	
+	
+	
+	<Injectors target="{SimuladorViewModel}">		
+		<PropertyInjector targetKey="disponible" sourceKey="disponible" source="{ClienteViewModel}"/>
+	</Injectors>
+
+
+	
+	<Injectors targets="{[ComercioView, CargaDatosView]}">
+		<ObjectBuilder generator="{ComercioViewModel}" >
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="comercioViewModel"/>
+	</Injectors>
+	
+	
+	 <Injectors target="{BusquedaComercioView}">
+		<ObjectBuilder generator="{BusquedaComercioViewModel}" >
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="busquedaComercioViewModel"/>
+	</Injectors>
+
+	
+
+  	<Injectors target="{BusquedaComercioViewModel}">		
+		<PropertyInjector targetKey="comercios" sourceKey="comercios" source="{ComercioManager}"/>
+	</Injectors>
+	
+	
+	<Injectors targets="{[ComercioViewModel,ConfirmacionConsumoViewModel]}">		
+		<PropertyInjector targetKey="comercio" sourceKey="comercio" source="{ComercioManager}"/>
+	</Injectors> 
+	
+	
+	<Injectors target="{ComercioViewModel}">
+		<PropertyInjector sourceKey="cliente" source="{ClienteManager}" targetKey="cliente"/>
+	</Injectors>
+	
+	<Injectors target="{ComercioViewModel}">		
+		<PropertyInjector targetKey="comercioSeleccionado" sourceKey="comercioSeleccionado" source="{BusquedaComercioViewModel}"/>
+	</Injectors>
+	
+<!--ConfirmacionConsumo -->	
+	<Injectors target="{ConfirmacionConsumoView}">
+		<ObjectBuilder generator="{ConfirmacionConsumoViewModel}" >
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="confirmacionConsumoViewModel"/>
+	</Injectors>
+	
+	<Injectors target="{ConfirmacionConsumoViewModel}">		
+		<PropertyInjector targetKey="nroPlastico" sourceKey="nroPlastico" source="{ClienteViewModel}"/>		
+	</Injectors>
+	
+	<Injectors target="{ConfirmacionConsumoViewModel}">		
+		<PropertyInjector targetKey="nroCupon" sourceKey="nroCupon" source="{ComercioViewModel}"/>		
+	</Injectors>
+	
+	
+	<Injectors target="{ConfirmacionConsumoManager}">
+		<ObjectBuilder generator="{ManagerTransactions}" />
+		<PropertyInjector source="{lastReturn}" targetKey="managerTransaction"/>
+		<ObjectBuilder generator="{PosnetParser}" />
+		<PropertyInjector source="{lastReturn}" targetKey="posnetParser"/>
+	</Injectors>
+	
+	<Injectors target="{CodigoAutorizacionView}">
+		<PropertyInjector source="{ConfirmacionConsumoManager}" sourceKey="mensaje" targetKey="mensaje"/>
+		<PropertyInjector source="{ConfirmacionConsumoManager}" sourceKey="codigo" targetKey="codAutorizacion"/>
+		<PropertyInjector source="{ConfirmacionConsumoManager}" sourceKey="color" targetKey="color"/>
+		<PropertyInjector source="{scope.dispatcher}" targetKey="dispatcher"/>
+	</Injectors>
+	
+	<Injectors target="{ConfirmacionConsumoViewModel}">
+		<PropertyInjector source="{SimuladorViewModel}" sourceKey="importeCuota" targetKey="importeCuota"/>
+	</Injectors>
+	
+</EventMap>

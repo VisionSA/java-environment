@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" keyUp="keyPress(event)" verticalAlign="middle"
+	horizontalAlign="center" creationComplete="this.complete()" width="100%" height="100%" 
+	xmlns:flexmdi="http://flexmdi.googlecode.com/" xmlns:busquedaClientes="com.tarjetafiel.caja.view.busquedaClientes.*" 
+	xmlns:business="com.tarjetafiel.caja.business.*" xmlns:control="com.tarjetafiel.caja.control.*" 
+	xmlns:view="com.tarjetafiel.caja.view.*" horizontalGap="0" verticalGap="0" xmlns:clientes="com.tarjetafiel.caja.view.clientes.*">
+		
+	<mx:VBox id="contGlobal" width="100%" height="100%" verticalAlign="top" horizontalAlign="center" >
+		<mx:VBox height="100%" resizeEffect="{resizeHead}" id="containerHead" width="100%" horizontalAlign="center" verticalGap="0">									
+			<mx:MenuBar id="menuPrincipal" itemClick="this.navegacionModel.clickMenu(event)" width="100%" showRoot="false" height="25" dataProvider="{Application.application.xmlMenuCliente}" labelField="@label" useHandCursor="true"/>
+			<mx:HBox width="100%" height="5" styleName="subMenu"/>
+			<mx:VBox width="100%" styleName="infocaja"  verticalGap="10">																
+				<mx:HBox width="100%" height="100%" horizontalAlign="left">
+					<view:InfoCaja height="100%" horizontalAlign="left" verticalGap="0" verticalAlign="middle"/>							
+				</mx:HBox>	
+				<mx:HBox width="55%" id="hboxInfo"  horizontalGap="2">
+					<mx:HBox toolTip="Mas Datos..." height="100%" width="100%" styleName="seleccionado" click="this.verDetalleCliente()">
+						<mx:Label mouseChildren="false" buttonMode="true" useHandCursor="true"  width="100%" text="{ModelLocator.getInstance().clienteSeleccionado.clienteSelect}" styleName="lblSeleccionado"/>																		
+					</mx:HBox>		
+					<mx:LinkButton id="lnkBusquedaCliente" toolTip="Busqueda de Clientes" label="{ModelLocator.getInstance().clienteSeleccionado.labelButtonBusqueda}" click="abrirBusquedaCliente()" styleName="busqueda" color="#000000"/>									
+				</mx:HBox>
+				<clientes:DetalleCliente id="detalleCliente" height="0" visible="false" includeInLayout="false" />
+			</mx:VBox>			
+			<mx:HBox width="100%" height="5" styleName="hboxDivBusqueda"/>							
+			<clientes:BusquedaClientes height="{ModelLocator.getInstance().busquedaVisible}" resizeEffect="resizeBusqueda" id="busquedaCliente" width="100%"/>								
+			<mx:HBox width="100%" height="5" styleName="hboxDivBusqueda"/>
+			<mx:VBox width="100%" height="100%" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5">
+				<mx:HBox width="100%" horizontalAlign="left">
+				<mx:ToggleButtonBar dataProvider="viewStack"/>	
+				</mx:HBox>			
+				<mx:HRule width="100%"/>
+				<mx:ViewStack width="100%" height="100%" id="viewStack" >
+					<clientes:ConsultaLiquidacionesClienteView/>
+					<clientes:AdelantoEfectivoView/>
+				</mx:ViewStack>	
+			</mx:VBox>
+			
+			<!--flexmdi:MDICanvas verticalScrollPolicy="off" horizontalScrollPolicy="off" 
+				maxWidth="{this.contGlobal.width}" id="mdiCanvas" width="100%" height="100%">
+			
+			</flexmdi:MDICanvas-->					
+		</mx:VBox>			
+	</mx:VBox>
+	
+	<!-- Effect de inicio -->	
+	
+	<mx:Resize id="resizeHead" duration="2000" />
+	<mx:Resize id="resizeBusqueda" duration="350" />
+	<mx:Fade id="fadeOut" alphaFrom="1.0" alphaTo="0.0" duration="350" target="{this.busquedaCliente}"/>
+	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0" duration="350" target="{this.busquedaCliente}"/>
+	
+	<mx:states>
+		<mx:State name="info">			
+			<mx:SetProperty name="visible" target="{detalleCliente}" value="true"/>
+			<mx:SetProperty name="includeInLayout" target="{detalleCliente}" value="true"/>
+			<mx:SetProperty name="height" target="{detalleCliente}" value="100%"/>
+		</mx:State>
+		<mx:State name="noInfo">			
+			<mx:SetProperty name="visible" target="{detalleCliente}" value="false"/>
+			<mx:SetProperty name="includeInLayout" target="{detalleCliente}" value="false"/>
+			<mx:SetProperty name="height" target="{detalleCliente}" value="0"/>
+		</mx:State>
+	</mx:states>
+	
+	<!--mx:transitions>
+		<mx:Transition fromState="info" toState="noInfo" >
+			  <mx:Parallel target="{detalleCliente}">
+                <mx:Resize duration="500" />
+                <mx:Sequence target="{detalleCliente}">
+	                <mx:Blur duration="200" blurYFrom="1.0" blurYTo="20.0" />            
+                    <mx:Blur duration="200" blurYFrom="20.0" blurYTo="1" />            
+                </mx:Sequence>
+            </mx:Parallel>
+		</mx:Transition>
+		<mx:Transition fromState="noInfo" toState="info" >
+			 <mx:Parallel target="{detalleCliente}">
+                <mx:Resize duration="500" />               
+                <mx:Sequence target="{detalleCliente}">
+
+                    <mx:Blur duration="200" blurYFrom="1.0" blurYTo="20.0" />            
+                    <mx:Blur duration="200" blurYFrom="20.0" blurYTo="1" />            
+                </mx:Sequence>
+            </mx:Parallel>
+		</mx:Transition>
+	</mx:transitions-->
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import com.tarjetafiel.caja.model.NavegacionModel;
+			import com.util.modules.TitleWindowCustom;
+			import com.util.modules.ManagerModules;
+			import mx.managers.CursorManager;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import com.tarjetafiel.caja.event.BancoEvent;
+			//import mx.automation.delegates.controls.MenuBarItemAutomationImpl;
+			import mx.controls.menuClasses.MenuBarItem;
+			import flexmdi.effects.effectsLib.MDIVistaEffects;			
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import mx.events.MenuEvent;
+			import mx.events.EffectEvent;					
+			
+			[Bindable]private var navegacionModel:NavegacionModel = ModelLocator.getInstance().navegacionModel;
+			
+			private function verDetalleCliente():void{
+				if(currentState == "noInfo"){
+					currentState = "info";
+				} else {
+					currentState = "noInfo";
+				}
+			}
+			
+			private function complete():void{								
+				this.setFocus();	
+				this.containerHead.percentHeight = 100;	
+				currentState = "noInfo";				
+			}			
+			
+			public function abrirBusquedaCliente():void {
+				this.busquedaCliente.limpiarBusqueda();
+				if(this.busquedaCliente.height == 0) {
+					ModelLocator.getInstance().clienteSeleccionado.labelButtonBusqueda = "Cerrar";
+					//this.fadeIn.play();
+					ModelLocator.getInstance().busquedaClientesVisible();
+				} else {
+					ModelLocator.getInstance().clienteSeleccionado.labelButtonBusqueda = "Buscar";
+					//this.fadeOut.play();
+					ModelLocator.getInstance().busquedaClientesNoVisible();					
+				}
+				
+				
+			}
+			
+			private function keyPress(evt:KeyboardEvent):void {
+				
+				if (evt.keyCode == Keyboard.F8){
+					if(busquedaCliente.height == 0){
+						ModelLocator.getInstance().clienteSeleccionado.labelButtonBusqueda = "Cerrar";
+						ModelLocator.getInstance().busquedaClientesVisible();
+					} else {
+						ModelLocator.getInstance().clienteSeleccionado.labelButtonBusqueda = "Buscar";
+						ModelLocator.getInstance().busquedaClientesNoVisible();
+					}															
+				} else if(evt.ctrlKey && String.fromCharCode(evt.charCode).toUpperCase() == "M"){					
+					MenuBarItem(this.menuPrincipal.menuBarItems[0]).setFocus();
+				}
+										
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

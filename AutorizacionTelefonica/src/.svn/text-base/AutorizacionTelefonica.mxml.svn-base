@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns:maps="maps.*" xmlns:views="views.*">
+	
+	<mx:Style source="newStyle.css"/>
+	
+	<maps:MainEventMap/>
+	
+	<maps:ModelEventMap/>
+	
+	<views:MainView left="0" right="0" bottom="0" top="0" horizontalAlign="center" verticalAlign="middle" verticalGap="6"/>
+
+</mx:Application>

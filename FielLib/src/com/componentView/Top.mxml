@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" alpha="1.0" height="82" styleName="top" width="100%">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			
+			import utils.ManejadorIconos3;
+		]]>
+	</mx:Script>
+	
+<!--@I3918-->	<mx:HBox width="203"  height="100%" horizontalAlign="left" paddingLeft="3" paddingBottom="3" paddingRight="3">
+		<mx:Image id="imgLogo" source="{ManejadorIconos3.LOGO_FIEL(imgLogo, Application.application.url)}" height="100%"/>
+<!--@F3918-->	</mx:HBox>			
+	<mx:HBox id="hBoxLink" width="100%" height="100%" styleName="topDerecha" verticalAlign="bottom" horizontalAlign="right" creationComplete="addLinks()">	
+		
+	</mx:HBox>		
+	
+	<mx:Script>
+		<![CDATA[
+			private var _arrayLinks:Array = new Array();
+						 		
+			public function set arrayLinks(target:Array):void{
+				for each(var obj:Object in target){
+					if(obj is DisplayObject){			
+						_arrayLinks.push(obj as DisplayObject);
+					}
+				}
+			}
+			
+			private function addLinks():void{
+				for each(var obj:Object in _arrayLinks){
+					hBoxLink.addChild(obj as DisplayObject);					
+				}
+			}
+		]]>
+	</mx:Script>
+	
+</mx:HBox>

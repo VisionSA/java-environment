@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml"
+	layout="vertical" width="100%" height="100%" creationComplete="init()"
+	horizontalAlign="center" xmlns:date="com.util.components.date.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.formatters.DateFormatter;
+		]]>
+	</mx:Script>
+	<mx:Script>
+		<![CDATA[
+			import mx.formatters.DateFormatter;
+		]]>
+	</mx:Script>
+	
+	<mx:Style source="assets/styles/main.css"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.utils.StringUtil;
+			import com.tarjetafiel.caja.vo.BancoPropio;
+			import business.DetalleExtracto;
+			import flash.net.navigateToURL;
+			import mx.core.Application;
+			import mx.utils.URLUtil;
+			import mx.events.DataGridEvent;
+			import mx.core.FlexSprite;
+			import mx.rpc.events.ResultEvent;
+			import business.ConciliacionFondoCabecera;
+			import mx.collections.ArrayCollection;
+			import events.ConciliacionFondoCabeceraEvent;
+			import events.ConciliacionFondoEvent;
+			import business.MovimientoConciliable;
+			import events.MovimientoConciliableEvent;
+			import flash.sampler.NewObjectSample;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.controls.DateField;
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import events.ExtractoBancarioEvent;
+			import model.ConciliacionModelLocator;
+			[Bindable]
+			private var modelo : ConciliacionModelLocator = ConciliacionModelLocator.getInstance();			
+			private var filtro:Filtro;
+		
+			
+			private function init():void {
+				modelo.listaConciliable.removeAll();
+				modelo.listaCabeceraConciliable.removeAll();
+				var filtro:Filtro = new Filtro();
+				filtro.agregarCampoOperValor("habilitado",Filtro.LIKEXS,"S");
+				new ExtractoBancarioEvent(ExtractoBancarioEvent.BUSCAR_BANCOS_PROPIOS_EVENT,filtro).dispatch();
+			}
+			
+			private function buscarNoConciliados():void {				
+				var filtro:Filtro = new Filtro();
+/*@I4239*/				filtro.agregarCampoOperValor("fechaMovimiento",Filtro.MAYOR_IGUAL,Filtro.toDate(DateField.stringToDate(fechaDesdeDt.text, "DD/MM/YYYY")));
+/*@F4239*/				filtro.agregarCampoOperValor("fechaMovimiento",Filtro.MENOR_IGUAL,Filtro.toDate(DateField.stringToDate(fechaHastaDt.text, "DD/MM/YYYY")));
+				filtro.agregarCampoOperValor("bancoPropio.idBancoPropio",Filtro.IGUAL,bancoPropioCBox.selectedItem.idBancoPropio);
+				filtro.agregarCampoOperValor("conciliado",Filtro.LIKEXS,'N');
+				new ExtractoBancarioEvent(ExtractoBancarioEvent.LEER_EXTRACTO_BANCARIO_EVENT,filtro).dispatch();			
+			}
+				
+			
+			private function getFechaConfirmacion(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaConfirmacion);
+			}
+			
+			private function getFechaGeneral(item:Object, column:DataGridColumn):String {
+				var fecha:String = "";
+				if(item.contenedor != null){
+					fecha = df.format(item.contenedor.fechaGeneral);
+				}
+				return fecha;
+			}
+			
+			private function exportarPDF():void{
+				var url:String = URLUtil.getServerNameWithPort(Application.application.loaderInfo.url);
+				var protocol:String = URLUtil.getProtocol(Application.application.loaderInfo.url);
+				var fullURL:String = protocol + "://" + url +"/Presentacion";
+				//Parameters.
+				var URLImagen:String   = "&URLImagen="+fullURL+"/img/fiel/logo_fiel.jpg";
+				var FechaHasta:String  = "&Fecha_hasta="+df.format(fechaHastaDt.selectedDate);
+				var BancoPropio:String = "&ID_BANCOPROPIO="+ String(bancoPropioCBox.selectedItem.idBancoPropio);
+					
+				//Consulta
+				var SQL:String         = "&SQL="+getSqlForReport();
+								
+				var ruta:String = fullURL+"/report/itemsExtractoNoConciliados.jrxml?";
+				ruta = ruta + SQL + URLImagen + FechaHasta + BancoPropio;
+				
+	   	    	navigateToURL(new URLRequest(ruta), "_blank");	   	    					
+			}
+			
+/*@I4239*/			/**
+			 * @Id: 4239
+			 * */
+			private function exportarExcel():void
+			{
+				var url:String 		= URLUtil.getServerNameWithPort(Application.application.loaderInfo.url);
+				var protocol:String = URLUtil.getProtocol(Application.application.loaderInfo.url);
+				var fullURL:String 	= protocol + "://" + url +"/Presentacion";
+				//Parameters.
+				var URLImagen:String   	= "&URLImagen="+fullURL+"/img/fiel/logo_fiel.jpg";
+				var FechaHasta:String  	= "&Fecha_hasta="+df.format(fechaHastaDt.selectedDate);
+				var PlanCuenta:String 	= "&ID_BANCOPROPIO="+ String(bancoPropioCBox.selectedItem.idBancoPropio);
+				var aExcel:String		= "&AExcel=excel";
+				
+				//Consulta
+				var SQL:String         = "&SQL="+getSqlForReport();
+				
+				var ruta:String = fullURL+"/report/itemsExtractoNoConciliadosExcel.jrxml?";
+				ruta = ruta + SQL + URLImagen + FechaHasta + PlanCuenta+ aExcel;
+				navigateToURL(new URLRequest(ruta), "_blank");
+			}
+/*@F4239*/			
+			private function doEvent(evt:Event):void {                
+                var fr:FileReference = evt.currentTarget as FileReference;  
+                try {
+                } catch (err:*) { 
+                }
+            }
+ 
+ 
+			public function getFechaItem(item:Object, column:DataGridColumn):String {
+				var fecha:String = "";
+				if(item.contenedor != null){
+					fecha = df.format(item.contenedor.fechaItem);
+				}
+				return fecha;
+			}
+			
+			/******* FILTRO EXTRACTO BANCARIO*****/
+			private function filterDataExtracto():void
+			{
+				if (txtImporteExtracto.text.length == 0 && txtDescripcionExtracto.text.length == 0)
+				{
+					if(modelo.listaExtracto!=null)
+					{
+						modelo.listaExtracto.filterFunction = null;
+						modelo.listaExtracto.refresh();
+					}					
+				}
+				else{				
+					modelo.listaExtracto.filterFunction = userFilterGeneralExtracto;
+					modelo.listaExtracto.refresh();					
+				}
+				
+			}
+			
+			private function userFilterGeneralExtracto(item:DetalleExtracto):Boolean
+			{
+				var matchImporte:Boolean = true;
+				var matchDescripcion:Boolean = true;
+				if(txtImporteExtracto.text.length != 0)
+				{
+					matchImporte = false;
+					matchImporte = userFilterImporteExtracto(item);
+				}
+				
+				if(txtDescripcionExtracto.text.length !=0)
+				{
+					matchDescripcion = false;
+					matchDescripcion = userFilterExtracto(item);
+				}
+				
+				return matchImporte && matchDescripcion;
+			}
+			
+			private function userFilterImporteExtracto(item:DetalleExtracto):Boolean
+            {
+				//var tmp:String;
+				var match:Boolean = false;
+				var value:String = new String();				
+				var properties:Array = new Array();
+				properties.push("importe");
+				for each(var property:String in properties)
+				{
+					value = item[property].toString().toLowerCase();
+					match = (value.indexOf(txtImporteExtracto.text.toLowerCase(), 0) > -1);
+					if (match)
+					{
+						break;
+					}
+				}	
+				return match;
+            }
+            
+            
+			private function userFilterExtracto(item:DetalleExtracto):Boolean
+            {
+				//var tmp:String;
+				var match:Boolean = false;
+				var value:String = new String();				
+				var properties:Array = new Array();
+				properties.push("descripcion");
+				for each(var property:String in properties)
+				{
+					value = item[property].toString().toLowerCase();
+					match = (value.indexOf(txtDescripcionExtracto.text.toLowerCase(), 0) > -1);
+					if (match)
+					{
+						break;
+					}
+				}				
+				return match;
+            }
+            
+            public function formatearNumero(item:Object, column:DataGridColumn):String{
+				return numberFormat.format(item.importe).toString();
+			}
+			
+			private function getFechaExtracto(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaMovimiento);
+			}
+			
+			
+			/*******FIN FILTRO EXTRACTO BANCARIO*****/
+            
+            
+            private function getFechaGeneracionCabecera(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaGeneracion);
+			}
+			
+			private function getSqlForReport():String{
+				var sql:String = "";
+/*@I4239*/				
+				sql = "SELECT C_ID_DETALLE_EXTRACTO,C_REGISTRO,C_TIPO_REGISTRO,C_FECHA_PROCESO, " + 
+					  "C_NRO_COMPROBANTE," +
+					  "replace(to_char(C_IMPORTE, '9999990.99'),'.',',') as C_IMPORTE, " +
+					  "C_NRO_CTA_CORTO,C_CONCILIADO, " + 
+					  "C_ID_EXTRACTO_BANCARIO,C_CONCEPTO,C_ID_BANCO_PROPIO,C_FECHA_MOVIMIENTO, " + 
+					  "C_FECHA_VALOR,C_SIGNO,C_CODIGO_OPERACION,C_DESCRIPCION,C_SUCURSAL_ORIGEN, " + 
+					  "C_CODIGO_DEPOSITANTE,C_NRO_CUENTA,C_COD_OPERACION_BANCO,C_FECHA_MOV_CADENA " + 
+					" FROM T_VIS_FON_DETALLE_EXTRACTO " +  
+					" WHERE C_ID_BANCO_PROPIO= " + String(bancoPropioCBox.selectedItem.idBancoPropio) +
+					" AND C_FECHA_MOVIMIENTO>= TO_DATE('"+df.format(fechaDesdeDt.selectedDate) + "','DD/MM/YYYY')" +
+					" AND C_FECHA_MOVIMIENTO<= TO_DATE('"+df.format(fechaHastaDt.selectedDate) + "','DD/MM/YYYY')" + 
+					" and C_CONCILIADO like 'N' " +
+					" ORDER BY C_FECHA_MOVIMIENTO " ;
+/*@F4239*/
+				return sql;				
+			}
+/*@I4239*/
+			public function comboLabel(item:Object):String
+			{
+				if (item != null)
+				{
+					return StringUtil.trim(BancoPropio(item).numeroCuenta) + " - " + StringUtil.trim(BancoPropio(item).banco.descripcion);
+				}
+				else
+				{
+					return "";
+				}
+			}
+/*@F4239*/			
+		]]>
+	</mx:Script>
+	<mx:DateFormatter id="df" formatString="DD/MM/YYYY"/>	
+	<mx:NumberFormatter id="numberFormat" precision="2" />
+	
+	<mx:Canvas id="canvasContenido">
+		<mx:VBox width="100%" horizontalAlign="center" paddingTop="5">
+			<mx:HBox>
+				<mx:Form>
+					<mx:HBox>
+						<mx:FormItem label="Cuenta:">
+<!--@I4239-->							<mx:ComboBox id="bancoPropioCBox" dataProvider="{modelo.listaBancoPropio}" labelFunction="comboLabel" />
+						</mx:FormItem>	
+<!--@F4239-->
+<!--@I4239-->						<mx:FormItem label="Fecha Desde:">
+							<date:DateFiledMultiLan id="fechaDesdeDt" formatString="DD/MM/YYYY" selectedDate="{new Date()}"/>
+						</mx:FormItem>
+<!--@F4239-->						<mx:FormItem label="Fecha Hasta:">
+							<date:DateFiledMultiLan id="fechaHastaDt" formatString="DD/MM/YYYY" selectedDate="{new Date()}"/>
+						</mx:FormItem>
+<!--@I4239-->						<mx:Button id="buscarBtn" label="Buscar" click="buscarNoConciliados()"/>
+					</mx:HBox>					
+				</mx:Form>
+			</mx:HBox>
+			<mx:VBox horizontalAlign="center" width="100%">
+				<mx:Label text="Movimientos Extracto No Conciliados" fontSize="18" width="307"/>
+				<mx:ApplicationControlBar width="100%" verticalAlign="middle">
+					<mx:HBox  width="100%" horizontalAlign="right" >
+						<mx:Label text="Filtrar por: " styleName="frmItmBusqueda"/>
+						<mx:Spacer width="100%"/>
+						<mx:FormItem label="Descripcion"  width="60%" horizontalAlign="right" styleName="frmItmBusqueda">
+							<mx:TextInput id="txtDescripcionExtracto" width="174" change="{filterDataExtracto()}" valueCommit="{filterDataExtracto()}" />
+						</mx:FormItem>
+						<mx:FormItem  label="Importe" width="25%" horizontalAlign="right" styleName="frmItmBusqueda">
+							<mx:TextInput id="txtImporteExtracto" width="80" restrict="0-9." change="{filterDataExtracto()}" valueCommit="{filterDataExtracto()}" />
+						</mx:FormItem>
+					</mx:HBox>
+				</mx:ApplicationControlBar>
+				<mx:HBox  width="100%" horizontalAlign="right" >
+					<mx:Button id="exportarBtn" label="Exportar PDF" click="exportarPDF()"/>
+					<mx:Button id="exportarExcelBtn" label="Exportar Excel" click="exportarExcel()"/>
+				</mx:HBox>
+				<mx:HBox width="100%">
+<!--@F4239-->
+					<mx:DataGrid id="dgExtracto" dataProvider="{modelo.listaExtracto}" width="100%" textAlign="center" height="300">
+						<mx:columns>
+				           <mx:DataGridColumn dataField="fechaMovimiento" headerText="Fecha" labelFunction="getFechaExtracto" textAlign="center" width="80"/>
+				           <mx:DataGridColumn dataField="nroComprobante" headerText="Numero" textAlign="right"/>
+				           <mx:DataGridColumn dataField="descripcion" headerText="Descripción" textAlign="left" width="200"/>
+				           <mx:DataGridColumn dataField="signo" headerText="Signo" textAlign="center" width="50"/>
+				           <mx:DataGridColumn dataField="importe" headerText="Importe" textAlign="right" labelFunction="formatearNumero"/>
+				        </mx:columns>
+					</mx:DataGrid>				
+<!--@I4239-->				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="right" >
+					<mx:Button id="exportarBtn1" label="Exportar PDF" click="exportarPDF()"/>
+					<mx:Button id="exportarExcelBtn1" label="Exportar Excel" click="exportarExcel()"/>
+<!--@F4239-->				</mx:HBox>
+			</mx:VBox>			
+		</mx:VBox>
+	</mx:Canvas>
+	
+</mx:Module>

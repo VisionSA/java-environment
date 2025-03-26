@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/service
+END
+ComercioService.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/service/ComercioService.java
+END
+UsuarioWebException.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/service/UsuarioWebException.java
+END
+UsuarioWebService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/service/UsuarioWebService.java
+END
+UsuarioComercioWebService.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/service/UsuarioComercioWebService.java
+END
+UsuarioPermisoService.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/service/UsuarioPermisoService.java
+END
+EmailService.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/service/EmailService.java
+END
+PermisoWebService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/testing/!svn/ver/46/trunk/FielWeb/src/main/java/com/bizit/consulta/web/service/PermisoWebService.java
+END

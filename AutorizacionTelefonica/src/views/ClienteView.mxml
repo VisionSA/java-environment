@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" resizeEffect="{resizeEff}"  title="Detalle Cliente" layout="vertical" width="100%" horizontalAlign="center" verticalAlign="top" xmlns:mate="http://mate.asfusion.com/" includeInLayout="{clienteViewModel.mostrarPanelCliente}" visible="{clienteViewModel.mostrarPanelCliente}">
+	
+	<!--<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center">
+		<mx:Label text="Nro. Plático:"/>
+		<mx:TextInput width="40" id="txt1" text="5049" textAlign="center" editable="false"/>
+		<mx:TextInput width="40" id="txt2" textAlign="center" text="06" editable="false"/>
+		<mx:TextInput width="40" id="txt3" maxChars="4" restrict="0-9" keyUp="pasarFocoATxt4()" />
+		<mx:TextInput width="40" id="txt4" maxChars="4" restrict="0-9" keyUp="pasarFocoATxtCvv()" />
+		<mx:Label text="CVV:"/>
+		<mx:TextInput width="40" id="txtCvv" maxChars="3" restrict="0-9" keyUp="pasarFocoABusquedaCliente()"/>
+	</mx:HBox>
+	<mx:LinkButton id="clienteBusqLink" label="Buscar Cliente" click="buscarCliente()" keyDown="keyPress(event)"/>
+	-->
+	
+	  <mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center">
+		<mx:Form height="100%" width="50%"> 
+			<mx:FormItem fontWeight="bold" color="#185967">
+				<mx:Label text="{clienteViewModel.nombreCompleto}"/>
+			</mx:FormItem>
+			<mx:FormItem  label="TITULAR:" visible="{clienteViewModel.mostrarTitular}" fontWeight="bold" color="#185967">
+				<mx:Label text="{clienteViewModel.nombreCompletoTitular}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Cuenta Titular:" fontWeight="bold" color="#185967">
+				<mx:Label text="{clienteViewModel.titular.idCliente}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Codigo:" fontWeight="bold" color="#185967">
+				<mx:Label text="{clienteViewModel.cliente.idCliente}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Nro Documento:" fontWeight="bold" color="#185967">
+				<mx:Label text="{clienteViewModel.cliente.individuo.nroDocumento}"/>
+			</mx:FormItem>
+		</mx:Form>
+		<mx:Form height="100%" width="50%">
+		    <mx:FormItem label="Puntualidad" fontWeight="bold" color="#185967">
+				<mx:Label text=""/>
+			</mx:FormItem>
+			<mx:FormItem label="Situacion Comercial" fontWeight="bold" color="#185967">
+				<mx:Label id="txtNombre" text="{clienteViewModel.titular.estadoCliente.descripcion}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Situacion Cobranza:" fontWeight="bold" color="#185967">
+				<mx:Label text="{clienteViewModel.titular.estadoCobranza.descripcion}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Puede Consumir:" fontWeight="bold" color="#185967">
+				<mx:Label text="{clienteViewModel.puedeConsumir}"/>
+			</mx:FormItem>
+		 </mx:Form>	
+		 <mx:Form height="100%" width="50%">
+			<mx:FormItem label="Limite de Credito" fontWeight="bold" color="#185967">
+				<mx:Label text="{clienteViewModel.titular.limiteCredito}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Saldo en Linea" fontWeight="bold" color="#185967">
+				<mx:Label text="{clienteViewModel.saldoEnLinea}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Disponible" backgroundColor="#79DAA4" fontWeight="bold" color="#185967">
+				<mx:Label text="{FormatUtil.formatMoneda(clienteViewModel.disponible)}"/>
+			</mx:FormItem>
+		</mx:Form>
+		</mx:HBox>
+	<mx:Resize id="resizeEff"/>
+	<mate:Listener receive="{this.inicializar()}" type="inicializar"/>
+	<mx:Script>
+		<![CDATA[
+			import events.SimuladorEvent;
+			import com.util.format.FormatUtil;
+			import views.models.ClienteViewModel;			
+		[Bindable]public var clienteViewModel:ClienteViewModel;
+		
+		
+		private function inicializar():void{
+			clienteViewModel.inicializar();
+		}
+		
+		
+		private function pasarFocoATxt4():void{
+			/*if(txt3.text.length==4){
+				txt4.setFocus();
+			}*/
+		}
+        
+        private function pasarFocoATxtCvv():void{
+			/*if(txt4.text.length==4){
+				txtCvv.setFocus();
+			}*/
+		}
+		
+		private function pasarFocoABusquedaCliente():void{
+			/*if(txtCvv.text.length==3){
+				clienteBusqLink.setFocus();
+			}*/
+		}		
+		
+	
+		private function buscarCliente():void{
+			/*var plastico:String = txt1.text + txt2.text + txt3.text + txt4.text;
+			var cvv:String = txtCvv.text;
+			this.clienteViewModel.buscarPorPlastico(plastico, cvv);
+			clienteViewModel.dispatcher.dispatchEvent(new Event("focusCodComercio"));*/
+		}
+		
+		public function keyPress(evt:KeyboardEvent):void{
+			if(evt.keyCode == Keyboard.ENTER){
+				buscarCliente();
+			}
+		}
+		]]>
+	</mx:Script>
+</mx:Panel>

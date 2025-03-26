@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.InformeLaboral" table="t_vis_eva_info_laborales" >
+	<id name="idInfoLaboral" type="java.lang.Long" column="c_id_info_laboral">
+		<generator class="increment" />
+	</id>
+
+	<property name="antiguedad" type="java.lang.Long" column="c_antiguedad" not-null="false" length="512"/>
+
+	<property name="cargo" type="java.lang.String" column="c_cargo" not-null="false" length="50"/>
+
+	<property name="domCorregido" type="java.lang.String" column="c_dom_corregido" not-null="false" length="1"/>
+
+	<property name="fechaIngreso" type="java.sql.Timestamp" column="c_fecha_ingreso" not-null="false" length="3594"/>
+
+	<property name="fechaRecepcion" type="java.sql.Timestamp" column="c_fecha_recepcion" not-null="false" length="3594"/>
+
+	<many-to-one name="autonomo" class="com.bizitglobal.tarjetafiel.general.negocio.Autonomo" not-null="false" >
+		<column name="c_id_autonomo" />
+	</many-to-one>
+
+	<many-to-one name="ocupacion" class="com.bizitglobal.tarjetafiel.general.negocio.Ocupacion" not-null="false" >
+		<column name="c_id_ocupacion" />
+	</many-to-one>
+
+	<property name="idOperador" type="java.lang.Long" column="c_id_operador" not-null="false" length="2560"/>
+
+	<many-to-one name="rubro" class="com.bizitglobal.tarjetafiel.general.negocio.Rubro" not-null="false" >
+		<column name="c_id_rubro" />
+	</many-to-one>
+
+	<many-to-one name="solicitudIndividuo" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.SolicitudIndividuo" not-null="false" cascade="none">
+		<column name="c_id_solic_individuo" />
+	</many-to-one>
+
+	<many-to-one name="tamanioEmpresa" class="com.bizitglobal.tarjetafiel.general.negocio.TamEmpresa" not-null="false" >
+		<column name="c_id_tamanio_emp" />
+	</many-to-one>
+
+	<many-to-one name="verificador" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Verificador" not-null="false" >
+		<column name="c_id_verificador" />
+	</many-to-one>
+
+	<many-to-one name="vinculo" class="com.bizitglobal.tarjetafiel.general.negocio.Vinculo" not-null="false" >
+		<column name="c_id_vinculo" />
+	</many-to-one>
+	
+	<many-to-one name="sucEmpresa" class="com.bizitglobal.tarjetafiel.general.negocio.SucEmpresa" not-null="false" cascade="save-update">
+		<column name="c_id_sucursal" />
+	</many-to-one>
+
+	<property name="informante" type="java.lang.String" column="c_informante" not-null="false" length="50"/>
+
+	<property name="nroDocInform" type="java.lang.String" column="c_nro_doc_inform" not-null="false" length="8"/>
+
+	<property name="nroInforme" type="java.lang.String" column="c_nro_informe" not-null="false" length="13"/>
+
+	<property name="observacion" type="java.lang.String" column="c_observacion" not-null="false" length="255"/>
+
+	<property name="rsCorregida" type="java.lang.String" column="c_rs_corregida" not-null="false" length="1"/>
+
+	<property name="sueldoNeto" type="java.math.BigDecimal" column="c_sueldo_neto" not-null="false" length="2562"/>
+
+	<property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="false" length="3594"/>
+
+	<set name="evaObsLaborales" inverse="false" cascade="save-update"  >
+		<key>
+			<column name="c_id_info_laboral" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.ObservoLaboral"/>
+	</set>
+</class>
+</hibernate-mapping>

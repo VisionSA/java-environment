@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.impuestos.negocio.TipoImpuesto"  table="t_vis_imp_tipo_impuestos" >
+    <id name="idTipoImpuesto" type="java.lang.Long" column="c_id_tipo_impuesto">
+        <generator class="increment" />
+    </id>
+
+    <property name="descripcion" type="java.lang.String" column="c_descripcion" not-null="true" length="20"/>
+
+    <set name="categorias" inverse="false" cascade="all"  >
+        <key>
+            <column name="c_id_tipo_impuesto" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.impuestos.negocio.Categoria"/>
+    </set>
+    
+    <set name="jurisTipoImp" inverse="false" cascade="all">
+        <key>
+            <column name="c_id_tipo_impuesto" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.impuestos.negocio.JurisTipoImpuesto"/>
+    </set>
+    
+    <set name="exclusiones" inverse="false" cascade="save-update"  >
+        <key>
+            <column name="c_id_tipo_impuesto" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.impuestos.negocio.Exclusion"/>
+    </set>
+</class>
+</hibernate-mapping>

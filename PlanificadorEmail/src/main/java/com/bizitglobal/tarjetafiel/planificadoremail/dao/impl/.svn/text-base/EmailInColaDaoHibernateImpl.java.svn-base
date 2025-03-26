@@ -1,0 +1,126 @@
+package com.bizitglobal.tarjetafiel.planificadoremail.dao.impl;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import com.bizitglobal.tarjetafiel.planificadoremail.dao.EmailInColaDao;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.EmailInCola;
+
+
+/***** @Id:6958 ******/
+
+public class EmailInColaDaoHibernateImpl extends HibernateDaoSupport implements EmailInColaDao {
+
+	public EmailInColaDaoHibernateImpl() {
+		super();
+	}
+
+
+	public EmailInCola buscarNextEmail() {
+		if (listarEmail().size() > 0) {
+			return (EmailInCola) listarEmail().get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+	public EmailInCola buscarNextNotificacion() {
+		if (listarNotificacion().size() > 0) {
+			return (EmailInCola) listarNotificacion().get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+	// public List listarEmail() {
+	// return getHibernateTemplate().executeFind(new HibernateCallback() {
+	// public Object doInHibernate(Session session)
+	// throws HibernateException, SQLException {
+	//
+	// StringBuffer sb = new StringBuffer(100);
+	// sb.append(" SELECT  obj ");
+	// sb.append("FROM EmailInCola obj ");
+	// sb.append("where  obj.estado = '"+EmailInCola.ESTADO_EMAIL_PENDIENTE+"'");
+	// sb.append(" or obj.estado = '"+EmailInCola.ESTADO_EMAIL_INICIADO+"' order by obj.planProcesoEmail.idOperUltMod,obj.idEmail ");
+	//
+	// Query query = session.createQuery(sb.toString());
+	// List list = query.list();
+	//
+	// return list;
+	// }
+	// });
+	//
+	// }
+	public List listarEmail() {
+		return getHibernateTemplate().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+
+				StringBuffer sb = new StringBuffer(100);
+				sb.append(" SELECT  obj ");
+				sb.append("FROM EmailInCola obj ");
+				sb.append("where  (obj.estado = '" + EmailInCola.ESTADO_EMAIL_PENDIENTE + "'");
+				sb.append(" or obj.estado = '" + EmailInCola.ESTADO_EMAIL_INICIADO + "'");
+				sb.append(" ) and obj.planProcesoEmail.idOperUltMod <= 14  and ROWNUM = 1 and obj.planProcesoEmail.idOperUltMod = (select min(plane2.idOperUltMod) from EmailInCola obj1 inner join obj1.planProcesoEmail plane2 ");
+				sb.append(" where  ( obj1.estado = '" + EmailInCola.ESTADO_EMAIL_PENDIENTE + "'");
+				sb.append(" or obj1.estado = '" + EmailInCola.ESTADO_EMAIL_INICIADO + "')  and obj1.planProcesoEmail.idOperUltMod <= 14 )");
+
+				Query query = session.createQuery(sb.toString());
+				List list = query.list();
+
+				return list;
+			}
+		});
+	}
+
+
+	public List buscarNotificacionApp(final String registo, final int tipoNotificacion) {
+		return getHibernateTemplate().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+
+				StringBuffer sb = new StringBuffer(100);
+				sb.append(" SELECT  obj ");
+				sb.append("FROM EmailInCola obj ");
+				sb.append(" where obj.planProcesoEmail.idPlan = " + tipoNotificacion + "  and  obj.email = '" + registo + "'  ");
+				sb.append(" order by obj.fecEnvio desc ");
+
+				Query query = session.createQuery(sb.toString());
+				List list = query.list();
+
+				return list;
+			}
+		});
+	}
+
+
+	public List listarNotificacion() {
+		return getHibernateTemplate().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+
+				StringBuffer sb = new StringBuffer(100);
+				sb.append(" SELECT  obj ");
+				sb.append("FROM EmailInCola obj ");
+				sb.append("where  (obj.estado = '" + EmailInCola.ESTADO_EMAIL_PENDIENTE + "'");
+				sb.append(" or obj.estado = '" + EmailInCola.ESTADO_EMAIL_INICIADO + "'");
+				sb.append(" ) and obj.planProcesoEmail.idOperUltMod > 14  and ROWNUM = 1 and obj.planProcesoEmail.idOperUltMod = (select min(plane2.idOperUltMod) from EmailInCola obj1 inner join obj1.planProcesoEmail plane2 ");
+				sb.append(" where  ( obj1.estado = '" + EmailInCola.ESTADO_EMAIL_PENDIENTE + "'");
+				sb.append(" or obj1.estado = '" + EmailInCola.ESTADO_EMAIL_INICIADO + "')  and obj1.planProcesoEmail.idOperUltMod > 14 )");
+
+				Query query = session.createQuery(sb.toString());
+				List list = query.list();
+
+				return list;
+			}
+		});
+	}
+}

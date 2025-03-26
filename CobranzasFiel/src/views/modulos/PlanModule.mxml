@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical"
+	creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import views.components.ViewNuevoPlan;
+			import mx.managers.PopUpManager;
+			import mx.core.IFlexDisplayObject;
+			import mx.core.Application;
+			import com.tarjetafiel.caja.vo.Plan;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import events.GenericPlanEvent;
+			import events.GenericTareasPendientesEvent;
+			import model.CobranzasModelLocator;
+			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			private function init():void {
+				inptNombrePlan.setFocus();
+			}
+			
+			private function buscarPlanes():void{
+				var filtro:Filtro = new Filtro();						
+				filtro.campos.push("descripcion");				
+				filtro.operadores.push(Filtro.LIKE);								
+				filtro.valores.push(inptNombrePlan.text);
+				new GenericPlanEvent(GenericPlanEvent.BUSCAR_PLANES_EVENT,filtro).dispatch();
+			}
+			
+			private function seleccionarPlan():void {
+				var plan : Plan = modelo.listaPlanes.getItemAt(dgPlanes.selectedIndex) as Plan;
+				new GenericPlanEvent(GenericPlanEvent.SELECCIONAR_PLAN_EVENT,plan).dispatch();
+			}
+			
+			private function editarPlan():void {
+				Application.application.modulo.url = "views/modulos/EditarPlanModule.swf";
+                Application.application.modulo.loadModule();
+			}
+			
+			private function crearNuevoPlan():void {
+				var vent : IFlexDisplayObject = PopUpManager.createPopUp(this,ViewNuevoPlan,true);
+				PopUpManager.centerPopUp(vent);
+			}
+			
+			private function eliminarPlan():void {
+				
+				Alert.yesLabel = "SI";
+ 				Alert.noLabel = "NO";
+ 				Alert.show("Esta Seguro?","Eliminar "+modelo.planSeleccionado.descripcion,Alert.YES | Alert.NO,this,confirmarEliminar,null,Alert.NO);
+ 				 				
+			}
+			
+			 private function confirmarEliminar(eventObj:CloseEvent):void {
+ 			 	 
+ 			 	 if (eventObj.detail==Alert.YES) {
+ 			 	 	new GenericPlanEvent(GenericPlanEvent.ELIMINAR_PLAN_EVENT,modelo.planSeleccionado).dispatch();
+ 			 	 }
+ 			 }
+			
+		]]>
+	</mx:Script>
+
+
+	<mx:HBox verticalAlign="middle" paddingTop="20" >
+		<mx:Form>
+			<mx:FormItem label="Nombre de Plan" paddingLeft="40">
+				<mx:TextInput id="inptNombrePlan" enter="buscarPlanes()"/>
+			</mx:FormItem>
+		</mx:Form>
+		<mx:Button label="Buscar" width="80" click="buscarPlanes()"/>					
+	</mx:HBox>
+	<mx:HBox verticalAlign="middle" paddingTop="20" width="100%" horizontalAlign="center" horizontalScrollPolicy="off">
+		<mx:DataGrid id="dgPlanes" width="450" dataProvider="{modelo.listaPlanes}" itemClick="seleccionarPlan()">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Por Defecto" width="100" textAlign="center">
+					<mx:itemRenderer>
+				   	   	<mx:Component>
+				   	  	 	<mx:HBox horizontalAlign="center" width="100%">				   	  	 						   	  	 	
+				   				<mx:CheckBox id="chkPlanDefecto" selected="{data.esPlanPorDefecto == 'S'}" enabled="false"/>				   				
+				   			</mx:HBox>
+				   	   	</mx:Component>
+				   	</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="descripcion" headerText="Descripción" textAlign="center"/>
+				<mx:DataGridColumn headerText="Habilitado" width="100" textAlign="center">
+					<mx:itemRenderer>
+				   	   	<mx:Component>
+				   	  	 	<mx:HBox horizontalAlign="center" width="100%">				   	  	 						   	  	 	
+				   				<mx:CheckBox id="chkPlanDefecto" selected="{data.habilitado == 'S'}" enabled="false"/>				   				
+				   			</mx:HBox>
+				   	   	</mx:Component>
+				   	</mx:itemRenderer>
+				</mx:DataGridColumn>           
+	        </mx:columns>
+		</mx:DataGrid>
+	</mx:HBox>
+	
+	<mx:HBox verticalAlign="middle" paddingTop="20" width="100%" horizontalAlign="right">
+		<mx:Button label="Nuevo" width="80" click="crearNuevoPlan()"/>
+		<mx:Button label="Modificar" width="80" enabled="{modelo.planSeleccionado != null}" click="editarPlan()"/>
+		<mx:Button label="Eliminar" width="80" enabled="{modelo.planSeleccionado != null}" click="eliminarPlan()"/>		
+	</mx:HBox>
+	
+</mx:Module>

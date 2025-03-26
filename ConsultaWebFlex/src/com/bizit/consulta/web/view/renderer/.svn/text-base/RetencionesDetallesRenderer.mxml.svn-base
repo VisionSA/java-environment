@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx"
+								  autoDrawBackground="false"
+								  width="100%">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.bizit.consulta.web.entity.DetalleRetencionVO;
+			import com.bizit.consulta.web.utils.formatters.FormatUtils;
+			
+			import mx.collections.ArrayCollection;
+			
+			import spark.layouts.VerticalLayout;
+			
+			override public function set data(value:Object):void 
+			{
+				if (value != null) 
+				{
+					var arr:ArrayCollection = value.detalle as ArrayCollection;
+					var arrProvider:ArrayCollection = new ArrayCollection();
+					for each (var item:Object in arr)
+					{
+						var det:Object = new Object();
+						det.descripcion = item.descripcion;
+						det.state = arr.getItemIndex(item)%2 == 0 ? "parState":"imparState";
+						det.monto = FormatUtils.formateaMoneda(item.monto);
+						arrProvider.addItem(det);
+					}
+					this.lstDetalle.dataProvider = arrProvider;
+					this.lstDetalle.validateNow();
+				}
+			}
+					
+		]]>
+	</fx:Script>
+	
+		<s:List id="lstDetalle" width="100%" requireSelection="false" minHeight="5" 
+				itemRenderer="com.bizit.consulta.web.view.renderer.DetallesListRenderer" contentBackgroundAlpha="0"
+				borderVisible="false" >
+			<s:layout>
+				<s:VerticalLayout gap="2" 
+							horizontalAlign="contentJustify" requestedMinRowCount="1" 
+							paddingLeft="40" paddingRight="40"/>
+			</s:layout>
+		</s:List>
+</s:MXAdvancedDataGridItemRenderer>

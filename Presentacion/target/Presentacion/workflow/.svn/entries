@@ -1,0 +1,46 @@
+9
+
+dir
+800
+https://testingpc/svn/testing/Presentacion/src/main/webapp/workflow
+https://testingpc/svn/testing
+
+
+
+2018-10-04T14:54:54.182400Z
+634
+gaston
+has-props
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+tareas
+dir
+
+flujos
+dir
+
+escritorios
+dir
+
+popups
+dir
+
+tramites
+dir
+
+procesos
+dir
+

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.CajaCierre" table="T_VIS_FON_CAJAS_CIERRES" >
+	
+	<cache usage="read-write"/>
+	
+	<id name="idCajaCierre" type="java.lang.Long" column="C_ID_CAJACIERRE">
+		<generator class="increment" />
+	</id>
+	
+	<property name="tipo" type="java.lang.Character" column="C_TIPO" not-null="true" />
+	<property name="fecha" type="java.util.Date" column="C_FECHA" not-null="true" length="3594"/>
+	<property name="totalArqueo" type="java.lang.Double" column="C_TOTAL_ARQUEO" not-null="true" />
+	<property name="totalContable" type="java.lang.Double" column="C_TOTAL_CONTABLE" not-null="true" />
+	<property name="diferencia" type="java.lang.Double" column="C_DIFERENCIA" not-null="true" />
+		
+    <many-to-one name="caja" class="com.bizitglobal.tarjetafiel.fondos.negocio.CajaMP" not-null="false" >
+		<column name="C_ID_CAJA" />
+	</many-to-one>
+	
+	<set name="cajaArqueosList" inverse="true" cascade="save-update">
+          <key>
+    	      <column name="C_ID_CAJACIERRE" precision="10" scale="0" not-null="false" />
+          </key>
+          <one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.CajaArqueo" />        
+    </set>
+	
+</class>
+</hibernate-mapping>

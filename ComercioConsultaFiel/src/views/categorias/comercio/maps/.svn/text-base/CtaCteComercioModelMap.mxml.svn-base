@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import managers.ComercioManager;
+			import views.categorias.comercio.models.CtaCteComercioModel;
+			//Modulo
+			import views.categorias.comercio.modules.CtaCteComercioModule;
+			//Interfaz incluida en el modulo
+			import views.categorias.comercio.ResumidoCtaCteComercioView;
+			import views.categorias.comercio.DetalleCtaCteComercioView;
+		]]>
+	</mx:Script>
+	<Injectors targets="{[CtaCteComercioModule,ResumidoCtaCteComercioView,DetalleCtaCteComercioView]}"> 
+		<ObjectBuilder generator="{CtaCteComercioModel}">
+		 <Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="ctaCteComercioModel"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="saldoAnterior" sourceKey="saldoAnteriorCtaCte" source="{ComercioManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="arrayMovientosCtaCteResumen" sourceKey="arrayMovientosCtaCteResumen" source="{ComercioManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="arrayMovientoCtaCteDetalles" sourceKey="arrayMovientoCtaCteDetalles" source="{ComercioManager}"/>
+	</Injectors>
+	
+</EventMap>

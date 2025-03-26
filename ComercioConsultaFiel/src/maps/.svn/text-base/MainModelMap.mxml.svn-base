@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+			import managers.ComercioManager;
+			import views.categorias.comercio.models.LiquidacionComModel;
+			import views.categorias.comercio.models.ListaComercioModel;
+			import managers.LiquidacionComManager;
+			import views.categorias.cliente.models.AgendaClienteModel;
+			import views.categorias.cliente.models.ComposicionSaldoClienteModel;
+			import views.categorias.cliente.models.CtaCteClienteModel;
+			import views.categorias.cliente.models.GeneralClienteModel;
+			import views.categorias.cliente.models.LineaCreditoModel;
+			import views.categorias.cliente.models.ResumenCtaClienteModel;
+			import views.categorias.cliente.models.PlasticosModel;
+			import views.MainView;
+			import views.categorias.CategoriaComercio;
+			import views.categorias.CategoriaCliente;
+			import views.categorias.EncabezadoModel;
+			import views.categorias.comercio.models.CtaCteComercioModel;
+			import managers.ConceptosManager;
+			import views.categorias.cliente.models.AdelantoEfectivoModel;
+			import managers.SimuladorManager;
+			import views.categorias.comercio.EncabezadoComercioView;
+			import views.categorias.cliente.popup.MostrarClientesView;
+			import views.categorias.cliente.popup.ClientesInformadosView;
+			import views.categorias.cliente.EncabezadoClienteView;
+			import models.ApplicationModel;
+			import mx.core.Application;
+			import managers.EventoManager;
+			import views.categorias.cliente.models.EncabezadoClienteModel;
+			import managers.ClienteManager;
+			
+			import views.categorias.comercio.models.RetencionComercioModel;
+			import managers.RetencionComManager;
+			
+			
+		
+	</mx:Script>
+	
+	<Injectors targets="{[EncabezadoClienteView,MostrarClientesView,ClientesInformadosView]}">
+		<ObjectBuilder generator="{EncabezadoClienteModel}" >
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="encabezadoClienteModel"/>		
+	</Injectors>	
+
+	<Injectors targets="{[EncabezadoClienteModel]}">		
+		<PropertyInjector targetKey="cliente" sourceKey="cliente" source="{ClienteManager}"/>
+	</Injectors>
+
+	
+	<Injectors targets="{[EncabezadoClienteModel]}">		
+		<PropertyInjector targetKey="titular" sourceKey="titular" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{EncabezadoClienteModel}">		
+		<PropertyInjector targetKey="clienteEncontrado" sourceKey="clienteEncontrado" source="{ClienteManager}"/>
+		<PropertyInjector source="{ClienteManager}" targetKey="paginador" sourceKey="paginador"/>
+		<PropertyInjector targetKey="arrayClientes" sourceKey="arrayClientes" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<!--<Injectors target="{CtaCteClienteModel}">		
+		<PropertyInjector targetKey="saldoAnterior" sourceKey="saldoAnteriorCtaCte" source="{ClienteManager}"/>
+	</Injectors>-->
+   	
+   	<Injectors target="{ApplicationModel}">
+   		<PropertyInjector source="{scope.dispatcher}" targetKey="dispatcher"/>
+   	</Injectors>
+   	
+   	<Injectors target="{ComercioConsultaFiel}">
+   		<ObjectBuilder generator="{ApplicationModel}"/>   		
+   		<PropertyInjector source="{lastReturn}" targetKey="applicationModel"/>
+   	</Injectors>
+	
+	<Injectors target="{SimuladorManager}">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+	</Injectors>
+	
+	<Injectors target="{AdelantoEfectivoModel}">
+		<ObjectBuilder generator="{ConceptosManager}"/>		
+		<PropertyInjector targetKey="conceptoManager" source="{lastReturn}"/>
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+		<PropertyInjector source="{SimuladorManager}" sourceKey="arrayCuotas" targetKey="cuotas"/>
+		<PropertyInjector source="{ClienteManager}"  targetKey="titular" sourceKey="titular"/>
+		<PropertyInjector source="{ClienteManager}"  targetKey="cliente" sourceKey="cliente"/>
+	</Injectors>
+	
+	<Injectors targets="{[CategoriaComercio,CategoriaCliente,MainView]}">
+		<ObjectBuilder generator="{EncabezadoModel}">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector targetKey="encabezadoModel" source="{lastReturn}"/>
+	</Injectors>
+
+	<Injectors target="{PlasticosModel}" debug="true" >
+		<PropertyInjector source="{scope.dispatcher}" targetKey="dispatcher" softBinding="false"/>
+		<PropertyInjector source="{ClienteManager}" sourceKey="arrayTitularAdiscionales" targetKey="arrayTitularAdiscionales" />
+		<PropertyInjector source="{ApplicationModel}" sourceKey="operador" targetKey="operador"/>
+	</Injectors>
+	
+	<Injectors targets="{[ResumenCtaClienteModel]}">		
+		<PropertyInjector targetKey="titular" sourceKey="titular" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors targets="{[LineaCreditoModel]}">		
+		<PropertyInjector targetKey="titular" sourceKey="titular" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors targets="{[GeneralClienteModel]}">		
+		<PropertyInjector targetKey="arrayTitularAdiscionales" sourceKey="arrayTitularAdiscionales" source="{ClienteManager}"/>
+	</Injectors>
+	
+		<Injectors targets="{[GeneralClienteModel]}">		
+		<PropertyInjector targetKey="cliente" sourceKey="cliente" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors targets="{[CtaCteClienteModel]}">		
+		<PropertyInjector targetKey="titular" sourceKey="titular" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors targets="{[ComposicionSaldoClienteModel]}">		
+		<PropertyInjector targetKey="titular" sourceKey="titular" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors targets="{[AgendaClienteModel]}">		
+		<PropertyInjector targetKey="titular" sourceKey="titular" source="{ClienteManager}"/>
+	</Injectors>
+	
+	<Injectors target="{ListaComercioModel}">
+		<PropertyInjector source="{ComercioManager}" sourceKey="comercio" targetKey="comercio" />
+		<PropertyInjector source="{ComercioManager}" sourceKey="paginador" targetKey="paginador" />
+	</Injectors>
+	
+	<Injectors target="{LiquidacionComModel}">
+		<PropertyInjector source="{LiquidacionComManager}" targetKey="liquidacionesList" sourceKey="liquidacionesList"/>
+		<PropertyInjector source="{ListaComercioModel}" sourceKey="empresa" targetKey="empresa" />
+		<PropertyInjector source="{ListaComercioModel}" sourceKey="comercio" targetKey="comercio" />
+		<PropertyInjector source="{ListaComercioModel}" sourceKey="buscarEmpresa" targetKey="buscarEmpresa" />
+	</Injectors>
+	
+	<Injectors target="{RetencionComercioModel}">
+		<PropertyInjector source="{RetencionComManager}" targetKey="retencionesList" sourceKey="retencionesList"/>
+		<PropertyInjector source="{ListaComercioModel}" sourceKey="empresa" targetKey="empresa" />
+		<PropertyInjector source="{ListaComercioModel}" sourceKey="comercio" targetKey="comercio" />
+		<PropertyInjector source="{ListaComercioModel}" sourceKey="buscarEmpresa" targetKey="buscarEmpresa" />
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}" debug="true">
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+		<PropertyInjector source="{ListaComercioModel}" sourceKey="comercio" targetKey="comercio"/>
+		<PropertyInjector source="{ListaComercioModel}" sourceKey="empresa" targetKey="empresa"/>
+		<PropertyInjector source="{ListaComercioModel}" sourceKey="buscarEmpresa" targetKey="buscarEmpresa"/>
+		<!--PropertyInjector source="{CtaCteComercioManager}" sourceKey="saldo" targetKey="saldo"/>
+		<PropertyInjector source="{CtaCteComercioManager}" sourceKey="ctaCteComercioList" targetKey="ctaCteComercioList"/-->
+	</Injectors>	
+	
+</EventMap>

@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias
+END
+ModuleGeneral.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/ModuleGeneral.mxml
+END
+RelacionIndividuosView.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/RelacionIndividuosView.mxml
+END
+ViewCategorias.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/ViewCategorias.mxml
+END
+CategoriaComercio.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/CategoriaComercio.mxml
+END
+VboxComun.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/VboxComun.mxml
+END
+CategoriaCliente.mxml
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/CategoriaCliente.mxml
+END
+EncabezadoModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/EncabezadoModel.as
+END

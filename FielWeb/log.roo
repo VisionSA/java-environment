@@ -1,0 +1,29 @@
+// Spring Roo 1.1.0.M1 [rev 3a0b8a3] log opened at 2011-05-05 15:36:01
+project --topLevelPackage com.bizit.consulta.web
+persistence setup --provider HIBERNATE --database H2_IN_MEMORY 
+entity --class ~.entity.UsuarioWeb --table t_vis_web_usuario
+field string --fieldName nombreUsuario --notNull --column c_nombre_usuario --sizeMax 12
+field string --fieldName password --notNull --column c_password --sizeMin 6 --sizeMax 12
+flex setup
+flex remoting all --package ~.service
+perform eclipse
+// Spring Roo 1.1.0.M1 [rev 3a0b8a3] log opened at 2011-05-05 16:11:48
+perform eclipse
+persistence setup --database ORACLE --provider HIBERNATE 
+perform eclipse
+field string --class ~.entity.UsuarioWeb --fieldName email --column c_email --sizeMax 50 --notNull 
+field boolean --fieldName activo --notNull 
+field date --fieldName ultimoLogin --type java.util.Date --dateFormat M
+field date --fieldName fechaCreacion --type java.util.Date
+entity --class ~.entity.PermisoWeb --table t_vis_web_permisos
+field string --fieldName nombre --column c_nombre --sizeMax 50 --notNull 
+field string --fieldName swf --column c_swf --sizeMax 100 --notNull 
+flex remoting scaffold --name ~.service.PermisoWebService
+// Spring Roo 1.1.0.M1 [rev 3a0b8a3] log opened at 2011-05-05 17:15:54
+entity --class ~.entity.UsuarioPermisoWeb --table t_vis_web_usuarios_permisos_web
+field reference --fieldName usuario --type ~.entity.UsuarioWeb --notNull 
+field reference --fieldName permiso --type ~.entity.PermisoWeb --notNull 
+flex remoting scaffold --name ~.service.UsuarioPermisoService
+flex remoting all --package ~.service
+quit
+// Spring Roo 1.1.0.M1 [rev 3a0b8a3] log closed at 2011-05-06 12:39:16

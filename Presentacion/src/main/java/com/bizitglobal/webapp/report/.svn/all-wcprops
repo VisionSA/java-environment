@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/testing/!svn/ver/800/Presentacion/src/main/java/com/bizitglobal/webapp/report
+END
+Aviso_Carta_Urgente.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/testing/!svn/ver/733/Presentacion/src/main/java/com/bizitglobal/webapp/report/Aviso_Carta_Urgente.jrxml
+END
+Aviso_Carta_Prejudicial.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/testing/!svn/ver/733/Presentacion/src/main/java/com/bizitglobal/webapp/report/Aviso_Carta_Prejudicial.jrxml
+END
+Cartera_clientes.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/testing/!svn/ver/718/Presentacion/src/main/java/com/bizitglobal/webapp/report/Cartera_clientes.jrxml
+END
+subreport_liq_comercio_img_aviso.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/testing/!svn/ver/789/Presentacion/src/main/java/com/bizitglobal/webapp/report/subreport_liq_comercio_img_aviso.jrxml
+END
+Carta_Moroso_1.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/testing/!svn/ver/733/Presentacion/src/main/java/com/bizitglobal/webapp/report/Carta_Moroso_1.jrxml
+END
+LiquidacionCodComercio.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/testing/!svn/ver/813/Presentacion/src/main/java/com/bizitglobal/webapp/report/LiquidacionCodComercio.jrxml
+END
+EmbozadoraPlasticosAdicional.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/testing/!svn/ver/718/Presentacion/src/main/java/com/bizitglobal/webapp/report/EmbozadoraPlasticosAdicional.jrxml
+END
+subreport_comercio_banner.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/testing/!svn/ver/806/Presentacion/src/main/java/com/bizitglobal/webapp/report/subreport_comercio_banner.jrxml
+END
+subreport_resumen_detalle.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/testing/!svn/ver/708/Presentacion/src/main/java/com/bizitglobal/webapp/report/subreport_resumen_detalle.jrxml
+END
+SMS_liq_clientes.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/testing/!svn/ver/715/Presentacion/src/main/java/com/bizitglobal/webapp/report/SMS_liq_clientes.jrxml
+END
+Aviso_Carta_Documentado.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/testing/!svn/ver/733/Presentacion/src/main/java/com/bizitglobal/webapp/report/Aviso_Carta_Documentado.jrxml
+END
+subreport_resumen_totales.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/testing/!svn/ver/705/Presentacion/src/main/java/com/bizitglobal/webapp/report/subreport_resumen_totales.jrxml
+END
+subreport_comercio_banner.jasper
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/testing/!svn/ver/806/Presentacion/src/main/java/com/bizitglobal/webapp/report/subreport_comercio_banner.jasper
+END
+LiquidacionClientesBuena.jrxml
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/testing/!svn/ver/733/Presentacion/src/main/java/com/bizitglobal/webapp/report/LiquidacionClientesBuena.jrxml
+END

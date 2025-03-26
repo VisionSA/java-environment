@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.impuestos.negocio.Individuo" table="t_vis_imp_individuos" >
+    <id name="idIndividuo" type="java.lang.Long" column="c_id_individuo">
+        <generator class="increment" />
+    </id>
+
+  	<property name="cuit" type="java.lang.String" column="c_cuit" not-null="true" length="11"/>
+  
+    <property name="denominacion" type="java.lang.String" column="c_denominacion" not-null="true" length="30"/>
+
+    <property name="integranteSoc" type="java.lang.Character" column="c_integrante_soc" not-null="true" length="1"/>
+
+    <property name="empleador" type="java.lang.Character" column="c_empleador" not-null="true" length="1"/>
+    
+    <set name="individuoCategorias" inverse="false" cascade="none"  >
+        <key>
+            <column name="c_id_individuo" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.impuestos.negocio.ImpuestosIndividuo"/>
+    </set>    
+    
+    <set name="exclusion" inverse="false" cascade="none"  >
+        <key>
+            <column name="c_id_individuo" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.impuestos.negocio.Exclusion"/>
+    </set>   
+
+</class>
+</hibernate-mapping>

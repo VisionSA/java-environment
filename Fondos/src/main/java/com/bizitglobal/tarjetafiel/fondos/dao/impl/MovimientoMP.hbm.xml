@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.MovimientoMP" table="T_VIS_FON_MOVIMIENTOS_MP" >
+	
+	<cache usage="read-write"/>
+	
+	<id name="idMovimientoMP" type="java.lang.Long" column="C_ID_MOVIM_MP">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_MOVIMIENTO_MP_ID</param>
+		</generator>
+	</id>
+	
+	<property name="monto" type="java.lang.Double" column="C_MONTO" not-null="true" />
+	
+    <many-to-one name="movimiento" cascade="save-update" 
+    		class="com.bizitglobal.tarjetafiel.fondos.negocio.Movimiento" not-null="true" >
+		<column name="C_ID_MOVIMIENTO" />
+	</many-to-one>
+   	
+   	<many-to-one name="formaPago" cascade="none" 
+   			class="com.bizitglobal.tarjetafiel.general.negocio.FormaPago" not-null="true" >
+		<column name="C_ID_FORMA_PAGO" />
+	</many-to-one>
+	
+
+	<many-to-one name="asientoItem" cascade="save-update" 
+			class="com.bizitglobal.tarjetafiel.fondos.negocio.AsientoItem" not-null="false" >
+		<column name="C_ID_ASIENTO_ITEM" />
+	</many-to-one>
+	
+	<set name="chequeHistorial" inverse="true" cascade="save-update">
+          <key>
+    	      <column name="C_ID_MOVIM_MP" precision="10" scale="0" not-null="false" />
+          </key>
+          <one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.ChequeHistorial" />        
+    </set>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onComplete()"   width="250" height="100%"  layout="absolute" title="{etapaVersion.etapa.descripcion}" >
+	              <mx:VBox width="100%" height="100%">
+	              	
+	                <mx:HBox width="100%" verticalAlign="middle" height="30">
+	                	<mx:Label text="Duración etapa en dias:" paddingLeft="20" width="70%"/>
+	                    <mx:TextInput text="{etapaVersion.dias}" change="etapaVersion.dias = new int(txtDuracionEtapa.text)" id="txtDuracionEtapa" width="20%" paddingRight="20"/>	
+	                </mx:HBox>
+	                <mx:DataGrid x="10" y="10" dropEnabled="true" id="grid" rowHeight="100" dataProvider="{dataProvider}" width="100%" height="100%" change="dataProvider.refresh()">
+						<mx:columns>
+						
+						    <mx:DataGridColumn  headerText="Acciones a tomar" width="250" >
+						       
+						       <mx:itemRenderer>
+						       	   <mx:Component>
+						       	   		<mx:VBox  width="100%" horizontalScrollPolicy="off" height="30" horizontalAlign="center" verticalAlign="middle" >
+												<mx:Script>
+													<![CDATA[
+														import flash.sampler.getInvocationCount;
+														
+														public function tomarSeleccionConcepto():void {
+															if (data.conceptoCabecera) {
+																for (var concep:int=0; cmbConcep.dataProvider[concep]!=null ;concep++) {
+																		if (cmbConcep.dataProvider[concep].idConcepto ==  data.conceptoCabecera.idConcepto) {
+																		    cmbConcep.selectedItem = cmbConcep.dataProvider[concep];
+																		    break;
+																		};
+																	
+																}
+															}
+														}
+													]]>
+												</mx:Script>
+												<mx:HBox  id="cajaLabelAccion" width="100%"  horizontalAlign="center" verticalAlign="middle" >
+													<mx:Label text="{data.accion.descripcion}" width="60%" />
+													<mx:Label text="Día:" textAlign="right"/>
+													<mx:TextInput text="{data.dias}" change="data.dias = new int(txt.text)" id="txt" width="30" />			
+												    <mx:LinkButton icon="@Embed(source='../../img/stop_22x22.png')" click="{outerDocument.dataProvider.removeItemAt(outerDocument.dataProvider.getItemIndex(data))}" toolTip="Eliminar Acción"/>
+												    
+												</mx:HBox>
+												<mx:HBox id="hbox2" width="100%" horizontalScrollPolicy="off" >
+													<mx:Label text="Concepto:" />
+													<mx:ComboBox id="cmbConcep" creationComplete="tomarSeleccionConcepto()" dataProvider="{outerDocument.conceptos}" width="150" labelField="descripcion" change="{outerDocument.dataProvider.getItemAt(outerDocument.dataProvider.getItemIndex(data)).conceptoCabecera = cmbConcep.selectedItem}" />
+												</mx:HBox>
+												
+												<mx:NumberValidator id="numberValidator"
+														source="{txt}" lowerThanMinError="El valor es requerido"
+														property="text" 
+														minValue="1" />
+														
+												
+													
+										</mx:VBox>
+										
+						       	   </mx:Component>
+						       </mx:itemRenderer>
+						    </mx:DataGridColumn>
+						</mx:columns>
+					</mx:DataGrid>
+		</mx:VBox>
+		<mx:Script>
+			<![CDATA[
+				import model.PlanModel;
+				import mx.collections.Sort;
+				import mx.collections.SortField;
+				import mx.utils.ObjectUtil;
+				import views.components.ArrayCollectionCustom;
+				import com.tarjetafiel.caja.vo.AccionVersion;
+				import com.tarjetafiel.caja.vo.Accion;
+				import mx.events.CollectionEvent;
+				import mx.collections.ArrayCollection;
+				import mx.events.ListEvent;
+				import mx.events.DragEvent;
+				import mx.events.FlexEvent;
+				import views.components.ItemRenderer;
+				import com.tarjetafiel.caja.vo.EtapaVersion;
+				[Bindable]public var etapaVersion:EtapaVersion;
+				
+				public var da:Object;
+				[Bindable]public var planModel:PlanModel;
+				[Bindable]public var dataProvider:ArrayCollectionCustom = new ArrayCollectionCustom();
+				[Bindable]public var conceptos:ArrayCollection = new ArrayCollection();
+				
+			    public function getEtapaVersion():EtapaVersion {
+			    	return etapaVersion;
+			    }
+			    
+			    
+			    
+			    
+			    private function onComplete():void{
+			    	dataProvider.eta = etapaVersion;
+				    dataProvider.source = etapaVersion.accionesVersion;
+				    var sortField:SortField = new SortField();
+		            sortField.compareFunction = ordenarPorDias;
+		            sortField.descending = false;
+		            var oldSort:Sort = new Sort();
+		            oldSort.fields = [sortField];
+		            dataProvider.sort = oldSort;
+			    }
+			    
+			  /*   private function onComplete2():void{
+			    	dataProvider.eta = etapaVersion;
+				    dataProvider.source = etapaVersion.accionesVersion;
+				    dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE,function(evt:CollectionEvent):void{
+				    });
+				    var sortField:SortField = new SortField();
+		            sortField.compareFunction = ordenarPorDias;
+		            sortField.descending = false;
+		            var oldSort:Sort = new Sort();
+		            oldSort.fields = [sortField];
+		            dataProvider.sort = oldSort;
+		            
+			    }+*/
+			    
+			    
+			    private function ordenarPorDias(itemA:AccionVersion, itemB:AccionVersion):int {
+	                var valueA:int = itemA.dias;
+	                var valueB:int = itemB.dias;
+	                return ObjectUtil.numericCompare(valueA, valueB);
+			    }
+
+			]]>
+		</mx:Script>
+</mx:Panel>

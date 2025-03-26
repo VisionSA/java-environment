@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.planificadoremail.negocio.UrlTemplate" table="T_VIS_PLA_URLTEMPLATE" >
+	
+	<cache usage="read-write"/>
+	<id name="idUrlTemplate" type="java.lang.Long" column="C_ID_URLTEMPLATE">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_URL_TEMPLATE_ID</param>
+		</generator>
+	</id>
+	
+	<property name="nombre" type="java.lang.String" column="C_NOMBRE" not-null="true"  length="50"/>
+	<property name="direccion" type="java.lang.String" column="C_DIRECCION" not-null="true"  length="100"/>
+	
+	<many-to-one name="template" class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.Template" not-null="true">
+		<column name="C_ID_TEMPLATE" />
+	</many-to-one>
+	
+    <set name="urlParamatros" inverse="false" cascade="all" lazy="false">
+		<key>
+			<column name="C_ID_URLTEMPLATE" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.UrlParametro"/>
+	</set>
+	
+</class>
+</hibernate-mapping>

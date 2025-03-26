@@ -1,0 +1,734 @@
+package com.bizitglobal.webapp.faces.beans.evaluacion;
+
+import java.io.DataOutputStream;
+import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.context.FacesContext;
+
+import org.apache.log4j.Logger;
+
+import com.bizitglobal.tarjetafiel.commons.filtros.Filtro;
+import com.bizitglobal.tarjetafiel.evaluacion.exception.IndividuoEvaluacionException;
+import com.bizitglobal.tarjetafiel.evaluacion.exception.SolicitudException;
+import com.bizitglobal.tarjetafiel.evaluacion.negocio.Bancos;
+import com.bizitglobal.tarjetafiel.evaluacion.negocio.Emails;
+import com.bizitglobal.tarjetafiel.evaluacion.negocio.IndividuoDomicilio;
+import com.bizitglobal.tarjetafiel.evaluacion.negocio.IndividuoEvaluacion;
+import com.bizitglobal.tarjetafiel.evaluacion.negocio.IndividuoVehiculo;
+import com.bizitglobal.tarjetafiel.evaluacion.negocio.Tarjeta;
+import com.bizitglobal.tarjetafiel.evaluacion.negocio.Telefonos;
+import com.bizitglobal.tarjetafiel.general.negocio.SucTelefono;
+import com.bizitglobal.tarjetafiel.transacciones.exception.ClienteTransaccionException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.LineaCredComposException;
+import com.bizitglobal.tarjetafiel.transacciones.exception.LineaCredHistoricoException;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.ClienteTransaccion;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.LineaCredCompos;
+import com.bizitglobal.tarjetafiel.transacciones.negocio.LineaCredHistorico;
+import com.bizitglobal.tarjetafiel.transacciones.service.impl.ProcesarCobroExterno;
+import com.bizitglobal.webapp.faces.beans.BaseBean;
+import com.bizitglobal.webapp.faces.beans.transacciones.popup.IndividuoPopupBean;
+import com.bizitglobal.webapp.faces.beans.util.ScrollBean;
+import com.bizitglobal.webapp.faces.util.Error;
+import com.bizitglobal.webapp.faces.util.Session;
+
+
+@SuppressWarnings({"rawtypes","unchecked"})
+public class CliCambioLimBean extends BaseBean {
+	private static final Logger log = Logger.getLogger(CliCambioLimBean.class);
+	private String obsCred;
+	private BigDecimal limiteCred;
+	private Long idCliClienteHidden;
+	private String cuil;
+	private ClienteTransaccion titular;
+	private List lineaCredCompos;
+	private List lineaCredComposTem;
+	private String leyendaTemporal = "";
+
+	private IndividuoEvaluacion individuo;
+	
+	private static final Charset UTF_8 = Charset.forName("UTF-8");
+	private static final Charset ISO = Charset.forName("ISO-8859-1");
+
+	// definicion de un list del objeto base
+	private List cliclienteList;
+	
+	
+
+	// Listas para la presentacion(HtmlSelectItems).
+	// Objetos Relacionados.
+
+	private String focoHidden;
+
+
+	public CliCambioLimBean() {
+		super();
+		borrar();
+	}
+
+
+	public String getObsCred() {
+		return obsCred;
+	}
+
+
+	public void setObsCred(String obsCred) {
+		this.obsCred = obsCred;
+	}
+
+
+	public BigDecimal getLimiteCred() {
+		return limiteCred;
+	}
+
+
+	public void setLimiteCred(BigDecimal limiteCred) {
+		this.limiteCred = limiteCred;
+	}
+
+
+	public Long getIdCliClienteHidden() {
+		return idCliClienteHidden;
+	}
+
+
+	public void setIdCliClienteHidden(Long idCliClienteHidden) {
+		this.idCliClienteHidden = idCliClienteHidden;
+	}
+
+
+	public IndividuoEvaluacion getIndividuo() {
+		return individuo;
+	}
+
+
+	public void setIndividuo(IndividuoEvaluacion individuo) {
+		this.individuo = individuo;
+	}
+
+
+	public List getCliClienteList() {
+		return cliclienteList;
+	}
+
+
+	public void setCliClienteList(List object) {
+		this.cliclienteList = object;
+	}
+
+
+	public String getFocoHidden() {
+		return focoHidden;
+	}
+
+
+	public void setFocoHidden(String focoHidden) {
+		this.focoHidden = focoHidden;
+	}
+
+
+	public String getCuil() {
+		return cuil;
+	}
+
+
+	public void setCuil(String cuil) {
+		this.cuil = cuil;
+	}
+
+
+	public String getLeyendaTemporal() {
+		return leyendaTemporal;
+	}
+
+
+	/************************************************************************
+	 * ACCIONES DEL BEAN DE CLICLIENTE
+	 ************************************************************************/
+
+	public String inicializar() {
+		borrar();
+		cargarItems();
+		return "amCliCliente";
+	}
+
+
+	public void inicializarParametros(Map param) {
+		borrar();
+		String paraCuil = null;
+		try {
+			paraCuil = (String) param.get("cuil");
+		} catch (ClassCastException e) {
+			error.agregar(Error.EVA_NUMERO_SOLICITUD_INCORRECTO);
+		} catch (NumberFormatException e2) {
+			error.agregar(Error.EVA_NUMERO_SOLICITUD_INCORRECTO);
+		}
+		this.cuil = paraCuil;
+		if (validar()) {
+			try {
+				individuo = evaluacionService.getIndividuoEvaluacionService().buscarIndividuo(cuil);
+				leerIndividuos();
+				if (individuo != null) {
+					alta = false;
+					Filtro filtro = new Filtro();
+					filtro.agregarCampoOperValor("individuo.idIndividuo", Filtro.IGUAL, individuo.getIdIndividuo());
+					filtro.agregarCampoOperValor("adicional", Filtro.IGUAL, "0");
+					List cliIndList = transaccionesService.getClienteTransaccionService().getCliente(filtro);
+					if (cliIndList.isEmpty()) {
+						error.agregar("El Cliente no fue encontrado");
+					} else {
+						Iterator iter = cliIndList.iterator();
+						while (iter.hasNext()) {
+							setTitular((ClienteTransaccion) iter.next());
+							if (getTitular().getIdTitular() != null && !getTitular().getIdTitular().equals(0L)) {
+								error.agregar("El Cliente no es Titular");
+							}
+
+							filtro.reset();
+							filtro.agregarCampoOperValor("cliente.idCliente", Filtro.IGUAL, getTitular().getIdCliente());
+							filtro.agregarCampoOperValor("tipo", Filtro.LIKE, "LINEA");
+							lineaCredCompos = transaccionesService.getLineaCredComposService().getLineaCerdCompos(filtro);
+
+							filtro.reset();
+							filtro.agregarCampoOperValor("cliente.idCliente", Filtro.IGUAL, getTitular().getIdCliente());
+							filtro.agregarCampoOperValor("tipo", Filtro.LIKE, "TEMPORAL");
+							filtro.agregarCampoOperValor("importe", Filtro.DISTINTO, "0");
+							try {
+								lineaCredComposTem = transaccionesService.getLineaCredComposService().getLineaCerdCompos(filtro);
+								if (!lineaCredComposTem.isEmpty())
+									leyendaTemporal = "La linea actual posee un aumento TEMPORAL de "
+											+ ((LineaCredCompos) lineaCredComposTem.get(0)).getImporte()
+											+ ", que se removera cuando se grabe";
+							} catch (LineaCredComposException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				} else {
+					error.agregar("El individuo no fue encontrado");
+				}
+			} catch (IndividuoEvaluacionException e) {
+				error.agregar("Error al cargar los datos.");
+				e.printStackTrace();
+			} catch (Exception e) {
+				error.agregar("Error al cargar los datos.");
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	// private void filtrar(Filtro filtro) {
+	// try {
+	// setLineaCredCompos(transaccionesService.getLineaCredComposService().getLineaCerdCompos(filtro));
+	//
+	// if (getLineaCredCompos().size() == 0) {
+	// error.agregar("El Cliente no tiene Linea de Credito");
+	// }
+	// } catch (LineaCredComposException e) {
+	// e.printStackTrace();
+	// }
+	// }
+
+	private void leerIndividuos() throws SolicitudException {
+		IndividuoEvaluacion in = individuo;
+		in.getIdIndividuo();
+		if (in.getActividad() != null) {
+			if (in.getActividad().getSucEmpresa() != null) {
+				if (in.getActividad().getSucEmpresa().getEmpresa() != null)
+					in.getActividad().getSucEmpresa().getEmpresa().getCuit();
+				if (in.getActividad().getSucEmpresa().getDomicilio() != null) {
+					in.getActividad().getSucEmpresa().getDomicilio()
+							.getBarrio().getDescripcion();
+					in.getActividad().getSucEmpresa().getDomicilio()
+							.setLocalidad(
+									generalService.getLocalidadDao()
+											.buscarLocalidad(
+													in.getActividad()
+															.getSucEmpresa()
+															.getDomicilio()
+															.getLocalidad()
+															.getIdLocalidad()));
+					in.getActividad().getSucEmpresa().getDomicilio()
+							.getLocalidad().getProvincia().getPais()
+							.getNombre();
+				}
+				if (in.getActividad().getSucEmpresa().getSucTelefonos() != null) {
+					Iterator iter = in.getActividad().getSucEmpresa()
+							.getSucTelefonos().iterator();
+					while (iter.hasNext()) {
+						SucTelefono tel = (SucTelefono) iter.next();
+						tel.getTelefono().getNroTlefono();
+					}
+				}
+			}
+			in.getActividad().getOcupacion();
+		}
+		in.getEducacion();
+		in.getVinculo();
+		if (in.getDomicilio() != null) {
+			in.getDomicilio().getTipoDomicilio();
+			if (in.getDomicilio().getTipoVivienda() != null) {
+				in.getDomicilio().getTipoVivienda().getDescripcion();
+			}
+			if (in.getDomicilio().getPropVivienda() != null)
+				in.getDomicilio().getPropVivienda().getDescripcion();
+			if (in.getDomicilio().getBarrio() != null)
+				in.getDomicilio().getBarrio().getDescripcion();
+			if (in.getDomicilio().getLocalidad() != null)
+				in.getDomicilio().getLocalidad().getCodigoPostal();
+			if (in.getDomicilio().getTipoDomicilio() != null)
+				in.getDomicilio().getTipoDomicilio().getDescripcion();
+			in.getDomicilio().getAntiguedad();
+			in.getDomicilio().getTimestamp();
+			in.getDomicilio().getCodigoPostal();
+			in.getDomicilio().getOperador();
+			in.getDomicilio().getOrientacion();
+			in.getDomicilio().getCuotaAlquiler();
+		}
+		if (in.getMails() != null) {
+			Iterator iterMail = in.getMails().iterator();
+			while (iterMail.hasNext()) {
+				Emails maiAuxi = (Emails) iterMail.next();
+				maiAuxi.getEmail().getEmail();
+				maiAuxi.getIndividuoEvaluacion();
+			}
+		}
+		if (in.getTarjetas() != null) {
+			Iterator iterTarj = in.getTarjetas().iterator();
+			while (iterTarj.hasNext()) {
+				Tarjeta tarAuxi = (Tarjeta) iterTarj.next();
+				tarAuxi.getBanco();
+				tarAuxi.getIndividuoEvaluacion();
+			}
+		}
+		if (in.getDiaPago() != null) {
+			in.getDiaPago().getPartido();
+		}
+		if (in.getTelefonos() != null) {
+			Iterator iterTelefonos = in.getTelefonos().iterator();
+			while (iterTelefonos.hasNext()) {
+				Telefonos telAuxi = (Telefonos) iterTelefonos.next();
+				telAuxi.getTelefono().getTipo().getDescripcion();
+				telAuxi.getIndividuoEvaluacion();
+			}
+		}
+		in.getVehiculos();
+		if (in.getVehiculos() != null) {
+			Iterator iterVehiculos = in.getVehiculos().iterator();
+			while (iterVehiculos.hasNext()) {
+				IndividuoVehiculo vehAuxi = (IndividuoVehiculo) iterVehiculos
+						.next();
+				vehAuxi.getVehiculo().getPatente();
+				vehAuxi.getIndividuoEvaluacion();
+			}
+		}
+		if (in.getBancos() != null) {
+			Iterator iterBancos = in.getBancos().iterator();
+			while (iterBancos.hasNext()) {
+				Bancos banAuxi = (Bancos) iterBancos.next();
+				banAuxi.getBanco().getDescripcion();
+				banAuxi.getIndividuo();
+			}
+		}
+		in.getDomicilioDoc();
+		if (in.getDomicilios() != null) {
+			Iterator iterDeDomicilios = in.getDomicilios().iterator();
+			while (iterDeDomicilios.hasNext()) {
+				IndividuoDomicilio domAuxi = (IndividuoDomicilio) iterDeDomicilios
+						.next();
+				if (domAuxi.getDomicilio().getTipoDomicilio() != null)
+					domAuxi.getDomicilio().getTipoDomicilio().getDescripcion();
+				if (domAuxi.getDomicilio().getTipoVivienda() != null)
+					domAuxi.getDomicilio().getTipoVivienda().getDescripcion();
+				if (domAuxi.getDomicilio().getPropVivienda() != null)
+					domAuxi.getDomicilio().getPropVivienda().getDescripcion();
+				domAuxi.getDomicilio().getBarrio().getLocalidad().getPartido()
+						.getProvincia().getPais().getNombre();
+				domAuxi.getIndividuoEvaluacion();
+			}
+		}
+		in.getProfesion();
+	}
+
+
+	private void cargarItems() {
+
+	}
+
+
+	public String grabar() {
+		try {
+			if (validarGrabar()) {
+				leerIndividuos();
+				boolean temporal = false;
+				Calendar calendar = Calendar.getInstance();
+				// veo si tenia linea de Credito temporal
+				if (lineaCredComposTem != null && lineaCredComposTem.size() > 0) {
+					Iterator iterador = lineaCredComposTem.iterator();
+					while (iterador.hasNext()) {
+						LineaCredCompos linea = (LineaCredCompos) iterador.next();
+						if (linea.getImporte() != 0) {
+							LineaCredHistorico lineaCredHist = new LineaCredHistorico();
+							lineaCredHist.setCliente(getTitular());
+							/* @F5374 */lineaCredHist.setOperador(linea.getOperador());
+							lineaCredHist.setFechaDesde(linea.getFechaDesde());
+							lineaCredHist.setFechaHasta(new Timestamp(calendar.getTime().getTime()));
+							// lineaCredHist.setFechaHasta(linea.getFechaHasta());
+							lineaCredHist.setFechaUltModif(new Timestamp(new Date().getTime()));
+							lineaCredHist.setImporte(linea.getImporte());
+							lineaCredHist.setTipo(linea.getTipo());
+
+							try {
+								// Grabo en el Historico
+								transaccionesService.getLineaCredHistoricoService().grabarLineaCredHistorico(lineaCredHist);
+							} catch (LineaCredHistoricoException e) {
+								e.printStackTrace();
+							}
+							try {
+								/* @I5374 */// Elimino la linea temporal activa
+								// linea.setImporte(0L);
+								/* @F5374 */transaccionesService.getLineaCredComposService().borrarLineaCerdCompos(linea);
+							} catch (LineaCredComposException e) {
+								e.printStackTrace();
+							}
+							try {
+								// resto el limite Temporal anterior
+								getTitular().setLimiteCredito(
+										getTitular().getLimiteCredito().subtract(BigDecimal.valueOf(lineaCredHist.getImporte())));
+								transaccionesService.getClienteTransaccionService().actualizarCliente(getTitular());
+							} catch (ClienteTransaccionException e) {
+								e.printStackTrace();
+							}
+							temporal = true;
+						}
+					}
+				}
+
+				getTitular().setLimiteCredito(limiteCred);
+
+				LineaCredCompos linea;
+				/* @I5374 */if (lineaCredCompos.isEmpty()) {
+					linea = new LineaCredCompos();
+					linea.setCliente(getTitular());
+					linea.setTipo("LINEA");
+					linea.setImporte(limiteCred.longValue());
+					linea.setFechaUltModif(new Timestamp(new Date().getTime()));
+					linea.setOperador(Session.getOperador());
+				} else {
+					linea = (LineaCredCompos) lineaCredCompos.get(0);
+				}
+				// linea.setImporte(limiteCred.longValue());
+				// linea.setFechaUltModif(new Timestamp(new Date().getTime()));
+				//
+				// LineaCredHistorico lineaCredHistorico = new LineaCredHistorico();
+				// lineaCredHistorico.setCliente(linea.getCliente());
+				// lineaCredHistorico.setImporte(linea.getImporte());
+				// lineaCredHistorico.setOperador(Session.getOperador());
+				// lineaCredHistorico.setFechaUltModif(linea.getFechaUltModif());
+				// lineaCredHistorico.setTipo(linea.getTipo());
+
+				try {
+					transaccionesService.getClienteTransaccionService().actualizarCliente(getTitular());
+					if (linea.getIdLineaCreditoCompos() == null) {
+						transaccionesService.getLineaCredComposService().grabarLineaCredCompos(linea);
+					} else {
+						LineaCredHistorico lineaCredHistorico = new LineaCredHistorico();
+						lineaCredHistorico.setCliente(linea.getCliente());
+						lineaCredHistorico.setImporte(linea.getImporte());
+						lineaCredHistorico.setFechaUltModif(linea.getFechaUltModif());
+						lineaCredHistorico.setTipo(linea.getTipo());
+						lineaCredHistorico.setOperador(linea.getOperador());
+						transaccionesService.getLineaCredHistoricoService().grabarLineaCredHistorico(lineaCredHistorico);
+
+						linea.setImporte(limiteCred.longValue());
+						linea.setFechaUltModif(new Timestamp(new Date().getTime()));
+						linea.setOperador(Session.getOperador());
+						transaccionesService.getLineaCredComposService().actualizarLineaCerdCompos(linea);
+					}
+					
+					String body = "Tu Linea de Credito fue actualizada.\n Consulta tu aplicacion.\n Tarjeta Fiel";
+					
+				//	String register = "d97hkGsKSKiXtvCKnI4VXl:APA91bG2RHtX6ttoXdEZSrSXfyVb-CBGl-ub_zbdsYXlaq6EVnf2YFp7Y7A7oQ1lyC3TWf-b5Jc8dPrIXkAan86OWqtIkotrg6pE515Zp01W8LR5b9iQvJKBZN4enjFxSIvcBkFnIlra";
+					//log.info("body1 "+ body1);
+		          
+					//String body = new String(body1.getBytes(ISO), UTF_8);
+					
+					//text1 = new String(textwithaccent.getBytes(ISO), UTF_8);
+					//log.info("body "+ body);
+					
+					String nombre = "Tarjeta Fiel";
+					
+					//List<String> registers = transaccionesService.getClienteTransaccionService().getTramiteLineaCredito(62359L);
+					List<String> registers = transaccionesService.getClienteTransaccionService().getTramiteLineaCredito(getTitular().getIdCliente());
+					Iterator<String> iter = registers.iterator();
+					while(iter.hasNext()){
+						String register = iter.next();
+						
+						String msj = "" +
+								"{" +
+									"\"registration_ids\" : [\"" + register + "\"]" +
+									",\"notification\" : " +
+									"{" +
+										"\"title\":\""+ nombre + "\"," +
+										"\"body\":\"" + body + "\"" +
+									"}" +
+								"}";
+						log.info("msj "+ msj);
+						
+						URL url = new URL("http://192.168.0.2:8080/FielWebCliente/appCliente/PlanificadorNotificacionWebServlet");
+
+						// 2. Open connection
+						HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+						// 3. Specify POST method
+						conn.setRequestMethod("POST");
+
+						// 4. Set the headers
+						conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+						//conn.setRequestProperty("Authorization", "key=" + apiKey);
+
+						conn.setDoOutput(true);
+
+						// 5. Add JSON data into POST request body
+						DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+						wr.writeBytes(msj);
+
+						// 5.1 Send the request
+						wr.flush();
+
+						// 5.2 close
+						wr.close();
+
+						// 6. Get the response
+						int responseCode = conn.getResponseCode();
+						log.info("Sending 'POST' request to URL : " + url);
+						log.info("Response Code : " + responseCode);
+
+						if (responseCode == 200) {
+							log.info("Response Code : " + responseCode);
+							log.info("Envio Notificacion correctamente");
+							log.info("limiteCred.longValue() "+ limiteCred.longValue());
+							transaccionesService.getClienteTransaccionService().envioNotifLineaCredito(register,getTitular().getIdCliente(),limiteCred.longValue());
+							//envioNotifLineaCredito(final String registro,final Long idTitular,final long lineaCredito );
+							
+						} else {
+							log.info("Response Code : " + responseCode);
+							log.info("No se Envio Notificacion error de envio");
+							
+						}				
+						
+						
+//						String linea = iter.next()+"\n";
+//						lineaArchivo.append(linea);
+						
+					}
+					
+					// Envio del mail al titular por  cambio de linea de credito
+					
+					if (individuo.getMails() != null) {
+						Iterator iterMail = individuo.getMails().iterator();
+						while (iterMail.hasNext()) {
+							Emails maiAuxi = (Emails) iterMail.next();
+							maiAuxi.getEmail().getEmail();
+							maiAuxi.getIndividuoEvaluacion();
+						String	strTemplateId = "72";
+							
+							  String msj = "" +
+							"{" +							    
+							    "\"nombre\": \"" + individuo.getNombres() + "\"," +
+							    "\"strTemplateId\": \"" + strTemplateId + "\"," +
+							    "\"email\": \"" + maiAuxi.getEmail().getEmail() + "\"" +
+							"}";
+							  
+							  getSendinBlue(msj);
+							
+						//	 Id template: 72
+						//	 Parametros: nombre, email.
+						}
+					}
+					
+					// transaccionesService.getLineaCredHistoricoService().grabarLineaCredHistorico(lineaCredHistorico);
+					/* @F5374 */leyendaTemporal = "";
+					if (temporal) {
+						popup.setPopup(popup.ICONO_OK, "El cliente tenia una linea de Credito Temporal y fue eliminada");
+					} else {
+						popup.setPopup(popup.ICONO_OK, "El cliente ha sido modificado exitosamente.");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					popup.setPopup(popup.ICONO_ERROR, "Ocurrio un error al intentar modificar la linea de credito.");
+				}
+			} else {
+				ScrollBean scrollBean = (ScrollBean) Session.getBean("ScrollBean");
+				scrollBean.borrar();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	private void getSendinBlue( String msj){
+		 try{
+			 
+//			 String msj = "" +
+//						"{" +						    
+//						    "\"email\": \"" + emailInCola.getEmail() + "\"" +
+//						"}";
+			 
+			 // URL url = new URL("http://localhost:8080//envioEmail");
+			 // URL url = new URL("http://192.168.0.10:8080/spring-boot-web/envioEmail");
+			  
+			  //URL url = new URL("http://15.228.58.39:8080/spring-boot-web/envioEmail");
+			  URL url = new URL("http://192.168.0.76:8080/spring-boot-web/envioEmail");
+			  HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			  conn.setRequestMethod("POST");
+			  conn.setRequestProperty("Content-Type", "application/json");
+			  conn.setDoOutput(true);
+			  DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+			 // wr.writeBytes(URLEncoder.encode(myObject.toString(),"UTF-8"));
+			  wr.writeBytes(msj);
+			  wr.flush();
+			  wr.close();
+			  
+			  int responseCode = conn.getResponseCode();
+			  if (responseCode == 201 || responseCode == 200 ) {
+				 
+				  conn.disconnect();
+				  
+			  }
+			  else{
+				  conn.disconnect();
+				  
+			  }
+		 }
+		 catch(Exception e){
+			 e.printStackTrace();
+			
+		 }
+	 }
+	
+	
+	private String replace(String body2, String string, String string2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public static String toUTF8(String s) {
+	    if (s != null) {
+	        String ss;
+	        try {
+	            ss = new String(s.getBytes(), "ISO-8859-1");
+	        } catch (Exception ex) {
+	            ex.printStackTrace(System.out);
+	            ss = null;
+	        }
+	        return ss;
+	    } else {
+	        return "";
+	    }
+	}
+
+
+	public void borrar() {
+		borrarBaseBean();
+		alta = true;
+		tituloLargo = "TARJETA FIEL";
+		tituloCorto = "Cambio Linea Credito";
+		obsCred = "";
+		limiteCred = new BigDecimal(0);
+		idCliClienteHidden = new Long(0);
+		cliclienteList = new ArrayList();
+		leyendaTemporal = "";
+	}
+
+
+	public String cancelar() {
+		borrar();
+		ejecutarJavaScript("window.close();");
+		return "";
+	}
+
+
+	public String irAIndividuo() {
+		IndividuoPopupBean bean = (IndividuoPopupBean) Session
+				.getBean("IndividuoPopupBean");
+		Map param = new HashMap();
+		param.put("idIndividuo", individuo.getIdIndividuo());
+		param.put("origen", "1");
+		param.put("editDatos", "true");
+		param.put("editDomicilio", "true");
+		param.put("editTelefono", "true");
+		param.put("editEmail", "true");
+		param.put("editFamilia", "true");
+		param.put("editActividad", "true");
+		param.put("editFacturacion", "true");
+		param.put("editFinanciero", "true");
+		param.put("editPropiedades", "true");
+		param.put("editDigitales", "true");
+		bean.inicializarParametros(param);
+		String path = FacesContext.getCurrentInstance().getExternalContext()
+				.getRequestContextPath();
+		path += "/tarjetafiel/transacciones/popup/IndividuoPopup.jsf";
+		ejecutarJavaScript("popup('" + path + "',1000,600), 'titlebar=no';");
+		return null;
+	}
+
+
+	public String irAContinuar() {
+		popup.borrar();
+		return "";
+	}
+
+
+	public String irASalir() {
+		return cancelar();
+	}
+
+
+	public String rellenarCerosFaltantes(String num) {
+		String aux = "";
+		for (int i = 0; i < (8 - num.length()); i++) {
+			aux = aux + "0";
+		}
+		aux = aux + num;
+		return aux;
+	}
+
+
+	public boolean validarGrabar() {
+		if (limiteCred == null || limiteCred.equals(new BigDecimal(0)))
+			error.agregar("El limite de credito es un dato requerido.");
+
+		return !error.hayErrores();
+	}
+
+
+	public boolean validar() {
+		log.info("Ejecuando ==> Validar()");
+		return !error.hayErrores();
+	}
+
+
+	public void setTitular(ClienteTransaccion titular) {
+		this.titular = titular;
+	}
+
+
+	public ClienteTransaccion getTitular() {
+		return titular;
+	}
+
+}

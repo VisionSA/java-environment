@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onCreationComplete()" keyDown="closePopUp(event)" resize="PopUpManager.centerPopUp(parent as IFlexDisplayObject)"  horizontalAlign="center" verticalAlign="middle" layout="vertical" xmlns:controles="com.tarjetafiel.caja.view.caja.controles.*" xmlns:textInput="com.util.components.textInput.*">
+	<mx:Repeater dataProvider="{ModelLocator.getInstance().formaPagoCajaModel.arrayFormaPagoArqueo}" id="rpt">		
+		<controles:RetiroValoresMpView cajaMp="{rpt.currentItem as CajaMP}"/>		
+	</mx:Repeater>
+	<mx:Button label="Registrar Descarga" click="descargarValores()"/>
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.event.DescargaValoresEvent;
+			import mx.controls.Alert;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.PopUpManager;
+			
+			private function closePopUp(event:KeyboardEvent):void{
+				if(event.keyCode == Keyboard.ESCAPE){					
+					PopUpManager.removePopUp(parent as IFlexDisplayObject);
+				}
+			}
+			
+			private function onCreationComplete():void{
+				ModelLocator.getInstance().descargaValoresModel.addEventListener(DescargaValoresEvent.RETIRO_COMPLETE,
+				function(evt:DescargaValoresEvent):void{
+					PopUpManager.removePopUp(parent as IFlexDisplayObject);
+				});
+			}
+			
+			private function descargarValores():void{
+				new DescargaValoresEvent(DescargaValoresEvent.REGISTRAR_RETIRO).dispatch();
+			}					
+			
+		]]>
+	</mx:Script>
+	
+</mx:Module>

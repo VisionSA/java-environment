@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" paddingBottom="5" paddingTop="5" layout="vertical"
+	 xmlns:upload="com.util.upload.*" xmlns:pagofacil="modules.pagofacil.*" 
+	 xmlns:date="com.util.components.date.*" xmlns:paginacion="com.util.paginacion.*" 
+	 backgroundColor="#6E6E6E" width="100%" height="100%" xmlns:mate="http://mate.asfusion.com/"
+	 creationComplete="popUpUpload.nombreFiltro = 'Archivos CSV', popUpUpload.extensionFiltro = '*.csv'">
+		
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ArchivoFarmacia;
+			/* import com.tarjetafiel.caja.vo.ArchivoPagoFacilNegocio; */
+			
+			import vo.ArchivoCobroExternoNegocio;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.events.CloseEvent;
+			
+			[Bindable]public var manager:Manager;
+			
+			private var popUpUpload:UploadArchivo = new UploadArchivo();
+			
+			private function uploadNuevoArchivo():void{
+				popUpUpload.title = "Upload Archivo Farmacia";
+				popUpUpload.manager = this.manager;
+				PopUpManager.addPopUp(popUpUpload,this,true);
+				PopUpManager.centerPopUp(popUpUpload);
+				popUpUpload.tipoArchivo = "FA";
+			}
+			
+			private function paginar():void{
+				manager.paginadoFarmacia = paginador.paginador;
+				manager.paginarFarmacia();
+			}
+			
+			private function buscar():void{
+				paginador.paginador.pagina = 0;
+				manager.paginadoFarmacia = paginador.paginador;
+				manager.listAllArchivosFarmacia(dateDesde.selectedDate);
+			}
+			
+			public function paginacionCompleta():void{
+				paginador.paginacionCompleta(manager.paginador);
+			}					
+			
+			public function procesar(data:Object):void{
+				manager.procesarArchivoFarmacia(data as ArchivoFarmacia);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mate:Listener type="paginacionCompletaFarmacia" receive="paginacionCompleta()"/>
+	
+	<mx:CurrencyFormatter id="currencyFormatter"  currencySymbol="$" precision="2"/>
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormatter"/>
+	<mx:DateFormatter formatString="DD/MM/YY" id="dateFormatter2"/>
+	
+	<mx:ApplicationControlBar width="100%">
+		<mx:Label text="Fecha desde:" styleName="lblInfoCaja"/>
+		<date:DateFiledMultiLan id="dateDesde" selectedDate="{new Date()}"/>
+		<mx:Button label="Buscar" click="this.buscar()"/>
+	</mx:ApplicationControlBar>	
+	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" height="100%" width="100%" dataProvider="{manager.archivosFarmaciaList}">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Fecha carga" dataField="fechaCarga" formatter="{dateFormatter}"/>
+			<mx:AdvancedDataGridColumn headerText="Fecha Pago" dataField="fechaPago" formatter="{dateFormatter}"/>
+			<mx:AdvancedDataGridColumn headerText="Sucursal" dataField="sucursal"/>
+			<mx:AdvancedDataGridColumn headerText="Cliente" dataField="idCliente"/>
+			<mx:AdvancedDataGridColumn headerText="Importe" dataField="importe" formatter="{currencyFormatter}"/>
+			<mx:AdvancedDataGridColumn headerText="Fecha Vencimiento" dataField="fechaVencimiento" formatter="{dateFormatter2}"/>
+			<mx:AdvancedDataGridColumn headerText="Nombre Archivo" dataField="nombreArchivo"/>
+			<mx:AdvancedDataGridColumn headerText="Procesado" >
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:HBox width="100%" enabled="false" verticalAlign="middle" horizontalAlign="center">
+							<mx:CheckBox selected="{data.procesado == '1' ? true : false}"/>
+						</mx:HBox>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Procesar">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Button label="Procesar" enabled="{data.procesado == '0'}" click="outerDocument.procesar(data)"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>			
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" horizontalGap="2">
+		<paginacion:PaginadorComp id="paginador" verticalGap="0" paginar="this.paginar()"/>
+		<mx:Button label="Subir nuevo" click="uploadNuevoArchivo()"/>
+	</mx:HBox>
+</mx:Module>

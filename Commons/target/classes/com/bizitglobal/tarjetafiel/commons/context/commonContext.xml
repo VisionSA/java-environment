@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<!-- DEFINICION DE JDBC TRASLATOR -->
+	<bean class="org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator" id="jdbcExceptionTranslator">
+		<property name="dataSource">
+	   		<ref bean="dataSource"/>
+	  	</property>
+	</bean>
+
+ 	<!-- DEFINICION DE HIBERNATE TEMPLATE -->
+	<bean class="org.springframework.orm.hibernate3.HibernateTemplate" id="hibernateTemplate">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"/>
+		</property>
+		<property name="jdbcExceptionTranslator">
+			<ref bean="jdbcExceptionTranslator"/>
+		</property>
+	</bean>
+ 
+ 	<!-- DEFINICION DEL TRANSACTION MANAGER -->
+	<bean id="myTxManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="myTxManagerSpring" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="default" autowire="default" dependency-check="default">
+  		<property name="dataSource" ref="dataSource" /> 
+    </bean>
+
+</beans>

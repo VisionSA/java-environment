@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MDIWindow xmlns="flexmdi.containers.*"
+	maximize="this.x = 0,this.y = 0" xmlns:mx="http://www.adobe.com/2006/mxml" height="100%" width="100%" alpha="1.0"
+	backgroundColor="#EFEFEF" borderColor="#919399" borderThicknessLeft="0" borderThicknessRight="0"
+	cornerRadius="0" horizontalAlign="center" paddingBottom="5" paddingLeft="5" paddingTop="5" paddingRight="5"
+	titleStyleName="titleMDI" >
+	<mx:Script>
+		<![CDATA[			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import com.util.components.alert.AlertYesNo;				
+		
+		public function salir():void{
+			
+			AlertYesNo.show("¿Realmente desea salir?", function (evt:CloseEvent):void{
+					if(evt.detail == Alert.YES)
+						close();							
+			});
+				
+		}
+			
+		]]>
+	</mx:Script>
+</MDIWindow>

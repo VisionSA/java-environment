@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="itemsConciliadosItems"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="782"
+		 pageHeight="555"
+		 columnWidth="782"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="ID_CABECERA" isForPrompting="true" class="java.math.BigDecimal"/>
+	<queryString><![CDATA[SELECT DETALLEEXT0_.C_ID_DETALLE_EXTRACTO AS ID_REGISTRO,  
+  'E'            AS TIPO_REGISTRO,  
+  detalleext0_.C_NRO_COMPROBANTE          AS NRO_IDENTIFICA,
+  detalleext0_.C_IMPORTE                  AS IMPORTE,
+  detalleext0_.C_FECHA_MOVIMIENTO         AS FECHA_ITEM,
+  detalleext0_.C_DESCRIPCION              AS DESCRIPCION,
+  CASE detalleext0_.C_SIGNO WHEN 'C' THEN CAST(detalleext0_.C_IMPORTE AS VARCHAR2(100)) ELSE '-' END HABER,
+  CASE detalleext0_.C_SIGNO WHEN 'D' THEN CAST(detalleext0_.C_IMPORTE AS VARCHAR2(100)) ELSE '-' END DEBE
+FROM T_VIS_FON_DETALLE_EXTRACTO DETALLEEXT0_
+WHERE detalleext0_.C_ID_DETALLE_EXTRACTO = (SELECT DISTINCT 
+  conciliaci0_.C_ID_REGISTRO                   AS C3_236_
+FROM T_VIS_FON_CONCILIACION CONCILIACI0_
+WHERE conciliaci0_.C_TIPO = 'E' AND conciliaci0_.C_ID_CABECERA_CONCILIACION = $P{ID_CABECERA} )
+
+UNION ALL
+
+SELECT CHH.C_ID_CHEQUE_HISTORIAL AS ID_REGISTRO,
+  'F' AS TIPO_REGISTRO,
+  ch.c_numero AS NRO_IDENTIFICA,
+  ch.c_importe  AS IMPORTE,
+  A.C_FECHA AS FECHA_ITEM,
+  BCO.C_DESCRIPCION AS  DESCRIPCION,
+  CASE AI.C_SIGNO WHEN 1 THEN CAST(CH.C_IMPORTE AS VARCHAR2(100)) ELSE '-' END HABER,
+  CASE ai.c_signo WHEN -1 THEN CAST(CH.C_IMPORTE AS VARCHAR2(100)) ELSE '-' END DEBE
+FROM t_vis_fon_cheques_historial chh
+JOIN t_vis_fon_asientos_item ai
+ON(chh.c_id_asiento_item=ai.c_id_asiento_item)
+JOIN t_vis_fon_cheques ch
+ON (chh.c_id_cheque=ch.c_id_cheque)
+JOIN t_vis_fon_bancos_propios bp
+ON (ch.c_id_banco_propio=bp.c_id_banco_propio)
+JOIN t_vis_gen_bancos bco
+ON (ch.c_id_banco=bco.c_id_banco)
+JOIN t_vis_fon_asientos a
+ON (AI.C_ID_ASIENTO             =A.C_ID_ASIENTO)
+WHERE chh.c_id_cheque_historial = (SELECT DISTINCT 
+  conciliaci0_.C_ID_REGISTRO                   AS C3_236_
+FROM T_VIS_FON_CONCILIACION CONCILIACI0_
+WHERE CONCILIACI0_.C_TIPO = 'F' AND CONCILIACI0_.C_ID_CABECERA_CONCILIACION = $P{ID_CABECERA})]]></queryString>
+
+	<field name="ID_REGISTRO" class="java.math.BigDecimal"/>
+	<field name="TIPO_REGISTRO" class="java.lang.String"/>
+	<field name="NRO_IDENTIFICA" class="java.lang.String"/>
+	<field name="IMPORTE" class="java.math.BigDecimal"/>
+	<field name="FECHA_ITEM" class="java.sql.Timestamp"/>
+	<field name="DESCRIPCION" class="java.lang.String"/>
+	<field name="HABER" class="java.lang.String"/>
+	<field name="DEBE" class="java.lang.String"/>
+
+		<background>
+			<band height="7"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="17"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="1"
+						width="30"
+						height="14"
+						forecolor="#000000"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TIPO_REGISTRO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="31"
+						y="1"
+						width="50"
+						height="14"
+						forecolor="#000000"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.sql.Timestamp"><![CDATA[$F{FECHA_ITEM}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="131"
+						y="1"
+						width="80"
+						height="14"
+						forecolor="#000000"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DESCRIPCION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="261"
+						y="1"
+						width="50"
+						height="14"
+						forecolor="#000000"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HABER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="211"
+						y="1"
+						width="50"
+						height="14"
+						forecolor="#000000"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DEBE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="81"
+						y="1"
+						width="50"
+						height="14"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NRO_IDENTIFICA}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="5"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="10"
+						y="2"
+						width="782"
+						height="0"
+						forecolor="#808080"
+						backcolor="#FFFFFF"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

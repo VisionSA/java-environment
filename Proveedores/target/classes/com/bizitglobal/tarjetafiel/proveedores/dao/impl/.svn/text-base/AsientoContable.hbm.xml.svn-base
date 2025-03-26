@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.AsientoContable" table="t_vis_prov_asiento_cte"  >
+
+    <id name="idAsiento" type="java.lang.Long" column="c_id_asiento">
+        <generator class="increment" />
+    </id>
+
+    <property name="importeDebe" type="java.math.BigDecimal" column="c_importe_debe" not-null="true" length="10"/>
+
+    <property name="importeHaber" type="java.math.BigDecimal" column="c_importe_haber" not-null="true" length="10"/>
+
+    <property name="nroImputa" type="java.lang.Long" column="c_numero_imputa" not-null="true" length="10"/>    
+
+    <property name="leyenda" type="java.lang.String" column="c_leyenda"  length="100"/>
+
+    <!-- Associations -->
+    <many-to-one name="comprobante"    
+		         class="com.bizitglobal.tarjetafiel.proveedores.negocio.Comprobante" 
+		         not-null="true" 
+		         cascade="save-update">
+        <column name="c_id_comprobante" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

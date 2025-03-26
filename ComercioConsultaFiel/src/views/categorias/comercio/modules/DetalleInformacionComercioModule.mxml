@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="100%" height="100%"
+		   creationComplete="module1_creationCompleteHandler(event)" xmlns:components="views.categorias.comercio.components.*">
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.EnviarCarta;
+			import com.tarjetafiel.caja.vo.SucTelefono;
+			import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.Image;
+			import mx.events.FlexEvent;
+			import mx.utils.ObjectUtil;
+			
+			import views.categorias.comercio.components.IndividuosComponent;
+			import views.categorias.comercio.models.ListaComercioModel;
+			[Bindable]public var listaComercioModel:ListaComercioModel;
+			
+			[Embed(source="img/phone.png")]
+			[Bindable] public static var PHONE:Class;
+			
+			[Embed(source="img/fax.png")]
+			[Bindable] public static var FAX:Class;
+			
+			[Embed(source="img/mobile.png")]
+			[Bindable] public static var MOBILE:Class;
+			
+			protected function module1_creationCompleteHandler(event:FlexEvent):void
+			{
+				if (listaComercioModel != null)
+				{
+					
+					refreshComponents();
+				}
+			}
+			
+			private function createCompTelefono():void
+			{
+				if (listaComercioModel != null && listaComercioModel.comercio != null)
+				{
+					var arrTel:ArrayCollection = new ArrayCollection(listaComercioModel.comercio.sucEmpresa.sucTelefonos);
+					vbTelefono.removeAllChildren();
+					vbTelefono.visible = !arrTel.length == 0;
+					vbTelefono.includeInLayout = !arrTel.length == 0;
+					
+					for each (var sucTel:SucTelefono in arrTel)
+					{
+						var hbTel:HBox = new HBox();
+						hbTel.percentWidth = 100;
+						hbTel.setStyle("verticalAlign","middle");
+						var imgTel:Image = new Image();
+						imgTel.autoLoad = true;
+						if (sucTel.telefono.esFax != "N")
+						{
+							imgTel.source = FAX;
+							hbTel.toolTip = "Fax";
+						}
+						else if (sucTel.telefono.esCelular != "N")
+						{
+							imgTel.source = MOBILE;
+							hbTel.toolTip = "Móvil";
+						}
+						else
+						{
+							imgTel.source = PHONE;
+							hbTel.toolTip = "Teléfono";
+						}
+						
+						var lblTel:Label = new Label();
+						lblTel.styleName = "lblItemInfo";
+						var prefijo:String = sucTel.telefono.codArea == null?"":"(" + sucTel.telefono.codArea + ") - ";
+						lblTel.text = prefijo + sucTel.telefono.nroTlefono;
+						
+						/* hbTel.addChild(imgTel); */
+						hbTel.addChild(lblTel);
+						vbTelefono.addChild(hbTel);
+					}
+				}
+			}
+			
+			private function createCompIndividuos():void
+			{
+				var arrAutorizados:ArrayCollection = new ArrayCollection();
+				var arrResponsables:ArrayCollection = new ArrayCollection();
+				if (listaComercioModel.comercio != null)
+				{
+					for each (var individuo:Object in listaComercioModel.comercio.sucEmpresa.individuosFlex)
+					{
+						if (individuo.TIPOIND == "A")
+						{
+							arrAutorizados.addItem(individuo);
+						}
+						else if (individuo.TIPOIND == "X")
+						{
+							arrResponsables.addItem(individuo);
+						}
+					}
+				}
+				indCmpAutorizados.individuosProvider = arrAutorizados;
+				indCmpAutorizados.titulo = "Usuarios Autorizados";
+				indCmpAutorizados.refreshComponent();
+				
+				indCmpResponsables.individuosProvider = arrResponsables;
+				indCmpResponsables.titulo = "Usuarios Responsables";
+				indCmpResponsables.refreshComponent();
+			}
+			
+			private function showComponent(value:Object):Boolean
+			{
+				if ((value != null && value != '' && value != '-'))
+				{
+					return true;
+				}
+				return false;
+			}
+			
+			private function refreshComponents():void
+			{
+				
+				if (listaComercioModel != null && listaComercioModel.comercio != null)
+				{
+					createCompTelefono();
+					createCompIndividuos();
+					var condCupones:String = listaComercioModel.comercio.presentaCupones == "N"?"NO":"SI";
+					this.lblCupones.text = "La empresa presenta cupones: " + condCupones;
+					mpComponent.formaDePago =listaComercioModel.comercio.comercioFormaPagoSet[0];
+					
+					var imprLiqu:String = listaComercioModel.comercio.sucEmpresa.empresa.imprimirLiquidacion.toUpperCase() == "S"?"SI":"NO";
+					lblImprimir.text = "Imprimir Liquidación: " + imprLiqu;
+					var envMail:String = listaComercioModel.comercio.sucEmpresa.empresa.enviarMail.toUpperCase() == "S"?"SI":"NO";
+					lblEnviarMail.text = "Enviar Liquidación por mail: " + envMail;
+					var debAut:String = listaComercioModel.comercio.debitoAutomatico == "S"?"SI":"NO";
+					lblDebAutomatica.text = "Acepta Débito Automático: " + debAut;
+					
+					lpCmpLista.titulo = "Listas de Precio";
+					lpCmpLista.listaPrecioProvider.source = listaComercioModel.comercio.comercioListaPrecioSet;
+					lpCmpLista.refreshComponent();
+				}
+			}
+			
+			protected function lblNegocio_dataChangeHandler(event:FlexEvent):void
+			{
+				if (listaComercioModel != null)
+				{
+					refreshComponents();
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%" height="100%" horizontalAlign="center">	
+		<!-- Información General del Negocio-->
+		<mx:VBox id="vbDatosEmpresas" paddingBottom="5" paddingLeft="5" paddingRight="5" 
+				 paddingTop="5" minWidth="5"  horizontalAlign="center">
+			<mx:VBox id="vbEncDatosEmp" verticalAlign="middle" horizontalAlign="center" width="100%" height="100%">
+				<mx:ApplicationControlBar styleName="infoApplicationControlBar"
+										  width="100%" height="100%" >
+					<mx:Label id="lblDatos" text="Datos Empresa / Sucursal" styleName="lblTitleInfo"/> 
+				</mx:ApplicationControlBar>
+			</mx:VBox>
+			<mx:VBox  minWidth="5" paddingLeft="5" horizontalAlign="left">
+				<mx:HBox width="100%" horizontalGap="2">
+					<mx:Label id="lblNegocio" text="{listaComercioModel.comercio.sucEmpresa.empresa.razonSocial}"
+							  styleName="lblItemInfo" valueCommit="lblNegocio_dataChangeHandler(event)" dataChange="lblNegocio_dataChangeHandler(event)"
+							  minWidth="5"/> 
+					<mx:Label id="lblSucursal" text="Sucursal {listaComercioModel.comercio.sucEmpresa.descripcion}"
+							  styleName="lblItemInfo"  minWidth="5"/>
+				</mx:HBox>
+				<mx:HBox width="100%">
+					<mx:Label id="lblDomicilio" text="{listaComercioModel.comercio.sucEmpresa.domicilio.calleNombre} {listaComercioModel.comercio.sucEmpresa.domicilio.calleNumero}"
+							  styleName="lblItemInfo"  minWidth="5"/>
+					<mx:Label id="lblBarrio" text="Barrio: {listaComercioModel.comercio.sucEmpresa.domicilio.barrio.descripcion}"
+							  styleName="lblItemInfo" visible="{showComponent(listaComercioModel.comercio.sucEmpresa.domicilio.barrio.descripcion)}"
+							  includeInLayout="{showComponent(listaComercioModel.comercio.sucEmpresa.domicilio.barrio.descripcion)}"
+							  minWidth="5"/>
+				</mx:HBox>
+				<mx:Label id="lblLocalidad" text="{listaComercioModel.comercio.sucEmpresa.domicilio.localidad.nombre} - {listaComercioModel.comercio.sucEmpresa.domicilio.localidad.partido.descripcion} - {listaComercioModel.comercio.sucEmpresa.domicilio.localidad.provincia.nombre}"
+						  styleName="lblItemInfo"  minWidth="5"/>
+				<mx:VBox id="vbTelefono" width="100%"/>
+				
+			</mx:VBox>
+			<mx:VBox verticalAlign="middle" horizontalAlign="center" width="100%" height="100%">
+				<mx:ApplicationControlBar styleName="infoApplicationControlBar"
+										  width="100%" height="100%" >
+					<mx:Label id="lblDatosMp" text="Medio de pago" styleName="lblTitleInfo"/> 
+				</mx:ApplicationControlBar>
+				<components:MedioDePagoComponent id="mpComponent" width="100%" 
+												 formaDePago="{listaComercioModel.comercio.comercioFormaPagoSet[0]}"/>
+			</mx:VBox>
+			
+		</mx:VBox>
+		<!-- Fin Información General del Negocio-->
+		
+		<!-- Información de individuos responsables y autorizados-->
+		<mx:VBox id="vbIndividuos" minWidth="5" paddingBottom="5" paddingLeft="5" paddingRight="5" 
+				 paddingTop="5">
+			<components:IndividuosComponent id="indCmpAutorizados" titulo="Usuarios Autorizados" width="100%"/>
+			<components:IndividuosComponent id="indCmpResponsables" titulo="Usuarios Responsables" width="100%"/>
+		</mx:VBox>
+		<!-- Fin Información de individuos responsables y autorizados-->
+		
+		
+		<mx:VBox id="vb3Col" minWidth="5" paddingBottom="5" paddingLeft="5" paddingRight="5" 
+				 paddingTop="5">
+			<!-- Información Listas de precio -->
+			<components:ListaPrecioComponent id="lpCmpLista" titulo="Listas de Precio" width="100%"/>
+			<!-- Fin Información Listas de precio -->
+			<!-- Información Extra -->
+			<mx:VBox verticalAlign="middle" horizontalAlign="center" width="100%" height="100%">
+				<mx:ApplicationControlBar styleName="infoApplicationControlBar"
+										  width="100%" height="100%" >
+					<mx:Label id="lblDatosExtra" text="Información extra" styleName="lblTitleInfo"/> 
+				</mx:ApplicationControlBar>
+				<mx:VBox width="100%" horizontalAlign="left">
+					<mx:Label id="lblImprimir" styleName="lblItemInfo"/>
+					<mx:Label id="lblEnviarMail" styleName="lblItemInfo"/>
+					<mx:Label id="lblCupones" styleName="lblItemInfo"/>
+					<mx:Label id="lblDebAutomatica" styleName="lblItemInfo"/>
+				</mx:VBox>
+			</mx:VBox>
+			<!-- Fin Información Extra -->
+		</mx:VBox>
+	</mx:HBox>
+</mx:Module>

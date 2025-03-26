@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Hoja03"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="561"
+		 pageHeight="841"
+		 columnWidth="561"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="URLImagen" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[select * from t_vis_tra_clientes WHERE c_id_cliente = 1]]></queryString>
+
+	<field name="C_ID_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_SUCURSAL" class="java.math.BigDecimal"/>
+	<field name="C_ID_INDIVIDUO" class="java.math.BigDecimal"/>
+	<field name="C_LIMITE_CREDITO" class="java.math.BigDecimal"/>
+	<field name="C_SALDO_LINEA" class="java.math.BigDecimal"/>
+	<field name="C_ID_ESTADO_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_OPERADOR_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_OPERADOR_COBRANZA" class="java.math.BigDecimal"/>
+	<field name="C_ID_ESTADO_COBRANZA" class="java.math.BigDecimal"/>
+	<field name="C_HABILITADO_CONSUMO" class="java.lang.String"/>
+	<field name="C_ID_OPER_HAB_CONSUMO" class="java.math.BigDecimal"/>
+	<field name="C_CICLO" class="java.math.BigDecimal"/>
+	<field name="C_ADICIONAL" class="java.math.BigDecimal"/>
+	<field name="C_ID_TITULAR" class="java.math.BigDecimal"/>
+	<field name="C_FECHA_ESTADO_CLIENTE" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_ESTADO_COBRANZA" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_HABILITADO_CONSUMO" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_ALTA" class="java.sql.Timestamp"/>
+	<field name="C_NRO_SOLICITUD" class="java.lang.String"/>
+	<field name="C_CLIENTE_VIEJO" class="java.math.BigDecimal"/>
+	<field name="V_NOMBRE" class="java.lang.String"/>
+	<field name="V_DOMICILIO" class="java.lang.String"/>
+	<field name="V_LOCALIDAD" class="java.lang.String"/>
+	<field name="V_COD_POST" class="java.lang.String"/>
+	<field name="V_PROVINCIA" class="java.lang.String"/>
+	<field name="C_FECHA_MORA" class="java.sql.Timestamp"/>
+	<field name="C_ID_PLAN_MORA" class="java.math.BigDecimal"/>
+	<field name="C_CAMBIO_ESTADO_COB" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="60"  isSplitAllowed="true" >
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="149"
+						y="10"
+						width="283"
+						height="45"
+						key="image-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="770"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="1"
+						width="560"
+						height="15"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[CONTRATO DE EMISIÓN DE TARJETA DE CRÉDITO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="24"
+						width="548"
+						height="723"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Calibri" size="9"/>
+					</textElement>
+				<text><![CDATA[Entre VISION S.A., con CUIT 30-70704996-7, y domicilio en la calle Mendoza Sur 360 de la ciudad de San Juan, provincia de San Juan, en adelante el OTORGANTE, y el TITULAR cuyos datos figuran al pie, se celebra el presente Contrato de Emisión de Tarjeta de Crédito FIEL, de acuerdo a las previsiones establecidas por la Ley 25.065 y a las cláusulas y condiciones que siguen a continuación y al Anexo al Contrato de Emisión de Tarjeta de Crédito FIEL que forma parte integrante del presente Contrato.
+VISION S.A. actúa como emisor de la Tarjeta FIEL y es la entidad administradora que mantiene y administra la cuenta de cada Tarjeta FIEL que VISION S.A. emite en su carácter de entidad emisora. VISION S.A. ordenará en carácter de administradora del sistema la apertura de la cuenta correspondiente a cada Tarjeta de Crédito que se emita, sin perjuicio del derecho de VISION S.A. de realizar por sí mismo todas o parte de las actividades que realice como administradora del sistema respectivo.
+VISION S.A. ofrece al TITULAR:
+a) la emisión a su nombre y/o a nombre de las personas que éste indique de cada Tarjeta de Crédito según lo detallado en el Anexo al Contrato de Emisión de Tarjeta de Crédito FIEL, o que el TITULAR indique por separado en el futuro y b) su incorporación al respectivo sistema de Tarjeta de Crédito, tal como se encuentra definido más adelante a quien corresponda cada Tarjeta de Crédito.
+Terminología
+• VISION S.A., Tarjeta FIEL, VISION, emisor o acreedor son términos que se utilizan indistintamente en el presente contrato para identificar a la entidad que emite la/s tarjeta/s.
+• TITULAR, cliente o deudor son términos que se utilizan indistintamente en el presente contrato para identificar a la persona habilitada para el uso de la tarjeta de crédito y quien se hace responsable de todas las comisiones, cargos y consumos realizados personalmente o por los autorizados por él.
+• ADICIONAL, adicionales, beneficiario de extensión, extensión o extensiones son términos que se utilizan indistintamente en el presente contrato para identificar a las personas autorizadas por el TITULAR y aceptadas por el EMISOR para realizar operaciones con la tarjeta de crédito para lo cual el EMISOR le entregará un instrumento de idénticas características que al TITULAR por lo que se hacen responsables de todas las comisiones, cargos y consumos realizados personalmente por ellos y/o por el TITULAR.
+• USUARIO, usuarios, tarjetahabiente o tarjetahabientes son términos que se utilizan indistintamente en el presente contrato para identificar genérica e indistintamente al TITULAR y al ADICIONAL
+• TARJETA, tarjetas, plástico o plásticos son términos que se utilizan indistintamente en el presente contrato para identificar al instrumento material indispensable para que los USUARIOS puedan hacer uso del crédito que le asigne el EMISOR.
+• PROVEEDOR, comercio o comercio adherido son términos que se utilizan indistintamente en el presente contrato para identificar a aquellas personas físicas o jurídicas que proporcionen bienes o servicios que pueden ser pagados mediante la tarjeta previo contrato suscripto entre el proveedor y el emisor.
+• COMPUTO DE LOS PLAZOS: Todos los plazos consignados en el presente convenio, se refieren a días corridos, considerándose en término el primer día hábil siguiente, si el del vencimiento no lo fuere.
+• SERVICIOS: La expresión Servicios comprende los productos que sean promovidos, comercializados, administrados o de cualquier forma ofrecidos en el presente o fututo por el EMISOR por sí o por terceros. La decisión del Cliente de utilizar tales servicios implica la aceptación de los mismos en relación a su funcionamiento y existencia de las transacciones efectuadas y sus resultados. En caso de conflicto prevalecerán los registros contables del Emisor o de los terceros por cuya cuenta y orden actúe.
+1. Condición General. Una vez aceptada la solicitud de tarjeta de crédito por VISION, la relación contractual se regirá por las siguientes clausulas y condiciones, que se considera parte integrante del presente contrato, constituyendo todo ello plena prueba de las obligaciones asumidas por las partes, y quedará formalizado una vez suscripto por el titular y codeudores, en su caso, y con la recepción de las tarjetas.
+2. Vigencia. El plazo de vigencia del presente contrato como el de la tarjeta corresponderá desde el primer día del mes y año grabado en la tarjeta y su vencimiento se producirá el último día del mes y año que figuren grabados en la misma. La vigencia de la tarjeta será de dos (2) años y se prorrogará automáticamente al vencimiento por un plazo de 2 años y así sucesivamente salvo la voluntad en contrario del TITULAR o del EMISOR de acuerdo a lo indicado en la cláusula 13 (Rescisión) del presente contrato.
+El TITULAR tiene la posibilidad de revocar su aceptación dentro del plazo de 10 días hábiles a partir de la fecha de recibido el presente contrato o de la disponibilidad efectiva de la Tarjeta de Crédito FIEL, sin costo ni responsabilidad para el usuario siempre que no hubiera hecho uso del producto; en caso contrario se le podrán cobrar las comisiones correspondientes. Asimismo, el Titular podrá ejercer el derecho de no renovar las Tarjetas emitidas a favor de usuarios adicionales.
+Cuando las Tarjetas hubiesen sido emitidas y enviadas por correo a su domicilio declarado a tal fin o puestas a disposición del Titular y éste no las recibiera por motivos ajenos al proveedor de correos o no retirase del lugar indicado por VISION S.A. dentro de los 60 (sesenta) días corridos, VISION S.A. considerará que el TITULAR ha decidido no continuar con la relación contractual y procederá automáticamente a destruir las Tarjetas.
+A su vez, de no registrarse operaciones durante los 6 (seis) meses previos a la fecha de vencimiento de la Tarjeta, VISION S.A podrá proceder a su baja, no renovándose las Tarjetas vinculadas.
+3. Uso de la tarjeta. Cada una de las tarjetas emitidas son intransferibles y de propiedad del emisor. Los tarjetahabientes se obligan a no permitir su uso por terceros. Los derechos y obligaciones de las partes se mantendrán mientras esté en vigencia y hasta tanto sea cancelado todo saldo deudor pendiente por parte del titular y/o adicional/es y/o fiador/es. Una vez recibidas la/s tarjetas solicitada/s, cada usuario deberá firmar el dorso del plástico emitido a su nombre en el lugar destinado a ese fin. Para su utilización el usuario deberá:
+a. identificarse ante los proveedores mediante el documento de identidad;
+b. identificarse ante el Centro de Atención Telefónica al Cliente para lo cual VISION S.A. establece obligatoriamente la previa verificación de la identidad de los usuarios.
+c. al realizar transacciones en redes de cajeros automáticos adheridos al sistema, accederán con sus correspondientes tarjetas a través de un número de identificación personal ("PlN"), confidencial e intransferible, que se les proveerá y que conservarán bajo su responsabilidad.
+La utilización del PIN asignado, obligará a los usuarios como si las operaciones hubiesen sido instrumentadas con su/s firma/s personal/es.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="504"
+						y="746"
+						width="43"
+						height="12"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[4]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="746"
+						width="141"
+						height="12"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Visión SA - Mendoza 360 Sur - San Juan]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="250"
+						y="746"
+						width="43"
+						height="12"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[v/7.1]]></text>
+				</staticText>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" horizontalScrollPolicy="off" creationComplete="initVariables()">
+    
+	<mx:HBox width="100">
+		<mx:Label text="{accionVersion.accion.descripcion}"/>	
+	</mx:HBox>
+	<mx:HBox width="80" horizontalScrollPolicy="off">
+		<mx:TextInput text="{accionVersion.dias}" change="accionVersion.dias = new int(txt.text)" id="txt" />		
+	</mx:HBox>
+	
+	<mx:NumberValidator id="numberValidator"
+			source="{txt}" lowerThanMinError="El valor es requerido"
+			property="text" 
+			minValue="1" />
+		
+		
+		<mx:Script>
+			<![CDATA[
+				import com.tarjetafiel.caja.vo.Accion;
+				import com.tarjetafiel.caja.vo.AccionVersion;
+				
+				[Bindable]public var accionVersion:AccionVersion;
+				
+				public function initVariables() {
+					accionVersion = new AccionVersion(1,new Accion(data.idAccion, data.descripcion));
+					
+					trace(accionVersion);
+					
+				}
+			]]>
+		</mx:Script>
+	
+</mx:HBox>

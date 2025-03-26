@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+	<sub-menu nombre="Operadores">
+		<item nombre="Alta">
+			<item-permiso id="2" clase="OperadorService" metodo="grabarOperador" descripcion="Grabar un operador"/>
+		</item>
+		<item nombre="Listar">
+			<item-permiso id="3" clase="OperadorService" metodo="getOperadores"  descripcion="Listar operadores"/>
+			<item-permiso id="4" clase="OperadorService" metodo="borrarOperador" descripcion="Eliminar un operador"/>
+			<item-permiso id="5" clase="OperadorService" metodo="actualizarOperador" descripcion="Actualizar un operador"/>
+			<item-permiso id="6" clase="OperadorService" metodo="leerOperador" descripcion="Obtener un operador"/>			
+		</item>		
+	</sub-menu>
+
+	<sub-menu nombre="Permisos">
+		<item nombre="Listar">
+			<item-permiso id="6" clase="PermisoService" metodo="getPermisos" descripcion="Listar permisos"/>
+		</item>
+		<item nombre="Otorgar">
+			<item-permiso id="7" clase="OperadorService" metodo="otorgarPermisos" descripcion="Otorgar permisos"/>
+		</item>		
+		<item nombre="Validar">
+			<item-permiso id="9" clase="OperadorService" metodo="validarPermisos" descripcion="Validar permisos"/>
+		</item>					
+	</sub-menu>
+	
+	<sub-menu nombre="TParametros">
+		<sub-menu nombre="Bancos">
+			<item nombre="Alta">
+				<item-permiso id="10" clase="BancoService" metodo="grabarBanco" descripcion="Grabar un banco"/>
+			</item>
+			<item nombre="Listar">
+				<item-permiso id="11" clase="BancoService" metodo="getBancos" descripcion="Leer un banco"/>
+				<item-permiso id="12" clase="BancoService" metodo="borrarBanco" descripcion="Eliminar un banco"/>			
+			</item>		
+		</sub-menu>
+		<sub-menu nombre="Parametros">
+			<item nombre="Alta">
+				<item-permiso id="13" clase="ParametroService" metodo="grabarParametro" descripcion="Grabar un parametro"/>
+			</item>
+			<item nombre="Listar">
+				<item-permiso id="14" clase="ParametroService" metodo="getParametros" descripcion="Leer un parametro"/>
+				<item-permiso id="15" clase="ParametroService" metodo="borrarParametro" descripcion="Eliminar un parametro"/>			
+			</item>		
+		</sub-menu>		
+	</sub-menu>
+</menu>

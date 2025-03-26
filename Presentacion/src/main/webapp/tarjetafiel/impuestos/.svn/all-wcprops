@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/testing/!svn/ver/549/Presentacion/src/main/webapp/tarjetafiel/impuestos
+END
+listarImpuesto.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/testing/!svn/ver/542/Presentacion/src/main/webapp/tarjetafiel/impuestos/listarImpuesto.jsp
+END
+listarJurisdiccion.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/testing/!svn/ver/542/Presentacion/src/main/webapp/tarjetafiel/impuestos/listarJurisdiccion.jsp
+END
+amAplicable.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/testing/!svn/ver/542/Presentacion/src/main/webapp/tarjetafiel/impuestos/amAplicable.jsp
+END
+listarAplicable.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/testing/!svn/ver/542/Presentacion/src/main/webapp/tarjetafiel/impuestos/listarAplicable.jsp
+END
+amTipoImpuesto.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/testing/!svn/ver/542/Presentacion/src/main/webapp/tarjetafiel/impuestos/amTipoImpuesto.jsp
+END
+listarTipoImpuesto.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/testing/!svn/ver/542/Presentacion/src/main/webapp/tarjetafiel/impuestos/listarTipoImpuesto.jsp
+END
+amImpuesto.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/testing/!svn/ver/542/Presentacion/src/main/webapp/tarjetafiel/impuestos/amImpuesto.jsp
+END
+amJurisdiccion.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/testing/!svn/ver/542/Presentacion/src/main/webapp/tarjetafiel/impuestos/amJurisdiccion.jsp
+END

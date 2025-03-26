@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox   xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"    horizontalAlign="center" verticalAlign="top" backgroundAlpha="0.0" borderColor="#B7BABC">
+        <mx:HBox includeInLayout="false" visible="false">
+           <mx:Label text="Saldo a la fecha: " fontWeight="bold" styleName="lblInfoBlanco"/>
+           <mx:Label includeInLayout="{!ctaCteClienteModel.verSaldoHistorio}" visible="{!ctaCteClienteModel.verSaldoHistorio}" text="{currencyFormatter.format(ctaCteClienteModel.saldoAnterior)}" fontWeight="bold" styleName="lblInfoBlanco"/>	
+           <mx:Label includeInLayout="{ctaCteClienteModel.verSaldoHistorio}" visible="{ctaCteClienteModel.verSaldoHistorio}" text="Consulte Histórico" fontWeight="bold" styleName="lblInfoBlanco"/>
+        </mx:HBox>
+        
+       	<mx:AdvancedDataGrid id="adg1" sortableColumns="false" designViewDataType="flat" keyDown="pressKey(event)"  doubleClickEnabled="true" width="100%" height="100%"   doubleClick="this.cambiarVistaDetalle()"  dataProvider="{ctaCteClienteModel.arrayMovientosCtaCteResumen}">
+					<mx:columns>
+					     <!--mx:AdvancedDataGridColumn  headerText="N°" dataField="numeroFila" /-->
+					     <mx:AdvancedDataGridColumn headerText="Fecha" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.dateFormatter.format(data.fechaReal)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Descripcion" dataField="sucDescripcion" textAlign="left"/>
+						<mx:AdvancedDataGridColumn headerText="Imp. Cuota" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.currencyFormatter.format(data.importeCuota)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            <mx:AdvancedDataGridColumn headerText="Cuota" dataField="cantidadCuotas"/>
+			            <mx:AdvancedDataGridColumn headerText="Estado" dataField="estadoImpacto"/>
+			            <mx:AdvancedDataGridColumn headerText="Debe" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						          <mx:Label text="{outerDocument.getDebe(data)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            <mx:AdvancedDataGridColumn headerText="Haber" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						          <mx:Label text="{outerDocument.getHaber(data)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            <mx:AdvancedDataGridColumn headerText="Saldo" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.currencyFormatter.format(data.saldoAcumulado)} "/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			        </mx:columns>
+		</mx:AdvancedDataGrid>
+		<mx:HBox includeInLayout="false" visible="false">
+			<mx:TextInput width="14" editable="false" backgroundColor="blue" height="14"/>
+			<mx:Label text="Capital + Interes" fontWeight="bold" styleName="lblInfoBlanco"/>
+	   	    <mx:TextInput width="14" editable="false" backgroundColor="green" height="14"/>
+	   	    <mx:Label text="Iva" fontWeight="bold"  styleName="lblInfoBlanco"/>
+	   	    <mx:TextInput width="14" editable="false" backgroundColor="#8539ED" height="14"/>
+	   	    <mx:Label text="Otros Conceptos" fontWeight="bold"  styleName="lblInfoBlanco"/>
+			
+		</mx:HBox>
+       	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+	<mx:CurrencyFormatter  id="currencyFormatter" currencySymbol="$"  rounding="nearest" precision="2" />  
+    
+    
+    
+  
+<mx:Script>
+	<![CDATA[
+		import mx.effects.easing.Back;
+		import com.tarjetafiel.caja.vo.MovimientoCtaCte;
+		import mx.controls.Alert;
+		import views.categorias.cliente.models.CtaCteClienteModel;
+		     [Bindable]public var  ctaCteClienteModel:CtaCteClienteModel;  
+		     public var primero: Boolean=true; 
+		     public var acumulado:  Number=0;
+		     
+		   /*  public function getSaldo(valor:Number):Number
+		     {  if(!primero){
+		     	   acumulado+= valor;
+		        } else{
+		          acumulado = ctaCteClienteModel.saldo+ valor;
+		     	  primero= false;
+		        }
+		          
+		      return acumulado;     	
+		     }*/
+		     
+		     public  function cambiarVistaDetalle():void{
+		     	if(adg1.selectedItem){
+		     		var movim : MovimientoCtaCte = MovimientoCtaCte(adg1.selectedItem);
+		     		ctaCteClienteModel.movimientoCtaCteSeleccionado = movim; 
+		     		ctaCteClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaDetalleCtaCte"));
+		     	}	
+		     }
+		     	
+		/* public function myStyleFunction(data:Object, column:AdvancedDataGridColumn):Object{ 
+           var nroFila:int = data.numeroFila; 
+           trace("Region: " + nroFila); 
+           if (nroFila == 2) 
+              return {background: true,  fontWeight:"bold", backgroundColor: 0x000044} 
+           else 
+              return {background: true, backgroundColor: 0xFF0000} 
+        } */
+        
+          public function myStyleFunction(data:Object, col: AdvancedDataGridColumn):Object
+       {
+           if(data["codigoConcepto"] =='3')
+           {
+               return {background: true,color:'green',fontWeight:"bold",backgroundColor:"red"};
+           }  else 
+             if(data["codigoConcepto"] =='4')  return {background: true,color:'#8539ED',fontWeight:"bold",backgroundColor:"red"};
+           return {color:'blue',fontWeight:"bold"  };
+       } 
+       
+       
+        public function getDebe(data:Object):String{
+				var ctacte:MovimientoCtaCte = data as MovimientoCtaCte;
+			  return (isNaN(ctacte.debe))? "": currencyFormatter.format(ctacte.debe);
+		}
+		 public function getHaber(data:Object):String{
+				var ctacte:MovimientoCtaCte = data as MovimientoCtaCte;
+			  return (isNaN(ctacte.haber))? "":currencyFormatter.format(ctacte.haber);
+		}         
+           
+		private function pressKey(event:KeyboardEvent):void{
+			if(event.keyCode == Keyboard.ENTER){
+				if(adg1.selectedItem != null){
+					this.cambiarVistaDetalle();
+				}
+			}
+		}
+		
+		public function setFocusGrilla():void{
+			if(this.adg1){
+				this.adg1.setFocus();
+			}
+		} 
+	]]>
+</mx:Script>
+
+	
+</mx:VBox>

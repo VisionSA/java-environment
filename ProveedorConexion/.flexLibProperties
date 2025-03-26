@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="false" version="1">
+  <includeClasses>
+    <classEntry path="com.tarjetafiel.proveedorconexion.business.BancoDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.business.ClientesGeneralDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.business.ConstantesChequesEstados"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.business.ConstantesFormaPago"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.business.Services"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BancoCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarBancoCentralCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarControlClienteCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarCorrienteResumenCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarCorrienteResumenFechaCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarDetallePagoGestionCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarDetalleRefRepCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarDigitalesCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarFecha1Documentos"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarGestorClienteCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarHistAccionesCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarHistEstCobrYComCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarHistEstadoCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarHistLineaCreditoCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarLineaCreditoCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarLineaCreditoTemCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarReclamosCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarRegistroAdicionalAppCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarRegistroTitularAppCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarRevisionLineaCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarSaldoCuentaCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarServidorDocumentosCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.BuscarTramitesCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.FuturosVencimientosCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.GrabarControlClienteCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.GrabarLineaCreditoCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.command.SetModelDataCommand"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.control.Controller"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.delegate.BancoDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.delegate.BancoPropioDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.delegate.CajaAperturaDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.delegate.ChequeDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.delegate.ClienteTransaccionDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.delegate.ColaboradorDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.delegate.ImpresorasDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.delegate.OperadorDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.delegate.PagoDelegate"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.event.BancoEvent"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.event.BancoPropioEvent"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.event.ClientesGeneralEvent"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.event.SetModelDataEvent"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.model.BancoModel"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.model.ClienteModel"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.util.FuncionesUtiles"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.vo.MediosPagoPosibles"/>
+    <classEntry path="com.tarjetafiel.proveedorconexion.vo.SetDataVo"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

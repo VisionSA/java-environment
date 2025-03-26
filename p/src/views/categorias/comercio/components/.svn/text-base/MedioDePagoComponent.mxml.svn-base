@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" horizontalAlign="center"
+		 verticalGap="1">
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ComercioFormaPago;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.utils.ObjectUtil;
+			
+			[Bindable]
+			public var formaDePago:ComercioFormaPago = new ComercioFormaPago();
+
+		]]>
+	</mx:Script>
+	
+	<mx:HBox width="100%" verticalAlign="middle" verticalGap="2">
+		<mx:VBox width="33%" horizontalAlign="center" verticalGap="1">
+			<mx:Label text="Nro Cuenta Fondo" fontWeight="bold" styleName="lblMedioPagoInfo"/>
+			<mx:Text id="txtNCtaFondo" text="{formaDePago.nroCuentaFondos}" styleName="lblMedioPagoInfo"/>
+		</mx:VBox>
+		<mx:VRule height="40"/>
+		<mx:VBox width="33%" horizontalAlign="center" verticalGap="1">
+			<mx:Label text="Tipo Cuenta" fontWeight="bold" styleName="lblMedioPagoInfo"/>
+			<mx:Text id="txtTipoCta" text="{formaDePago.tipoCuentaBanco.descripcionCorta}" styleName="lblMedioPagoInfo"/>
+		</mx:VBox>
+		<mx:VRule height="40"/>
+		<mx:VBox width="33%" horizontalAlign="center" verticalGap="1">
+			<mx:Label text="Forma Pago" fontWeight="bold" styleName="lblMedioPagoInfo"/>
+			<mx:Text id="txtFormaPago" text="{formaDePago.formaPago.descripcion}" styleName="lblMedioPagoInfo"/>
+		</mx:VBox>
+	</mx:HBox>
+	<mx:HRule width="90%"/>
+	<mx:HBox width="100%" horizontalAlign="left" horizontalGap="1">
+		<mx:Label text="Orden Cheque: " fontWeight="bold" styleName="lblMedioPagoInfo"/>
+		<mx:Text id="txtOrdenCheque" text="{formaDePago.ordenCheque}" styleName="lblMedioPagoInfo"/>
+	</mx:HBox>
+	<mx:HRule width="90%"/>
+	<mx:HBox width="100%" horizontalAlign="left" horizontalGap="1">
+		<mx:Label text="CBU: " fontWeight="bold" styleName="lblMedioPagoInfo"/>
+		<mx:Text id="txtCBU" text="{formaDePago.cbu}" styleName="lblMedioPagoInfo"/>
+	</mx:HBox>
+	<mx:HRule width="90%"/>
+	<mx:HBox width="100%" horizontalAlign="left" horizontalGap="1">
+		<mx:Label text="Cod Cta Depósito: " fontWeight="bold" styleName="lblMedioPagoInfo"/>
+		<mx:Text id="txtCodCtaDep" text="{formaDePago.codCuentaDeposito.toString()}" styleName="lblMedioPagoInfo"/>
+	</mx:HBox>
+</mx:VBox>

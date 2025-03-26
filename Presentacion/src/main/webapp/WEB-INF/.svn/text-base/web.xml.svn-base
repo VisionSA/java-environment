@@ -1,0 +1,455 @@
+<?xml version="1.0"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<description>Tarjeta Fiel</description>
+	<!-- listener> <listener-class>com.bizitglobal.webapp.faces.listener.Contexto</listener-class> 
+		</listener -->
+
+	<!-- Configuracion no probada para los upload de archivos (Por las dudas 
+		que algun dia nos de problemas) <filter> <filter-name>MyFacesExtensionsFilter</filter-name> 
+		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class> 
+		<init-param> <param-name>maxFileSize</param-name> <param-value>20m</param-value> 
+		</init-param> </filter> <filter-mapping> <filter-name>MyFacesExtensionsFilter</filter-name> 
+		<servlet-name>Faces Servlet</servlet-name> </filter-mapping> <filter-mapping> 
+		<filter-name>MyFacesExtensionsFilter</filter-name> <url-pattern>/faces/myFacesExtensionResource/*</url-pattern> 
+		</filter-mapping> -->
+
+	<!-- WebOrb -->
+
+	<!-- context-param> <param-name>ActiveMQBrokerPath</param-name> <param-value>tcp://localhost:61616?trace=true</param-value> 
+		</context-param -->
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- listener> <listener-class>weborb.thirdparty.ActiveMQStarter</listener-class> 
+		</listener -->
+
+	<servlet>
+		<servlet-name>weborb</servlet-name>
+		<servlet-class>weborb.ORBServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+    	<servlet-name>UploadCobroExterno</servlet-name>
+    	<servlet-class>com.bizitglobal.webapp.servlet.UploadCobroExterno</servlet-class>
+  	</servlet>
+  
+  
+  	<servlet>
+    	<servlet-name>UploadArchivoReclamos</servlet-name>
+    	<servlet-class>com.bizitglobal.webapp.servlet.UploadArchivoReclamos</servlet-class>
+  	</servlet>
+  
+  
+   	<servlet>
+    	<servlet-name>CreatePDFServlet</servlet-name>
+    	<servlet-class>com.bizitglobal.webapp.servlet.CreatePDFServlet</servlet-class>
+  	</servlet>
+  
+  
+  	<servlet>
+    	<servlet-name>GenerarTramitePlasticosServlet</servlet-name>
+    	<servlet-class>com.bizitglobal.webapp.servlet.GenerarTramitePlasticosServlet</servlet-class>
+  	</servlet>
+  
+
+	<servlet>
+		<servlet-name>Cobranzas</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.CobranzasServlet</servlet-class>
+	</servlet>
+	
+	
+	<servlet>
+		<servlet-name>GenerarTramiteAutomaticoServlet</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.GenerarTramiteAutomaticoServlet</servlet-class>
+	</servlet>
+	
+	
+	<servlet>
+		<servlet-name>PlanificadorNotificacionServlet</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.PlanificadorNotificacionServlet</servlet-class>
+	</servlet>
+	
+	
+	<servlet>
+		<servlet-name>GrabarMailClienteApp</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.GrabarMailClienteApp</servlet-class>
+	</servlet>
+
+
+	<servlet>
+		<servlet-name>AsignacionCobrador</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.AsignacionCobradorServlet</servlet-class>
+	</servlet>
+	
+	
+	<servlet>
+		<servlet-name>Tansaccionador</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.TransaccionadorServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>ActivarPlastico</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.ActivarPlasticoServlet</servlet-class>
+	</servlet>
+
+
+	<servlet>
+		<servlet-name>PlanificadorEmail</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.PlanificadorEmailServlet</servlet-class>
+	</servlet>
+	
+	
+	<servlet>
+		<servlet-name>ArreglaControlCliente</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.ArreglaControlClienteServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>CalcularRepactacionServlet</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.CalcularRepactacionServlet</servlet-class>
+	</servlet>
+					
+	<servlet>
+		<servlet-name>GenerarTxtLiqComercioServlet</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.GenerarTxtLiqComercioServlet</servlet-class>
+	</servlet>
+			
+			
+	<servlet-mapping>
+		<servlet-name>UploadCobroExterno</servlet-name>
+		<url-pattern>/UploadCobroExterno</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>UploadArchivoReclamos</servlet-name>
+		<url-pattern>/UploadArchivoReclamos</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>CreatePDFServlet</servlet-name>
+		<url-pattern>/CreatePDFServlet</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>GenerarTramitePlasticosServlet</servlet-name>
+		<url-pattern>/GenerarTramitePlasticosServlet</url-pattern>
+	</servlet-mapping>
+	
+
+	<servlet-mapping>
+		<servlet-name>Cobranzas</servlet-name>
+		<url-pattern>/CobranzasServlet</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>GenerarTramiteAutomaticoServlet</servlet-name>
+		<url-pattern>/GenerarTramiteAutomaticoServlet</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>PlanificadorNotificacionServlet</servlet-name>
+		<url-pattern>/PlanificadorNotificacionServlet</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>GrabarMailClienteApp</servlet-name>
+		<url-pattern>/GrabarMailClienteApp</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>AsignacionCobrador</servlet-name>
+		<url-pattern>/AsignacionCobradorServlet</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping>
+		<servlet-name>Tansaccionador</servlet-name>
+		<url-pattern>/TransaccionadorServlet</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping>
+		<servlet-name>ActivarPlastico</servlet-name>
+		<url-pattern>/ActivarPlasticoServlet</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping>
+		<servlet-name>PlanificadorEmail</servlet-name>
+		<url-pattern>/PlanificadorEmailServlet</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>ArreglaControlCliente</servlet-name>
+		<url-pattern>/ArreglaControlClienteServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>CalcularRepactacionServlet</servlet-name>
+		<url-pattern>/CalcularRepactacionServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>GenerarTxtLiqComercioServlet</servlet-name>
+		<url-pattern>/GenerarTxtLiqComercioServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>weborb</servlet-name>
+		<url-pattern>*.wo</url-pattern>
+	</servlet-mapping>
+
+
+
+
+
+	<!-- WebOrb -->
+	<context-param>
+		<param-name>javax.faces.CONFIG_FILES</param-name>
+		<param-value>/WEB-INF/faces-config.xml</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>client</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</param-name>
+		<param-value>20</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.apache.myfaces.ALLOW_JAVASCRIPT</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.apache.myfaces.DETECT_JAVASCRIPT</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.apache.myfaces.PRETTY_HTML</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.apache.myfaces.AUTO_SCROLL</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.apache.myfaces.SECRET</param-name>
+		<param-value>NzY1NDMyMTA=</param-value>
+	</context-param>
+	<context-param>
+		<description>Validate managed beans, navigation rules and ensure that forms are not nested.</description>
+		<param-name>org.apache.myfaces.VALIDATE</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/applicationContext.xml</param-value>
+	</context-param>
+
+
+
+	<!-- Extensions Filter -->
+	<filter>
+		<filter-name>extensionsFilter</filter-name>
+		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
+		<init-param>
+			<param-name>uploadMaxFileSize</param-name>
+			<param-value>100m</param-value>
+		</init-param>
+		<init-param>
+			<param-name>uploadThresholdSize</param-name>
+			<param-value>100k</param-value>
+		</init-param>
+	</filter>
+	<filter>
+		<filter-name>ResponseOverrideFilter</filter-name>
+		<filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>hibernateFilter</filter-name>
+		<filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
+		<init-param>
+			<param-name>singleSession</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter>
+		<display-name>Ajax4jsf Filter</display-name>
+		<filter-name>ajax4jsf</filter-name>
+		<filter-class>org.ajax4jsf.Filter</filter-class>
+		<init-param>
+			<param-name>forceparser</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</filter>
+	
+	
+	<filter-mapping>
+		<filter-name>ajax4jsf</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>extensionsFilter</filter-name>
+		<url-pattern>*.jsf</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>extensionsFilter</filter-name>
+		<url-pattern>/faces/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ResponseOverrideFilter</filter-name>
+		<url-pattern>*.jsf</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>hibernateFilter</filter-name>
+		<url-pattern>*.jsf</url-pattern>
+	</filter-mapping>
+
+
+
+
+	<!-- Listener, to allow Jetty serving MyFaces apps -->
+	<listener>
+		<listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
+	</listener>
+	<!-- <listener> <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class> 
+		</listener> -->
+
+	<servlet>
+		<servlet-name>SpringContextServlet</servlet-name>
+		<servlet-class>org.springframework.web.context.ContextLoaderServlet</servlet-class>
+	</servlet>
+
+	
+	<!-- Welcome files -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+
+
+	<!-- Faces Servlet -->
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<!-- Faces Servlet Mapping -->
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.jsf</url-pattern>
+	</servlet-mapping>
+	
+	
+	
+	<!-- Servlet para la obtener el control de un job de kettle project -->
+	<servlet>
+		<servlet-name>KettleRecive</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.KettleRecive</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>KettleRecive</servlet-name>
+		<url-pattern>/kettle/KettleRecive</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- Servlet para la generacion de los reportes -->
+	<servlet>
+		<servlet-name>ReportServlet</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.ReportServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReportServlet</servlet-name>
+		<url-pattern>/report/*</url-pattern>
+	</servlet-mapping>
+
+
+
+	<servlet>
+		<servlet-name>AxisServlet</servlet-name>
+		<servlet-class>org.apache.axis2.transport.http.AxisServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AxisServlet</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	
+	<servlet>
+		<servlet-name>EnvioEmail</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.PlanificadorEmailServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EnvioEmail</servlet-name>
+		<url-pattern>/envioEmail/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	
+	<servlet>
+		<description>
+		</description>
+		<display-name>GestionClienteServlet</display-name>
+		<servlet-name>GestionClienteServlet</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.GestionClienteServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GestionClienteServlet</servlet-name>
+		<url-pattern>/GestionClienteServlet</url-pattern>
+	</servlet-mapping>
+
+	
+	
+	<servlet>
+		<description>
+		</description>
+		<display-name>DevolucionInteresesServlet</display-name>
+		<servlet-name>DevolucionInteresesServlet</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.DevolucionInteresesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DevolucionInteresesServlet</servlet-name>
+		<url-pattern>/DevolucionInteresesServlet</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet>
+		<servlet-name>PagoElectronicoServlet</servlet-name>
+		<servlet-class>com.bizitglobal.webapp.servlet.PagoElectronicoServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PagoElectronicoServlet</servlet-name>
+		<url-pattern>/PagoElectronicoServlet</url-pattern>
+	</servlet-mapping>
+
+</web-app>

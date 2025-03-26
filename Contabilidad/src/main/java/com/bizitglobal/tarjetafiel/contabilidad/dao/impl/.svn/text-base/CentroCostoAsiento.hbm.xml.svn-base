@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.contabilidad.negocio.CentroCostoAsiento" table="t_vis_cont_cc_asiento" >
+	<id name="idCentroCostoAsiento" type="java.lang.Long" column="c_id_centro_costo_asiento">
+		<generator class="increment" />
+	</id>
+
+	<property name="idRenglon" type="java.lang.Long" column="c_id_renglon" not-null="true"/>
+	
+	<property name="idAsiento" type="java.lang.Long" column="c_id_asiento" not-null="true"/>
+	
+	<property name="idImporte" type="java.lang.Long" column="c_importe" not-null="true"/>
+
+	<many-to-one name="planCuentaDos" class="com.bizitglobal.tarjetafiel.contabilidad.negocio.PlanCuentaDos" not-null="false" cascade="none">
+		<column name="c_id_plan_cuenta" />
+	</many-to-one>
+	
+	<many-to-one name="centroCostos" class="com.bizitglobal.tarjetafiel.contabilidad.negocio.CentroCostos" not-null="false" cascade="none">
+		<column name="c_id_centro_costo" />
+	</many-to-one>
+
+	<property name="isLote" type="java.lang.String" column="c_is_lote" not-null="true"/>
+
+</class>
+</hibernate-mapping>

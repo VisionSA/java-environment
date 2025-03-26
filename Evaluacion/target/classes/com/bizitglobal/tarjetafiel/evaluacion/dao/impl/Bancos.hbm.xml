@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.Bancos" table="t_vis_eva_bancos" >
+	<id name="idBanco" type="java.lang.Long" column="c_id_eva_banco">
+		<generator class="increment" />
+	</id>
+
+	<many-to-one name="banco" class="com.bizitglobal.tarjetafiel.general.negocio.Banco" not-null="false" >
+		<column name="c_id_banco" />
+	</many-to-one>
+
+	<many-to-one name="individuo" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.IndividuoEvaluacion" not-null="false" >
+		<column name="c_id_individuo" />
+	</many-to-one>
+
+	<property name="vinculacion" type="java.lang.String" column="c_vinculacion" not-null="false" length="50"/>
+
+</class>
+</hibernate-mapping>

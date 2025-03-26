@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[			
+			import managers.ComercioManager;
+			import views.categorias.comercio.models.CtaCteComercioModel;
+			import views.categorias.comercio.modules.CompSaldoComercioModule
+			//Modulo
+			import views.categorias.comercio.modules.CtaCteComercioModule;
+			import views.categorias.comercio.modules.CtaCteContableModule;
+			//Interfaz incluida en el modulo
+			import views.categorias.comercio.ResumidoCtaCteComercioView;
+			import views.categorias.comercio.DetalleCtaCteComercioView;
+			import views.categorias.comercio.ResumidoCompSaldoComercio;
+			import views.categorias.comercio.ResumidoCtaCteContable;
+		]]>
+	</mx:Script>
+	<Injectors targets="{[CtaCteComercioModule,ResumidoCtaCteComercioView,DetalleCtaCteComercioView,CompSaldoComercioModule,ResumidoCompSaldoComercio,CtaCteContableModule,ResumidoCtaCteContable]}"> 
+		<ObjectBuilder generator="{CtaCteComercioModel}">
+		 <Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="ctaCteComercioModel"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="saldoAnterior" sourceKey="saldoAnteriorCtaCte" source="{ComercioManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="arrayMovientosCtaCteResumen" sourceKey="arrayMovientosCtaCteResumen" source="{ComercioManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="arrayMovientoCtaCteDetalles" sourceKey="arrayMovientoCtaCteDetalles" source="{ComercioManager}"/>
+	</Injectors>
+	
+<!--@I8271-->	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="arrayComposicionCtaCte" sourceKey="arrayComposicionCtaCte" source="{ComercioManager}"/>
+<!--@F8271-->	</Injectors>
+	
+	<!--@I8271-->	<Injectors target="{CtaCteComercioModel}">		
+						<PropertyInjector targetKey="arrayMCSDetallesCtaCte" sourceKey="arrayMCSDetallesCtaCte" source="{ComercioManager}"/>
+	<!--@F8271-->	</Injectors>
+	
+	<!--@I8271-->	<Injectors target="{CtaCteComercioModel}">		
+						<PropertyInjector targetKey="arrayMCSComposicionCtaCte" sourceKey="arrayMCSComposicionCtaCte" source="{ComercioManager}"/>
+	<!--@F8271-->	</Injectors>
+	
+	<!--@I8271-->	<Injectors target="{CtaCteComercioModel}">		
+						<PropertyInjector targetKey="arrayCOMDetallesCtaCte" sourceKey="arrayCOMDetallesCtaCte" source="{ComercioManager}"/>
+	<!--@F8271-->	</Injectors>
+	
+	<!--@I8271-->	<Injectors target="{CtaCteComercioModel}">		
+						<PropertyInjector targetKey="arrayCOMComposicionCtaCte" sourceKey="arrayCOMComposicionCtaCte" source="{ComercioManager}"/>
+	<!--@F8271-->	</Injectors>
+	
+	
+	<!--@I8271-->	<Injectors target="{CtaCteComercioModel}">		
+						<PropertyInjector targetKey="arrayMovientosCompSaldo" sourceKey="arrayMovientosCompSaldo" source="{ComercioManager}"/>
+	<!--@F8271-->	</Injectors>
+	
+	<!--@I8271-->	<Injectors target="{CtaCteComercioModel}">		
+						<PropertyInjector targetKey="arrayMovientosContable" sourceKey="arrayMovientosContable" source="{ComercioManager}"/>
+	<!--@F8271-->	</Injectors>
+	
+	<!--@I8271-->	<Injectors target="{CtaCteComercioModel}">		
+						<PropertyInjector targetKey="arrayMovientoRELCtaCteDetalles" sourceKey="arrayMovientoRELCtaCteDetalles" source="{ComercioManager}"/>
+	<!--@F8271-->	</Injectors>
+	
+	
+	
+</EventMap>

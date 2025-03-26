@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<actionScriptProperties analytics="false" mainApplicationPath="ConsultaFiel.mxml" projectUUID="f1860e41-238d-4ea4-87d9-10080c6fb6c0" version="6">
+  <compiler additionalCompilerArguments="-locale en_US -services config/services-config-server.xml -include-libraries" autoRSLOrdering="false" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderLocation="C:/entorno/repositorios/testing/Presentacion/src/main/webapp" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="10.3.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+    <compilerSourcePath/>
+    <libraryPath defaultLinkType="1">
+      <libraryPathEntry kind="4" path=""/>
+      <libraryPathEntry kind="1" linkType="1" path="libs"/>
+      <libraryPathEntry kind="3" linkType="1" path="C:/entorno/repositorios/testing/BizitLib/bin/BizitLib.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="C:/entorno/repositorios/testing/ProveedorConexion/bin/ProveedorConexion.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/FielLib/bin/FielLib.swc" useDefaultLinkType="false"/>
+    </libraryPath>
+    <sourceAttachmentPath/>
+  </compiler>
+  <applications>
+    <application path="ConsultaFiel.mxml"/>
+  </applications>
+  <modules>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/LiquidacionesComercioModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/LiquidacionesComercioModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/CtaCteClienteModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/CtaCteClienteModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/RetencionComercioModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/RetencionComercioModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/DetalleInformacionComercioModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/DetalleInformacionComercioModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/GeneralClienteModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/GeneralClienteModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/PlasticosModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/PlasticosModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/ResumenCtaClienteModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/ResumenCtaClienteModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/LineaCreditoModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/LineaCreditoModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/modules/AgendaModule.swf" optimize="true" sourcePath="src/views/categorias/modules/AgendaModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/HistoricoClienteModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/HistoricoClienteModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/ComposicionSaldoClienteModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/ComposicionSaldoClienteModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/CtaCteComercioModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/CtaCteComercioModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/AgendaClienteView.swf" optimize="true" sourcePath="src/views/categorias/cliente/AgendaClienteView.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/AgendaView.swf" optimize="true" sourcePath="src/views/categorias/cliente/AgendaView.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/DocAdjuntosModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/DocAdjuntosModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/CtaCteContableModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/CtaCteContableModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/CompSaldoComercioModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/CompSaldoComercioModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/SimuladorModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/SimuladorModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/AnalisisCtaClientModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/AnalisisCtaClientModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/SimuladorAdelantoEfectivo.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/SimuladorAdelantoEfectivo.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/FuturosVencimientosModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/FuturosVencimientosModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/SimuladorRefinanciacion.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/SimuladorRefinanciacion.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/AbogadoModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/AbogadoModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/TramitesClienteModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/TramitesClienteModule.mxml"/>
+  </modules>
+  <buildCSSFiles/>
+</actionScriptProperties>

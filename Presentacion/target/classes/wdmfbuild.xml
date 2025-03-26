@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<project name="weborb-wdmf" basedir=".">
+    <property name="build.dir" location="${workdir}"/>
+    <property name="lib.dir" location="${libdir}"/>
+
+    <path id="wdmf.classpath">
+      <fileset dir="${lib.dir}">
+             <include name="**/*.jar" />
+     </fileset>
+    </path>
+
+    <target name="compile">
+      <javac fork="false" srcdir="${build.dir}/server" destdir="${build.dir}/server" debuglevel="lines,vars,source" debug="true" includeAntRuntime="false" classpathref="wdmf.classpath"/>
+    </target>
+</project>

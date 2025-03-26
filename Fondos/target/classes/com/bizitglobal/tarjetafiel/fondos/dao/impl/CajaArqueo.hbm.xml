@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.CajaArqueo" table="T_VIS_FON_CAJAS_ARQUEOS" >
+	
+	<cache usage="read-write"/>
+	
+	<id name="idCajaArqueo" type="java.lang.Long" column="C_ID_CAJAARQUEO">
+		<generator class="increment" />
+	</id>
+	
+	<property name="monto" type="java.lang.Double" column="C_MONTO" not-null="true" />
+	
+    <many-to-one name="cajaCierre" class="com.bizitglobal.tarjetafiel.fondos.negocio.CajaCierre" cascade="none" not-null="false" >
+		<column name="C_ID_CAJACIERRE" />
+	</many-to-one>
+	
+	<many-to-one name="formaPagoValor" class="com.bizitglobal.tarjetafiel.fondos.negocio.FormaPagoValor" not-null="false" >
+		<column name="C_ID_FORMA_PAGO_VALOR" />
+	</many-to-one>
+	
+</class>
+</hibernate-mapping>

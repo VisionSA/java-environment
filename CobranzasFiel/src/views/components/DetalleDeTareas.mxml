@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="900" height="500" horizontalAlign="center" verticalAlign="middle"
+	show="buscarDetallesDeTarea()" xmlns:mate="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import events.TareasPendientesEvent;
+			import model.TareasPendientesModel;
+			import com.tarjetafiel.caja.vo.TareaPendiente;
+			
+			public var tareaPendiente:TareaPendiente;
+			public var tareasPendientesModel:TareasPendientesModel;
+			
+			public function buscarDetallesDeTarea():void {
+				tareasPendientesModel.buscarDetallesDeTarea(tareaPendiente);
+			}
+			
+			public function mostrarDetallesTareaPendiente():void {
+				detalles.dataProvider = tareasPendientesModel.detallesTareasPendientes;
+			}
+		]]>
+	</mx:Script>
+	
+	<mate:Listener type="{TareasPendientesEvent.MOSTRAR_DETALLES_TAREA_PENDIENTE}" receive="mostrarDetallesTareaPendiente()"/>
+	
+	<mx:DataGrid id="detalles">
+			<mx:columns>
+				  <mx:DataGridColumn dataField="idEjecucionPlan" headerText="idEjecP"/>
+				  <mx:DataGridColumn dataField="apellidoCliente" headerText="Cliente"/>
+
+				  <mx:DataGridColumn dataField="montoAdeudado" headerText="Adeuda"/>
+
+				  <mx:DataGridColumn dataField="apellidoCobrador" headerText="Cobrador"/>
+			</mx:columns>	
+			
+				  
+		
+	</mx:DataGrid>
+	
+	
+</mx:Box>

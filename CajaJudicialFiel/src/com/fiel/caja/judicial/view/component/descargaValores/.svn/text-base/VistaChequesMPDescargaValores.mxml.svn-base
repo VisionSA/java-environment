@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="800" height="390"
+		  visible="false"
+		  includeInLayout="false" creationComplete="hgroup1_creationCompleteHandler(event)">
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			import com.tarjetafiel.caja.vo.Cheque;
+			
+			import mx.events.FlexEvent;
+			
+			import utils.constantes.ConstantesTeclado;
+			[Bindable]
+			private var modelo:CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			[Inspectable][Bindable]
+			public var medioPago:CajaMP = new CajaMP();
+			
+			[Bindable]
+			private var arrProvDesc:ArrayCollection = modelo.arrChequesDescargados;
+			
+			[Bindable]
+			private var arrProvChqCaja:ArrayCollection = modelo.arrChequesEnCaja;
+			
+			protected function hgroup1_creationCompleteHandler(event:FlexEvent):void
+			{
+				medioPago.importeRetiro = 0;
+				medioPago.caja = modelo.cajaApertura.caja;
+				modelo.arrCajaMpDescarga.addItem(medioPago); 
+			}
+			
+			
+			protected function tlChequesCaja_keyDownHandler(event:KeyboardEvent):void
+			{
+				if (event.ctrlKey &&
+					event.keyCode == ConstantesTeclado.A)
+				{ 
+					selectCheque(tlChequesCaja);
+				}
+				else if (event.ctrlKey &&
+					event.keyCode == ConstantesTeclado.D)
+				{
+					moveCheque(tlChequesCaja, tlChequesDescargados);
+				}
+				else
+				{
+					//ManejadorMensajes.mostrarMensajeInformacion(event.keyCode.toString());
+				}
+			}
+			
+			private function selectCheque(lstOrigen:List):void
+			{
+				if (lstOrigen.selectedItems.length != lstOrigen.dataProvider.length)
+				{
+					var tmpVector:Vector.<Object> = new Vector.<Object>;
+					for (var i:int = 0; i < lstOrigen.dataProvider.length; i++)
+					{
+						tmpVector[i] = lstOrigen.dataProvider.getItemAt(i);
+					}
+					lstOrigen.selectedItems = tmpVector;
+				}
+				else
+				{
+					lstOrigen.selectedItems = new Vector.<Object>;
+				}
+			}
+			
+			private function moveCheque(lstOrigen:List, lstDestino:List):void
+			{
+				for(var selIt:int=0; selIt<lstOrigen.selectedItems.length; selIt++)
+				{
+					var chq:Cheque = lstOrigen.selectedItems[selIt] as Cheque;
+					lstDestino.dataProvider.addItem(chq);
+					//lstOrigen.dataProvider.removeItemAt(lstOrigen.dataProvider.getItemIndex(chq));
+					lstOrigen.selectedItems.splice(selIt,1);
+				}
+				for each (var chqDes:Cheque in lstDestino.dataProvider)
+				{				
+					lstOrigen.dataProvider.removeItemAt(lstOrigen.dataProvider.getItemIndex(chqDes));
+				}
+				ArrayCollection(lstOrigen.dataProvider).refresh();
+				ArrayCollection(lstDestino.dataProvider).refresh();
+				lstDestino.validateNow();
+				lstOrigen.validateNow();
+			}
+			
+			
+			protected function tlChequesDescargados_keyDownHandler(event:KeyboardEvent):void
+			{
+				if (event.ctrlKey &&
+					event.keyCode == ConstantesTeclado.A)
+				{ 
+					selectCheque(tlChequesDescargados);
+				}
+				else if (event.ctrlKey &&
+					event.keyCode == ConstantesTeclado.C)
+				{
+					moveCheque(tlChequesDescargados, tlChequesCaja);
+				}
+				else
+				{
+					//ManejadorMensajes.mostrarMensajeInformacion(event.keyCode.toString());
+				}
+			}
+			
+			
+			protected function tlChequesDescargados_focusInHandler(event:FocusEvent):void
+			{
+				txtCDescargado.setStyle("color","#000000");
+			}
+			
+			
+			protected function tlChequesCaja_focusInHandler(event:FocusEvent):void
+			{
+				txtDescCCaja.setStyle("color","#000000");
+			}
+			
+			
+			protected function tlChequesCaja_focusOutHandler(event:FocusEvent):void
+			{
+				txtDescCCaja.setStyle("color","#cccccc");
+			}
+			
+			
+			protected function tlChequesDescargados_focusOutHandler(event:FocusEvent):void
+			{
+				txtCDescargado.setStyle("color","#cccccc");
+			}
+			
+		]]>
+	</fx:Script>
+	<s:VGroup width="45%" horizontalAlign="center" height="100%">
+		
+		<s:Label text="Cheques en caja"/>
+		<s:List id="tlChequesCaja" width="100%" height="100%"
+				dataProvider="{arrProvChqCaja}" itemRenderer="com.fiel.caja.judicial.view.renderer.chequeItemRenderer"
+				allowMultipleSelection="true"
+				dragEnabled="true" dragMoveEnabled="true" dropEnabled="true"
+				keyDown="tlChequesCaja_keyDownHandler(event)"
+				focusIn="tlChequesCaja_focusInHandler(event)"
+				focusOut="tlChequesCaja_focusOutHandler(event)">
+			<s:layout>
+				<s:TileLayout requestedColumnCount="3"/>
+			</s:layout>
+		</s:List>
+		<mx:Text id="txtDescCCaja" 
+				 text="Ctrl + A: Seleccionar/Deseleccionar Todo.&#13;Ctrl + D: Descargar cheques seleccionados."
+				 textAlign="left" width="100%" color="#cccccc"/>
+	</s:VGroup>
+	<s:VGroup width="10%" horizontalAlign="center">
+		
+	</s:VGroup>
+	<s:VGroup width="45%" horizontalAlign="center" height="100%">
+		<fx:Script>
+			<![CDATA[
+				import mx.collections.ArrayCollection;
+			]]>
+		</fx:Script>
+		<s:Label text="Cheques descargados"/>
+		<s:List id="tlChequesDescargados" width="100%" height="100%"
+				dataProvider="{arrProvDesc}" itemRenderer="com.fiel.caja.judicial.view.renderer.chequeItemRenderer"
+				allowMultipleSelection="true"
+				dragEnabled="true" dragMoveEnabled="true" dropEnabled="true"
+				keyDown="tlChequesDescargados_keyDownHandler(event)" 
+				focusIn="tlChequesDescargados_focusInHandler(event)"
+				focusOut="tlChequesDescargados_focusOutHandler(event)">
+			<s:layout>
+				<s:TileLayout requestedColumnCount="3"/>
+			</s:layout>
+		</s:List>
+		<mx:Text id="txtCDescargado" 
+				 text="Ctrl + A: Seleccionar/Deseleccionar Todo.&#13;Ctrl + C: Volver cheques seleccionados a caja."
+				 textAlign="left" width="100%" color="#cccccc"/>
+	</s:VGroup>
+</s:HGroup>

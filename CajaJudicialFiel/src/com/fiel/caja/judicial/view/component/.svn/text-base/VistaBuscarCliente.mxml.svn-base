@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--@I3820--><s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   close="titlewindow1_closeHandler(event)"
+			   title="Buscar Cliente Judicial"
+			   currentState="{modelo.estadoActualVBuscCli}"
+			   resize="titlewindow1_resizeHandler(event)"
+			   keyUp="components_keyUpHandler(event)"
+			   creationComplete="titlewindow1_creationCompleteHandler(event)" xmlns:textInput="com.util.components.textInput.*" xmlns:components="components.*">
+<!--@F3820-->	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.business.ConstantesEstados;
+			import com.fiel.caja.judicial.event.CajaJudicialEvent;
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.fiel.caja.judicial.vo.ClienteJudicialEncontradoPago;
+			import com.tarjetafiel.caja.vo.ClienteMontoDTO;
+			import com.tarjetafiel.caja.vo.ClienteMovimientosMP;
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.tarjetafiel.caja.vo.IndividuoEvaluacion;
+			import com.tarjetafiel.proveedorconexion.vo.SetDataVo;
+			import com.util.components.alert.AlertError;
+			
+			import events.CloseCustomMessageEvent;
+			
+			import mx.core.IFlexDisplayObject;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			
+			import skin.BotonAceptarSkin;
+			import skin.BotonBuscarSkin;
+			import skin.BotonCancelarSkin;
+			
+			import utils.ManejadorMensajes;
+			import utils.ManejadorPantallas;
+			import utils.constantes.ConstantesTeclado;
+
+			
+			[Bindable]
+			private var modelo : CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+/*@I3820*/		[Bindable]
+			private var montoPagoCliente:Number = 0;/*@F3820*/			
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				cerrarPopUp();
+			}
+			
+			private function cerrarPopUp():void{
+				modelo.clienteJudicialEncontrado = null;
+				modelo.estadoActualVBuscCli = ConstantesEstados.ESTADO_VBC_NO_ENCONTRADO;
+				PopUpManager.removePopUp(this);
+			}
+			
+
+
+			protected function btnAceptar_clickHandler(event:MouseEvent):void
+			{
+				if (!clienteYaAgregado(modelo.clienteJudicialEncontrado))
+				{
+/*@I3820*/				if (montoCorrecto())
+					{
+						var clienteJudicial:ClienteJudicialEncontradoPago = new ClienteJudicialEncontradoPago();
+						clienteJudicial.cliente = modelo.clienteJudicialEncontrado;
+						//Redondea el monto
+						var montoRend:Number = Math.round(Number(inptMonto.text)*100)/100;
+						clienteJudicial.monto = montoRend;
+						new CajaJudicialEvent(CajaJudicialEvent.AGREGAR_CLIENTE_JUDICIAL_GRILLA_EVENT,clienteJudicial).dispatch();
+						cerrarPopUp();
+					}
+					else
+					{
+						ManejadorMensajes.mostrarMensajeError("El monto ingresado no es correcto.","Fiel",onMontoIncorrectoClose);
+/*@F3820*/					}
+				}else {
+					AlertError.show("El cliente ya se encuentra en la grilla");
+				}
+			}
+
+
+			protected function btnBuscar_clickHandler(event:MouseEvent):void
+			{
+				var cli : ClienteTransaccion = new ClienteTransaccion();
+				
+				if (camposValidos()){
+/*@I3820*/					ManejadorPantallas.mostrarProgressBar();
+/*@F3820*/					if(inptNroCuenta.text.length>0){
+						cli.idCliente = Number(inptNroCuenta.text);
+					}
+					if (inptDNI.text.length>0){
+						cli.individuo = new IndividuoEvaluacion();
+						cli.individuo.nroDocumento = inptDNI.text;
+					}
+					
+					var obj : Object = new Object();
+					obj.cliente = cli;
+					obj.abogado = modelo.abogadoSeleccionado;
+					
+					new CajaJudicialEvent(CajaJudicialEvent.BUSCAR_CLIENTE_JUDICIAL_EVENT,obj).dispatch();
+					
+				}else {
+/*@I3820*/					ManejadorMensajes.mostrarMensajeError("Debe Ingresar al menos un parámetro");
+/*@F3820*/				}
+				
+			}
+			
+			private function camposValidos():Boolean {
+				return (inptNroCuenta.text.length > 0 || inptDNI.text.length > 0);
+			}
+			
+			private function clienteYaAgregado(cliente:ClienteTransaccion):Boolean {
+				var encontrado : Boolean = false;
+				
+				for each(var obj:ClienteMontoDTO in modelo.listaClientesJudiciales){
+					if (obj.cliente.idCliente == cliente.idCliente){
+						encontrado = true;
+						break;
+					}
+				}
+				
+				return encontrado;
+			}
+/*@I3820*/
+			private function onMontoIncorrectoClose(event:CloseEvent):void
+			{
+				inptMonto.setFocus();
+			}
+			
+			private function montoCorrecto():Boolean
+			{
+				return nVal.validate().type == ValidationResultEvent.VALID?true:false;
+				
+			}
+			
+			protected function titlewindow1_resizeHandler(event:ResizeEvent):void
+			{
+				ManejadorPantallas.centrarPopUp(this as IFlexDisplayObject);
+			}
+ 			
+			protected function inptDNI_creationCompleteHandler(event:FlexEvent):void
+			{
+				TextInput(event.target).setFocus();
+			}
+			
+			/**
+			* Funcion que escucha al digitado en los campos de entrada de datos
+			* */
+			protected function inptS_keyUpHandler(event:KeyboardEvent):void
+			{
+				if (event.currentTarget is TextInputMoneda)
+				{
+					 if (event.keyCode == Keyboard.ENTER)
+					{
+						btnAceptar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+					} 
+				}
+				else
+				{
+					//limpia los caracteres del otro textinput
+					if (inptDNI == event.currentTarget as TextInput)
+					{
+						inptNroCuenta.text = "";
+					}
+					else
+					{
+						inptDNI.text = "";
+					}
+					
+					 if (event.keyCode == Keyboard.ENTER)
+					{
+						btnBuscar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						btnAceptar.setFocus();
+					} 
+				}
+			}
+
+			/**
+			 * Funcion que escucha el digitado sobre los botones (de cierre) de la ventana
+			 * */
+			protected function btns_keyUpHandler(event:KeyboardEvent):void
+			{
+				switch(event.keyCode)
+				{
+					 case Keyboard.ENTER:
+					{
+						Button(event.target).dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						break;
+					} 
+						
+					case Keyboard.ESCAPE:
+					{
+						btnCancelar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						break;
+					}
+				}
+			}
+			
+			/**
+			 * Escucha el digitado sobre el componente completo
+			 * */
+			protected function components_keyUpHandler(event:KeyboardEvent):void
+			{
+				if (event.ctrlKey)
+				{
+					if (event.keyCode == ConstantesTeclado.N)
+					{
+						btnNuevaBusqueda.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						return;
+					}
+				}
+				switch(event.keyCode)
+				{
+					case Keyboard.ENTER:
+					{
+						btnAceptar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						break;
+					}
+						
+					case Keyboard.ESCAPE:
+					{
+						btnCancelar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						break;
+					}
+				}
+			}
+			
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				//Agregamos un excuchador de cierre de popups para resetear los focos
+				ManejadorMensajes.staticDispatcher.addEventListener(CloseCustomMessageEvent.CLOSE_FAULT_MESSAGE, onCloseSomePopUp,false);
+			}
+			
+			private function onCloseSomePopUp(event:CloseCustomMessageEvent):void
+			{
+				/* inptDNI.text = "";
+				inptNroCuenta.text = "";
+				inptNroCuenta.setFocus(); */
+				event.stopPropagation();
+			}
+
+			protected function sttEncontrado_enterStateHandler(event:FlexEvent):void
+			{
+				inptMonto.setFocus();
+			}
+
+			protected function btnNuevaBusqueda_clickHandler(event:MouseEvent):void
+			{
+				new SetDataVo(modelo,"estadoActualVBuscCli",ConstantesEstados.ESTADO_VBC_NO_ENCONTRADO).guardarValor();
+				inptMonto.text = "0";
+				txtNombre.text = "";
+				if (inptDNI.text == "")
+				{
+					inptNroCuenta.setFocus();
+				}
+				else
+				{
+					inptDNI.setFocus();
+				}
+			}
+
+			protected function btnFind_keyUpHandler(event:KeyboardEvent):void
+			{
+				if (event.ctrlKey)
+				{
+					if (event.keyCode == ConstantesTeclado.N)
+					{
+						btnNuevaBusqueda.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						return;
+					}
+				}
+				switch(event.keyCode)
+				{
+					
+					case Keyboard.ENTER:
+					{
+						Button(event.currentTarget).dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						break;
+					}
+						
+					case Keyboard.ESCAPE:
+					{
+						btnCancelar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						break;
+					}
+				}
+			}
+/*@F3820*/
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+<!--@I3820-->		<mx:NumberValidator id="nVal" source="{inptMonto}" property="text" maxValue="1000000" minValue="0"
+							exceedsMaxError="El monto ingresado es mayor al máximo permitido ($1.000.000)"
+							lowerThanMinError="El monto ingresado debe ser mayor a $0"/>
+<!--@F3820-->	</fx:Declarations>
+	<s:states>
+		<s:State name="NoEncontrado"/>
+<!--@I3820-->		<s:State name="Encontrado" id="sttEncontrado" enterState="sttEncontrado_enterStateHandler(event)"/>
+	</s:states>
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+<!--@I3820-->	
+	<s:HGroup verticalAlign="middle">
+		<mx:Form>
+			<mx:FormItem label="Nro. Cuenta:">
+				<s:TextInput id="inptNroCuenta" restrict="0-9" width.Encontrado="270"
+							 keyUp="inptS_keyUpHandler(event)" enabled="true"
+							 enabled.Encontrado="false"/>
+			</mx:FormItem>
+			<mx:FormItem label="D.N.I:">
+				<s:TextInput id="inptDNI" restrict="0-9" width.Encontrado="270"
+							 keyUp="inptS_keyUpHandler(event)" enabled="true"
+							 creationComplete="inptDNI_creationCompleteHandler(event)"
+							 enabled.Encontrado="false"/><!--@F3820-->
+			</mx:FormItem>
+			<mx:FormItem label="Nombre:" includeIn="Encontrado">
+				<s:TextInput id="txtNombre" editable="false" text="{modelo.clienteJudicialEncontrado.individuo.apellido.toUpperCase()+', '+modelo.clienteJudicialEncontrado.individuo.nombres.toUpperCase()}" width="270"/>
+			</mx:FormItem>
+			
+			<mx:FormItem label="Monto:" 
+						 visible.Encontrado="true" includeInLayout.Encontrado="true"
+						 visible.NoEncontrado="false" includeInLayout.NoEncontrado="false">
+				<textInput:TextInputMoneda id="inptMonto" editable="true" 
+										   text="0" width="270"
+										   textAlign="right" keyUp="inptS_keyUpHandler(event)"/>
+			</mx:FormItem>
+		</mx:Form>
+		<s:VGroup width="100%" horizontalAlign="center" verticalAlign="middle" paddingRight="10" paddingBottom="10">		
+			<components:DoubleLineButton id="btnBuscar" label="Buscar" click="btnBuscar_clickHandler(event)" 
+					  skinClass="skin.BotonBuscarSkin"
+					  visible.Encontrado="false" includeInLayout.Encontrado="false"
+					  visible.NoEncontrado="true" includeInLayout.NoEncontrado="true"
+					  keyUp="btnFind_keyUpHandler(event)"/>
+			<components:DoubleLineButton id="btnNuevaBusqueda" label="Nueva Búsqueda" click="btnNuevaBusqueda_clickHandler(event)" 
+					  skinClass="skin.BotonBuscarSkin" command="(Ctrl + N)"
+					  visible.Encontrado="true" includeInLayout.Encontrado="true"
+					  visible.NoEncontrado="false" includeInLayout.NoEncontrado="false"/>
+		</s:VGroup>
+	</s:HGroup>
+<!--@F3820-->	
+	<s:controlBarContent>
+		<s:Rect width="100%"/>
+<!--@I3820-->		<s:Button id="btnAceptar" label="Aceptar" click="btnAceptar_clickHandler(event)" enabled.Encontrado="true" 
+				  enabled.NoEncontrado="false" skinClass="skin.BotonAceptarSkin"
+				  keyUp="btns_keyUpHandler(event)"/>
+<!--@F3820-->		<s:Button id="btnCancelar" label="Cancelar" click="cerrarPopUp()" skinClass="skin.BotonCancelarSkin"/>		
+	</s:controlBarContent>
+</s:TitleWindow>

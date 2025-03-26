@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+	<class name="com.bizitglobal.tarjetafiel.operador.negocio.MenuItem" table="t_vis_seg_menu_items" lazy="false">
+		<id name="idMenuItem" type="java.lang.Long" column="c_id">
+			<generator class="increment"/>
+		</id>
+		
+		<property name="idItem" type="java.lang.String" column="c_id_item" length="100"/>
+  				  
+		<property name="label" column="c_label" type="java.lang.String" length="100"/>
+  				  
+		<property name="icon" column="c_icon" type="java.lang.String" length="100"/>  
+		
+		<property name="action" column="c_action" type="java.lang.String" length="100"/>
+			      
+		<property name="actionListener" column="c_action_listener" type="java.lang.String" length="100"/>
+
+		<property name="split" column="c_split" type="java.lang.String" length="1"/>
+			      
+		<property name="esPadre" column="c_es_padre" type="java.lang.String" length="1"/>
+			      
+	    <set name="hijos" inverse="false" cascade="none" >
+	        <key>
+	            <column name="c_id_menu_item_padre" />
+	        </key>
+	        <one-to-many class="com.bizitglobal.tarjetafiel.operador.negocio.MenuItemRelacion" />
+	    </set>	 			            
+			      
+	    <many-to-one name="pagina" class="com.bizitglobal.tarjetafiel.operador.negocio.Pagina" not-null="false" >
+		    <column name="c_id_pagina" />
+	    </many-to-one>
+	</class>
+</hibernate-mapping>

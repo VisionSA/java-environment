@@ -1,0 +1,71 @@
+9
+
+dir
+696
+https://testingpc/svn/testing/trunk/Cobranzas/target
+https://testingpc/svn/testing
+
+
+
+2019-02-26T15:57:19.214200Z
+679
+gaston
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+Cobranzas-1.0-SNAPSHOT.jar
+file
+
+
+
+
+2019-06-04T14:05:46.480096Z
+f732635fe83d3c76063bd521357daa67
+2017-09-14T13:25:18.403562Z
+18
+gaston
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+230630
+
+maven-archiver
+dir
+
+test-classes
+dir
+
+classes
+dir
+

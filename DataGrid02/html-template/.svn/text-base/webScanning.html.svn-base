@@ -1,0 +1,10 @@
+<title>Accessing JavaScript from an applet</TITLE>
+<form NAME="textForm">
+<P>Enter some text and then click Display Text:
+ <INPUT TYPE="text" NAME="textField" SIZE="20"></P>
+</FORM>
+
+<APPLET CODE="org.fiel.scanning.class" WIDTH="400"" HEIGHT="100" archive ="scanning.jar,ij.jar,plugin.jar,twain.jar,itextpdf-5.5.4.jar""
+ NAME="readApp" MAYSCRIPT>
+
+</APPLET>

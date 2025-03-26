@@ -1,0 +1,153 @@
+package com.bizitglobal.webapp.service.impl;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import org.apache.log4j.Logger;
+
+import com.bizitglobal.tarjetafiel.commons.util.Convertidores;
+import com.bizitglobal.tarjetafiel.commons.util.PropertieFile;
+import com.bizitglobal.webapp.service.AutorizacionEcoService;
+
+
+/**
+ * * @id 6247
+ * 
+ * @author Carlos Ibañez. Tarjeta Fiel - Año 2012 Esta clase es para enviar el paquete de autorización eco al transaccionador
+ */
+public class AutorizacionEcoServiceImpl implements AutorizacionEcoService {
+
+	private Logger logger = Logger.getLogger(AutorizacionEcoServiceImpl.class);
+
+
+	@Override
+	public String enviarMensajeTransaccionadoEco(long transaccion, String numero_tarjeta, long importe) throws Exception {
+
+		try {
+			PropertieFile prop = new PropertieFile(System.getProperty("catalina.home") + File.separator + "webapps" + File.separator
+					+ "contexto.properties");
+			String ipTran = "";
+			String port = "";
+
+			try {
+				ipTran = prop.getProperties("ipTransaccionador");
+				port = prop.getProperties("puertoTransaccionador");
+
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			String comercio = "0000000004689";
+			// en el numero de lote se guardar el numero de transaccion que envie ECO
+			String numeroLote = Convertidores.completarIzquierda(transaccion + "", new Character('0'), 11);
+			String numeroCupon = "0000";
+			String tipoRegistro = "861";
+			String codigoVerificacion = "0000";
+			Format dateFormat = new SimpleDateFormat("ddMMyy");
+			Calendar fecha = Calendar.getInstance();
+			String fecha_real = dateFormat.format(fecha.getTime());
+			String cuotas = "01";
+			String valor = Convertidores.completarIzquierda(importe + "", new Character('0'), 15);
+			String importeSinDescuento = "000000000000000";
+			String codigoAutorizacion = "00000000";
+			String codigoMoneda = "032";
+			String horaReal = "000000";
+			String utilizaPin = "0";
+			String tracker2 = "0000000000000000000000000000000000000000";
+			String numeroCuponOriginal = "0000";
+			String fechaOperacionOriginal = "0000";
+			String indicadorCaptura = "0";
+			String anulacion = "0";
+			String codigoRespuestaOffline = "000";
+			String tipoPlanCuotas = "0";
+			String tipoCuota = "0";
+			String formaDeIngresoTarjeta = "0";
+			String tipoTerminal = "0";
+			String privado = "0000";
+			String datos1 = "00000000000600P00000000000000000";
+
+			String token = "111" + "0200" + comercio + numeroLote + numeroCupon + tipoRegistro + numero_tarjeta + codigoVerificacion + fecha_real
+					+ cuotas + valor + importeSinDescuento + codigoAutorizacion + codigoMoneda + horaReal + utilizaPin + tracker2 +
+					numeroCuponOriginal + fechaOperacionOriginal + indicadorCaptura +
+					anulacion + codigoRespuestaOffline + tipoPlanCuotas + tipoCuota + formaDeIngresoTarjeta + tipoTerminal + privado + datos1;
+			String respuesta;
+			Socket socket = new Socket(ipTran, Integer.parseInt(port));
+			socket.getOutputStream().write(token.getBytes());
+			socket.getOutputStream().flush();
+
+			byte[] bytes = new byte[3];
+			socket.getInputStream().read(bytes);
+			bytes = new byte[4];
+			socket.getInputStream().read(bytes);
+
+			int longitud = Integer.valueOf(new String(bytes));
+
+			bytes = new byte[longitud];
+
+			socket.getInputStream().read(bytes);
+
+			respuesta = new String(bytes);
+
+			StringBuffer outputXML = new StringBuffer();
+			// outputXML.append("<?xml version='1.0' standalone='yes'?>");
+			outputXML.append("<Operacion>");
+
+			outputXML.append("<Transaccion>");
+			outputXML.append(transaccion);
+			outputXML.append("</Transaccion>");
+
+			outputXML.append("<Tarjeta>");
+			outputXML.append(numero_tarjeta);
+			outputXML.append("</Tarjeta>");
+
+			outputXML.append("<Monto>");
+			outputXML.append(importe);
+			outputXML.append("</Monto>");
+
+			outputXML.append("<Resultado>");
+			if (respuesta.substring(0, 2).equals("00"))
+			{
+				outputXML.append("OK");
+			} else {
+				outputXML.append("ERROR");
+			}
+			outputXML.append("</Resultado>");
+
+			outputXML.append("<Autorizacion>");
+			outputXML.append(respuesta.substring(2, 8));
+			outputXML.append("</Autorizacion>");
+
+			outputXML.append("<Descripcion>");
+			// outputXML.append(respuesta.substring(8, respuesta.length()));
+			// outputXML.append(respuesta.substring(8, 8+10));
+			if (respuesta.substring(0, 2).equals("00"))
+			{
+				outputXML.append("APROBADA");
+			} else {
+				outputXML.append("RECHAZADA");
+			}
+			outputXML.append("</Descripcion>");
+
+			outputXML.append("</Operacion>");
+			return (outputXML.toString());
+
+		} catch (Exception e) {
+			logger.error(e);
+			throw new Exception("Error al conectar con el transaccionador");
+		}
+	}
+
+
+	public Boolean registrarApp(long nomdoc, String nrotarjeta, String idregistracion, String password) throws Exception {
+		return true;
+	}
+
+
+	public Boolean buscarRegistracionApp(String nrotarjeta) throws Exception {
+		return true;
+	}
+
+}

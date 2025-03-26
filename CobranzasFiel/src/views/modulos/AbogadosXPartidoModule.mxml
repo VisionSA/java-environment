@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" 
+	width="100%" 
+	height="100%" horizontalAlign="center"
+	creationComplete="init()">
+	
+	<mx:Script>
+		<![CDATA[
+			import views.components.ViewCambiarAbogadoPartido;
+			import events.GenericAbogadosEvent;
+			import mx.managers.PopUpManager;
+			import mx.core.IFlexDisplayObject;
+			import views.components.ViewCambiarCobradorPartido;
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import com.tarjetafiel.caja.vo.Partido;
+			import com.tarjetafiel.caja.vo.Cobrador;
+			import events.GenericAsignacionCobradoresEvent;
+			import model.CobranzasModelLocator;
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			private function init():void{
+				modelo.partidoSeleccionado = null;
+				modelo.listaPartidos = null;
+				if (modelo.listaProvincias == null){
+					new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.BUSCAR_PROVINCIAS_EVENT,null).dispatch();	
+				}else {
+					cmbProvincias.selectedIndex = 0;
+				}
+				
+				if (modelo.listaAbogados == null){
+					new GenericAbogadosEvent(GenericAbogadosEvent.BUSCAR_ABOGADOS_EVENT,null).dispatch();	
+				}
+				
+			}
+			
+			private function buscarPartidos():void {
+				modelo.partidoSeleccionado = null;
+				new GenericAbogadosEvent(GenericAbogadosEvent.BUSCAR_PARTIDOS_ABOGADO_EVENT,modelo.listaProvincias.getItemAt(cmbProvincias.selectedIndex)).dispatch();
+			}
+			
+			private function getApellidoAbogado(item:Object, column:DataGridColumn):String {
+				var p : Partido = item as Partido;
+				if (p != null && p.abogado != null){
+					return (item as Partido).abogado.apellido;	
+				}else {
+					return "";
+				}
+				
+			}
+			
+			private function getNombreAbogado(item:Object, column:DataGridColumn):String {
+				var p : Partido = item as Partido;
+				if (p != null && p.abogado != null){
+					return (item as Partido).abogado.nombres;	
+				}else {
+					return "";					
+				}
+				
+			}
+			
+			private function seleccionarPartido() : void {
+				new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.SELECCIONAR_PARTIDO_EVENT,modelo.listaPartidos.getItemAt(dgPartidos.selectedIndex)).dispatch();
+			}
+			
+			private function abrirVentanaCambioAbogado() : void {
+				var vent : IFlexDisplayObject = PopUpManager.createPopUp(this,ViewCambiarAbogadoPartido,true);
+				PopUpManager.centerPopUp(vent);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	
+	<mx:VBox width="30%" horizontalAlign="center" paddingTop="10" paddingLeft="10" paddingBottom="10" paddingRight="10" borderStyle="solid"  borderColor="#545454">
+		<mx:Label width="100%" text="Filtro Busqueda" textDecoration="underline" fontSize="18"/>
+		<mx:HBox width="100%" horizontalAlign="right">
+			<mx:Label text="Provincia: "/>
+			<mx:ComboBox id="cmbProvincias" labelField="nombre" dataProvider="{modelo.listaProvincias}"/>
+		</mx:HBox>
+		<mx:HBox width="100%" horizontalAlign="right">
+			<mx:Button label="Buscar" click="buscarPartidos()"/>
+		</mx:HBox>	
+	</mx:VBox>
+	
+	<mx:HRule width="90%" />
+	
+	<mx:DataGrid id="dgPartidos" width="80%" dataProvider="{modelo.listaPartidos}" itemClick="seleccionarPartido()">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Partido" dataField="descripcion" textAlign="center" />
+			<mx:DataGridColumn headerText="Apellido Abogado" textAlign="center" labelFunction="getApellidoAbogado"/>
+			<mx:DataGridColumn headerText="Nombres Abogado" textAlign="center" labelFunction="getNombreAbogado"/>
+		</mx:columns>
+	</mx:DataGrid>
+	
+	<mx:HBox width="80%" horizontalAlign="right">
+		<mx:Button label="Cambiar" enabled="{modelo.partidoSeleccionado != null}" click="abrirVentanaCambioAbogado()"/>
+	</mx:HBox>	
+
+</mx:Module>

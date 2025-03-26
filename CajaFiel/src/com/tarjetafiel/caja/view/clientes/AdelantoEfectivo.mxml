@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox verticalGap="10" horizontalGap="10" xmlns:mx="http://www.adobe.com/2006/mxml"  
+	horizontalAlign="center" verticalAlign="top" xmlns:textInput="com.util.components.textInput.*" paddingBottom="5" 
+	paddingLeft="5" paddingRight="5" paddingTop="5" xmlns:clientes="com.tarjetafiel.caja.view.clientes.*" width="100%" 
+	height="100%">
+	<mx:HBox verticalAlign="top" horizontalAlign="center" width="100%" height="100%" horizontalGap="10">		
+		<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+			<mx:HBox>						
+				<mx:HBox width="50%" verticalAlign="middle" horizontalAlign="center">										
+					<mx:Label text="Disponible:" styleName="lblInfo"/>
+					<textInput:TextInputMoneda styleName="textInputRojoGrande" text="{formatMoneda(adelantoEfectivoModel.disponibleAdelanto)}" editable="false"/>						
+					<mx:Label text="Adelanto:" styleName="lblInfo"/>
+					<textInput:TextInputMoneda styleName="textInputNegroGrande" id="txtAdelanto" text="{adelantoEfectivoModel.importe.toString()}" keyDown="keyPress(event)"/>						
+				</mx:HBox>
+			</mx:HBox>
+			<mx:LinkButton label="Calcular" click="this.calcularCuotas()"/>
+			<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" dataProvider="{adelantoEfectivoModel.cuota}"
+				 height="100%" width="100%" fontSize="16" fontWeight="bold" keyDown="registrarAdelanto(event)" sortableColumns="false">
+				<mx:groupedColumns>				
+					<mx:AdvancedDataGridColumnGroup headerText="Solicitado">				
+						<mx:AdvancedDataGridColumn headerText="Cantidad de Cuotas" dataField="cantidadCuota"/>
+						<mx:AdvancedDataGridColumn headerText="Importe de la Cuota">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.formatMoneda(data.capital + data.interes)}" fontSize="16"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>						
+						<mx:AdvancedDataGridColumn headerText="Importe a financiar">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.formatMoneda((Number(data.cantidadCuota)*Number(data.capital + data.interes)).toString())}" fontSize="16"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+					</mx:AdvancedDataGridColumnGroup>				
+				</mx:groupedColumns>
+			</mx:AdvancedDataGrid>	
+		</mx:VBox>					
+	</mx:HBox>	
+				
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Cuota;
+			import com.util.components.alert.AlertWarning;
+			import com.tarjetafiel.caja.model.AdelantoEfectivoModel;
+			import com.util.format.FormatUtil;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.model.ClienteModel;
+			
+			[Bindable]private var _cliente:ClienteModel = ModelLocator.getInstance().clienteSeleccionado;							
+			[Bindable]public var adelantoEfectivoModel:AdelantoEfectivoModel = ModelLocator.getInstance().adelantoEfectivoModel;
+			
+			
+			private var response:String;	
+			
+			public function formatMoneda(obj:Object):String{
+				return FormatUtil.formatMoneda(obj);				
+				
+			}
+			
+			public function formatPorcenaje(obj:Object):String{
+				return FormatUtil.formatPorcentaje(obj);
+			}
+			
+			private function keyPress(evt:KeyboardEvent):void{
+				if(evt.keyCode == Keyboard.ENTER){
+					calcularCuotas();
+				}
+			}
+			
+			private function calcularCuotas():void{
+				 if(validar())
+					adelantoEfectivoModel.calcularCuota(Number(txtAdelanto.text));
+			}
+			
+			private function validar():Boolean{
+				if(Number(txtAdelanto.text) == 0){
+					AlertWarning.show("El importe debe ser mayor a 0");
+					return false;
+				}
+				if(isNaN(Number(txtAdelanto.text))){
+						AlertWarning.show("Formato moneda invalido");
+					return false;
+				}
+				
+				return true;
+			}
+			
+			private function registrarAdelanto(evt:KeyboardEvent):void{
+								
+				if(validar()) {
+					if(ModelLocator.getInstance().clienteSeleccionado.cliente){
+						if(evt.keyCode == Keyboard.ENTER && this.adg1.selectedItem != null)
+							adelantoEfectivoModel.registrarAdelanto(this.adg1.selectedItem as Cuota, Number(txtAdelanto.text));
+					} else {
+						AlertWarning.show("No hay un cliente seleccionado");
+					}
+				}
+				
+								
+			}
+			
+		]]>
+		
+	</mx:Script>
+	
+</mx:VBox>

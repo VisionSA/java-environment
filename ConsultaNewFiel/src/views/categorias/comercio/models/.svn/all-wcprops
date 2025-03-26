@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/comercio/models
+END
+ListaComercioModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/comercio/models/ListaComercioModel.as
+END
+LiquidacionComModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/comercio/models/LiquidacionComModel.as
+END
+CtaCteComercioModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/comercio/models/CtaCteComercioModel.as
+END
+RetencionComercioModel.as
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/views/categorias/comercio/models/RetencionComercioModel.as
+END

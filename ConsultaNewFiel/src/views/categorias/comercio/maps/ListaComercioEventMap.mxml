@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import events.ComercioEvent;
+			import events.ComercioManagerEvent;
+			
+			import managers.ComercioManager;
+			
+			import views.categorias.comercio.DetalleInformacionComercioView;
+			import views.categorias.comercio.EncabezadoComercioView;
+			import views.categorias.comercio.models.CtaCteComercioModel;
+			import views.categorias.comercio.models.LiquidacionComModel;
+			import views.categorias.comercio.models.ListaComercioModel;
+			import views.categorias.comercio.modules.DetalleInformacionComercioModule;
+			import views.categorias.comercio.popup.ListaComercioView;
+			
+		]]>
+	</mx:Script>
+	<Injectors targets="{[EncabezadoComercioView,ListaComercioView,DetalleInformacionComercioView,DetalleInformacionComercioModule]}">
+		<ObjectBuilder generator="{ListaComercioModel}">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="listaComercioModel"/>
+	</Injectors>
+	
+	
+	
+	<EventHandlers type="{ComercioEvent.BUSCAR_COMERCIOS}">
+		<MethodInvoker generator="{CtaCteComercioModel}" method="resetValues"/>
+		<MethodInvoker generator="{LiquidacionComModel}" method="resetValues"/>
+		<RemoteObjectInvoker instance="{comercioServices}" method="getCodComercioFlex" arguments="{[event.filtro, event.paginador]}">
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultListaComorecio" arguments="{resultObject}"/>
+				<EventAnnouncer type="restaurarCtaCteComercio"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker method="fault" generator="{ComercioManager}" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioEvent.BUSCAR_EMPRESAS}">
+		<MethodInvoker generator="{CtaCteComercioModel}" method="resetValues"/>
+		<MethodInvoker generator="{LiquidacionComModel}" method="resetValues"/>
+		<RemoteObjectInvoker instance="{empresaServices}" method="getEmpresaFlexConsulta" arguments="{[event.filtro, event.paginador]}">
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultListaComorecio" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker method="fault" generator="{ComercioManager}" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+<!--@I3945-->	
+	<EventHandlers type="{ComercioEvent.AGREGAR_EMAIL}" debug="true"> 
+		<MethodInvoker generator="{ComercioManager}" arguments="{[event.email,event.idSucEmpresa]}" method="agregarEmail">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	
+<!--@I5092-->	
+	
+	<EventHandlers type="{ComercioEvent.REPORTE_COMERCIO}" debug="true"> 
+		<MethodInvoker generator="{ComercioManager}" arguments="{[event.cuit]}" method="generarReporteComercio">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	
+<!--@F5092-->
+	
+	
+	
+	
+	<EventHandlers type="{ComercioManagerEvent.AGREGAR_EMAIL}">		
+		<RemoteObjectInvoker instance="{comercioServices}" method="agregarEmail" arguments="{[event.email,event.idSucEmpresa]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultAgregarEmail" arguments="{resultObject}"/>				
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioEvent.AGREGAR_TELEFONO}" debug="true"> 
+		<MethodInvoker generator="{ComercioManager}" arguments="{[event.telefono,event.idSucEmpresa]}" method="agregarTelefono">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioManagerEvent.AGREGAR_TELEFONO}">		
+		<RemoteObjectInvoker instance="{comercioServices}" method="agregarTelefono" arguments="{[event.telefono,event.idSucEmpresa]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultAgregarTelefono" arguments="{resultObject}"/>				
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioEvent.CARGAR_CMB_TIPO_TEL}">		
+		<RemoteObjectInvoker instance="{comercioServices}" method="cargarCmbTipoTelefono">
+			<resultHandlers>
+				<MethodInvoker generator="{ListaComercioModel}" method="resultCargarCmbTipoTelefono" arguments="{resultObject}"/>				
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioEvent.RECARGAR_DATOS_COMERCIO}">		
+		<MethodInvoker generator="{ListaComercioModel}" method="recargarDatos"/>
+	</EventHandlers>
+<!--@F3945-->
+	
+	<mx:RemoteObject destination="GenericSessionDestination" source="codComercioServiceTarget" id="comercioServices"/>
+	<mx:RemoteObject destination="GenericSessionDestination" source="empresaServiceTarget" id="empresaServices"/>
+	
+</EventMap>
+

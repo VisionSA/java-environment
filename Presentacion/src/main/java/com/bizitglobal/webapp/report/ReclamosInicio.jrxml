@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="ReclamosInicio"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="v_id_reclamo" isForPrompting="true" class="java.lang.Integer"/>
+	<queryString><![CDATA[SELECT to_char(a.c_id_reclamo,'000000') idReclamo,a.c_id_fecha_alta,c.c_descripcion AS desc_tipo_reclamo,d.c_descripcion AS c_canal,
+       g.c_apelnom_declarante,
+       g.c_calle ||' '|| g.c_numero ||' '|| DECODE(g.c_orientacion,'-','', trim(g.c_orientacion) || ' ')||
+       DECODE(trim(g.c_manzana), NULL, '', 'Manzana: ' || trim(g.c_manzana) ||  ' '  ) ||
+       DECODE(trim(g.c_area_sector), NULL, '', 'Area: ' || trim(g.c_area_sector) ||  ' '  ) ||
+    DECODE(g.c_piso, NULL, '', 'Piso: ' || trim(g.c_piso) || ' '  ) ||
+  DECODE(g.c_dpto, NULL, '', 'Depto: ' ||  trim(g.c_dpto) || ' ' ) || 
+ DECODE(k.c_descripcion, NULL, '','-','', 'Barrio: ' || trim(k.c_descripcion))  DOMICILIO,   
+ DECODE(trim(i.c_nombre),'-','', trim(i.c_nombre) || ' ') || DECODE(trim(j.c_descripcion), '-', '',   trim(j.c_descripcion)  )  descripcion,
+g.c_codigo_postal || ' ' || h.c_nombre provincia     
+      
+FROM t_vis_reclamo_c a,t_vis_reclamo_tipo_c c, t_vis_reclamo_canal d,
+     t_vis_reclamo_individuo g,t_vis_gen_provincias h,t_vis_gen_localidades i,t_vis_gen_partidos j,t_vis_gen_barrios k
+WHERE a.c_id_tipo_reclamo=c.c_id_tipo_Reclamo
+AND a.c_id_Canal=d.c_id_canal
+AND a.c_id_reclamo_individuo=g.c_id_reclamo_individuo
+AND g.c_id_provincia=h.c_id_provincia
+AND g.c_id_localidad=i.c_id_localidad
+AND g.c_id_departamento=j.c_id_partido
+AND g.c_id_barrio=k.c_id_barrio
+and a.c_id_reclamo=$P{v_id_reclamo}]]></queryString>
+
+	<field name="IDRECLAMO" class="java.lang.String"/>
+	<field name="C_ID_FECHA_ALTA" class="java.sql.Timestamp"/>
+	<field name="DESC_TIPO_RECLAMO" class="java.lang.String"/>
+	<field name="C_CANAL" class="java.lang.String"/>
+	<field name="C_APELNOM_DECLARANTE" class="java.lang.String"/>
+	<field name="DOMICILIO" class="java.lang.String"/>
+	<field name="DESCRIPCION" class="java.lang.String"/>
+	<field name="PROVINCIA" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="700"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="6"
+						y="178"
+						width="518"
+						height="32"
+						key="textField-1"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Al respecto, nos encontramos tomando las acciones pertinentes. Nuestro personal especializado evaluará su reclamo. El mismo será solucionado a la brevedad. El número otorgado para su seguimiento es : " + $F{IDRECLAMO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="5"
+						y="131"
+						width="513"
+						height="48"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Es grato dirigirnos a usted con la finalidad de hacerle llegar nuestro cordial saludo y a la vez manifestarle que hemos tomado conocimiento de su consulta/reclamo registrado vía: " .concat($F{C_CANAL}.concat( ", referido a: " .concat($F{DESC_TIPO_RECLAMO}.concat("."))))]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="6"
+						y="203"
+						width="450"
+						height="31"
+						key="staticText-11"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[con el cual usted podrá en todo momento consultar por el progreso del mismo.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="224"
+						width="505"
+						height="34"
+						key="staticText-12"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Lo invitamos a visitar nuestra página web www.tarjetafiel.com en donde encontrará información sobre nuestros productos.
+]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="85"
+						width="255"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-5"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PROVINCIA}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="45"
+						width="255"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="11" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{C_APELNOM_DECLARANTE}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="59"
+						width="324"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DOMICILIO}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="73"
+						width="300"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-8"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold" size="10" isBold="true" pdfEncoding ="Cp1250"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DESCRIPCION}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="7"
+						y="305"
+						width="646"
+						height="358"
+						key="staticText-13"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Estimado cliente:
+TARJETA FIEL pone a su disposiciónel Servicio de Atención al Usuario de Servicios Financieros, a través del cual Ud.
+ podrá dirigir sus consultas y reclamos.
+
+Responsables designados para atender sus consultas y reclamos:
+
+Responsable Titular: Gustavo Savall
+Correo Postal: Mendoza 360 Sur – San Juan 
+Teléfono: (264) 429-3400
+Fax: (264) 429-3414 
+Correo Electrónico: gsavall@tarjetafiel.com
+
+Responsable Suplente: Maximiliano Erostarbe
+Correo Postal: Mendoza 360 Sur – San Juan 
+Teléfono: (264) 429-3400
+Fax: (264) 429-3414 
+Correo Electrónico: merostarbe@tarjetafiel.com
+
+Canales de Comunicación para efectuar sus consultas o reclamos:
+
+Teléfono: 0-810-222-3400, de Lunes a Sábados de 8:30 a 22:00
+Correo Electrónico: gsavall@tarjetafiel.com
+Página Web: www.tarjetafiel.com
+Correo Postal: Mendoza 360 Sur – 5400 San Juan
+Fax: (264) 429-3414
+En forma personal en cualquiera de nuestras sucursales, en los horarios habilitados.
+
+Sus consultas y reclamos serán respondidos y resueltos definitivamente en el plazo máximo de 20 (veinte) días hábiles.
+
+Ante la falta de respuesta o disconformidad con las resoluciones adoptadas, usted podrá efectuar la denuncia ante el Banco Central
+ de la República Argentina.
+El Banco Central de la República Argentina dispone de un Centro de Atención al Usuario de Servicios Financieros, que se podrá
+contactar ingresando a www.usuariosfinancieros.gob.ar
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="8"
+						y="264"
+						width="505"
+						height="31"
+						key="staticText-14"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[SERVICIO DE ATENCIÓN AL USUARIO DE SERVICIOS FINANCIEROS
+BCRA Comunicación A5388
+]]></text>
+				</staticText>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

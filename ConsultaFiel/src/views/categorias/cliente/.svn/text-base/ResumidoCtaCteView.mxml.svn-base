@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox   xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"    
+		   verticalAlign="top" backgroundAlpha="0.0" borderColor="#B7BABC"
+		   horizontalAlign="left"    paddingBottom="0"
+		   paddingLeft="0" paddingRight="0"  paddingTop="0">
+        <mx:HBox includeInLayout="false" visible="false">
+           <mx:Label text="Saldo a la fecha: " fontWeight="bold" styleName="lblInfoBlanco"/>
+           <mx:Label includeInLayout="{!ctaCteClienteModel.verSaldoHistorio}" visible="{!ctaCteClienteModel.verSaldoHistorio}" text="{currencyFormatter.format(ctaCteClienteModel.saldoAnterior)}" fontWeight="bold" styleName="lblInfoBlanco"/>	
+           <mx:Label includeInLayout="{ctaCteClienteModel.verSaldoHistorio}" visible="{ctaCteClienteModel.verSaldoHistorio}" text="Consulte Histórico" fontWeight="bold" styleName="lblInfoBlanco"/>
+        </mx:HBox>
+	
+	<mx:HBox  verticalAlign="top" 
+			  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+			  paddingTop="0" width="100%" horizontalGap="0">
+        
+       	<mx:AdvancedDataGrid id="adg1" sortableColumns="false" designViewDataType="flat" keyDown="pressKey(event)"  itemClick="itemClickEvent(event);"
+							 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0" sortItemRenderer="{null}"
+							 doubleClickEnabled="true" width="45%" height="100%"   doubleClick="this.cambiarVistaDetalle()"
+							 dataProvider="{ctaCteClienteModel.arrayMovientosCtaCteResumen}" rowHeight="18">
+					<mx:columns>
+					     <!--mx:AdvancedDataGridColumn  headerText="N°" dataField="numeroFila" /-->
+					     <mx:AdvancedDataGridColumn headerText="Fecha" textAlign="left" width="55">
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.dateFormatter.format(data.fechaReal)}" styleName="{((data.estadoImpacto == 'Pendiente')?'consumoPendiente':((data.estadoImpacto == 'R')?'consumoRechazado':'Label'))}" textAlign="left" />
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Descripcion"  width="160" textAlign="left" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{data.sucDescripcion}" styleName="{((data.estadoImpacto == 'Pendiente')?'consumoPendiente':((data.estadoImpacto == 'R')?'consumoRechazado':'Label'))}" textAlign="left"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>	
+						<!--<mx:AdvancedDataGridColumn headerText="Estado" textAlign="left" width="60">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.estadoImpacto}" styleName="{((data.estadoImpacto == 'Pendiente')?'consumoPendiente':'Label')}" textAlign="left"/>
+							</mx:Component>
+						</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>-->
+						
+						<mx:AdvancedDataGridColumn headerText="Imp.Cuota" textAlign="right" width="70" paddingLeft="0" paddingRight="0" wordWrap="true">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.currencyFormatter.format(data.importeCuota)}" />
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						
+						
+			            <mx:AdvancedDataGridColumn headerText="Cuota"  textAlign="right" width="60"
+												   wordWrap="true" sortable="false" paddingLeft="0" paddingRight="0" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{(isNaN(data.cantidadCuotas)?'':data.cantidadCuotas)}" />
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+
+						
+			               <mx:AdvancedDataGridColumn headerText="Debe" textAlign="right" width="70" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						          <mx:Label text="{outerDocument.getDebe(data)}" />
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            <mx:AdvancedDataGridColumn headerText="Haber" textAlign="right" width="70">
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						          <mx:Label text="{outerDocument.getHaber(data)}" />
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            <mx:AdvancedDataGridColumn headerText="Saldo"  textAlign="right" width="70">
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.currencyFormatter.format(data.saldoAcumulado)} "/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Concepto"  textAlign="right" width="70" visible="false">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.currencyFormatter.format(data.idConcepto)} "/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+			        </mx:columns>
+		</mx:AdvancedDataGrid>
+		<mx:Panel title="Datos de la Transaccion" borderThicknessBottom="0" borderThicknessLeft="0"
+				  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+				  paddingTop="0"
+				  borderThicknessRight="0" borderThicknessTop="0" width="55%" headerHeight="0" height="100%" verticalGap="0">
+			
+			<mx:Panel title="Datos del Cliente" borderThicknessBottom="0" borderThicknessLeft="0"
+					  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					  paddingTop="0"
+					  borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="18" height="8%" verticalGap="0" textAlign="center">
+			
+			<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="0"> 
+				<mx:HBox  verticalAlign="top" 
+						  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+						  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+					<mx:FormItem label="Cuenta:" styleName="tituloBusquedas" textAlign="left" width="15%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+						<mx:Label text="{(isNaN(ctaCteClienteModel.movTransaccionCliCom.cliente)?'':ctaCteClienteModel.movTransaccionCliCom.cliente)}" styleName="lblInfo" paddingBottom="0" paddingTop="0" height="7%"/>
+					</mx:FormItem>
+					<mx:FormItem label="Cliente:" styleName="tituloBusquedas" textAlign="left" width="20%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+						<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.tipoCliente}" paddingBottom="0" paddingTop="0"/>
+					</mx:FormItem>
+					<mx:FormItem label="Apellido Nombre:" styleName="tituloBusquedas" textAlign="left"  width="40%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+						<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.nomCliente}" paddingBottom="0" paddingTop="0"/>
+					</mx:FormItem>
+					<mx:FormItem label="Plastico:" styleName="tituloBusquedas" textAlign="left"  width="25%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+						<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.nroTarjeta}" paddingBottom="0" paddingTop="0"/>
+					</mx:FormItem>					
+					</mx:HBox>
+			</mx:Form>	
+			</mx:Panel>
+			<mx:Panel title="Datos del Comercio" borderThicknessBottom="0" borderThicknessLeft="0"
+					  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					  paddingTop="0"
+					  borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="18" height="10%" verticalGap="0" textAlign="center">
+				
+				<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="0"> 
+					<mx:VBox  verticalAlign="top" 
+							  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+					<mx:HBox  verticalAlign="top" 
+							  horizontalAlign="left" height="50%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+						<mx:FormItem label="Cod.Comercio:" styleName="tituloBusquedas" textAlign="left" width="15%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label text="{(isNaN(ctaCteClienteModel.movTransaccionCliCom.codigoPosnet)?'':ctaCteClienteModel.movTransaccionCliCom.codigoPosnet)}" styleName="lblInfo" paddingBottom="0" paddingTop="0" height="7%"/>
+						</mx:FormItem>
+						
+						<mx:FormItem label="Razon Social:" styleName="tituloBusquedas" textAlign="left"  width="45%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.razonSocial}" paddingBottom="0" paddingTop="0"/>
+						</mx:FormItem>
+						<mx:FormItem label="Nombre Fantasia:" styleName="tituloBusquedas" textAlign="left"  width="40%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.descripcion}" paddingBottom="0" paddingTop="0"/>
+						</mx:FormItem>						
+					</mx:HBox>
+						<mx:HBox  verticalAlign="top" 
+								  horizontalAlign="left" height="50%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+								  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+							<mx:FormItem label="ListaPrecio:" styleName="tituloBusquedas" textAlign="left" width="15%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+								<mx:Label text="{(isNaN(ctaCteClienteModel.movTransaccionCliCom.listaprecios)?'':ctaCteClienteModel.movTransaccionCliCom.listaprecios)}" styleName="lblInfo" paddingBottom="0" paddingTop="0" height="7%"/>
+							</mx:FormItem>
+							
+							<mx:FormItem label="Descripcion:" styleName="tituloBusquedas" textAlign="left"  width="45%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+								<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.listaDescripcion}" paddingBottom="0" paddingTop="0"/>
+							</mx:FormItem>
+							<mx:FormItem label="FechaVersion:" styleName="tituloBusquedas" textAlign="left"  width="40%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+								<mx:Label styleName="lblInfo" text="{dateFormatter.format(ctaCteClienteModel.movTransaccionCliCom.fechaVersion)}" paddingBottom="0" paddingTop="0"/>
+							</mx:FormItem>
+						</mx:HBox>
+				</mx:VBox>	
+				</mx:Form>	
+			</mx:Panel>
+			<mx:Panel title="Datos de la Transaccion" borderThicknessBottom="0" borderThicknessLeft="0"
+					  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					  paddingTop="0"
+					  borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="18" height="8%" verticalGap="0" textAlign="center">
+				
+				<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="0"> 
+					<mx:VBox  verticalAlign="top" 
+							  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+					<mx:HBox  verticalAlign="top" 
+							  horizontalAlign="left" height="50%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+						<mx:FormItem label="Id Transaccion:" styleName="tituloBusquedas" textAlign="left" width="30%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label text="{(isNaN(ctaCteClienteModel.movimientoCtaCteSeleccionado.idTransaccion)?'':ctaCteClienteModel.movimientoCtaCteSeleccionado.idTransaccion)}" styleName="lblInfo" paddingBottom="0" paddingTop="0" height="7%"/>
+						</mx:FormItem>
+						<mx:FormItem label="Fecha Transaccion: " styleName="tituloBusquedas" textAlign="left" width="35%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label styleName="lblInfo" text="{dateFormatter.format(ctaCteClienteModel.movimientoCtaCteSeleccionado.fechaReal)}" paddingBottom="0" paddingTop="0"/>
+						</mx:FormItem>
+						<mx:FormItem label="Cod Autorizacion:" styleName="tituloBusquedas" textAlign="left"  width="35%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.codigoAutorizacion}" paddingBottom="0" paddingTop="0"/>
+						</mx:FormItem>
+					</mx:HBox>
+					<mx:HBox  verticalAlign="top" 
+								  horizontalAlign="left" height="50%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+								  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+						<mx:FormItem label="Cantidad Cuotas:" styleName="tituloBusquedas" textAlign="left" width="30%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label text="{ctaCteClienteModel.movTransaccionCliCom.cantCuota}" styleName="lblInfo" paddingBottom="0" paddingTop="0" height="7%"/>
+						</mx:FormItem>
+						
+						<mx:FormItem label="Canal:" styleName="tituloBusquedas" textAlign="left"  width="35%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.canal}" paddingBottom="0" paddingTop="0"/>
+						</mx:FormItem>	
+						<mx:FormItem label="Terminal:" styleName="tituloBusquedas" textAlign="left"  width="35%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.terminal}" paddingBottom="0" paddingTop="0"/>
+						</mx:FormItem>							
+					</mx:HBox>
+					</mx:VBox>
+				</mx:Form>	
+			</mx:Panel>
+			<mx:Panel title="Detalle Transaccion del Cliente" borderThicknessBottom="0" borderThicknessLeft="0"
+					  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					  paddingTop="0"
+					  borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="18" height="8%" verticalGap="0" textAlign="center">
+				
+				<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="0"> 
+					<mx:HBox  verticalAlign="top" 
+							  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+						<mx:FormItem label="Fecha Conciliacion:" styleName="tituloBusquedas" textAlign="left" width="30%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label text="{dateFormatter.format(ctaCteClienteModel.movTransaccionCliCom.fechaConciliacion)}" styleName="lblInfo" paddingBottom="0" paddingTop="0" height="7%"/>
+						</mx:FormItem>
+						
+						<mx:FormItem label="Ultimo Estado:" styleName="tituloBusquedas" textAlign="left"  width="30%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.estadoCliente}" paddingBottom="0" paddingTop="0"/>
+						</mx:FormItem>
+						<mx:FormItem label="Fecha Ultimo Estado" styleName="tituloBusquedas" textAlign="left"  width="40%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label styleName="lblInfo" text="{dateFormatter.format(ctaCteClienteModel.movTransaccionCliCom.fechaEstadoCliente)}" paddingBottom="0" paddingTop="0"/>
+						</mx:FormItem>				
+					</mx:HBox>
+				</mx:Form>	
+			</mx:Panel>
+			<mx:Panel title="Detalle Transaccion del Comercio" borderThicknessBottom="0" borderThicknessLeft="0"
+					  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					  paddingTop="0"
+					  borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="18" height="8%" verticalGap="0" textAlign="center">
+				
+				<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="0"> 
+					<mx:HBox  verticalAlign="top" 
+							  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+						<mx:FormItem label="Fecha Facturacion:" styleName="tituloBusquedas" textAlign="left" width="30%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label text="{dateFormatter.format(ctaCteClienteModel.movTransaccionCliCom.fechaFacComercio)}" styleName="lblInfo" paddingBottom="0" paddingTop="0" height="7%"/>
+						</mx:FormItem>
+						
+						<mx:FormItem label="Ultimo Estado:" styleName="tituloBusquedas" textAlign="left"  width="30%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label styleName="lblInfo" text="{ctaCteClienteModel.movTransaccionCliCom.estadoComercio}" paddingBottom="0" paddingTop="0"/>
+						</mx:FormItem>
+						<mx:FormItem label="Fecha Ultimo Estado" styleName="tituloBusquedas" textAlign="left"  width="40%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+							<mx:Label styleName="lblInfo" text="{dateFormatter.format(ctaCteClienteModel.movTransaccionCliCom.fechaEtadoComercio)}" paddingBottom="0" paddingTop="0"/>
+						</mx:FormItem>
+						
+					</mx:HBox>
+				</mx:Form>	
+			</mx:Panel>
+	
+			
+			
+			
+			<mx:HBox  verticalAlign="top" 
+					  horizontalAlign="left" height="30%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					  paddingTop="0" width="100%" horizontalGap="4"  verticalGap="4">
+	
+	<mx:Panel title="Transaccion Cliente" borderThicknessBottom="0" borderThicknessLeft="0"
+	  paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0" textAlign="center"
+	 borderThicknessRight="0" borderThicknessTop="0" width="70%" headerHeight="20" height="100%" verticalGap="-5"  horizontalGap="0">
+		
+		<mx:HBox  verticalAlign="top" 
+				  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+				  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0">
+				
+	<mx:AdvancedDataGrid sortableColumns="false" id="adg2" designViewDataType="flat" itemClick="itemClickEvent1(event);"
+								 keyDown="this.pressKey1(event)"  doubleClickEnabled="true"
+  doubleClick="this.cambiarVistaComposicion()"  dataProvider="{ctaCteClienteModel.arrayMovientoCtaCteDetalles}"
+   paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0" sortItemRenderer="{null}"
+  width="50%" height="100%" rowHeight="18">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="ConceptoDet" dataField="idConceptoDetalle" textAlign="right" width="60"/>
+					<mx:AdvancedDataGridColumn headerText="Descripcion" dataField="descripcionConceptoDetalle" textAlign="left" width="100"/>
+					<mx:AdvancedDataGridColumn headerText="Imp.Cuota" textAlign="right" width="70" >
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{outerDocument.currencyFormatter.format(data.importeCuota)}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+				</mx:columns>
+			</mx:AdvancedDataGrid>
+			<mx:AdvancedDataGrid sortableColumns="false" id="adg3" designViewDataType="flat"
+								 doubleClickEnabled="true"     
+								 dataProvider="{ctaCteClienteModel.arrayComposicionDetalleCtaCte}"
+								 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0" sortItemRenderer="{null}"
+								 width="50%" height="100%" rowHeight="18">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn  headerText="Cuota" dataField="nroCuota" textAlign="right" width="50"/>
+					<mx:AdvancedDataGridColumn headerText="Fecha" textAlign="left" width="60" >
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{outerDocument.dateFormatter.format(data.fechaFacturacion)}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					
+					<mx:AdvancedDataGridColumn headerText="Imp. Cuota" textAlign="right" width="70" >
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{outerDocument.currencyFormatter.format(data.importeCuota)}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Estado" dataField="estado" textAlign="left" width="60"/>
+					<mx:AdvancedDataGridColumn headerText="Nro Liq" dataField="idLiqCliente" textAlign="right" width="70"/>
+				</mx:columns>
+			</mx:AdvancedDataGrid>
+			
+		</mx:HBox>
+	</mx:Panel>
+				
+				<mx:Panel title="Transaccion Comercio" borderThicknessBottom="0" borderThicknessLeft="0"
+				 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0" textAlign="center"
+				  borderThicknessRight="0" borderThicknessTop="0" width="30%" headerHeight="20" height="100%" verticalGap="-5">
+			
+			<mx:AdvancedDataGrid sortableColumns="false" id="adgComercio" designViewDataType="flat"
+								 dataProvider="{ctaCteClienteModel.arrayMovientoComercioDetalles}" height="100%" width="100%"
+								 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0" sortItemRenderer="{null}"
+								 rowHeight="18">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Concepto" textAlign="right" sortable="false"
+											   paddingRight="0" paddingLeft="0" resizable="true"  width="50">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.codigoConcepto}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Descripcion"   sortable="false"
+											   textAlign="left" width="70">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.descripcionConcepto}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Importe"   textAlign = "right" sortable="false"  width="60">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{outerDocument.currencyFormatter.format(data.importe)}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+				</mx:columns>					
+			</mx:AdvancedDataGrid>
+			</mx:Panel>
+			</mx:HBox>
+			
+			
+			
+			
+			
+			<mx:HBox  verticalAlign="top" 
+					  horizontalAlign="left" height="30%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+					  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+				
+				
+			<mx:Panel title="Transacciones Pendientes" borderThicknessBottom="0" borderThicknessLeft="0"
+					  paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0" textAlign="center"
+					  borderThicknessRight="0" borderThicknessTop="0" width="50%" headerHeight="20" height="100%" verticalGap="-5">
+				
+				<mx:AdvancedDataGrid sortableColumns="false" id="adgPendientes" designViewDataType="flat"
+									 dataProvider="{ctaCteClienteModel.arrayMovientoPendiente}" height="100%" width="100%"
+									 paddingBottom="0" paddingLeft="0" paddingRight="0"  paddingTop="0" sortItemRenderer="{null}"
+									 rowHeight="18">
+					<mx:columns>
+						<mx:AdvancedDataGridColumn headerText="Fecha" textAlign="left" width="50">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.dateFormatter.format(data.fechaReal)}"  textAlign="left" />
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Descripcion"  width="130" textAlign="left" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{data.sucDescripcion}"  textAlign="left"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Cuota"  textAlign="right" width="50"
+												   wordWrap="true" sortable="false" paddingLeft="0" paddingRight="0" >
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{(isNaN(data.cantidadCuotas)?'':data.cantidadCuotas)}" />
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Importe"   textAlign = "right" sortable="false"  width="60">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.currencyFormatter.format(data.importeTotCuotas)}"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+					</mx:columns>					
+				</mx:AdvancedDataGrid>
+			</mx:Panel>
+				<mx:VBox width="50%" height="100%">
+					
+				
+					<mx:Panel title="Detalle Transaccion de Fondos" borderThicknessBottom="0" borderThicknessLeft="0"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0" 
+							  paddingTop="0"
+							  borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="18" height="8%" verticalGap="0" textAlign="center">
+						
+						<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="0"> 
+							<mx:VBox  verticalAlign="top" 
+									  horizontalAlign="left" height="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+									  paddingTop="0" width="100%" horizontalGap="0"  verticalGap="0" >
+								<mx:FormItem label="Movimiento:" styleName="tituloBusquedas" textAlign="left" width="30%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+									<mx:Label text="{(isNaN(MovimientoCtaCteDetalle(ctaCteClienteModel.arrayMovientoCtaCteDetalles.getItemAt(0)).idMovimiento)?'':MovimientoCtaCteDetalle(ctaCteClienteModel.arrayMovientoCtaCteDetalles.getItemAt(0)).idMovimiento)}"
+											  styleName="lblInfo" paddingBottom="0" paddingTop="0" height="7%"/>
+								</mx:FormItem>
+								
+								<mx:FormItem label="Caja:" styleName="tituloBusquedas" textAlign="left"  width="30%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+									<mx:Label styleName="lblInfo" text="{MovimientoCtaCteDetalle(ctaCteClienteModel.arrayMovientoCtaCteDetalles.getItemAt(0)).descripcionCaja}" paddingBottom="0" paddingTop="0"/>
+								</mx:FormItem>
+								
+								<mx:FormItem label="Operador:" styleName="tituloBusquedas" textAlign="left"  width="40%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+									<mx:Label styleName="lblInfo" text="{MovimientoCtaCteDetalle(ctaCteClienteModel.arrayMovientoCtaCteDetalles.getItemAt(0)).operador}" paddingBottom="0" paddingTop="0"/>
+								</mx:FormItem>
+								
+							</mx:VBox>
+						</mx:Form>	
+					</mx:Panel>
+					
+					<mx:VBox height="100%" width="100%" horizontalAlign="center" verticalAlign="middle">
+						<mx:Button label="Ver detalle Calculo Interes" id="btnDetalleInteres" click="this.verDetalleCalculoInteres()" enabled="true"/>	
+					</mx:VBox>
+					
+					
+				</mx:VBox>
+			</mx:HBox>
+			
+		</mx:Panel>	
+				
+			
+		<!--<mx:HBox includeInLayout="false" visible="false">
+			<mx:TextInput width="14" editable="false" backgroundColor="blue" height="14"/>
+			<mx:Label text="Capital + Interes" fontWeight="bold" styleName="lblInfoBlanco"/>
+	   	    <mx:TextInput width="14" editable="false" backgroundColor="green" height="14"/>
+	   	    <mx:Label text="Iva" fontWeight="bold"  styleName="lblInfoBlanco"/>
+	   	    <mx:TextInput width="14" editable="false" backgroundColor="#8539ED" height="14"/>
+	   	    <mx:Label text="Otros Conceptos" fontWeight="bold"  styleName="lblInfoBlanco"/>
+			
+		</mx:HBox>-->
+       	
+	</mx:HBox>
+
+
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YY"/>
+	<mx:NumberFormatter  id="currencyFormatter"  rounding="nearest" precision="2" useNegativeSign="false" thousandsSeparatorTo="." thousandsSeparatorFrom="." decimalSeparatorFrom="," decimalSeparatorTo="," />  
+	
+	
+    
+  
+<mx:Script>
+	<![CDATA[
+		import com.tarjetafiel.caja.vo.MovimientoCtaCte;
+		import com.tarjetafiel.caja.vo.MovimientoCtaCteDetalle;
+		
+		import mx.controls.Alert;
+		import mx.effects.easing.Back;
+		import mx.events.FlexEvent;
+		import mx.events.ListEvent;
+		import mx.utils.StringUtil;
+		
+		import views.categorias.cliente.models.CtaCteClienteModel;
+		     [Bindable]public var  ctaCteClienteModel:CtaCteClienteModel;  
+		     public var primero: Boolean=true; 
+		     public var acumulado:  Number=0;
+		   /*  public function getSaldo(valor:Number):Number
+		     {  if(!primero){
+		     	   acumulado+= valor;
+		        } else{
+		          acumulado = ctaCteClienteModel.saldo+ valor;
+		     	  primero= false;
+		        }
+		          
+		      return acumulado;     	
+		     }*/
+		
+		public  function cambiarVistaComposicion():void{
+			if(adg2.selectedItem){
+				ctaCteClienteModel.detalleMovimientoCtaCteSeleccionado = MovimientoCtaCteDetalle(adg2.selectedItem);
+				ctaCteClienteModel.buscarComposicionDetalle(); 
+				/* ctaCteClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaComposicionCtaCte")); */
+			}	
+		}
+		     
+		     public  function cambiarVistaDetalle():void{
+		     	if(adg1.selectedItem){
+					ctaCteClienteModel.arrayMovientoCtaCteDetalles.removeAll();
+					ctaCteClienteModel.arrayComposicionDetalleCtaCte.removeAll();
+					ctaCteClienteModel.arrayMovientoComercioDetalles.removeAll();
+					ctaCteClienteModel.movTransaccionCliCom = null;
+					ctaCteClienteModel.movimientoCtaCteSeleccionado = null;
+		     		var movim : MovimientoCtaCte = MovimientoCtaCte(adg1.selectedItem);
+		     		ctaCteClienteModel.movimientoCtaCteSeleccionado = movim;
+					if (StringUtil.trim(ctaCteClienteModel.movimientoCtaCteSeleccionado.sucDescripcion) != 'SALDO A LA FECHA') {
+						ctaCteClienteModel.buscarDetallesMovimiento();
+						ctaCteClienteModel.buscarDetallesMovimientoComercio();
+						ctaCteClienteModel.buscarTransaccionCliCom();
+						
+						ctaCteClienteModel.rutaDetalleIntereses 
+							= calcularRuta(ctaCteClienteModel.movimientoCtaCteSeleccionado.fechaReal,ctaCteClienteModel.movimientoCtaCteSeleccionado.idTransaccion);
+					}
+					else
+					{
+						ctaCteClienteModel.arrayMovientoCtaCteDetalles.removeAll();
+						ctaCteClienteModel.arrayComposicionDetalleCtaCte.removeAll();
+						ctaCteClienteModel.arrayMovientoComercioDetalles.removeAll();
+						ctaCteClienteModel.movTransaccionCliCom = null;
+						ctaCteClienteModel.movimientoCtaCteSeleccionado = null;
+						Alert.show("Seleccione otro concepto");
+					}
+		     		/* ctaCteClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaDetalleCtaCte")); */
+		     	}	
+		     }
+		     	
+		/* public function myStyleFunction(data:Object, column:AdvancedDataGridColumn):Object{ 
+           var nroFila:int = data.numeroFila; 
+           trace("Region: " + nroFila); 
+           if (nroFila == 2) 
+              return {background: true,  fontWeight:"bold", backgroundColor: 0x000044} 
+           else 
+              return {background: true, backgroundColor: 0xFF0000} 
+        } */
+        
+          public function myStyleFunction(data:Object, col: AdvancedDataGridColumn):Object
+       {
+           if(data["codigoConcepto"] =='3')
+           {
+               return {background: true,color:'green',fontWeight:"bold",backgroundColor:"red"};
+           }  else 
+             if(data["codigoConcepto"] =='4')  return {background: true,color:'#8539ED',fontWeight:"bold",backgroundColor:"red"};
+           return {color:'blue',fontWeight:"bold"  };
+       } 
+       
+       
+        public function getDebe(data:Object):String{
+				var ctacte:MovimientoCtaCte = data as MovimientoCtaCte;
+			  return (isNaN(ctacte.debe))? "": currencyFormatter.format(ctacte.debe);
+		}
+		 public function getHaber(data:Object):String{
+				var ctacte:MovimientoCtaCte = data as MovimientoCtaCte;
+			  return (isNaN(ctacte.haber))? "":currencyFormatter.format(ctacte.haber);
+		}         
+           
+		private function pressKey(event:KeyboardEvent):void{
+			var curKeyCode:int = event.keyCode;
+			if (curKeyCode == 38 || curKeyCode == 40) {
+				if(adg1.selectedItem){
+					ctaCteClienteModel.arrayMovientoCtaCteDetalles.removeAll();
+					ctaCteClienteModel.arrayComposicionDetalleCtaCte.removeAll();
+					ctaCteClienteModel.arrayMovientoComercioDetalles.removeAll();
+					ctaCteClienteModel.movTransaccionCliCom = null;
+					ctaCteClienteModel.movimientoCtaCteSeleccionado = null;
+					var movim : MovimientoCtaCte = MovimientoCtaCte(adg1.selectedItem);
+					ctaCteClienteModel.movimientoCtaCteSeleccionado = movim; 
+					if (StringUtil.trim(ctaCteClienteModel.movimientoCtaCteSeleccionado.sucDescripcion) != 'SALDO A LA FECHA') {						
+						ctaCteClienteModel.buscarDetallesMovimiento();
+						ctaCteClienteModel.buscarDetallesMovimientoComercio();
+						ctaCteClienteModel.buscarTransaccionCliCom();
+						
+						ctaCteClienteModel.rutaDetalleIntereses 
+							= calcularRuta(ctaCteClienteModel.movimientoCtaCteSeleccionado.fechaReal,ctaCteClienteModel.movimientoCtaCteSeleccionado.idTransaccion);
+					}
+					else
+					{
+						ctaCteClienteModel.arrayMovientoCtaCteDetalles.removeAll();
+						ctaCteClienteModel.arrayComposicionDetalleCtaCte.removeAll();
+						ctaCteClienteModel.arrayMovientoComercioDetalles.removeAll();
+						ctaCteClienteModel.movTransaccionCliCom = null;
+						ctaCteClienteModel.movimientoCtaCteSeleccionado = null;
+						Alert.show("Seleccione otro concepto");
+					}
+					
+					/* ctaCteClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaDetalleCtaCte")); */
+				}	
+			}
+		}
+		
+		private function pressKey1(event:KeyboardEvent):void{
+			var curKeyCode:int = event.keyCode;
+			if (curKeyCode == 38 || curKeyCode == 40) {
+				if(adg2.selectedItem){
+					ctaCteClienteModel.detalleMovimientoCtaCteSeleccionado = MovimientoCtaCteDetalle(adg2.selectedItem);
+					ctaCteClienteModel.buscarComposicionDetalle(); 
+					/* ctaCteClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaComposicionCtaCte")); */
+				}	
+			}
+		}
+		
+		
+		private function itemClickEvent(event:ListEvent):void {
+			if(adg1.selectedItem){
+				ctaCteClienteModel.arrayMovientoCtaCteDetalles.removeAll();
+				ctaCteClienteModel.arrayComposicionDetalleCtaCte.removeAll();
+				ctaCteClienteModel.arrayMovientoComercioDetalles.removeAll();
+				ctaCteClienteModel.movTransaccionCliCom = null;
+				ctaCteClienteModel.movimientoCtaCteSeleccionado = null;
+				var movim : MovimientoCtaCte = MovimientoCtaCte(adg1.selectedItem);
+				ctaCteClienteModel.movimientoCtaCteSeleccionado = movim;
+				if (StringUtil.trim(ctaCteClienteModel.movimientoCtaCteSeleccionado.sucDescripcion) != 'SALDO A LA FECHA') {					
+					ctaCteClienteModel.buscarDetallesMovimiento();
+					ctaCteClienteModel.buscarDetallesMovimientoComercio();
+					ctaCteClienteModel.buscarTransaccionCliCom();
+					
+					ctaCteClienteModel.rutaDetalleIntereses 
+						= calcularRuta(ctaCteClienteModel.movimientoCtaCteSeleccionado.fechaReal,ctaCteClienteModel.movimientoCtaCteSeleccionado.idTransaccion);
+				}
+				else
+				{
+					ctaCteClienteModel.arrayMovientoCtaCteDetalles.removeAll();
+					ctaCteClienteModel.arrayComposicionDetalleCtaCte.removeAll();
+					ctaCteClienteModel.arrayMovientoComercioDetalles.removeAll();
+					ctaCteClienteModel.movTransaccionCliCom = null;
+					ctaCteClienteModel.movimientoCtaCteSeleccionado = null;
+					Alert.show("Seleccione otro concepto");
+				}
+				/* ctaCteClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaDetalleCtaCte")); */
+			}
+			/*
+			if(adg1.selectedItem.idConcepto == 11){
+				botonIntereses = true;
+			}
+			else{
+				botonIntereses = false
+			}
+			*/
+		}
+		
+		
+		private function itemClickEvent1(event:ListEvent):void {
+			if(adg2.selectedItem){
+				ctaCteClienteModel.detalleMovimientoCtaCteSeleccionado = MovimientoCtaCteDetalle(adg2.selectedItem);
+				ctaCteClienteModel.buscarComposicionDetalle(); 
+				/* ctaCteClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaComposicionCtaCte")); */
+			}	
+		}
+		
+		public function setFocusGrilla():void{
+			if(this.adg1){
+				this.adg1.setFocus();
+			}
+		}
+		
+		
+		public function calcularRuta(fechaTransaccion:Date, idTransaccion:Number):String{
+			var year:String = String(fechaTransaccion.getFullYear());
+			var month:String = String(fechaTransaccion.getMonth() + 1);
+			if (month.length == 1) {
+				month = "0"+month;
+			}
+			var ruta:String = "/archivos//Detalle Calculo Intereses/" + month + "-" + year + "/" + idTransaccion + ".txt";
+			
+			return ruta
+		}
+		
+				
+		public function verDetalleCalculoInteres():void{
+			if(ctaCteClienteModel.rutaDetalleIntereses!=null){
+				var jscommand:String = "window.open('" + String(ctaCteClienteModel.rutaDetalleIntereses).replace('webapps','') + "','win','height=800,width=430,toolbar=no,scrollbars=yes');"; 
+				var url:URLRequest = new URLRequest("javascript:" + jscommand + " void(0);"); 
+				navigateToURL(url, "_self");
+				//navigateToURL( new URLRequest( String(ctaCteClienteModel.rutaDetalleIntereses).replace('webapps','')),'_blank'); 
+			} else {
+				Alert.show("Error");
+			}
+		}
+		
+		
+	]]>
+</mx:Script>
+
+	
+</mx:VBox>

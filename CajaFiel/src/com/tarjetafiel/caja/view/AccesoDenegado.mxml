@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox creationComplete="onCreationComplete()" xmlns:mx="http://www.adobe.com/2006/mxml" horizontalAlign="center" verticalAlign="middle" width="100%" height="100%">
+	<mx:Label text="Acceso Denegado" id="txtDeneagado" fontWeight="bold" fontSize="25" color="#FF0000"/>
+	<mx:TextArea text="{ModelLocator.getInstance().accesoDenegadoModel.motivo}"  width="700" textAlign="center" fontSize="13" fontWeight="bold" height="200" editable="false"/>
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.model.ModelLocator;
+			private var timer:Timer = new Timer(1000);
+			
+			public function onCreationComplete():void{				
+				timer.addEventListener(TimerEvent.TIMER,start);
+				timer.start();
+			}
+			public function start(evt:TimerEvent):void{
+				if(txtDeneagado.visible){
+					txtDeneagado.visible = false;
+				} else {
+					txtDeneagado.visible = true;
+				}
+				
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Hoja05"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="561"
+		 pageHeight="841"
+		 columnWidth="561"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="URLImagen" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[select * from t_vis_tra_clientes WHERE c_id_cliente = 1]]></queryString>
+
+	<field name="C_ID_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_SUCURSAL" class="java.math.BigDecimal"/>
+	<field name="C_ID_INDIVIDUO" class="java.math.BigDecimal"/>
+	<field name="C_LIMITE_CREDITO" class="java.math.BigDecimal"/>
+	<field name="C_SALDO_LINEA" class="java.math.BigDecimal"/>
+	<field name="C_ID_ESTADO_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_OPERADOR_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="C_ID_OPERADOR_COBRANZA" class="java.math.BigDecimal"/>
+	<field name="C_ID_ESTADO_COBRANZA" class="java.math.BigDecimal"/>
+	<field name="C_HABILITADO_CONSUMO" class="java.lang.String"/>
+	<field name="C_ID_OPER_HAB_CONSUMO" class="java.math.BigDecimal"/>
+	<field name="C_CICLO" class="java.math.BigDecimal"/>
+	<field name="C_ADICIONAL" class="java.math.BigDecimal"/>
+	<field name="C_ID_TITULAR" class="java.math.BigDecimal"/>
+	<field name="C_FECHA_ESTADO_CLIENTE" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_ESTADO_COBRANZA" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_HABILITADO_CONSUMO" class="oracle.sql.TIMESTAMP"/>
+	<field name="C_FECHA_ALTA" class="java.sql.Timestamp"/>
+	<field name="C_NRO_SOLICITUD" class="java.lang.String"/>
+	<field name="C_CLIENTE_VIEJO" class="java.math.BigDecimal"/>
+	<field name="V_NOMBRE" class="java.lang.String"/>
+	<field name="V_DOMICILIO" class="java.lang.String"/>
+	<field name="V_LOCALIDAD" class="java.lang.String"/>
+	<field name="V_COD_POST" class="java.lang.String"/>
+	<field name="V_PROVINCIA" class="java.lang.String"/>
+	<field name="C_FECHA_MORA" class="java.sql.Timestamp"/>
+	<field name="C_ID_PLAN_MORA" class="java.math.BigDecimal"/>
+	<field name="C_CAMBIO_ESTADO_COB" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="60"  isSplitAllowed="true" >
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="149"
+						y="10"
+						width="283"
+						height="45"
+						key="image-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="770"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="3"
+						width="548"
+						height="737"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Calibri" size="9" isUnderline="false"/>
+					</textElement>
+				<text><![CDATA[el 100% de las transacciones de adelantos en efectivo, refinanciaciones y repactaciones de saldos, intereses, cargos, comisiones e impuestos nacionales y provinciales.
+10. Diferimiento del pago- Financiamiento. Tarjeta FIEL podrá autorizar al TITULAR a diferir el pago de los rubros financiables que surjan de la liquidación mensual que arroje su cuenta. Se considerarán rubros financiables sólo a los cargos que se registren en la cuenta del TITULAR por compras y/o locaciones de bienes, servicios y/u obras que éste y/o su/s adicional/es hayan realizado en los establecimientos comerciales adheridos al Sistema.
+A su vez el Emisor por sí o por intermedio de la entidad financiera que designe podrá ofrecer a los tarjetahabientes crédito para financiar operaciones a cursar, adelantos de dinero, saldos deudores de resumen o préstamos. Dichas operaciones cursadas a través del sistema estarán sujetas a límites operativos o crediticios que el Emisor fije periódicamente a su criterio. Los excesos de límite serán causales de incumplimiento, excepto que el Emisor autorice el sobregiro sujeto a intereses compensatorios y punitorios.
+11. Moneda Extranjera. Para el caso que en el resumen se liquidaran conceptos en moneda extranjera, el saldo deudor de moneda extranjera deberá ser pagado con la moneda extranjera adeudada o la moneda de curso legal en el país que corresponda en la cantidad necesaria para adquirir la moneda extranjera adeudada, al tipo de cambio libre de mercado correspondiente al tiempo del efectivo pago del resumen. El TITULAR, su/s adicional/es y eventualmente del/los fiador/es asumirán toda diferencia de cotización.
+12. Caducidad de Plazos-Mora. Vencida la fecha fijada para el pago en término del resumen de operaciones, se producirá la mora de pleno derecho y el TITULAR no podrá oponer como causa de incumplimiento la falta de recepción del pertinente resumen. La Falta de pago al vencimiento del plazo del resumen dará origen, sin perjuicio de los cargos e impuestos devengados con motivo de la mora, a la aplicación de intereses compensatorios y punitorios. Las tasas de interés compensatorio y punitorio serán las vigentes al momento de celebración del presente Contrato, indicadas en el Anexo al Contrato de Emisión de Tarjeta de Crédito FIEL. Producida la mora automática por falta de pago del resumen, VISION S.A. sin necesidad de interpelación podrá, a) inactivar las tarjetas emitidas y reclamar extrajudicialmente el cumplimiento de las obligaciones establecidas bajo el presente, o bien b)rescindir en forma inmediata el presente contrato con la consecuente inhabilitación definitiva de todas las tarjetas emitidas bajo este contrato, en ambos casos con derecho a reclamar la totalidad de las sumas adeudadas más los daños y perjuicios, intereses, gastos, ajustes, comisiones, cargos, impuestos, honorarios y accesorios, iniciando sin más trámite la vía que jurídicamente corresponda y entienda más conveniente, pudiendo, en ese caso, solicitar las medidas precautorias que juzgue pertinentes. Aunque no revistiese la calidad de comerciante, el TITULAR, su/s adicional/es y eventualmente el/los fiador/es reconocerá/n plena eficacia probatoria a las registraciones contables de VISION S.A., renunciando a la responsabilidad de cohonestarlas con los asientos de sus propios libros de comercio, si los llevase/n. El TITULAR, su/s adicional/es y eventualmente el/los fiador/es se obliga/n a no oponer ninguna excepción procesal que no sea la de pago documentado, así como no recusar sin causa al juzgado interviniente.
+13. Rescisión. La relación contractual se considerará resuelta:
+a. Si el TITULAR comunica su voluntad de rescindir el contrato al EMISOR, de manera fehaciente, con al menos treinta (30) días de anticipación al vencimiento del plástico obligándose a entregar al emisor todos los plásticos vigentes emitidos. De incumplir esta obligación, el TITULAR, su/s adicional/es y eventualmente el/los fiador/es será/n responsables por las operaciones que puedan efectuarse con posterioridad al vencimiento de los plásticos o a la rescisión, excepto en caso de extravío, hurto o robo en cuyo caso será de aplicación lo dispuesto en la cláusula 11. El TITULAR se obliga a mantener indemne a VISION S.A. por cualquier reclamo, judicial o extrajudicial, que pudiese recibir de el/los adicional/es del TITULAR afectado/s por la baja de la/s tarjeta/s.
+b. Si el EMISOR justificare que la conducta crediticia del titular y/o adicional/es y/o fiador/es no es la correcta podrá rescindir este contrato manifestando su voluntad mediante la no renovación y no envío del plástico al TITULAR y/o adicional/es. A simple título enunciativo se mencionan algunas conductas con capacidad para originar la rescisión del presente contrato por parte del EMISOR: uso irregular o fraudulento por parte de cualquiera de los tarjetahabientes; falta de pago al vencimiento del pago mínimo; incumplimiento de cualquier otra obligación establecida en el presente contrato; deterioro de la solvencia crediticia evidenciada en la "Central de deudores del sistema financiero" y "de cheques rechazados" que publica el Banco Central de la República Argentina o que pueda determinarse a partir de información crediticia obtenida de bureau de información crediticia; en caso que cualquiera de los usuarios hubiere librado cheque/s sin la suficiente provisión de fondos; pedido de quiebra realizado contra el titular y/o adicional/es y/o fiador/es o presentación de cualquiera de ellos de concurso preventivo o quiebra; traba de embargo preventivo o inhibición de bienes en relación al titular y/o adicional/es y/o fiador/es no levantados en la primera oportunidad procesal disponible; inhabilitación de cualquiera de los usuarios para operar en cuentas corrientes; cuando se acredite la falsedad de los datos consignados en el presente contrato y en el Anexo al Contrato de Emisión de Tarjeta de Crédito FIEL; procesamiento o condena penal que recayere sobre cualquiera de los usuarios.
+Cualquiera sea la parte que manifieste su voluntad resolutoria o la causa que la origine, el TITULAR, su/s adicional/es y eventualmente el/los fiador/es deberán cancelar los saldos impagos, como si se tratara de una deuda líquida y exigible, caducando de pleno derecho los plazos que le hubieren sido acordados debiendo el TITULAR reintegrar todas las tarjetas vigentes emitidas.
+14. Intereses, comisiones y cargos. Los intereses compensatorios se aplicarán sobre las operaciones en las que el TITULAR y/o su/s adicional/es difiera/n su pago. Estos intereses, en el caso de saldos financiados, se devengarán desde la fecha de cierre del resumen que contenga los saldos cuyo pago se ha diferido y hasta la fecha de cierre del resumen actual. La tasa de interés compensatorio vigente a la fecha del presente Contrato es la que se indica en el Anexo al Contrato de Emisión de Tarjeta de Crédito FIEL y podrá variar periódicamente, atendiendo a las circunstancias generales del mercado y de acuerdo con el límite máximo establecido por la normativa vigente del Banco Central de la República Argentina, por lo cual no superará en más del 25% al promedio de tasas del sistema financiero para operaciones de préstamos personales sin garantía real que publique mensualmente el BCRA, elaborado sobre la base de información correspondiente al segundo mes anterior. Si el pago del Usuario no cubre el importe que se indica en el resumen de cuenta como Pago Mínimo, o el pago que cubre el Pago Mínimo se efectúa con posterioridad a la fecha de su vencimiento y en el supuesto de que en tal circunstancia VISION S.A. decida mantener la vigencia de la cuenta, se liquidarán intereses punitorios sobre la parte no cancelada o sobre la parte cancelada fuera de término del referido rubro, desde la fecha en que el pago mínimo debió ser efectuado y hasta su efectivo pago, los que aparecerán volcados en los respectivos resúmenes de cuenta. La tasa de interés punitorio vigente a la fecha del presente Contrato es la que se indica en el Anexo al Contrato de Emisión de Tarjeta de Crédito FIEL y podrá variar periódicamente, atendiendo a las circunstancias generales del mercado y de acuerdo con el límite máximo establecido por la normativa vigente del Banco Central de la República Argentina, por el cual la tasa de interés punitorio no podrá superar en más del 50% a la tasa de interés compensatorio aplicada. La falta de pago en los términos pactados, sea total o parcial, hará incurrir en mora al Usuario sin    ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="504"
+						y="746"
+						width="43"
+						height="12"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[6]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="746"
+						width="171"
+						height="12"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Visión SA - Mendoza 360 Sur - San Juan]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="250"
+						y="746"
+						width="43"
+						height="12"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[v/7.1]]></text>
+				</staticText>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

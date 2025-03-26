@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" layout="absolute"
+		   creationComplete="module1_creationCompleteHandler(event)"
+		   initialize="module1_initializeHandler(event)"
+		   currentState="{modelo.estadoActualVDescValores}" 
+		   xmlns:descargaValores="com.fiel.caja.judicial.view.component.descargaValores.*"
+		   removedFromStage="module1_removedFromStageHandler(event)"
+		   keyDown="if(event.keyCode == Keyboard.ENTER)this.focusManager.getNextFocusManagerComponent().setFocus()">
+	<fx:Declarations>
+		
+		<s:Fade id="dissolveEff" duration="500"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.business.ConstantesEstados;
+			import com.fiel.caja.judicial.event.CajaJudicialEvent;
+			import com.fiel.caja.judicial.event.ChequeEvent;
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.fiel.caja.judicial.view.component.descargaValores.VistaChequesMPDescargaValores;
+			import com.fiel.caja.judicial.view.component.descargaValores.VistaMediosPagoDescargaValores;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			import com.tarjetafiel.proveedorconexion.business.ConstantesFormaPago;
+			import com.tarjetafiel.proveedorconexion.vo.SetDataVo;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.components.Group;
+			import spark.layouts.TileLayout;
+			
+			[Bindable]
+			private var modelo:CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance(); 
+			
+			protected function module1_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+			}
+			
+			
+			protected function module1_initializeHandler(event:FlexEvent):void
+			{
+				new ChequeEvent(ChequeEvent.LIST_CHEQUES_EN_CAJA, modelo.cajaApertura.caja.lugar).dispatch();
+				//Busca las formas de pago de la caja
+				new CajaJudicialEvent(CajaJudicialEvent.BUSCAR_MEDIO_DE_PAGO_CAJA_DESCARGA_VALORES, modelo.cajaApertura).dispatch();
+			}
+			
+			private function rearmarComponente():void
+			{
+				vgCheques.removeAllElements();
+				hgDescValItems.removeAllElements();
+				var tlLay:TileLayout = new TileLayout();
+				tlLay.requestedColumnCount = 3;
+				tlLay.verticalAlign = "middle";
+				tlLay.horizontalAlign = "center";
+				hgDescValItems.layout = tlLay;
+				for each (var mp:CajaMP in modelo.arrMediosPagoDescargaValores)
+				{
+					if (mp.formaPago.idFormaPago == ConstantesFormaPago.CHEQUE)
+					{
+						var hgCheques:VistaChequesMPDescargaValores = new VistaChequesMPDescargaValores();
+						mostrarControles(hgCheques, true);
+						if (mp.descargaChequesList == null)
+						{
+							mp.descargaChequesList = new Array();
+						}
+						mp.descargaChequesList.splice(0,mp.descargaChequesList.length);
+						hgCheques.medioPago = mp;
+						vgCheques.addElement(hgCheques);
+					}
+					else
+					{
+						var hgEfectivo:VistaMediosPagoDescargaValores = new VistaMediosPagoDescargaValores();
+						mostrarControles(hgEfectivo, true);
+						hgEfectivo.titulo = mp.formaPago.descripcion;
+						hgEfectivo.medioPago = mp;
+						hgDescValItems.addElement(hgEfectivo);
+					}
+				}
+			}
+			
+			private function mostrarControles(component:Group, mostrar:Boolean):void
+			{
+				component.visible = mostrar;
+				component.includeInLayout = mostrar;
+			}
+			
+			protected function actualizarStt_enterStateHandler(event:FlexEvent):void
+			{
+				rearmarComponente();
+				new SetDataVo(modelo,"estadoActualVDescValores",ConstantesEstados.ESTADO_VDV_BASE);
+			}
+			
+			protected function module1_removedFromStageHandler(event:Event):void
+			{
+				new ChequeEvent(ChequeEvent.LIST_CHEQUES_EN_CAJA, modelo.cajaApertura.caja.lugar).dispatch();
+				modelo.arrChequesDescargados = new ArrayCollection();
+				modelo.arrCajaMpDescarga = new ArrayCollection();
+			}
+			
+			private function set refresh(value:Object):void
+			{
+				rearmarComponente();
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Binding source="modelo.arrMediosPagoDescargaValores" destination="refresh"/>
+	
+	<mx:states>
+		<s:State name="Base" id="baseStt"/>
+		<s:State name="Actualizar" id="actualizarStt" enterState="actualizarStt_enterStateHandler(event)"/>
+	</mx:states>
+	<s:VGroup id="vgItems" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle"
+			  paddingBottom="7" paddingRight="7" paddingLeft="7" paddingTop="7">
+		<s:Group id="hgDescValItems" width="100%" >
+		</s:Group>
+		<mx:HRule width="98%"/>
+		<s:VGroup id="vgCheques" width="100%" height="100%"/>
+	</s:VGroup>
+</mx:Module>

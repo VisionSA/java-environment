@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="horizontal" title="Elija tipo de Cheque a ingresar" horizontalAlign="center">
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			private function chequePropio():void{
+				ModelLocator.getInstance().chequeModel.esChequePropio = true;
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function chequeExterno():void{
+				ModelLocator.getInstance().chequeModel.esChequePropio = false;
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:Button label="Cheque Propio" click="chequePropio()"/>
+	<mx:Button label="Cheque de Tercero" click="chequeExterno()"/>
+	
+</mx:TitleWindow>

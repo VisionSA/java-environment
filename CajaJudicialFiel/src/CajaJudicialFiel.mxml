@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--@I3820--><s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:controller="com.fiel.caja.judicial.controller.*"
+			   width="100%"
+			   height="100%" 
+			   xmlns:business="com.tarjetafiel.proveedorconexion.business.*"
+			   creationComplete="application1_creationCompleteHandler(event)"
+			   currentState="{modelo.estadoActualApp}" 
+			   xmlns:control="com.tarjetafiel.proveedorconexion.control.*" backgroundColor.Autorizado="#EFEFEF" xmlns:textInput="com.util.components.textInput.*"
+			   keyUp="components_keyUpHandler(event)" xmlns:custom="com.fiel.caja.judicial.view.component.custom.*" xmlns:components="components.*"
+			   >
+<!--@F3820-->	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<fx:Metadata>
+		[ResourceBundle("configFlex")] 
+	</fx:Metadata>
+	<!--<fx:Style source="newStyle.css"/>-->
+	<fx:Style source="CajaJudicialFiel.css"/>	
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.event.CajaJudicialEvent;
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.fiel.caja.judicial.view.component.VistaAgregarPago;
+			import com.fiel.caja.judicial.view.component.VistaBuscarCliente;
+			import com.fiel.caja.judicial.view.component.VistaMenuCajas;
+			import com.fiel.caja.judicial.view.component.VistaSeleccionAbogado;
+			import com.tarjetafiel.caja.vo.ClienteMontoDTO;
+			import com.tarjetafiel.caja.vo.ClienteMovimientosMP;
+			import com.tarjetafiel.caja.vo.Operador;
+			import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+			
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.core.IFlexDisplayObject;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.MenuEvent;
+			import mx.managers.FocusManager;
+			import mx.managers.PopUpManager;
+			import mx.utils.StringUtil;
+			
+			import skin.BotonAgregarMPSkin;
+			import skin.BotonAgregarUsuarioSkin;
+			import skin.BotonBuscarSkin;
+			import skin.BotonLimpiarSkin;
+			import skin.BotonPagarSkin;
+			
+			import utils.ManejadorIconos;
+			import utils.ManejadorMensajes;
+			import utils.ManejadorPantallas;
+			import utils.constantes.ConstantesTeclado;
+			
+			
+			
+			[Bindable]
+			private var modelo : CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			[Bindable]
+			var ventAbogado : IFlexDisplayObject = null;
+			[Bindable]
+			var ventCliente : IFlexDisplayObject = null;
+			[Bindable]
+			var ventMP : IFlexDisplayObject = null;
+			
+			protected function sttCajaCerrada_enterStateHandler(event:FlexEvent):void
+			{
+				ManejadorMensajes.mostrarMensajeNotificacion("La caja se encuentra cerrada");
+			}
+			
+			protected function btnPagar_clickHandler(event:MouseEvent):void
+			{
+				if (validaMontos()){//La suma de los montos de los medios de pago = al monto p/c cliente
+					//Verifica apertura de caja, si la caja esta abierta realiza el pago, caso contrario muesta
+					//pantalla de que la caja no tiene una apertura vigente
+					new CajaJudicialEvent(CajaJudicialEvent.VERIFICAR_APERTURA_CAJA_EVENT,modelo.operador).dispatch();
+				}
+				else
+				{
+					ManejadorMensajes.mostrarMensajeNotificacion("Los montos ingresados en Medio de Pagos no coinciden con los montos pagados por lo Clientes");
+				}
+			}
+			
+			private function validaMontos():Boolean
+			{
+				var resultado : Boolean = false;
+				var suma : Number = 0;
+
+				for each(var cm : ClienteMontoDTO in modelo.listaClientesJudiciales)
+				{
+/*@I3820*/				/*Controla si todos los montos agregados a la grilla son correctos*/				
+					if (!cm.montoValido)
+					{
+						return false;
+					}
+					suma+=cm.monto;
+				}
+				var sumaRend:Number = Math.round(suma*100)/100
+				if (sumaRend>0 && sumaRend == modelo.sumador.sumaTotal)
+/*@F3820*/				{
+					resultado = true;
+				}
+				return resultado;
+			}
+			
+			
+			protected function btnLimpiarTodo_clickHandler(event:MouseEvent):void
+			{
+				ManejadorMensajes.mostrarMensajeYesNo("¿Desea quitar todos los clientes de la grilla?",limpiarGrilla,"Quitar Todos");
+			}
+			
+			private function limpiarGrilla(event:CloseEvent):void{
+				if(event.detail == Alert.YES){
+					new CajaJudicialEvent(CajaJudicialEvent.LIMPIAR_GRILLA_EVENT,null).dispatch();
+				}
+				
+			}
+			
+			
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+/*@I3820*/			/*Parche para que la aplicación tome foco cuando se muestra*/
+				if(ExternalInterface.available)
+				{
+					ExternalInterface.call("eval", "document.getElementById('" + ExternalInterface.objectID + "').tabIndex=0");
+					ExternalInterface.call("eval", "document.getElementById('" + ExternalInterface.objectID + "').focus()");
+				}
+/*@F3820*/
+				ModelLocatorGeneral.getInstance().setURLChannelDefinition(FlexGlobals.topLevelApplication.url);
+				
+				if (resourceManager.getString("configFlex", "application.debugMode") != "true"){
+					new CajaJudicialEvent(CajaJudicialEvent.BUSCAR_OPERADOR_EVENT,FlexGlobals.topLevelApplication.parameters.codigoOperador).dispatch();
+				}else {
+					
+					var oper : Operador = new Operador();
+					oper.codigo = 45;//32;
+					oper.nombre = "Valeria";//"Osvaldo";
+					oper.apellido = "Ramis";//"Ruiz";
+					modelo.operador = oper;
+					new CajaJudicialEvent(CajaJudicialEvent.BUSCAR_CAJA_APERTURA_EVENT,oper).dispatch();
+				}
+			}
+			
+			
+/*@I3820*/			protected function btnSeleccionarAbogado_clickHandler(event:MouseEvent):void
+			{
+				ventAbogado = PopUpManager.createPopUp(this,VistaSeleccionAbogado,true);
+				PopUpManager.centerPopUp(ventAbogado);
+			}
+			
+			protected function btnAgregar_clickHandler(event:MouseEvent):void
+			{
+				ventCliente = PopUpManager.createPopUp(this,VistaBuscarCliente,true);
+				PopUpManager.centerPopUp(ventCliente);
+			}
+			
+			protected function dgClientes_creationCompleteHandler(event:FlexEvent):void
+			{
+				dgClientes.setFocus();
+			}
+			
+/*@F3820*/						
+			private function labelNombreApellido(item:Object,column:DataGridColumn):String{
+				var cm : ClienteMontoDTO = item as ClienteMontoDTO;
+				return StringUtil.substitute("{0}, {1}",cm.cliente.individuo.apellido.toUpperCase(), cm.cliente.individuo.nombres.toUpperCase());
+			}
+			private function labelNroDNI(item:Object,column:DataGridColumn):String{
+				var cm : ClienteMontoDTO = item as ClienteMontoDTO;
+				var r:String = formatNumber.format(cm.cliente.individuo.nroDocumento);
+				return r;
+			}
+			
+			
+			protected function sttAutorizado_enterStateHandler(event:FlexEvent):void
+			{
+				lnkImpresora.label = "Impresora: " + modelo.cajaApertura.caja.impresora.descripcion;
+			}
+			
+			protected function lnkImpresora_clickHandler(event:MouseEvent):void
+			{
+				var popUpVMC:VistaMenuCajas = ManejadorPantallas.crearPopUp(this, VistaMenuCajas,true) as VistaMenuCajas;
+				var item:XML = new XML("<node/>");
+				item.@label="Impresoras";
+				item.@module="VistaImpresorasModule.swf";
+				item.@id="2";
+				popUpVMC.item = item;
+			}
+			
+			protected function menuCaja_itemClickHandler(event:MenuEvent):void
+			{
+				var popUpVMC:VistaMenuCajas = ManejadorPantallas.crearPopUp(this, VistaMenuCajas,true) as VistaMenuCajas;
+				popUpVMC.item = event.item as XML;
+			}
+			
+/*@I3820*/			protected function btnAddMP_clickHandler(event:MouseEvent):void
+			{
+				var ventMP:IFlexDisplayObject = ManejadorPantallas.crearPopUp(ManejadorPantallas.getAplicacion() as DisplayObject,VistaAgregarPago,true);
+			}
+
+			/**
+			 * Función para detectar cuando se presiona una tecla para método abreviado en la aplicación
+			 * */
+			protected function components_keyUpHandler(event:KeyboardEvent):void
+			{
+				if (event.ctrlKey)
+				{
+					switch(event.keyCode)
+					{
+						//Abre la ventana de selección del abogado
+						case ConstantesTeclado.B:
+						{
+							if (!ManejadorPantallas.popUpEstaVisible(ventAbogado))
+							{
+								btnSeleccionarAbogado.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+								event.stopPropagation();
+							}
+							break;
+						}
+						//Abre la ventana agregar medio de pago
+						case ConstantesTeclado.M:
+						{
+							if (!ManejadorPantallas.popUpEstaVisible(ventMP))
+							{
+								btnAddMP.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+								event.stopPropagation();
+							}
+							break;
+						}
+						//Abre la ventana agregar cliente judicial
+						case ConstantesTeclado.C:
+						{
+							if (btnAgregar.enabled && !ManejadorPantallas.popUpEstaVisible(ventCliente))
+							{
+								btnAgregar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+								event.stopPropagation();
+							}
+							break;
+						}
+						//Ejecuta limpiar todo	
+						case ConstantesTeclado.L:
+						{
+							btnLimpiarTodo.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+							event.stopPropagation();
+							break;
+						}
+						//Ejecuta el pagar
+						case ConstantesTeclado.P:
+						{
+							if (btnPagar.enabled)
+							{
+								btnPagar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+								event.stopPropagation();
+							}
+							break;
+						}
+						default :
+						{
+							break;
+						}
+					}
+				}
+			}
+			
+			/**
+			 * Funcion para setear foco a la aplicacion luego de quitar un cliente de la grilla
+			 * */
+			public function setGridFocus():void
+			{
+				this.dgClientes.setFocus();
+			}
+/*@F3820*/			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<business:Services id="servicios" />
+		<controller:CajaJudicialController id="controller"/>
+		<fx:XML id="xmlMenu" source="com/fiel/caja/judicial/business/MenuCaja.xml"/>
+		<mx:DateFormatter id="dfFechaFormatter" formatString="DD/MM/YYYY"/>
+		<mx:NumberFormatter id="formatNumber" thousandsSeparatorTo="." thousandsSeparatorFrom="." decimalSeparatorFrom="," decimalSeparatorTo=","/>
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="Autorizado" id="sttAutorizado" enterState="sttAutorizado_enterStateHandler(event)"/>
+		<s:State name="NoAutorizado"/>
+		<s:State name="Cargando"/>
+		<s:State name="CajaCerrada" id="sttCajaCerrada" enterState="sttCajaCerrada_enterStateHandler(event)"/>
+	</s:states>
+	
+	
+	<!-- Banner Bienvenida-->	
+	<s:Group id="gHeader" width="100%">
+		<s:Rect width="100%" height="100%">
+			<s:fill>
+				<s:LinearGradient rotation="45">
+					<s:GradientEntry color="#1274D6" ratio="0.2"/>
+					<s:GradientEntry color="white" ratio="0.5"/>
+					<s:GradientEntry color="#1274D6" ratio="0.8"/>
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<s:HGroup width="100%" verticalAlign="middle" paddingBottom="5" paddingLeft="5" paddingRight="5"
+					  paddingTop="5">
+				<mx:Image id="imgLogo" source="{ManejadorIconos.LOGO_FIEL(imgLogo, ManejadorPantallas.getAplicacion().url)}"/>
+			</s:HGroup>
+			<mx:Spacer width="100%" />
+			<s:VGroup height="100%" verticalAlign="bottom">
+				<s:Group excludeFrom="NoAutorizado,CajaCerrada">
+					<s:BitmapImage source="{ManejadorIconos.BARRA}"/>			
+					<s:VGroup height="100%" horizontalAlign="center" width="100%"
+							  paddingBottom="3">
+						<s:Rect height="100%"/>
+						<mx:LinkButton id="lnkImpresora" label="Impresora: {modelo.cajaApertura.caja.impresora.descripcion}"
+									   click="lnkImpresora_clickHandler(event)" 
+									   icon="{ManejadorIconos.PRINTER_ICON}" rollOverColor.Autorizado="#EF6565"/>
+					</s:VGroup>
+				</s:Group>
+			</s:VGroup>
+		</s:HGroup>
+	</s:Group>
+	
+	
+	
+	<s:VGroup includeIn="Autorizado" width="100%" height="100%">	
+		
+		<!-- Menu Caja -->
+		<mx:MenuBar id="menuCaja" width="100%" dataProvider="{xmlMenu}" labelField="@label" showRoot="false"
+					itemClick="menuCaja_itemClickHandler(event)"/>
+		
+		
+		<s:VGroup width="100%" paddingLeft="15">
+			<!-- Datos Caja -->
+			<s:HGroup width="100%">
+				<mx:FormItem label="Cod. Cajero:">
+					<s:TextInput editable="false" text="{modelo.operador.codigo}"/>
+				</mx:FormItem>
+				
+				<mx:FormItem label="Cajero:">
+					<s:TextInput editable="false" text="{modelo.operador.apellido.toUpperCase()+', '+modelo.operador.nombre.toUpperCase()}"/>
+				</mx:FormItem>
+				
+				<mx:FormItem label="Fecha Ultimo Cierre: ">
+					<s:TextInput editable="false" text="{dfFechaFormatter.format(modelo.cajaApertura.caja.fechaModificacion)}"/>
+				</mx:FormItem>
+				
+				<mx:FormItem label="Caja: ">
+					<s:TextInput editable="false" text="{modelo.cajaApertura.caja.idCaja + ' - ' + modelo.cajaApertura.caja.descripcion}"/>
+				</mx:FormItem>
+			</s:HGroup>		
+			
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="Abogado:"/>
+				<s:TextInput editable="false" width="200" text="{modelo.abogadoSeleccionado.apellido.toUpperCase() + ', ' + modelo.abogadoSeleccionado.nombres.toUpperCase()}" />
+				<components:DoubleLineButton id="btnSeleccionarAbogado" label="Buscar Abogados" 
+										 click="btnSeleccionarAbogado_clickHandler(event)" skinClass="skin.BotonBuscarSkin"
+										 command="(ctrl + B)"/>	
+			</s:HGroup>
+			
+		</s:VGroup>
+		
+		<s:VGroup width="100%" horizontalAlign="center">
+			<s:Line width="95%">
+				<!-- Define the border color of the line. -->
+				<s:stroke>
+					<s:SolidColorStroke color="0x000000" weight="1" caps="square"/>
+				</s:stroke>
+			</s:Line>			
+		</s:VGroup>
+		<s:Scroller   width="100%" height="100%" verticalScrollPolicy="auto" horizontalScrollPolicy="auto">
+			<s:VGroup width="100%" horizontalAlign="center" height="100%">
+<!--@I3820-->				<mx:DataGrid id="dgClientes" width="90%" height="40%" dataProvider="{modelo.listaClientesJudiciales}" minHeight="200" verticalAlign="middle"
+							 keyUp="components_keyUpHandler(event)" creationComplete="dgClientes_creationCompleteHandler(event)">
+<!--@F3820-->					<mx:columns>
+						<mx:DataGridColumn headerText="Numero Cuenta" dataField="cliente.idCliente" textAlign="center" sortable="false" />
+						<mx:DataGridColumn headerText="D.N.I." labelFunction="labelNroDNI" textAlign="center" sortable="false"/>					
+						<mx:DataGridColumn headerText="Nombre y Apellido" labelFunction="labelNombreApellido" textAlign="center" sortable="false"/>
+						<mx:DataGridColumn headerText="Pago" itemRenderer="com.fiel.caja.judicial.view.renderer.CeldaPagoClienteRenderer" sortable="false"/>
+						<mx:DataGridColumn itemRenderer="com.fiel.caja.judicial.view.renderer.BotoneraClienteJRenderer" sortable="false"/>
+					</mx:columns>					
+				</mx:DataGrid>
+				
+				<s:HGroup width="90%">
+					<s:HGroup>
+<!--@3820-->						<components:DoubleLineButton id="btnAddMP" label="Agregar MP" click="btnAddMP_clickHandler(event)" 
+								  skinClass="skin.BotonAgregarMPSkin" width="140" command="(Ctrl + M)"/>
+						<components:DoubleLineButton id="btnAgregar" label="Agregar Cliente" width="140" click="btnAgregar_clickHandler(event)" 
+								  enabled="{modelo.abogadoSeleccionado != null}" 
+								  skinClass="skin.BotonAgregarUsuarioSkin"
+								  command="(Ctrl + C)"/>
+						<components:DoubleLineButton id="btnLimpiarTodo" label="Limpiar Todo" width="140" click="btnLimpiarTodo_clickHandler(event)" 
+								  skinClass="skin.BotonLimpiarSkin"
+								  command="(Ctrl + L)"/><!--@F3820-->
+					</s:HGroup>
+					<s:Rect width="100%"/>					
+					<components:DoubleLineButton id="btnPagar" label="Pagar" width="140" click="btnPagar_clickHandler(event)" 
+							  skinClass="skin.BotonPagarSkin" enabled="{modelo.listaClientesJudiciales.length>0}"
+							  command="(Ctrl + P)"/><!--@F3820-->
+					<s:VGroup width="90%" horizontalAlign="right">
+						<mx:FormItem label="Total Montos Clientes:" fontWeight="bold">
+							<textInput:TextInputMoneda id="inptTotalCli" text="{modelo.sumaTotalClientes}" editable="false" textAlign="right" contentBackgroundColor="#46A1EE" color="#FFFFFF"/>						
+						</mx:FormItem>					
+						<mx:FormItem label="Total Efectivo:" visible="{modelo.mediosPosibles.efectivo}" includeInLayout="{modelo.mediosPosibles.efectivo}">
+							<textInput:TextInputMoneda  id="inptTotalEfectivo" editable="false" text="{modelo.sumador.sumaEfectivo}" textAlign="right" width="100%"/>
+						</mx:FormItem>
+						<mx:FormItem label="Total Tickets:" visible="{modelo.mediosPosibles.tickets}" includeInLayout="{modelo.mediosPosibles.tickets}">
+							<textInput:TextInputMoneda  id="inptTotalTickets" editable="false" text="{modelo.sumador.sumaTickets}" textAlign="right" width="100%"/>
+							
+						</mx:FormItem>
+						<mx:FormItem label="Total Cheques:" visible="{modelo.mediosPosibles.cheques}" includeInLayout="{modelo.mediosPosibles.cheques}">
+							<textInput:TextInputMoneda  id="inptTotalCheques" editable="false" text="{modelo.sumador.sumaCheques}" textAlign="right" width="100%"/>					
+						</mx:FormItem>
+						<mx:FormItem label="Total Depósitos:" visible="{modelo.mediosPosibles.depositos}" includeInLayout="{modelo.mediosPosibles.depositos}">
+							<textInput:TextInputMoneda  id="inptTotalDepositos" editable="false" text="{modelo.sumador.sumaDepositos}" textAlign="right" width="100%"/>					
+						</mx:FormItem>
+						<mx:FormItem label="Total Montos MP:" fontWeight="bold">					
+							<textInput:TextInputMoneda  id="inptTotal" text="{modelo.sumador.sumaTotal}" editable="false" textAlign="right" width="100%" contentBackgroundColor="#BF4343" color="#FFFFFF"/>					
+						</mx:FormItem>
+					</s:VGroup>
+				</s:HGroup>
+			</s:VGroup>
+		</s:Scroller>
+	</s:VGroup>
+	
+	
+	<s:VGroup width="100%" horizontalAlign="center" height="100%" verticalAlign="middle" includeIn="NoAutorizado">
+		<mx:Image id="imgCheque" source="{ManejadorIconos.ACCESO_DENEGADO_ICON}" width="128" height="128"/>
+		<s:Label text="Acceso Denegado!!!"  fontSize="30" fontWeight="bold" fontFamily="Times New Roman"/>
+	</s:VGroup>
+	
+	<s:VGroup width="100%" horizontalAlign="center" height="100%" verticalAlign="middle" includeIn="Cargando">
+		<s:Label text="Cargando" />
+	</s:VGroup>
+	
+</s:Application>

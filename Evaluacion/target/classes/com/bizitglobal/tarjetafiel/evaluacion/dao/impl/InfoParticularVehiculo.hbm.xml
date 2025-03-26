@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.InfoParticularVehiculo" table="t_vis_eva_info_part_vehic" >
+	<id name="idInfoPartVehic" type="java.lang.Long" column="c_id_info_part_vehic">
+		<generator class="increment" />
+	</id>
+
+	<many-to-one name="informeParticular" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.InformeParticular" not-null="false" cascade="save-update">
+		<column name="c_id_info_particular" />
+	</many-to-one>
+
+	<many-to-one name="vehiculo" class="com.bizitglobal.tarjetafiel.general.negocio.Vehiculo" not-null="false" cascade="save-update">
+		<column name="c_id_vehiculo" />
+	</many-to-one>
+
+</class>
+</hibernate-mapping>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleGeneral xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"  creationComplete="calcularSaldoAnterior()" xmlns:effectClasses="org.efflex.mx.viewStackEffects.effectClasses.*" xmlns:viewStackEffects="org.efflex.mx.viewStackEffects.*" xmlns:cliente="views.categorias.cliente.*" xmlns:date="com.util.components.date.*" xmlns:mate="http://mate.asfusion.com/" xmlns:maps="views.categorias.cliente.maps.*" borderColor="#B7BABC" xmlns:textInput="com.util.components.textInput.*">
+<mx:DateFormatter id="formateador" formatString="DD/MM/YYYY" />
+
+<mx:Style>
+        .mySelectedButtonTextStyleName {
+            color: haloBlue;
+        }
+    </mx:Style>
+
+<mate:Listener type="calculoSaldoAnteriorComposicionSaldo" receive="this.calcularSaldoAnterior()"/>
+<mx:VBox  horizontalAlign="center" paddingTop="10" height="100%" width="100%" backgroundColor="#F8F2F2" paddingRight="10" shadowDirection="center" paddingLeft="10" paddingBottom="10" visible="{composicionSaldoClienteModel.mostrarPanel}" backgroundAlpha="0.0">
+        <mx:VBox width="100%">
+        	<mx:ApplicationControlBar width="100%">
+        		<mx:Label text="Fecha desde: " styleName="lblInfoBlanco"/>
+        		<date:DateFiledMultiLan id="fecha"  change="buscarComposicionSaldo()" formatString="DD/MM/YYYY" selectedDate="{new Date()}" />
+        		<!--mx:Label text="Fecha Hasta" styleName="lblInfoBlanco"/-->
+        		<!--date:DateFiledMultiLan id="fechaHasta"  change="calcularSaldoAnterior()" formatString="DD/MM/YYYY" selectedDate="{new Date()}" /-->
+        		<mx:Label text="Saldo : {dateFormatter.format(fecha.selectedDate)} " styleName="lblInfoBlanco"/>
+        		<textInput:TextInputMoneda editable="false" id="txtSaldoAnt" text="{composicionSaldoClienteModel.saldo}" styleName="lblInfoBlanco"/>
+        		<mx:Button label="Buscar" click="buscarComposicionSaldo()"/>
+        		<mx:HBox width="100%" horizontalAlign="right" verticalAlign="middle">
+	        		<mx:RadioButtonGroup id="radiogroup2"/>
+	        		<mx:RadioButton label="Todos" groupName="radiogroup2" styleName="lblInfoBlanco" change="cambiarModoVisualizacionConciliados(4)"/>
+	        		<mx:RadioButton label="Solo Conciliados" groupName="radiogroup2" styleName="lblInfoBlanco" selected="true" change="cambiarModoVisualizacionConciliados(3)"/>
+        		</mx:HBox>   
+        		<mx:HBox horizontalAlign="right" verticalAlign="middle">
+	        		<mx:RadioButtonGroup id="radiogroup1"/>
+	        		<mx:RadioButton label="Modo Resumen" groupName="radiogroup1" styleName="lblInfoBlanco" selected="true" change="cambiarModoVisualizacion(1)"/>
+	        		<mx:RadioButton label="Modo Completo" groupName="radiogroup1" styleName="lblInfoBlanco" change="cambiarModoVisualizacion(2)"/>	
+        		</mx:HBox>        		
+        	</mx:ApplicationControlBar>
+        </mx:VBox>
+        <mx:HBox width="100%" horizontalGap="0">
+        	<mx:Button label="Resumido" id="btnResumido" toggle="true" selected="{viewStk.selectedIndex == 0}" enabled="{viewStk.selectedIndex == 1}" click="viewStk.selectedIndex = 0" styleName="togleButton"/>
+        	<mx:Button label="Detalle" id="btnDetalle" toggle="true" enabled="false" visible="{viewStk.selectedIndex == 1}" styleName="togleButton"/>
+        </mx:HBox>
+        <mx:ViewStack  height="100%" width="100%"  id="viewStk" >
+ 	        <cliente:ResumidoComposicionSaldoView   label="Resumido"  verticalAlign="top" width="100%" height="100%"/>
+	        <cliente:DetalleComposicionSaldoView label="Detalle" /> 
+	   </mx:ViewStack>
+ </mx:VBox>
+ <mate:Listener  receive="{viewStk.selectedIndex=1}" type="cambiarAVistaDetalleCompSaldo"/>
+ <mate:Listener type="restaurarComposicionListener" receive="restaurar()"/>
+ <mx:CurrencyFormatter  id="currencyFormatter" currencySymbol="$" 
+		 useThousandsSeparator="false" useNegativeSign="true" rounding="nearest" precision="2" alignSymbol="left"/>
+<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+ <maps:ComposicionSaldoModelMap/>
+<mx:Script>
+	<![CDATA[
+		import com.util.format.FormatUtil;
+		import com.util.Fecha;
+		import views.categorias.cliente.models.ComposicionSaldoClienteModel;
+		import mx.controls.Alert;
+		import  mx.controls.DateField; 
+	    public static const millisecondsPerMinute:int = 1000 * 60;
+        public static const millisecondsPerHour:int = 1000 * 60 * 60;
+        public static const millisecondsPerDay:int = 1000 * 60 * 60 * 24; 
+	    [Bindable]  public  var composicionSaldoClienteModel: ComposicionSaldoClienteModel;
+             
+             private function cambiarModoVisualizacion(modo:int):void{
+             	composicionSaldoClienteModel.modo = modo;
+             	buscarComposicionSaldo();
+             }
+             
+             private function cambiarModoVisualizacionConciliados(modo:int):void{
+             	composicionSaldoClienteModel.modoConciliado = modo;
+             	buscarComposicionSaldo();
+             }
+             
+             private function buscarComposicionSaldo():void{             	
+             	composicionSaldoClienteModel.movimientoComposicionSeleccionado= null;
+             	var fechaFiltro:Date = DateField.stringToDate(fecha.text, "DD/MM/YYYY");
+             	//var fechaFiltroHasta:Date = DateField.stringToDate(fechaHasta.text, "DD/MM/YYYY");
+             	composicionSaldoClienteModel.buscarComposicionSaldo(fechaFiltro,null); 
+        	 }
+	         
+	         private function restaurar():void{
+	         	txtSaldoAnt.text = "0";
+	         	viewStk.selectedIndex = 0;
+	         }
+	         
+	         private function getFechaDefault():Date{
+	         var hoy:Date = new Date();
+            // le restamos 60  dias a la fecha de hoy
+               return new Date(hoy.getTime() - (60 * millisecondsPerDay)); 
+	         }
+	         
+	         private function calcularSaldoAnterior() :void{
+	         	///txtSaldoAnt.text =""; 
+	         	composicionSaldoClienteModel.obtenerSaldoAnterior(DateField.stringToDate(fecha.text, "DD/MM/YYYY"));
+	         }
+	  
+	]]>
+</mx:Script>
+	
+</ModuleGeneral>

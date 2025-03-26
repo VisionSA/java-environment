@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyUp="if(event.keyCode == Keyboard.ESCAPE)dispatchEvent(new CloseEvent(CloseEvent.CLOSE))" layout="vertical" close="PopUpManager.removePopUp(this)"  showCloseButton="true" horizontalAlign="center" verticalAlign="middle">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+		]]>
+	</mx:Script>
+	
+</mx:TitleWindow>

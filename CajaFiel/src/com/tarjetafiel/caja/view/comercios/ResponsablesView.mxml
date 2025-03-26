@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="PopUpManager.removePopUp(this)" showCloseButton="true" layout="vertical" width="600" height="300" horizontalAlign="center" verticalAlign="middle" title="Responsables">
+	<mx:AdvancedDataGrid id="adg1" keyDown="keyPress(event)" designViewDataType="flat" width="100%" height="100%" dataProvider="{individuosHabilitadosPagosModel.individuosList}">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Nombre" dataField="nombres"/>
+			<mx:AdvancedDataGridColumn headerText="Apellido" dataField="apellido"/>
+			<mx:AdvancedDataGridColumn headerText="Nro Documento" dataField="nroDocumento"/>
+			<mx:AdvancedDataGridColumn headerText="Entregar">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:HBox horizontalAlign="center" width="100%">
+							<mx:Button label="Entregar" click="outerDocument.entregar(data)"/>	
+						</mx:HBox>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+		</mx:columns>
+	</mx:AdvancedDataGrid>	
+	<mx:Button label="Impresoras" click="ModelLocator.getInstance().impresorasModel.showListaImpresoras()" />
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.IndividuoEvaluacion;
+			import com.tarjetafiel.caja.event.PagoAComercioEvent;
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.model.IndividuosHabilitadosPagosModel;
+			[Bindable]private var individuosHabilitadosPagosModel:IndividuosHabilitadosPagosModel = ModelLocator.getInstance().individuosHabilitadosPagosModel;
+			
+			private function keyPress(evt:KeyboardEvent):void{
+				if(evt.keyCode == Keyboard.ENTER && adg1.selectedItem){
+					
+					entregar(this.adg1.selectedItem as IndividuoEvaluacion);
+				}
+			} 
+			
+			public function entregar(data:Object):void{
+				individuosHabilitadosPagosModel.individuo = data as IndividuoEvaluacion;
+				var event:PagoAComercioEvent = new PagoAComercioEvent(PagoAComercioEvent.PAGOS_LIST_UPDATE);
+				event.dispatch();
+			}
+		]]>
+	</mx:Script>
+</mx:TitleWindow>

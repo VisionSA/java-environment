@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox   xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"   
+	verticalAlign="top" backgroundAlpha="0.0" borderColor="#B7BABC">
+        
+        <mx:HBox includeInLayout="false" visible="false">
+           <mx:Label text="Saldo a la fecha: " fontWeight="bold" styleName="lblInfoBlanco"/>
+           <mx:Label includeInLayout="{!ctaCteComercioModel.verSaldoHistorio}" visible="{!ctaCteComercioModel.verSaldoHistorio}" text="{currencyFormatter.format(ctaCteComercioModel.saldoAnterior)}" fontWeight="bold" styleName="lblInfoBlanco"/>	
+           <mx:Label includeInLayout="{ctaCteComercioModel.verSaldoHistorio}" visible="{ctaCteComercioModel.verSaldoHistorio}" text="Consulte Histórico" fontWeight="bold" styleName="lblInfoBlanco"/>
+        </mx:HBox>
+        
+	<mx:HBox  width="100%" height="100%"   
+			  verticalAlign="top" backgroundAlpha="0.0" borderColor="#B7BABC">		
+	    
+       	<mx:AdvancedDataGrid id="adg1" sortableColumns="false" designViewDataType="flat" keyDown="pressKey(event)" 
+							 itemClick="itemClickEvent(event);" doubleClickEnabled="true" width="60%" height="100%"     
+       		dataProvider="{ctaCteComercioModel.arrayMovientosContable}">			
+		<mx:columns>
+			<!--<mx:AdvancedDataGridColumn headerText="Sucursal">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.descripcionSucursal}"/>
+					</mx:Component>
+				</mx:itemRenderer> click="pressClick()"
+			</mx:AdvancedDataGridColumn>-->				
+			<mx:AdvancedDataGridColumn headerText="Fecha Transacción" dataField="timestamp" formatter="{dateFormatter}"/>
+			<mx:AdvancedDataGridColumn headerText="Transacción">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{outerDocument.getIdTransaccion(data)}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+				
+			<mx:AdvancedDataGridColumn headerText="Estado" dataField="estadoImpacto" />
+			<!--<mx:AdvancedDataGridColumn headerText="Fecha Facturación" dataField="fechaFacturacion" formatter="{dateFormatter}"/>-->
+			<mx:AdvancedDataGridColumn headerText="Liquidado" dataField="idLiquidacion" />
+			
+			<mx:AdvancedDataGridColumn headerText="Concepto" textAlign = "left" >
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{outerDocument.getDescripcionConcepto(data)}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			
+			<mx:AdvancedDataGridColumn headerText="Debe" styleFunction="styleFunctionCtaCte" textAlign = "right" >
+                 <mx:itemRenderer>
+		         <mx:Component>
+			          <mx:Label text="{outerDocument.mostraDebe(data)}"/>
+		         </mx:Component>
+             	</mx:itemRenderer>
+            </mx:AdvancedDataGridColumn>
+            <mx:AdvancedDataGridColumn headerText="Haber" styleFunction="styleFunctionCtaCte" textAlign = "right">
+                 <mx:itemRenderer>
+		         <mx:Component>
+			          <mx:Label text="{outerDocument.mostraHaber(data)}"/>
+		         </mx:Component>
+             	</mx:itemRenderer>
+            </mx:AdvancedDataGridColumn>
+            <mx:AdvancedDataGridColumn headerText="Saldo" styleFunction="styleFunctionCtaCte" textAlign = "right">
+                 <mx:itemRenderer>
+		         <mx:Component>
+			         <mx:Label text="{outerDocument.currencyFormatter.format(data.saldo)}"  />
+		         </mx:Component>
+             	</mx:itemRenderer>
+            </mx:AdvancedDataGridColumn>
+            <!--			            
+            <mx:AdvancedDataGridColumn headerText="Saldo Acumulado" >
+                 <mx:itemRenderer>
+		         <mx:Component>
+			         <mx:Label text="{outerDocument.getSaldoAcumulado(data)}"/>
+		         </mx:Component>
+             	</mx:itemRenderer>
+            </mx:AdvancedDataGridColumn>
+			
+			<mx:AdvancedDataGridColumn headerText="Debe"  formatter="{currencyFormatter}" styleFunction="styleFunctionDebe" labelFunction="labelFunctionDebe"/>
+			<mx:AdvancedDataGridColumn headerText="Haber" formatter="{currencyFormatter}" styleFunction="styleFunctionHaber" labelFunction="labelFunctionHaber"/>
+			<mx:AdvancedDataGridColumn headerText="Saldo" formatter="{currencyFormatter}" dataField="saldo" itemRenderer="views.categorias.comercio.renderers.SaldoRenderer"/>
+			-->
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+		<mx:VBox width="40%" height="100%">		
+		<mx:ToggleButtonBar dataProvider="{vistas}" width="100%" />
+		<mx:ViewStack id="vistas" width="100%" height="100%">
+		<mx:Panel title="Datos de la Transaccion" label="Datos de la Transaccion" borderThicknessBottom="0" borderThicknessLeft="0" borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="20" height="100%">
+			<mx:VBox backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%" height="100%" verticalGap="0" horizontalAlign="center">
+				<mx:HBox  width="100%" height="30%"   verticalAlign="top" backgroundAlpha="0.0" borderColor="#B7BABC" horizontalAlign="left">
+				<mx:Form width="50%" height="30%"  paddingBottom="0" textAlign="left"> 
+						<mx:FormItem label="Id Transaccion: " styleName="tituloBusquedas" width="100%" textAlign="left">
+							<mx:Label id="lblIdTransaccion" styleName="lblInfo" text="{movim.idTransaccion}"  textAlign="left" visible="{movim.idTransaccion}"/>
+						</mx:FormItem>
+						<mx:FormItem label="Origen: " styleName="tituloBusquedas"  width="100%" textAlign="left">
+							<mx:Label styleName="lblInfo" text="{movim.idOrigen}" textAlign="left"/>
+						</mx:FormItem>					
+					</mx:Form>
+					<mx:Form width="50%" height="30%"  paddingBottom="0" textAlign="left"> 
+						<mx:FormItem label="Fecha Facturación: " styleName="tituloBusquedas" width="100%" textAlign="left">
+							<mx:Label id="lblFacturacion" styleName="lblInfo" text="{dateFormatter.format(movim.fechaFacturacion)}"/>
+						</mx:FormItem>											
+					</mx:Form>
+				</mx:HBox>
+				<mx:AdvancedDataGrid sortableColumns="false" id="adg2" designViewDataType="flat" dataProvider="{ctaCteComercioModel.arrayCOMDetallesCtaCte}" height="100%" width="100%">
+					<mx:columns>
+						<mx:AdvancedDataGridColumn headerText="Id Detalle concepto">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.getCodigoConcepto(data)}"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Codigo Autorizacion" dataField="codigoAutorizacion"/>
+						<mx:AdvancedDataGridColumn headerText="Descripcion" dataField="descripcionConcepto"/>
+						<mx:AdvancedDataGridColumn headerText="Importe" styleFunction="styleFunctionImporte" textAlign = "right">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.currencyFormatter.format(data.importe)}"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+					</mx:columns>					
+				</mx:AdvancedDataGrid>
+				
+				
+				
+		</mx:VBox>
+		</mx:Panel>
+			
+			<mx:Panel title="Datos de Cliente" label="Datos de Cliente" borderThicknessBottom="0" borderThicknessLeft="0" borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="20" height="100%">
+				<mx:VBox backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%" height="100%" verticalGap="0" horizontalAlign="left">
+					<mx:HBox  width="100%" height="30%"   verticalAlign="top" backgroundAlpha="0.0" borderColor="#B7BABC" horizontalAlign="left">	
+					<mx:Form width="40%" height="30%"  paddingBottom="0" textAlign="left"> 
+						<mx:FormItem label="Id Cliente: " styleName="tituloBusquedas" width="100%" textAlign="left">
+						<mx:Label id="IdCliente" styleName="lblInfo" text="{ComposicionDetalleCtaCte(ctaCteComercioModel.arrayCOMComposicionCtaCte.getItemAt(0)).idCliente}"/>							
+						</mx:FormItem>
+						<mx:FormItem label="Estado Cliente: " styleName="tituloBusquedas" width="100%" textAlign="left">
+							<mx:Label id="IdEstado" styleName="lblInfo" text="{ComposicionDetalleCtaCte(ctaCteComercioModel.arrayCOMComposicionCtaCte.getItemAt(0)).estadoCliente}" />							
+						</mx:FormItem>
+						<mx:FormItem label="nro Plastico: " styleName="tituloBusquedas" width="100%" textAlign="left">
+							<mx:Label id="IdPlastico" styleName="lblInfo" text="{ComposicionDetalleCtaCte(ctaCteComercioModel.arrayCOMComposicionCtaCte.getItemAt(0)).nroPlastico}" />								
+						</mx:FormItem>
+					</mx:Form>	
+						<mx:Form width="60%" height="30%"  paddingBottom="0" textAlign="left">							
+								<mx:FormItem label="Apellido Nombre: " styleName="tituloBusquedas" width="100%" textAlign="left">
+								<mx:Label id="IdApellido" styleName="lblInfo" text="{ComposicionDetalleCtaCte(ctaCteComercioModel.arrayCOMComposicionCtaCte.getItemAt(0)).apellidoNombre}" />
+							</mx:FormItem>
+							<mx:FormItem label="Estado Cobranza: " styleName="tituloBusquedas" width="100%" textAlign="left">
+								<mx:Label id="IdCobranza" styleName="lblInfo" text="{ComposicionDetalleCtaCte(ctaCteComercioModel.arrayCOMComposicionCtaCte.getItemAt(0)).estadoComercio}" />							
+							</mx:FormItem>
+						</mx:Form>
+					</mx:HBox>
+					<mx:AdvancedDataGrid sortableColumns="false" id="adg3" designViewDataType="flat" dataProvider="{ctaCteComercioModel.arrayCOMComposicionCtaCte}" height="95%" width="95%">
+						<mx:columns>
+							<mx:AdvancedDataGridColumn  headerText="N° Cuota" dataField="nroCuota" textAlign = "left" />
+							<mx:AdvancedDataGridColumn  headerText="Concepto" dataField="nombreConcepto" textAlign = "left"  />
+							<mx:AdvancedDataGridColumn headerText="Fecha Fact." >
+								<mx:itemRenderer>
+									<mx:Component>
+										<mx:Label text="{outerDocument.dateFormatter.format(data.fechaFacturacion)}"/>
+									</mx:Component>
+								</mx:itemRenderer>
+							</mx:AdvancedDataGridColumn>
+							
+							<mx:AdvancedDataGridColumn headerText="Imp. Cuota" styleFunction="styleFunctionCtaCte" >
+								<mx:itemRenderer>
+									<mx:Component>
+										<mx:Label text="{outerDocument.currencyFormatter.format(data.importeCuota)}" textAlign = "right"/>
+									</mx:Component>
+								</mx:itemRenderer>
+							</mx:AdvancedDataGridColumn>
+							<mx:AdvancedDataGridColumn headerText="Estado" dataField="estado"/>
+							<mx:AdvancedDataGridColumn headerText="Nro Liq" dataField="idLiqCliente"/>
+						</mx:columns>					
+					</mx:AdvancedDataGrid>
+					
+					
+					
+				</mx:VBox>
+			</mx:Panel>
+		</mx:ViewStack>
+		</mx:VBox>
+	</mx:HBox>	
+	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>	
+	
+	<mx:NumberFormatter id="currencyFormatter" thousandsSeparatorTo="." thousandsSeparatorFrom="." decimalSeparatorFrom="," decimalSeparatorTo="," precision="2" rounding="nearest" useNegativeSign="false"/> 
+	
+    
+    <!--
+    <mx:Binding source="rdbFacturacion.selected" destination="ctaCteComercioModel.ordenarPorFacturacion"/>
+	-->
+<mx:Script>
+	<![CDATA[
+		import com.tarjetafiel.caja.vo.ComposicionDetalleCtaCte;
+		import com.tarjetafiel.caja.vo.MovimientoCtaCte;
+		import com.tarjetafiel.caja.vo.MovimientoCtaCteComercio;
+		import com.tarjetafiel.caja.vo.MovimientoCtaCteComercioDetalle;
+		import com.util.collections.ArrayUtil;
+		
+		import mx.controls.Alert;
+		import mx.effects.easing.Back;
+		import mx.events.ListEvent;
+		
+		import views.categorias.comercio.models.CtaCteComercioModel;
+		
+		
+		     [Bindable]public var ctaCteComercioModel:CtaCteComercioModel;
+		     public var primero: Boolean=true; 
+		     public var acumulado:  Number=0;
+		[Bindable] public	var movim : MovimientoCtaCteComercio;
+		     
+		     public  function mostraDebe(data:Object):String{
+				 var ctacte:MovimientoCtaCteComercio = data as MovimientoCtaCteComercio;
+				 if(ctacte.debe==0)
+				 {
+					 return "";
+				 }
+				 else
+				 {
+					 return currencyFormatter.format(ctacte.debe);
+				 }
+		     }
+		
+		
+		public  function mostraHaber(data:Object):String{
+			var ctacte:MovimientoCtaCteComercio = data as MovimientoCtaCteComercio;
+			if(ctacte.haber==0)
+			{
+				return "";
+			}
+			else
+			{
+				return currencyFormatter.format(ctacte.haber);
+			}
+		}
+	
+		public  function cambiarVistaDetalle():void{
+			if(adg1.selectedItem){
+				var movim : MovimientoCtaCteComercio = MovimientoCtaCteComercio(adg1.selectedItem);
+				ctaCteComercioModel.movimientoCtaCteSeleccionado = movim;
+				ctaCteComercioModel.dispatcher.dispatchEvent(new Event("cambiarAVistaDetalleCtaCte")); 
+				
+			}	
+		}
+			
+		
+		
+       public function myStyleFunction(data:Object, col: AdvancedDataGridColumn):Object
+       {
+           if(data["codigoConcepto"] =='3')
+           {
+               return {background: true,color:'green',fontWeight:"bold",backgroundColor:"red"};
+           }  else 
+             if(data["codigoConcepto"] =='4')  return {background: true,color:'#8539ED',fontWeight:"bold",backgroundColor:"red"};
+           return {color:'blue',fontWeight:"bold"  };
+       } 
+       
+       	public function getDescripcionConcepto(data:Object):String{
+				var ctacte:MovimientoCtaCteComercio = data as MovimientoCtaCteComercio;
+			  if(ctacte.idConcepto==190)
+			  {
+			  	 return "Pago Fiel";
+			  }
+			  else
+			  {
+			  	 return ctacte.descripcionConcepto;
+			  }
+		}
+		
+		public function getIdTransaccion(data:Object):String{
+			var ctacte:MovimientoCtaCteComercio = data as MovimientoCtaCteComercio;
+			if(!(ctacte.idTransaccion) && (isNaN(ctacte.idTransaccion)) )
+			{
+				return " ";
+			}
+			else
+			{
+				return ctacte.idTransaccion.toString();
+			}
+		}
+		
+		
+		public function getCodigoConcepto(data:Object):String{
+			var ctactem:MovimientoCtaCteComercioDetalle = data as MovimientoCtaCteComercioDetalle;
+			if(!(ctactem.codigoConcepto) && (isNaN(ctactem.codigoConcepto)) )
+			{
+				return " ";
+			}
+			else
+			{
+				return ctactem.codigoConcepto.toString();
+			}
+		}
+		
+		
+		
+        public function getDebe(data:Object):String{
+				var ctacte:MovimientoCtaCteComercio = data as MovimientoCtaCteComercio;
+			  return (isNaN(ctacte.debe))? "": currencyFormatter.format(ctacte.debe);
+		}
+		 public function getHaber(data:Object):String{
+				var ctacte:MovimientoCtaCteComercio = data as MovimientoCtaCteComercio;
+			  return (isNaN(ctacte.haber))? "":currencyFormatter.format(ctacte.haber);
+		}   
+		 public function getSaldoAcumulado(data:Object):String{
+			var ctacte:MovimientoCtaCteComercio = data as MovimientoCtaCteComercio;
+			var saldo:  Number=0;
+			if(ctacte.estadoImpacto!='R')
+			{
+				saldo = ctacte.debe - ctacte.haber;
+		 	}
+		 	return (isNaN(saldo))? "":currencyFormatter.format(saldo);
+		}
+		
+		
+		
+		
+		/* function reportKeyDown(event:KeyboardEvent):void
+		{
+			Alert.show("Key Pressed: " + String.fromCharCode(event.charCode) +         " (key code: " + event.keyCode + " character code: "         + event.charCode + ")");
+			
+		}
+		
+		function reportKeyUp(event:KeyboardEvent):void
+		{
+			Alert.show("Key Released: " + String.fromCharCode(event.charCode) +         " (key code: " + event.keyCode + " character code: " +         event.charCode + ")");
+			
+		} */
+           
+		private function pressKey(event:KeyboardEvent):void{
+			/* if(event.keyCode == Keyboard.ENTER){
+				if(adg1.selectedItem != null){
+					this.cambiarVistaDetalle();
+				}
+			}
+			
+			// se agrega esto boorarlo
+			if(event.keyCode == Keyboard.UP){
+				/* if(adg1.selectedItem != null){
+					this.cambiarVistaDetalle();
+				} */
+			var curKeyCode:int = event.keyCode;
+			if (curKeyCode == 38 || curKeyCode == 40) {
+				limpiarCtaCteComercio();
+				
+			if(adg1.selectedItem != null){
+				this.movim  = MovimientoCtaCteComercio(adg1.selectedItem);
+				ctaCteComercioModel.movimientoCtaCteSeleccionado = this.movim;
+				ctaCteComercioModel.buscarDetallesCOMMovimiento();
+				ctaCteComercioModel.buscarComposicionCOMMovimientoCliente();
+			//this.cambiarVistaDetalle();
+			}
+			}
+			
+			
+			
+			//Alert.show(event.currentTarget.name + " hears key press: " +         String.fromCharCode(event.charCode) + " (key code: " +         event.keyCode + " character code: " + event.charCode + ")");
+		}
+		
+		
+		private function limpiarCtaCteComercio():void{
+			ctaCteComercioModel.movimientoCtaCteSeleccionado= null;
+			ArrayUtil.limpiarLista(ctaCteComercioModel.arrayCOMDetallesCtaCte);
+			ArrayUtil.limpiarLista(ctaCteComercioModel.arrayCOMComposicionCtaCte);		
+		}
+		
+		private function itemClickEvent(event:ListEvent):void {
+			/* if(event.keyCode == Keyboard.ENTER){
+			if(adg1.selectedItem != null){
+			this.cambiarVistaDetalle();
+			}
+			}
+			
+			// se agrega esto boorarlo
+			if(event.keyCode == Keyboard.UP){
+			/* if(adg1.selectedItem != null){
+			this.cambiarVistaDetalle();
+			} */
+			
+				if(adg1.selectedItem != null){
+					limpiarCtaCteComercio();
+					this.movim = MovimientoCtaCteComercio(adg1.selectedItem);	
+					ctaCteComercioModel.movimientoCtaCteSeleccionado = this.movim;
+					ctaCteComercioModel.buscarDetallesCOMMovimiento();
+					ctaCteComercioModel.buscarComposicionCOMMovimientoCliente();
+					//this.cambiarVistaDetalle();
+				}
+			
+			
+			
+			
+			//Alert.show(event.currentTarget.name + " hears key press: " +         String.fromCharCode(event.charCode) + " (key code: " +         event.keyCode + " character code: " + event.charCode + ")");
+		}
+		
+		
+		
+		public function setFocusGrilla():void{
+			if(this.adg1){
+				this.adg1.setFocus();
+			}
+		} 
+		
+		
+		
+		
+			//Liquiedacion Comercio.
+			public function labelFunctionIdLiquidacion(data:Object,column:AdvancedDataGridColumn):String{
+				if( (!data.idTransaccion) || isNaN(data.idTransaccion)   ) {
+					return "";
+				}
+				
+				if(!isNaN(data.idLiquidacion) && data.idLiquidacion.toString().length>0){
+					return "SI";
+				} else {
+					return "NO";
+				}				
+			}
+			
+			
+			public function labelFunctionDebe(data:Object,column:AdvancedDataGridColumn):String{
+				if(data.signo == -1){
+					return data.importe.toString();
+				}
+				
+				return "0"; 
+			}
+			
+			public function labelFunctionHaber(data:Object,column:AdvancedDataGridColumn):String{
+				if(data.signo == 1){
+					return data.importe.toString();
+				}
+				
+				return "0"; 
+			}
+			
+			public function styleFunctionDebe(data:Object, column:AdvancedDataGridColumn):Object{
+				var obj:Object = { color:"#DD0015",
+								   fontWeight:"bold",
+								   fontSize:14	
+								 };
+				return obj;
+			}
+		
+		
+		public function styleFunctionImporte(data:Object, column:AdvancedDataGridColumn):Object{
+			var obj:Object;
+			if(data.importe < 0){
+			
+			 obj = { fontSize:12
+				
+			};
+			} else {
+			  obj = { fontSize:12
+				};
+			}
+			return obj;
+		}
+		
+		public function styleFunctionCtaCte(data:Object, column:AdvancedDataGridColumn):Object{
+			var obj:Object;		
+				
+				obj = { fontSize:12};
+			
+			return obj;
+		}
+		
+		
+			
+			public function styleFunctionHaber(data:Object, column:AdvancedDataGridColumn):Object{
+				var obj:Object = { color:"#198600",
+								   fontWeight:"bold",
+								   fontSize:14	
+								 };
+				return obj;
+			}
+	]]>
+</mx:Script>
+
+	
+</mx:VBox>

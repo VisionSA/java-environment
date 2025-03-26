@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.impuestos.negocio.Categoria" table="t_vis_imp_categorias" >
+    <id name="idCategoria" type="java.lang.Long" column="c_id_categoria_imp">
+        <generator class="increment" />
+    </id>
+
+    <property name="codCategoria" type="java.lang.String" column="c_cod_categoria" not-null="true" length="2"/>
+
+    <property name="descripcion" type="java.lang.String" column="c_descripcion" length="50"/>
+
+    <many-to-one name="tipoImpuesto" class="com.bizitglobal.tarjetafiel.impuestos.negocio.TipoImpuesto" not-null="false"  >
+        <column name="c_id_tipo_impuesto" />
+    </many-to-one>
+    
+    <set name="impuestos" inverse="false" cascade="none"  >
+        <key>
+            <column name="c_id_categoria_imp" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.impuestos.negocio.Impuesto"/>
+    </set>
+    
+    <set name="jurisActividades" inverse="false" cascade="all"  >
+        <key>
+            <column name="c_id_categoria_imp" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.impuestos.negocio.JurisdiccionActividad"/>
+    </set>
+    
+</class>
+</hibernate-mapping>

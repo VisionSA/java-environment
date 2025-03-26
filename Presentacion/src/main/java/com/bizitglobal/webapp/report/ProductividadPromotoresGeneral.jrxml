@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="ProductividadPromotoresGeneral"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="1360"
+		 pageHeight="255116"
+		 columnWidth="1360"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.bizitglobal.webapp.faces.beans.util.*" />
+	<import value="net.sf.jasperreports.engine.design.JasperDesign" />
+
+	<parameter name="fecha_desde" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="promotor_desde" isForPrompting="true" class="java.lang.Long"/>
+	<parameter name="promotor_hasta" isForPrompting="true" class="java.lang.Long"/>
+	<parameter name="mes" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="fecha_desde_activ" isForPrompting="true" class="java.util.Date"/>
+	<queryString><![CDATA[select  c_id_promotor,nom_promotor,c_id_solicitud,
+titular,adicional,
+fecha_apertura,
+(case when (trunc(fecha_activacion)  between $P{fecha_desde} and $P{fecha_hasta})
+then trunc(fecha_activacion)
+else null end ) fecha_activacion,valor
+from
+(select pp.c_id_promotor, pp.nom_promotor,c_id_solicitud
+,sum(pp.titular) titular,sum(pp.adicional) adicional,max(fecha_apertura) fecha_apertura,max(fecha_compra) fecha_activacion,
+valor
+from
+(select soli.c_id_promotor,
+prom.c_apellido || ' ' || prom.c_nombre nom_promotor,
+soli.c_id_solicitud,
+--cli.c_id_cliente,ind.c_apellido|| ' ' || ind.c_nombres  cliente_nombre, cli.c_fecha_alta fecha_apertura,
+sind.c_id_tipo_individuo,
+( case when
+(sind.c_id_tipo_individuo = 1)
+then 1
+else 0 end) titular,
+( case when
+(sind.c_id_tipo_individuo = 3)
+then 1
+else 0 end) adicional,
+cli.c_fecha_alta fecha_apertura,
+( case when
+(cli.c_id_titular is null)
+then (select min(trunc(ctacte.c_timestamp)) from t_vis_tra_ctacte_clientes ctacte 
+left join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = ctacte.c_id_concepto_detalle
+left join t_vis_tra_conceptos con on con.c_id_concepto = det.c_id_concepto
+where cli.c_id_cliente = ctacte.c_id_cliente and ctacte.c_id_concepto_detalle = 1 )
+
+else (select min(trunc(ctacte.c_timestamp)) from t_vis_tra_ctacte_clientes ctacte 
+left join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = ctacte.c_id_concepto_detalle
+left join t_vis_tra_conceptos con on con.c_id_concepto = det.c_id_concepto
+where cli.c_id_titular = ctacte.c_id_cliente and ctacte.c_id_concepto_detalle = 1 ) end) fecha_compra,0 valor
+from
+(select inds.c_id_solicitud,inds.c_id_tipo_individuo, inds.c_id_individuo from
+(select c_id_individuo ,max(c_id_solicitud) solicitud, max(c_id_solic_individuo) solic_individuo
+from t_vis_eva_solic_individuos sind
+where   c_id_tipo_individuo  in (1,3)
+group by c_id_individuo  ) msoli
+inner join t_vis_eva_solic_individuos inds on msoli.solicitud = inds.c_id_solicitud and msoli.c_id_individuo = inds.c_id_individuo and inds.c_id_tipo_individuo  in (1,3)
+and inds.c_id_solic_individuo = solic_individuo) sind
+inner join t_vis_eva_individuos ind on ind.c_id_individuo = sind.c_id_individuo
+inner join t_vis_tra_clientes cli on cli.c_id_individuo = sind.c_id_individuo
+inner join t_vis_eva_solicitudes soli on soli.c_id_solicitud = sind.c_id_solicitud
+inner join t_vis_eva_promotores prom on prom.c_id_promotor = soli.c_id_promotor
+where soli.c_id_promotor between $P{promotor_desde} and $P{promotor_hasta}
+and prom.c_estado = 'A' 
+--and soli.c_nro_solicitud < 0
+ and trunc(cli.c_fecha_alta) between $P{fecha_desde} and $P{fecha_hasta}) pp
+group by pp.c_id_promotor, pp.nom_promotor, c_id_solicitud,valor)
+
+union
+
+
+
+(select ppp.c_id_promotor, ppp.nom_promotor,c_id_solicitud
+, titular, adicional, fecha_apertura
+, fecha_activacion,valor from
+(select pp.c_id_promotor, pp.nom_promotor,c_id_solicitud
+,sum(pp.titular) titular,sum(pp.adicional) adicional,max(fecha_apertura) fecha_apertura
+,max(fecha_compra) fecha_activacion,valor from
+(select soli.c_id_promotor,
+prom.c_apellido || ' ' || prom.c_nombre nom_promotor,
+soli.c_id_solicitud,
+--cli.c_id_cliente,ind.c_apellido|| ' ' || ind.c_nombres  cliente_nombre, cli.c_fecha_alta fecha_apertura,
+sind.c_id_tipo_individuo,
+( case when
+(sind.c_id_tipo_individuo = 1)
+then 1
+else 0 end) titular,
+( case when
+(sind.c_id_tipo_individuo = 3)
+then 1
+else 0 end) adicional,
+cli.c_fecha_alta fecha_apertura,
+( case when
+(cli.c_id_titular is null)
+then (select min(trunc(ctacte.c_timestamp)) from t_vis_tra_ctacte_clientes ctacte 
+left join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = ctacte.c_id_concepto_detalle
+left join t_vis_tra_conceptos con on con.c_id_concepto = det.c_id_concepto
+where cli.c_id_cliente = ctacte.c_id_cliente and ctacte.c_id_concepto_detalle = 1 )
+
+else (select min(trunc(ctacte.c_timestamp)) from t_vis_tra_ctacte_clientes ctacte 
+left join t_vis_tra_conceptos_detalle det on det.c_id_concepto_detalle = ctacte.c_id_concepto_detalle
+left join t_vis_tra_conceptos con on con.c_id_concepto = det.c_id_concepto
+where cli.c_id_titular = ctacte.c_id_cliente and ctacte.c_id_concepto_detalle = 1 ) end) fecha_compra,1 valor
+from
+(select inds.c_id_solicitud,inds.c_id_tipo_individuo, inds.c_id_individuo from
+(select c_id_individuo ,max(c_id_solicitud) solicitud, max(c_id_solic_individuo) solic_individuo
+from t_vis_eva_solic_individuos sind
+where   c_id_tipo_individuo  in (1,3)
+group by c_id_individuo  ) msoli
+inner join t_vis_eva_solic_individuos inds on msoli.solicitud = inds.c_id_solicitud and msoli.c_id_individuo = inds.c_id_individuo and inds.c_id_tipo_individuo  in (1,3)
+and inds.c_id_solic_individuo = solic_individuo) sind
+inner join t_vis_eva_individuos ind on ind.c_id_individuo = sind.c_id_individuo
+inner join t_vis_tra_clientes cli on cli.c_id_individuo = sind.c_id_individuo
+inner join t_vis_eva_solicitudes soli on soli.c_id_solicitud = sind.c_id_solicitud
+inner join t_vis_eva_promotores prom on prom.c_id_promotor = soli.c_id_promotor
+where soli.c_id_promotor between $P{promotor_desde} and $P{promotor_hasta}
+and prom.c_estado = 'A'  and  trunc(cli.c_fecha_alta)  between add_months($P{fecha_desde},-$P{mes}) and add_months($P{fecha_hasta},-1)) pp
+group by pp.c_id_promotor, pp.nom_promotor, c_id_solicitud,valor) ppp 
+where  trunc(fecha_activacion) between $P{fecha_desde} and $P{fecha_hasta})
+order by c_id_promotor,c_id_solicitud]]></queryString>
+
+	<field name="C_ID_PROMOTOR" class="java.math.BigDecimal"/>
+	<field name="NOM_PROMOTOR" class="java.lang.String"/>
+	<field name="C_ID_SOLICITUD" class="java.math.BigDecimal"/>
+	<field name="TITULAR" class="java.math.BigDecimal"/>
+	<field name="ADICIONAL" class="java.math.BigDecimal"/>
+	<field name="FECHA_APERTURA" class="java.sql.Timestamp"/>
+	<field name="FECHA_ACTIVACION" class="java.sql.Timestamp"/>
+	<field name="VALOR" class="java.math.BigDecimal"/>
+
+	<variable name="adicionales" class="java.math.BigDecimal" resetType="Group" resetGroup="titulo" calculation="Sum">
+		<variableExpression><![CDATA[(( $F{ADICIONAL}.intValue() == 1 && $F{VALOR}.intValue() == 0) ?  new BigDecimal(1) : new BigDecimal(0))
+
+]]></variableExpression>
+	</variable>
+	<variable name="activacion" class="java.math.BigDecimal" resetType="Group" resetGroup="titulo" calculation="Sum">
+		<variableExpression><![CDATA[(($F{FECHA_ACTIVACION} != null) ? new BigDecimal(1)  : new BigDecimal(0))]]></variableExpression>
+	</variable>
+	<variable name="titular" class="java.math.BigDecimal" resetType="Group" resetGroup="titulo" calculation="Sum">
+		<variableExpression><![CDATA[(( $F{TITULAR}.intValue() == 1 && $F{VALOR}.intValue() == 0) ?  new BigDecimal(1) : new BigDecimal(0))
+
+]]></variableExpression>
+	</variable>
+	<variable name="cantidadTitulares" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[(( $F{TITULAR}.intValue() == 1 && $F{VALOR}.intValue() == 0) ?  new BigDecimal(1) : new BigDecimal(0))]]></variableExpression>
+	</variable>
+	<variable name="cantidadAdicional" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[(( $F{ADICIONAL}.intValue() == 1 && $F{VALOR}.intValue() == 0) ?  new BigDecimal(1) : new BigDecimal(0))]]></variableExpression>
+	</variable>
+	<variable name="cantidadActivaciones" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[(($F{FECHA_ACTIVACION} != null) ? new BigDecimal(1)  : new BigDecimal(0))]]></variableExpression>
+	</variable>
+
+		<group  name="general" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="15"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="69"
+						y="0"
+						width="300"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-16"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" leftPadding="2" rightBorder="Thin" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Totales Generales
+]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="519"
+						y="0"
+						width="150"
+						height="15"
+						key="textField-16"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" leftPadding="2" rightBorder="Thin" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Helvetica" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{cantidadAdicional}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="369"
+						y="0"
+						width="150"
+						height="15"
+						key="textField-17"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" leftPadding="2" rightBorder="Thin" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Helvetica" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{cantidadTitulares}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="669"
+						y="0"
+						width="162"
+						height="15"
+						key="textField-18"/>
+					<box topBorder="Thin" topBorderColor="#000000" leftBorder="Thin" leftBorderColor="#000000" leftPadding="2" rightBorder="Thin" rightBorderColor="#000000" rightPadding="2" bottomBorder="Thin" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Helvetica" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{cantidadActivaciones}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="titulo" >
+			<groupExpression><![CDATA[$F{C_ID_PROMOTOR}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="69"
+						y="0"
+						width="300"
+						height="15"
+						key="textField-1"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOM_PROMOTOR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="69"
+						height="15"
+						key="textField-7"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{C_ID_PROMOTOR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="669"
+						y="0"
+						width="162"
+						height="15"
+						key="textField-11"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{activacion}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="519"
+						y="0"
+						width="150"
+						height="15"
+						key="textField-12"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{adicionales}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="369"
+						y="0"
+						width="150"
+						height="15"
+						key="textField-13"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{titular}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="831"
+						y="0"
+						width="130"
+						height="15"
+						key="textField-14"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{fecha_desde}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="961"
+						y="0"
+						width="130"
+						height="15"
+						key="textField-15"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{fecha_hasta}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1091"
+						y="0"
+						width="130"
+						height="15"
+						key="textField-19"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{fecha_desde_activ}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1221"
+						y="0"
+						width="139"
+						height="15"
+						key="textField-20"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Courier New" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{fecha_hasta}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="2"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="15"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="69"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Id Promotor
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="69"
+						y="0"
+						width="300"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Apellido y Nombres Promotor
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="669"
+						y="0"
+						width="162"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Cantidad de Activaciones
+
+
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="519"
+						y="0"
+						width="150"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Cantidad de Adicionales
+
+
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="369"
+						y="0"
+						width="150"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Cantidad de Titulares
+
+
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="831"
+						y="0"
+						width="130"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Periodo Desde
+
+
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="961"
+						y="0"
+						width="130"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Periodo Hasta
+
+
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="1091"
+						y="0"
+						width="130"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Activaciones Desde
+
+
+
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="1221"
+						y="0"
+						width="139"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="11" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Activaciones Hasta
+
+
+
+]]></text>
+				</staticText>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

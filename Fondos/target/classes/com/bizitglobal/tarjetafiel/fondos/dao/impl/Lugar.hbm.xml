@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.Lugar" table="T_VIS_FON_LUGAR" >
+	<id name="idLugar" type="java.lang.Long" column="C_ID_LUGAR">
+		<generator class="increment" />
+	</id>
+	
+	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="true" length="50"/>
+	<property name="tipo" type="java.lang.Character" column="C_TIPO" not-null="true" />
+	<property name="codigo" type="java.lang.Long" column="C_CODIGO" not-null="false" />
+	
+</class>
+</hibernate-mapping>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.DocumentoAdjunto" table="t_vis_prov_doc_adjuntos"  >
+    <id name="idDocumentoAdjunto" type="java.lang.Long" column="c_id_doc_adjuntos">
+        <generator class="increment" />
+    </id>
+
+    <property name="url" type="java.lang.String" column="c_url" not-null="true" length="100"/>
+
+    <!-- Associations -->
+    <many-to-one name="comprobante" class="com.bizitglobal.tarjetafiel.proveedores.negocio.Comprobante" 
+    			 cascade="all"    >
+       <column name="c_id_comprobante" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

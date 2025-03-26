@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						  xmlns:s="library://ns.adobe.com/flex/spark" 
+						  xmlns:mx="library://ns.adobe.com/flex/mx" 
+						  focusEnabled="true" width="100%" xmlns:components="components.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.fiel.caja.judicial.view.component.VistaMovimientosMPCliente;
+			import com.tarjetafiel.caja.vo.ClienteMontoDTO;
+			import com.tarjetafiel.proveedorconexion.vo.SetDataVo;
+			
+			import mx.controls.Alert;
+			import mx.controls.Image;
+			import mx.events.CloseEvent;
+			import mx.utils.ObjectUtil;
+			import mx.utils.StringUtil;
+			
+			import skin.BotonBorrarSkin;
+			
+			import utils.ManejadorIconos;
+			import utils.ManejadorMensajes;
+			import utils.ManejadorPantallas;
+			
+			[Bindable]
+			private var modelo : CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			protected function btnRemoverCliente_clickHandler(event:MouseEvent):void
+			{
+				ManejadorMensajes.mostrarMensajeYesNo(StringUtil.substitute("¿Desea quitar el cliente {0}?",(data as ClienteMontoDTO).cliente.idCliente),quitarCliente,"Eliminar");
+				
+			}
+			
+			private function quitarCliente(event:CloseEvent):void {
+				if(event.detail == Alert.YES){
+					//Limpia la suma acumulativa del cliente al eliminarlo de la lista
+					var nuevoValor:Number = modelo.sumaTotalClientes - (data as ClienteMontoDTO).monto;
+					new SetDataVo(modelo, "sumaTotalClientes",nuevoValor).guardarValor();
+					var cliMonto : ClienteMontoDTO = modelo.listaClientesJudiciales.removeItemAt(this.itemIndex) as ClienteMontoDTO;
+/*@I3820*/					this.parentApplication.setGridFocus();
+/*@F3820*/					//modelo.sumador.restar(cliMov.sumador);
+				}
+			}
+			
+				
+
+			protected function btnVerPagos_clickHandler(event:MouseEvent):void
+			{	
+				new SetDataVo(modelo,"cliMovSelected",data).guardarValor();
+				ManejadorPantallas.crearPopUp(ManejadorPantallas.getAplicacion() as DisplayObject,VistaMovimientosMPCliente);
+			}
+
+		]]>
+	</fx:Script>
+	
+	
+	<s:HGroup width="100%" horizontalAlign="center">
+		<!--<s:Button id="btnVerPagos" label="Ver" toolTip="Ver Medios Agregados" click="btnVerPagos_clickHandler(event)"/>-->
+		<s:Button id="btnRemoverCliente" label="Quitar" toolTip="Eliminar cliente de la grilla" click="btnRemoverCliente_clickHandler(event)" skinClass="skin.BotonBorrarSkin"/>
+	</s:HGroup>
+	
+</s:MXDataGridItemRenderer>

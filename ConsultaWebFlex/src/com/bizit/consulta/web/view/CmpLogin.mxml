@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   currentState="{modelo.estadoLoginUsuario}"
+				   xmlns:formatters="com.bizit.consulta.web.utils.formatters.*"
+				   hide="container_hideHandler(event)"
+				   keyUp="container_keyUpHandler(event)" width="100%" height="100%"
+				   cornerRadius="5">
+	<fx:Declarations>
+		<!-- Validadores -->
+		<mx:StringValidator id="vPassValidator" minLength="8" 
+							source="{inptPass}" property="text" 
+							required="true"
+							requiredFieldError="El password es obligatorio"
+							tooShortError="El password debe tener al menos 8 caracteres"/>
+		<mx:StringValidator id="vRepeatPassValidator" minLength="8"  
+					  		source="{inptRepPass}" property="text"
+					  		required="true"
+					  		requiredFieldError="La repetición del password es obligatoria"
+							tooShortError="El password debe tener al menos 8 caracteres"/>
+		<mx:StringValidator id="vCuitValidator" source="{inptCUIT}" property="text"
+							minLength="{inptCUIT.maxChars}"
+							required="true"
+							requiredFieldError="El CUIT es obligatorio"
+							tooShortError="Debe ingresar un CUIT correcto"/>
+		<mx:NumberValidator id="vCodPosnetValidator" source="{inptCodPosnet}" property="text"
+							minValue="0" maxValue="9999999999999" 
+							lowerThanMinError="Debe ingresar un código correcto"
+							exceedsMaxError="Debe ingresar un código correcto"
+							allowNegative="false"
+							negativeError="No se permiten valores negativos"
+							precision="0"
+							required="true"
+							requiredFieldError="El código POSNET es obligatorio"/>
+		<mx:NumberValidator id="vDNIValidator" source="{inptDNI}" property="text"
+							minValue="0" maxValue="9999999999" 
+							lowerThanMinError="Debe ingresar un DNI correcto"
+							exceedsMaxError="Debe ingresar un DNI correcto"
+							allowNegative="false"
+							negativeError="No se permiten valores negativos"
+							precision="0"
+							required="true"
+							requiredFieldError="El DNI es obligatorio"/>
+		<mx:EmailValidator id="vMailValidator" source="{inptMail}" property="text"
+						   required="true"
+						   requiredFieldError="El e-mail es obligatorio"
+						   invalidCharError="El e-mail contiene caracteres no permitidos"
+						   invalidDomainError="Ingrese correctamente el e-mail"
+						   invalidIPDomainError="Ingrese correctamente el e-mail"
+						   invalidPeriodsInDomainError="Ingrese correctamente el e-mail"
+						   missingAtSignError="Ingrese correctamente el e-mail"
+						   missingUsernameError="Ingrese correctamente el e-mail"
+						   tooManyAtSignsError="Ingrese correctamente el e-mail"/>
+		<mx:EmailValidator id="vRepMailValidator" source="{inptRepMail}" property="text"
+						   required="true"
+						   requiredFieldError="La repetición de e-mail es obligatoria"
+						   invalidCharError="El e-mail contiene caracteres no permitidos"
+						   invalidDomainError="Ingrese correctamente el e-mail"
+						   invalidIPDomainError="Ingrese correctamente el e-mail"
+						   invalidPeriodsInDomainError="Ingrese correctamente el e-mail"
+						   missingAtSignError="Ingrese correctamente el e-mail"
+						   missingUsernameError="Ingrese correctamente el e-mail"
+						   tooManyAtSignsError="Ingrese correctamente el e-mail"/>
+		<!-- Fin Validadores -->
+		
+		<!-- Formateadores -->
+		<formatters:CUITFormatter id="CUITFormatter"/>
+		<!-- Fin Formateadores -->
+		
+		<!-- Efects -->
+		<!--<mx:Move id="myMove" duration="200"/>
+		<mx:Resize id="myResize" duration="200"/>-->
+		<!-- Fin Efects -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.bizit.consulta.web.entity.UsuarioComercioVO;
+			import com.bizit.consulta.web.entity.UsuarioWeb;
+			import com.bizit.consulta.web.event.LoginUsuarioEvent;
+			import com.bizit.consulta.web.model.FielWebModelLocator;
+			import com.bizit.consulta.web.utils.ConstantesEstados;
+			import com.bizit.consulta.web.utils.ManejadorMensajes;
+			import com.bizit.consulta.web.utils.ManejadorPantallas;
+			import com.bizit.consulta.web.vo.SetDataVo;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ValidationResultEvent;
+			
+			[Bindable]
+			private var modelo : FielWebModelLocator = FielWebModelLocator.getInstance();
+			
+			protected function clickHandlerState(event:MouseEvent, estado:String):void
+			{
+				//new LoginChangeStateEvent(estado).dispatch();
+				new SetDataVo("estadoLoginUsuario", estado).guardarValor();
+			}
+			
+			private function formatCuit(event:Event):void
+			{
+				var input:TextInput = TextInput(event.target);
+				var form:String = CUITFormatter.format(TextInput(event.target).text);
+				input.text = form;
+				input.selectRange(input.text.length,input.text.length);
+				
+			}
+			
+			[Bindable]
+			private var effectDuration:int = 100;
+			
+			private function datosValidosValidar():Boolean
+			{
+				var resEv1:ValidationResultEvent;
+				var resEv2:ValidationResultEvent;
+				var resEv3:ValidationResultEvent;
+				resEv1 = vCuitValidator.validate();
+				resEv2 = vCodPosnetValidator.validate();
+				resEv3 = vDNIValidator.validate();
+				if (resEv1.type == ValidationResultEvent.INVALID ||
+					resEv2.type == ValidationResultEvent.INVALID ||
+					resEv3.type == ValidationResultEvent.INVALID)
+				{
+					return false;
+				}
+				return true;
+				
+			}
+			
+			private function datosValidosLogin():Boolean
+			{
+				var resEv1:ValidationResultEvent;
+				var resEv2:ValidationResultEvent;
+				resEv1 = vMailValidator.validate();
+				resEv2 = vPassValidator.validate();
+				if (resEv1.type == ValidationResultEvent.INVALID ||
+					resEv2.type == ValidationResultEvent.INVALID)
+				{
+					return false;
+				}
+				return true;
+			}
+			
+			private function datosValidosRegistrar():Boolean
+			{
+				var resEv1:ValidationResultEvent;
+				var resEv2:ValidationResultEvent;
+				var resEv3:ValidationResultEvent;
+				var resEv4:ValidationResultEvent;
+				resEv1 = vMailValidator.validate();
+				resEv2 = vPassValidator.validate();
+				resEv3 = vRepeatPassValidator.validate();
+				resEv4 = vRepMailValidator.validate();
+				if (resEv1.type == ValidationResultEvent.INVALID ||
+					resEv2.type == ValidationResultEvent.INVALID ||
+					resEv3.type == ValidationResultEvent.INVALID ||
+					resEv4.type == ValidationResultEvent.INVALID)
+				{
+					return false;
+				}
+				if (inptMail.text != inptRepMail.text)
+				{
+					ManejadorMensajes.mostrarMensajeError("El mail y su confirmación no coinciden");
+					return false;
+				}
+				if (inptPass.text != inptRepPass.text)
+				{
+					ManejadorMensajes.mostrarMensajeError("El password y su confirmación no coinciden");
+					return false;
+				}
+				return true;
+			}
+			
+			private function datosValidarRecuperar():Boolean
+			{
+				var resEv1:ValidationResultEvent;
+				resEv1 = vMailValidator.validate();
+				if (resEv1.type == ValidationResultEvent.INVALID)
+				{
+					return false;
+				}
+				return true;
+			}
+			
+			private function datosValidosRegenerar():Boolean
+			{
+				var resEv1:ValidationResultEvent;
+				resEv1 = vMailValidator.validate();
+				var resEv2:Boolean = datosValidosValidar();
+				if (resEv1.type == ValidationResultEvent.INVALID ||
+					!resEv2)
+				{
+					return false;
+				}
+				return true;
+			}
+			
+			private function login():void
+			{
+				if(datosValidosLogin())
+				{
+					
+					var usuario:UsuarioWeb = new UsuarioWeb();
+					usuario.email = inptMail.text;
+					usuario.password = inptPass.text;
+					new LoginUsuarioEvent(LoginUsuarioEvent.LOGIN,usuario).dispatch();
+				}
+				else
+				{
+					ManejadorPantallas.cerrarProgressBar();
+				}
+			}
+			
+			protected function btnAction_clickHandler(event:MouseEvent):void
+			{
+				ManejadorPantallas.mostrarProgressBar();
+				switch(this.currentState)
+				{
+					case ConstantesEstados.LOGIN_STATE:
+					{
+						login();
+						break;
+					}
+						
+					case ConstantesEstados.VALIDAR_STATE:
+					{
+						if (datosValidosValidar())
+						{
+							var cuitN:Number = Number(CUITFormatter.unFormat(inptCUIT.text));
+							var usuarioComercio:UsuarioComercioVO = new UsuarioComercioVO();
+							usuarioComercio.cuit = cuitN;
+							usuarioComercio.codigoPosnet = inptCodPosnet.text;
+							usuarioComercio.dni = inptDNI.text;
+							
+							new LoginUsuarioEvent(LoginUsuarioEvent.VALIDAR, usuarioComercio).dispatch();
+						}
+						else
+						{
+							ManejadorPantallas.cerrarProgressBar();
+						}
+						break;
+					}
+						
+					case ConstantesEstados.REGISTER_STATE:
+					{
+						if (datosValidosRegistrar())
+						{
+							var usuarioWeb:UsuarioWeb = new UsuarioWeb();
+							usuarioWeb.email = inptMail.text;
+							usuarioWeb.password = inptPass.text;
+							usuarioWeb.usuarioComercioWeb = modelo.usuarioComercio;
+							
+							new LoginUsuarioEvent(LoginUsuarioEvent.REGISTRAR, usuarioWeb).dispatch();
+						}
+						else
+						{
+							ManejadorPantallas.cerrarProgressBar();
+						}
+						break;
+					}
+						
+					case ConstantesEstados.RECUPERAR_PASS_STATE:
+					{
+						if (datosValidarRecuperar())
+						{
+							new LoginUsuarioEvent(LoginUsuarioEvent.RECUPERAR_PASSWORD, inptMail.text).dispatch();
+						}
+						else
+						{
+							ManejadorPantallas.cerrarProgressBar();
+						}
+						break;
+					}
+						
+					case ConstantesEstados.REGENERAR_PASS_STATE:
+					{
+						if (datosValidosRegenerar())
+						{
+							var usuarioC:UsuarioComercioVO = new UsuarioComercioVO();
+							usuarioC.codigoPosnet 	= inptCodPosnet.text;
+							usuarioC.cuit			= Number(CUITFormatter.unFormat(inptCUIT.text));
+							usuarioC.dni				= inptDNI.text;
+							
+							var param:Object 		= new Object();
+							param.usuarioComercio	= usuarioC;
+							param.mail 				= inptMail.text;
+							
+							new LoginUsuarioEvent(LoginUsuarioEvent.REGENERAR_PASSWORD, param).dispatch();
+						}
+						else
+						{
+							ManejadorPantallas.cerrarProgressBar();
+						}
+						break;
+					}
+						
+					default:
+						break;
+				}
+			}
+			
+			private function limpiarCampos():void
+			{
+				var arrCmp:Array = frmContenido.getChildren();
+				for each (var frmItem:Object in arrCmp)
+				{
+					if (frmItem is FormItem)
+					{
+						var arrInpts:Array = FormItem(frmItem).getChildren();
+						for each (var obj:Object in arrInpts)
+						{
+							if (obj is TextInput ||
+								obj is Label)
+							{
+								obj.text = "";
+								obj.errorString = "";
+							}
+						}
+					}
+				}
+				ManejadorPantallas.cerrarProgressBar();
+			}
+			
+			protected function sttRegistrar_enterStateHandler(event:FlexEvent):void
+			{
+				//Setea los labels
+				lblCodPosnet.text = modelo.usuarioComVO.codigoPosnet;
+				lblCUIT.text = CUITFormatter.format(modelo.usuarioComVO.cuit);
+				lblDNI.text = modelo.usuarioComVO.dni;
+				ManejadorPantallas.cerrarProgressBar();
+			}			
+			
+			protected function sttLogin_enterStateHandler(event:FlexEvent):void
+			{
+				limpiarCampos();
+			}
+			
+			
+			protected function sttValidar_enterStateHandler(event:FlexEvent):void
+			{
+				limpiarCampos();
+			}
+			
+			
+			protected function sttRecuperar_enterStateHandler(event:FlexEvent):void
+			{
+				limpiarCampos();
+			}
+			
+			
+			protected function sttRegenerar_enterStateHandler(event:FlexEvent):void
+			{
+				limpiarCampos();
+			}
+			
+			
+			protected function container_hideHandler(event:FlexEvent):void
+			{
+				limpiarCampos();
+			}
+			
+			protected function container_keyUpHandler(event:KeyboardEvent):void
+			{
+				if (event.keyCode == Keyboard.ENTER &&
+					this.currentState == ConstantesEstados.LOGIN_STATE)
+				{
+					/* ManejadorPantallas.mostrarProgressBar();
+					login(); */	
+				}
+			}
+			
+			
+			protected function inptCUIT_focusInHandler(event:FocusEvent):void
+			{
+				inptCUIT.maxChars = 11;
+				inptCUIT.text = CUITFormatter.unFormat(inptCUIT.text);
+				inptCUIT.selectRange(inptCUIT.text.length,inptCUIT.text.length);
+			}
+			
+			
+			protected function inptCUIT_focusOutHandler(event:FocusEvent):void
+			{
+				inptCUIT.maxChars = 13;
+				inptCUIT.text = CUITFormatter.format(inptCUIT.text);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="LoginState" id="sttLogin" enterState="sttLogin_enterStateHandler(event)"/>
+		<s:State name="ValidarState" id="sttValidar" enterState="sttValidar_enterStateHandler(event)"/>
+		<s:State name="RegistrarState" id="sttRegistrar" enterState="sttRegistrar_enterStateHandler(event)"/>
+		<s:State name="RecuperarPassState" id="sttRecuperar" enterState="sttRecuperar_enterStateHandler(event)"/>
+		<s:State name="RegenerarPassState" id="sttRegenerar" enterState="sttRegenerar_enterStateHandler(event)"/>
+	</s:states>
+	
+	<s:transitions> 
+		<s:Transition id="toOneOnly" fromState="*" toState="*"> 
+			<s:Parallel targets="{[this, hgPassword, hgContAcciones, vgButtons, bcPassword, fiCodPosnet, passGroup,
+						fiCUIT, fiDNI, fiMail, fiRepetirMail, fiPass, fiRepPass, inptCodPosnet, inptCUIT, inptDNI, inptMail, inptPass, inptRepPass,
+						btnVolver, btnAction]}">
+				<s:Fade duration="{effectDuration}"/>
+				<s:Move duration="{effectDuration}"/>
+				<s:Resize duration="{effectDuration}"/>
+				<s:SetAction property="includeInLayout"/>
+				<s:SetAction property="visible"/>
+			</s:Parallel>	
+		</s:Transition>
+		<s:Transition fromState="{ConstantesEstados.RECUPERAR_PASS_STATE}" toState="{ConstantesEstados.LOGIN_STATE}"> 
+			<s:Parallel targets="{[this, hgPassword, hgContAcciones, vgButtons, bcPassword, fiCodPosnet, passGroup,
+						fiCUIT, fiDNI, fiMail, fiRepetirMail, fiPass, fiRepPass, inptCodPosnet, inptCUIT, inptDNI, inptMail, inptPass, inptRepPass,
+						btnVolver, btnAction]}">
+				<s:Fade duration="{effectDuration}"/>
+				<s:Move duration="{effectDuration}"/>
+				<s:Resize duration="{effectDuration}"/>
+				<s:SetAction property="includeInLayout"/>
+				<s:SetAction property="visible"/>
+			</s:Parallel>	
+		</s:Transition>
+	</s:transitions>
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:RadialGradient rotation="45">
+				<s:GradientEntry color="0x006EB8"/>
+			</s:RadialGradient>
+		</s:fill>
+	</s:Rect>
+	<s:Group minHeight="10" minWidth="10" horizontalCenter="0" verticalCenter="0">
+		
+		
+		<mx:Image source="com/bizit/consulta/web/assets/images/logo_fiel.jpg" 
+				  autoLoad="true" alpha="0.3" width="100%" height="100%"/>
+		
+		<s:VGroup id="vLayout" paddingBottom="5" paddingLeft="5" 
+				  paddingRight="5" paddingTop="5">
+			<mx:Form id="frmContenido" includeIn="LoginState,RecuperarPassState,RegistrarState,
+					 RegenerarPassState,ValidarState" width="100%">
+				<mx:FormItem id="fiCUIT" label="CUIT" width="100%" labelStyleName="formItemRequired"
+							 includeInLayout="true" visible="true" 
+							 includeInLayout.LoginState="false" visible.LoginState="false"
+							 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+							 includeInLayout.RegenerarPassState="true" visible.RegenerarPassState="true"
+							 includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							 includeInLayout.ValidarState="true" visible.ValidarState="true" >
+					<s:Label id="lblCUIT" 
+							 includeInLayout="true" visible="true" 
+							 includeInLayout.LoginState="false" visible.LoginState="false"
+							 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+							 includeInLayout.RegenerarPassState="false" visible.RegenerarPassState="false"
+							 includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							 includeInLayout.ValidarState="false" visible.ValidarState="false"/>
+					<s:TextInput id="inptCUIT" excludeFrom="RegistrarState,LoginState,RecuperarPassState,RegistrarState"
+								 maxChars="11"
+								 includeInLayout="true" visible="true" 
+								 includeInLayout.LoginState="false" visible.LoginState="false"
+								 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+								 includeInLayout.RegenerarPassState="true" visible.RegenerarPassState="true"
+								 includeInLayout.RegistrarState="false" visible.RegistrarState="false"
+								 includeInLayout.ValidarState="true" visible.ValidarState="true" width="180"
+								 contentBackgroundAlpha="0.5" restrict="0-9" focusIn="inptCUIT_focusInHandler(event)"
+								 focusOut="inptCUIT_focusOutHandler(event)"/>
+				</mx:FormItem>
+				
+				<mx:FormItem id="fiCodPosnet" label="Código POSNET" width="100%" labelStyleName="formItemRequired"
+							 includeInLayout="true" visible="true" 
+							 includeInLayout.LoginState="false" visible.LoginState="false"
+							 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+							 includeInLayout.RegenerarPassState="true" visible.RegenerarPassState="true"
+							 includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							 includeInLayout.ValidarState="true" visible.ValidarState="true" > 
+					<s:Label id="lblCodPosnet" 
+							 includeInLayout="true" visible="true" 
+							 includeInLayout.LoginState="false" visible.LoginState="false"
+							 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+							 includeInLayout.RegenerarPassState="false" visible.RegenerarPassState="false"
+							 includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							 includeInLayout.ValidarState="false" visible.ValidarState="false"/>
+					<s:TextInput id="inptCodPosnet" excludeFrom="LoginState,RecuperarPassState,RegistrarState"
+								 maxChars="13"
+								 includeInLayout="true" visible="true" 
+								 includeInLayout.LoginState="false" visible.LoginState="false"
+								 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+								 includeInLayout.RegenerarPassState="true" visible.RegenerarPassState="true"
+								 includeInLayout.RegistrarState="false" visible.RegistrarState="false"
+								 includeInLayout.ValidarState="true" visible.ValidarState="true" width="180"
+								 contentBackgroundAlpha="0.5" restrict="0-9"/>
+				</mx:FormItem>
+				
+				<mx:FormItem id="fiDNI" label="DNI"  width="100%" labelStyleName="formItemRequired"
+							 includeInLayout="true" visible="true" 
+							 includeInLayout.LoginState="false" visible.LoginState="false"
+							 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+							 includeInLayout.RegenerarPassState="true" visible.RegenerarPassState="true"
+							 includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							 includeInLayout.ValidarState="true" visible.ValidarState="true" >
+					<s:Label id="lblDNI"
+							 includeInLayout="true" visible="true" 
+							 includeInLayout.LoginState="false" visible.LoginState="false"
+							 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+							 includeInLayout.RegenerarPassState="false" visible.RegenerarPassState="false"
+							 includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							 includeInLayout.ValidarState="false" visible.ValidarState="false"/>
+					<s:TextInput id="inptDNI" maxChars="10"
+								 includeInLayout="true" visible="true" 
+								 includeInLayout.LoginState="false" visible.LoginState="false"
+								 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+								 includeInLayout.RegenerarPassState="true" visible.RegenerarPassState="true"
+								 includeInLayout.RegistrarState="false" visible.RegistrarState="false"
+								 includeInLayout.ValidarState="true" visible.ValidarState="true" width="180"
+								 contentBackgroundAlpha="0.5" restrict="0-9"/>
+				</mx:FormItem>
+				
+				<mx:FormItem id="fiMail" label="E-Mail" width="100%" labelStyleName="formItemRequired"
+							 includeInLayout="true" visible="true" 
+							 includeInLayout.LoginState="true" visible.LoginState="true"
+							 includeInLayout.RecuperarPassState="true" visible.RecuperarPassState="true"
+							 includeInLayout.RegenerarPassState="true" visible.RegenerarPassState="true"
+							 includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							 includeInLayout.ValidarState="false" visible.ValidarState="false" backgroundAlpha="0.0">
+					<s:TextInput id="inptMail" maxChars="50" width="180" 
+								 contentBackgroundAlpha="0.5" 
+								 restrict="a-zA-Z0-9.@\-_"/>
+				</mx:FormItem>
+				
+				<mx:FormItem id="fiRepetirMail" label="Repetir E-Mail" width="100%" labelStyleName="formItemRequired"
+							 includeInLayout="true" visible="true" 
+							 includeInLayout.LoginState="false" visible.LoginState="false"
+							 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+							 includeInLayout.RegenerarPassState="false" visible.RegenerarPassState="false"
+							 includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							 includeInLayout.ValidarState="false" visible.ValidarState="false" >
+					<s:TextInput id="inptRepMail" maxChars="50" width="180" contentBackgroundAlpha="0.5"
+							 restrict="a-zA-Z0-9.@\-_"/>
+				</mx:FormItem>
+				
+				<mx:FormItem id="fiPass" label="Contraseña" width="100%" labelStyleName="formItemRequired"
+							 includeInLayout="true" visible="true" 
+							 includeInLayout.LoginState="true" visible.LoginState="true"
+							 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+							 includeInLayout.RegenerarPassState="false" visible.RegenerarPassState="false"
+							 includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							 includeInLayout.ValidarState="false" visible.ValidarState="false" >
+					<s:TextInput id="inptPass" displayAsPassword="true" width="180" contentBackgroundAlpha="0.5"/>
+				</mx:FormItem>
+				
+				<mx:FormItem id="fiRepPass" label="Repetir Contraseña" width="100%" labelStyleName="formItemRequired"
+							 includeInLayout="true" visible="true" 
+							 includeInLayout.LoginState="false" visible.LoginState="false"
+							 includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+							 includeInLayout.RegenerarPassState="false" visible.RegenerarPassState="false"
+							 includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							 includeInLayout.ValidarState="false" visible.ValidarState="false" >
+					<s:TextInput id="inptRepPass" displayAsPassword="true" width="180" contentBackgroundAlpha="0.5"/>
+				</mx:FormItem>
+			</mx:Form>
+			<s:VGroup id="vgButtons" width="100%">	
+				<s:HGroup id="hgContAcciones" horizontalAlign="right" width="100%">
+					<s:Button id="btnVolver" label="Volver" click="clickHandlerState(event, ConstantesEstados.LOGIN_STATE)"
+							  includeInLayout="true" visible="true" 
+							  includeInLayout.LoginState="false" visible.LoginState="false"
+							  includeInLayout.RecuperarPassState="true" visible.RecuperarPassState="true"
+							  includeInLayout.RegenerarPassState="true" visible.RegenerarPassState="true"
+							  includeInLayout.RegistrarState="true" visible.RegistrarState="true"
+							  includeInLayout.ValidarState="true" visible.ValidarState="true"/>
+					<s:Button id="btnAction" 
+							  label.LoginState="Ingresar"
+							  label.ValidarState="Validar"
+							  label.RegistrarState="Registrar"
+							  label.RecuperarPassState="Recuperar Contraseña"
+							  label.RegenerarPassState="Regenerar Contraseña"
+							  click="btnAction_clickHandler(event)"
+							  includeInLayout="true" visible="true" />
+				</s:HGroup>
+				<s:HGroup id="hgPassword"
+						  includeInLayout="true" visible="true" 
+						  includeInLayout.LoginState="true" visible.LoginState="true"
+						  includeInLayout.RecuperarPassState="false" visible.RecuperarPassState="false"
+						  includeInLayout.RegenerarPassState="false" visible.RegenerarPassState="false"
+						  includeInLayout.RegistrarState="false" visible.RegistrarState="false"
+						  includeInLayout.ValidarState="false" visible.ValidarState="false" width="100%"
+						  horizontalAlign="center">
+					<s:BorderContainer id="bcPassword" cornerRadius="3" height="{passGroup.height}"
+									   backgroundAlpha="0.5">
+						<s:VGroup id="passGroup">
+							<mx:LinkButton label="Recuperar Contraseña" id="linkRecuperar" 
+										   click="clickHandlerState(event, ConstantesEstados.RECUPERAR_PASS_STATE)"/>
+							<mx:LinkButton label="Regenerar Contraseña" id="linkRegenerar" 
+										   click="clickHandlerState(event, ConstantesEstados.REGENERAR_PASS_STATE)"/>
+						</s:VGroup>	
+					</s:BorderContainer>
+					<mx:LinkButton label="Registrar" click="clickHandlerState(event, ConstantesEstados.VALIDAR_STATE)"
+								   visible="false" includeInLayout="false"
+								   visible.LoginState="true" includeInLayout.LoginState="true"/>
+				</s:HGroup>
+			</s:VGroup>
+		</s:VGroup>
+	</s:Group>
+</s:BorderContainer>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  verticalAlign="middle" horizontalAlign="center" 
+		  includeInLayout="{cajaMp.formaPago.idFormaPago != 2}" 
+		  visible="{cajaMp.formaPago.idFormaPago != 2}" 
+		  width="100%" xmlns:textInput="com.util.components.textInput.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.CajaCierre;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			
+			import mx.events.FlexEvent;
+			[Bindable]
+			private var modelo:CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			[Bindable]
+			public var cajaMp:CajaMP;
+			
+			[Bindable]
+			public var cajaCierre:CajaCierre;
+			
+			protected function txtDif_valueCommitHandler(event:FlexEvent):void
+			{
+				if (cajaCierre.diferencia >= 0)
+				{
+					lnkDiferencia.setStyle("color","#006633");
+					txtDif.setStyle("color","#006633");
+				}
+				else
+				{
+					lnkDiferencia.setStyle("color","#DC0000");
+					txtDif.setStyle("color","#DC0000");
+				}
+			}
+
+			private function set onDifChange(value:Object):void
+			{
+				if (cajaCierre.diferencia >= 0)
+				{
+					lnkDiferencia.setStyle("color","#006633");
+					txtDif.setStyle("color","#006633");
+				}
+				else
+				{
+					lnkDiferencia.setStyle("color","#DC0000");
+					txtDif.setStyle("color","#DC0000");
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Binding source="cajaCierre.diferencia" destination="onDifChange"/>
+	
+	<mx:LinkButton id="lnkTotal" styleName="lblInfo"  label="Total {cajaMp.planCuentaDos.titulo}:"  fontFamily="Georgia" fontSize="15" fontStyle="normal"/>
+	<textInput:TextInputMoneda text="{cajaCierre.totalArqueo}" editable="false" width="120" 
+							   fontFamily="Arial" fontSize="15" fontWeight="bold" textAlign="center" 
+							   dropShadowVisible="true" selectable="false"
+							   borderSkin="com.fiel.caja.judicial.view.skin.TextInputBorderSkin"/>	
+	<mx:LinkButton id="lnkDiferencia"  styleName="lblInfo" label="Diferencia {cajaMp.planCuentaDos.titulo}:" 
+				   visible="{modelo.mostrarDiferencia}" includeInLayout="{modelo.mostrarDiferencia}" color="#FF0000" fontFamily="Georgia" fontSize="15"/>
+	<textInput:TextInputMoneda id="txtDif" text="{cajaCierre.diferencia}"  editable="false" visible="{modelo.mostrarDiferencia}" 
+							   includeInLayout="{modelo.mostrarDiferencia}" fontWeight="bold" color="#FF0000" 
+							   width="120" fontFamily="Arial" fontSize="14" textAlign="center"
+							   dropShadowVisible="true" selectable="false"
+							   borderSkin="com.fiel.caja.judicial.view.skin.TextInputBorderSkin"
+							   valueCommit="txtDif_valueCommitHandler(event)"/>	
+</s:VGroup>

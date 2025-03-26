@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 borderStyle="solid" cornerRadius="5" backgroundColor="#FDF7B3" 
+		 dropShadowEnabled="true" shadowDirection="right" width="103" 
+		 height="130" horizontalAlign="center" verticalAlign="middle"
+		 verticalGap="2" mouseOver="cnvBack_mouseOverHandler(event)"
+		 mouseOut="cnvBack_mouseOutHandler(event)"
+		 useHandCursor="true" buttonMode="true"
+		 click="vbCont_clickHandler(event)">
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ComercioListaPrecio;
+			import com.tarjetafiel.caja.vo.ListaPrecio;
+			
+			import mx.controls.Alert;
+			import mx.controls.PopUpButton;
+			import mx.core.Application;
+			import mx.formatters.DateFormatter;
+			import mx.managers.PopUpManager;
+			[Bindable]
+			public var comercioListaPrecio:ComercioListaPrecio = new ComercioListaPrecio();
+
+			protected function cnvBack_mouseOverHandler(event:MouseEvent):void
+			{
+				this.setStyle("backgroundColor","#F9D98D");
+			}
+
+			protected function cnvBack_mouseOutHandler(event:MouseEvent):void
+			{
+				this.setStyle("backgroundColor","#FDF7B3");
+			}
+
+
+			protected function vbCont_clickHandler(event:MouseEvent):void
+			{
+				var lpDet:ListaPrecioDetalle = new ListaPrecioDetalle();
+				lpDet.listaPrecio = comercioListaPrecio.listaPrecio;
+				PopUpManager.addPopUp(lpDet,Application.application as DisplayObject, true);
+				PopUpManager.centerPopUp(lpDet);
+				
+			}
+
+		]]>
+	</mx:Script>
+	<mx:DateFormatter id="dateFormat" formatString="DD/MM/YYYY"/>
+	
+		<mx:Text textAlign="center" text="{comercioListaPrecio.listaPrecio.descripcion}" 
+								   fontSize="12" width="95" fontFamily="Verdana" fontStyle="italic" fontWeight="bold"
+								   useHandCursor="true" buttonMode="true" selectable="false" mouseChildren="false"/>	
+		<mx:Text textAlign="center" text="Fecha Carga: {dateFormat.format(comercioListaPrecio.fechaCarga)}" 
+								   fontSize="10" width="95" useHandCursor="true" buttonMode="true" selectable="false" mouseChildren="false"/>
+		<mx:Text textAlign="center" text="Fecha Baja: {comercioListaPrecio.fechaBaja == null?' - ':dateFormat.format(comercioListaPrecio.fechaBaja)}" 
+								   fontSize="10" width="95" useHandCursor="true" buttonMode="true" selectable="false" mouseChildren="false"/>
+	<!--<mx:Canvas id="cnvBack" width="100%" height="100%" mouseOver="cnvBack_mouseOverHandler(event)"
+				 mouseOut="cnvBack_mouseOutHandler(event)"
+				 useHandCursor="true" buttonMode="true"/>-->
+</mx:VBox>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" 
+	width="100%" height="100%"   xmlns:maps="maps.*"  creationComplete="crearPanelesDeEtapas()" xmlns:modulos="views.modulos.*">
+	
+	<mx:VBox width="100%" height="100%">
+	    <mx:ViewStack width="100%" height="100%" id="viewStackPlanes">
+	        <mx:HBox width="100%" height="100%" verticalAlign="top" label="Plan" horizontalGap="40">
+	        	<mx:VBox id="panelBusqueda" width="100%" horizontalAlign="center" >
+					<mx:HBox verticalAlign="middle" paddingTop="20" >
+						<mx:Label text="Nombre del Plan" paddingLeft="40" />
+						<mx:TextInput id="txtDescripBuscada" />
+					    <mx:Button label="Buscar" click="buscarPlanes(txtDescripBuscada.text)"/>
+					</mx:HBox>
+					<mx:DataGrid id="planesExistentes" dataProvider="{planModel.planesArray}" >
+						<mx:columns>
+				           <mx:DataGridColumn dataField="descripcion" headerText="Descripción"/>
+				           <mx:DataGridColumn dataField="habilitado" headerText="Habilitada"/>
+				           <mx:DataGridColumn dataField="esPlanPorDefecto" headerText="Plan por Defecto"/>
+				           <mx:DataGridColumn headerText="Ver Plan">
+				         	  	<mx:itemRenderer>
+						       	   	<mx:Component>
+						       	   	    <mx:HBox horizontalAlign="center">        <!--outerDocument.planModel.plan = outerDocument.planesExistentes.selectedItem as Plan;      outerDocument.loadVersiones()-->
+					           				<mx:LinkButton icon="@Embed(source='../../img/modif.png')"  toolTip="Ver Plan" click="{outerDocument.planModel.refrescarPlan(outerDocument.planesExistentes.selectedItem as Plan);outerDocument.viewStackPlanes.selectedIndex=1;outerDocument.loadVersiones()}"  />
+					           		   	    <mx:Script>
+												<![CDATA[
+													import com.tarjetafiel.caja.vo.Plan;
+												]]>
+											</mx:Script>
+										</mx:HBox>
+				           		   	</mx:Component>
+				           		</mx:itemRenderer>
+				           		
+				           </mx:DataGridColumn>
+				           <mx:DataGridColumn headerText="Eliminar Plan">
+				         	  	<mx:itemRenderer>
+						       	   	<mx:Component>
+						       	  	 	<mx:HBox horizontalAlign="center">
+				           					<mx:LinkButton icon="@Embed(source='../../img/stop_22x22.png')"  toolTip="Eliminar Plan" click="borrarPlan()" />
+				           					<mx:Script>
+												<![CDATA[
+													import com.tarjetafiel.caja.vo.Plan;
+													
+													public function borrarPlan():void {
+														outerDocument.planModel.borrarPlan(outerDocument.planesExistentes.selectedItem as Plan);
+														outerDocument.buscarPlanes(outerDocument.txtDescripBuscada.text);
+													}
+												]]>
+											</mx:Script>
+				           				</mx:HBox>
+				           		   	</mx:Component>
+				           		</mx:itemRenderer>
+				           </mx:DataGridColumn>
+				           <mx:DataGridColumn headerText="Cambiar Estado" width="150">
+				         	  	<mx:itemRenderer>
+						       	   	<mx:Component>
+						       	  	 	<mx:HBox horizontalAlign="center">
+				           					<mx:LinkButton label="Habilitar / Desabilitar" click="cambiarEstadoPlan()" />
+				           					<mx:Script>
+												<![CDATA[
+													import com.tarjetafiel.caja.vo.Plan;
+													
+													public function cambiarEstadoPlan():void {
+														outerDocument.planModel.cambiarEstadoPlan(outerDocument.planesExistentes.selectedItem as Plan);
+														outerDocument.buscarPlanes(outerDocument.txtDescripBuscada.text);
+													}
+												]]>
+											</mx:Script>
+				           				</mx:HBox>
+				           		   	</mx:Component>
+				           		</mx:itemRenderer>
+				           </mx:DataGridColumn>
+				           <mx:DataGridColumn headerText="Hacer Plan Por Defecto" width="150">
+				         	  	<mx:itemRenderer>
+						       	   	<mx:Component>
+						       	  	 	<mx:HBox horizontalAlign="center">
+				           					<mx:LinkButton label="Plan Por Defecto" toolTip="Marca el plan como por defecto" click="marcarPlanPorDefecto()" />
+				           					<mx:Script>
+												<![CDATA[
+													import com.tarjetafiel.caja.vo.Plan;
+													
+													public function marcarPlanPorDefecto():void {
+														outerDocument.planModel.marcarPlanPorDefecto(outerDocument.planesExistentes.selectedItem as Plan);
+														outerDocument.buscarPlanes(outerDocument.txtDescripBuscada.text);
+													}
+												]]>
+											</mx:Script>
+				           				</mx:HBox>
+				           		   	</mx:Component>
+				           		</mx:itemRenderer>
+				           </mx:DataGridColumn>
+				           
+				        </mx:columns>
+						
+					</mx:DataGrid>
+				</mx:VBox>
+	        	
+	        </mx:HBox>
+	    	<mx:HBox width="100%" height="100%" verticalAlign="top" label="Plan" horizontalGap="40">
+				
+				<mx:VBox id="planes">
+					<mx:HBox verticalAlign="middle" paddingTop="20" >
+						<mx:Label text="Nombre del Plan" paddingLeft="40" />
+						<mx:TextInput id="txtDescrip" text="{planModel.plan.descripcion}" change="planModel.plan.descripcion = txtDescrip.text"/>
+					</mx:HBox>
+					<mx:CheckBox id="habil" label="Habilitado" paddingLeft="40" selected="{planModel.plan.habilitado == 'S'}" change="if (habil.selected) planModel.plan.habilitado = 'S' else planModel.plan.habilitado = 'N'"/>
+					<mx:CheckBox id="defec" label="Es plan Por Defecto" paddingLeft="40" selected="{planModel.plan.esPlanPorDefecto == 'S'}" change="if (defec.selected) planModel.plan.esPlanPorDefecto = 'S' else planModel.plan.esPlanPorDefecto = 'N'"/>
+				</mx:VBox>
+				<mx:VBox id="planes2" width="100%" height="100%" label="Versiones" creationComplete="loadVersiones()">  <!-- creationComplete="loadVersiones()" -->
+				    <mx:Label text="VERSIONES" fontSize="16"/>
+				    <mx:Repeater id="rptVersion" dataProvider="planModel.plan.planesVersion" >
+						<modulos:PanelPlanVersion planVersion="{rptVersion.currentItem as PlanVersion}" planModel="{planModel}" rep="{rptVersion}" viewStackPlan="{viewStackPlanes}"/>
+				    </mx:Repeater>	
+				</mx:VBox>
+			</mx:HBox>
+		
+			<mx:HBox label="Línea de tiempo" height="100%" width="100%" show="crearPaneles()">
+				<mx:VBox height="100%" id="panelEtapas">
+				    <mx:Button label="Volver a la versión" click="viewStackPlanes.selectedIndex=1"/>
+					<mx:Panel width="100%" height="100%" layout="absolute" title="Acciones Disponibles" >
+						<mx:DataGrid x="0" y="0" width="100%" height="100%" dragEnabled="true" dataProvider="{accionModel.accionesArray}" showHeaders="false">
+							<mx:columns>
+								<mx:DataGridColumn headerText="Acciones" dataField="descripcion"/>
+							</mx:columns>
+						</mx:DataGrid>
+					</mx:Panel>
+					
+				</mx:VBox>
+				<mx:VRule height="100%"/>
+		            
+				<mx:Repeater id="rpt" >
+					<modulos:PanelEtapa etapaVersion="{rpt.currentItem as EtapaVersion}"  conceptos="{planModel.conceptosArray}" />
+				</mx:Repeater>	
+			</mx:HBox>
+	    </mx:ViewStack>
+		
+		<mx:HRule width="100%"/>
+		<mx:HBox width="100%" horizontalAlign="left" >
+		    <mx:Button label="Listado de planes" id="btnListadoPlanes" click="viewStackPlanes.selectedIndex=0;btnGuardar.enabled=false;viewStackPlanes.selectedIndex=0;"/>
+		    <mx:Button label="Nuevo Plan" id="btnNuevoPlan" click="crearPlan();  viewStackPlanes.selectedIndex = 1; loadVersiones();"/>
+			<mx:Button label="Guardar" id="btnGuardar" click="guardarPlan()" enabled="false"/>
+		</mx:HBox>
+	</mx:VBox>
+
+	<maps:PlanEventMap/>
+	
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import events.PlanEvent;
+			import mx.events.ChildExistenceChangedEvent;
+			import mx.controls.Alert;
+			import mx.events.CollectionEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.utils.ObjectUtil;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
+			import com.tarjetafiel.caja.vo.EtapaVersion;
+			import mx.collections.ArrayCollection;
+			import com.tarjetafiel.caja.vo.PlanVersion;
+			import com.tarjetafiel.caja.vo.Plan;
+			import com.tarjetafiel.caja.vo.Etapa;
+			import mx.events.ValidationResultEvent;
+			import model.AccionModel;
+			import com.tarjetafiel.caja.vo.Accion;
+			import model.EtapaModel;
+			import model.PlanModel;
+			import views.components.ItemRenderer;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.controls.DataGrid;
+			import mx.containers.Grid;
+			import mx.containers.Panel;
+			
+			[Bindable]public var planModel:PlanModel;
+			[Bindable]public var etapaModel:EtapaModel;
+			[Bindable]public var accionModel:AccionModel;
+		    [Bindable]public var plan:Plan;
+		    [Bindable]public var planVersion:PlanVersion;
+		    [Bindable]public var arrayEtapasVersion:Array;
+		    
+		    
+			public function crearPanelesDeEtapas():void {
+				etapaModel.buscarEtapas();
+				accionModel.buscarAcciones();
+				planModel.buscarConceptos();
+				this.addEventListener(PlanEvent.NUEVO_PLAN_GRABADO_CON_EXITO, irAListado);
+			}
+			
+			public function crearPlan():void {
+				planModel.darPlanAlta(etapaModel.etapasArray);
+				//rpt.dataProvider=planModel.planVersionAlta.etapasVersion;
+			}
+			
+            public function guardarPlan():void {
+					if (habil.selected) planModel.plan.habilitado = "S"
+						else planModel.plan.habilitado = "N";
+					planModel.grabarPlan(planModel.plan);
+            }
+            
+            public function buscarPlanes(cadenaBuscada:String):void {
+            	planModel.buscarPlanes(cadenaBuscada);
+            }
+            
+            public function crearPaneles():void {
+            	// tenemos que setear el atributo planVersionAlta en el planModel
+                planModel.planVersionAlta.etapasVersion.sort(orderByEtapa);
+                
+                rpt.dataProvider=planModel.planVersionAlta.etapasVersion;
+                btnGuardar.enabled = true;
+            }
+            
+            public function orderByEtapa(a:EtapaVersion, b:EtapaVersion):int
+			{
+			    var orden1:int = a.etapa.orden;
+			    var orden2:int = b.etapa.orden;
+			    if (orden1 < orden2)
+			    {
+			        return -1;
+			    }
+			    else if (orden1 > orden2)
+			    {
+			        return 1;
+			    }
+			    else
+			    {
+			        return 0;
+			    }
+			}
+			
+			public function orderByFechaVersion(a:PlanVersion, b:PlanVersion):int
+			{
+			    var orden1:Date = a.fechaDesde;
+			    var orden2:Date = b.fechaDesde;
+			    return ObjectUtil.dateCompare(orden1, orden2);
+			}
+			
+			
+
+            
+            public function loadVersiones():void {
+	            	if (planModel.plan.idPlan) {
+	            		if (habil) habil.enabled = false;
+	            	    if (defec) defec.enabled = false;
+	            	} else {
+	            		if (habil) habil.enabled = true;
+	            	    if (defec) defec.enabled = true;
+	            	}
+            	planModel.plan.planesVersion.sort(orderByFechaVersion);
+            	if (rptVersion) { 
+            		
+            		rptVersion.dataProvider=planModel.plan.planesVersion;
+            	    agregarEscuchadoresHijos();
+            	}
+            }
+            
+            public function cambiarVersiones(ev:PlanEvent):void {
+            	rptVersion.dataProvider=planModel.plan.planesVersion;
+            }
+
+            public function agregarEscuchadoresHijos():void {
+            	this.addEventListener(PlanEvent.CAMBIO_VERSION_EVENT, cambiarVersiones);
+            }
+            
+            
+            public function irAListado(ev:Event):void {
+            	planModel.buscarPlanes(txtDescripBuscada.text);
+                viewStackPlanes.selectedIndex = 0;
+            }
+
+		]]>
+	</mx:Script>
+</mx:Module>

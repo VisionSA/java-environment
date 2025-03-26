@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical"  viewSourceURL="srcview/index.html" xmlns:componentes="views.categorias.cliente.componentes.*">
+
+	<mx:Script>
+		<![CDATA[
+			
+			[Embed(source="imgfiel/eventos.png")]
+			private var view1:Class;
+			
+			[Embed(source="imgfiel/nvoEvento.png")]
+			private var view2:Class;
+			
+			
+			
+			[Bindable]
+			private var viewIcons:Array = [view1,view2];
+			
+		]]>
+	</mx:Script>
+
+	<mx:HBox horizontalGap="0">
+		
+		<mx:ViewStack id="viewstack1" width="400" height="400"
+			 backgroundAlpha="1.0" backgroundColor="0xffffff"
+			 paddingBottom="20" paddingLeft="20" paddingRight="20" paddingTop="20"
+			 historyManagementEnabled="true">
+			 
+			<mx:VBox label="View 1" width="100%" height="100%" horizontalAlign="center">
+				<mx:Label text="View 1" fontSize="36" />
+				<mx:DateChooser width="100%" height="100%" />
+			</mx:VBox>
+			
+			<mx:VBox label="View 2" width="100%" height="100%" horizontalAlign="center">
+				<mx:Label text="View 2" fontSize="36" />
+				<mx:List width="100%" height="100%" fontSize="36">
+					<mx:dataProvider>
+						<mx:Array>
+							<mx:Object label="Aaaaa" data="1" />
+							<mx:Object label="Bbbbb" data="2" />
+							<mx:Object label="Ccccc" data="3" />
+							<mx:Object label="Ddddd" data="4" />
+							<mx:Object label="Eeeee" data="5" />
+							<mx:Object label="Fffff" data="6" />
+							<mx:Object label="Ggggg" data="7" />
+							<mx:Object label="Hhhhh" data="8" />
+						</mx:Array>
+					</mx:dataProvider>
+				</mx:List>
+			</mx:VBox>
+			
+			<mx:VBox label="View 3" width="100%" height="100%" horizontalAlign="center">
+				<mx:Label text="View 3" fontSize="36" />
+				<mx:TextArea width="100%" height="100%" fontSize="36">
+					<mx:text>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</mx:text>
+				</mx:TextArea>
+			</mx:VBox>
+			
+		</mx:ViewStack>
+		
+		<componentes:VTabBar id="tab" dataProvider="{viewstack1}"
+			 icons="{viewIcons}" />
+
+	</mx:HBox>
+</mx:Application>

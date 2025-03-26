@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+<!-- DEFINICION DEL DATA SOURCE -->
+<import resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/dataSource.xml"/>
+<!-- ================================================================================================ -->
+<!-- =======================          DEFINICION DE SESSION FACTORY           ======================= -->
+<!-- ================================================================================================ -->
+<bean class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" id="sessionFactory">
+	<property name="mappingResources">
+		<list>
+			<value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Actividad.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Aplicable.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Categoria.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Exclusion.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Impuesto.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/ImpuestosIndividuo.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Individuo.hbm.xml</value>
+	    <!--<value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/IndividuoCategoria.hbm.xml</value>-->
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Jurisdiccion.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/JurisdiccionActividad.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/JurisTipoImpuesto.hbm.xml</value>		    
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/Retencion.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/TipoImpuesto.hbm.xml</value>
+    		<value>com/bizitglobal/tarjetafiel/impuestos/dao/impl/TramosRetencion.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/ActividadEvaluacion.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/AlertaSolicitud.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/AlertaTipoIndividuo.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Bancos.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Clearing.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/ConfirmacionTelefonica.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/DiaPago.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Digital.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Educacion.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Emails.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Estados.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/IndividuoEvaluacion.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/IndividuoVehiculo.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/IndividuoDomicilio.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/InformeLaboral.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/InformeParticular.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/ObservoLaboral.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/ObservoSucursal.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Observo.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/PromotorTelefono.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Promotor.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/SolicitudIndividuo.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Solicitud.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/SolicLog.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Tarjeta.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Telefonos.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/TipoClearing.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/TipoIndividuo.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/EsquemaIndividuo.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/VerificadorTelefono.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Verificador.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/ViviendaEstado.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/InfoParticularVehiculo.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/evaluacion/dao/impl/Tcliente.hbm.xml</value>
+			
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/Banco.hbm.xml</value>
+		   	<value>com/bizitglobal/tarjetafiel/general/dao/impl/Barrio.hbm.xml</value>
+		   	<value>com/bizitglobal/tarjetafiel/general/dao/impl/Cliente.hbm.xml</value>   	
+		   	<value>com/bizitglobal/tarjetafiel/general/dao/impl/Domicilio.hbm.xml</value>
+		   	<value>com/bizitglobal/tarjetafiel/general/dao/impl/Email.hbm.xml</value>
+		   	<value>com/bizitglobal/tarjetafiel/general/dao/impl/Empresa.hbm.xml</value>
+		   	<value>com/bizitglobal/tarjetafiel/general/dao/impl/FormaPago.hbm.xml</value>
+            
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Localidad.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/ModalidadPago.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Moneda.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/NoLaborable.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Ocupacion.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Pais.hbm.xml</value>    
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Partido.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Provincia.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/PropietarioVivienda.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/ReglaParametro.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Rubro.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/SucEmail.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/SucEmpresa.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/ActividadSucursal.hbm.xml</value>
+	        <value>com/bizitglobal/tarjetafiel/general/dao/impl/ActividadRubro.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/SucursalFiel.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/Telefono.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/TipoComprobante.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/TipoDocumento.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/TipoDomicilio.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/TipoRegla.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/TipoTelefono.hbm.xml</value>    
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/TipoVivienda.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/impl/TipoCuentaBanco.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/viejo/impl/PlanCuenta.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/general/dao/viejo/impl/PeriodoEjercicio.hbm.xml</value>  
+		    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/Operador.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/Pagina.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/Permiso.hbm.xml</value>    
+		    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/Rol.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/MenuItem.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/MenuItemRelacion.hbm.xml</value>    
+		    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/RolMenuItem.hbm.xml</value>
+		    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/RolPaginaPermiso.hbm.xml</value>
+	        
+	    	<value>com/bizitglobal/tarjetafiel/general/dao/impl/Autonomo.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/EstadoCivil.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/Profesion.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/TamEmpresa.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/TipoDigital.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/TipoZona.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/Vinculo.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/Vehiculo.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/SucTelefono.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/CondLaboral.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/Esquema.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/Regla.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/EsquemaRegla.hbm.xml</value>
+			<value>com/bizitglobal/tarjetafiel/general/dao/impl/SucursalFormaPago.hbm.xml</value>
+			
+			
+		</list>
+		</property>
+		<property name="hibernateProperties">
+		<props>
+			<prop key="hibernate.dialect">org.hibernate.dialect.InformixDialect</prop>
+			<prop key="hibernate.show_sql">true</prop>
+			<prop key="hibernate.cglib.use_reflection_optimizer">true</prop>
+			<prop key="hibernate.cache.provider_class">org.hibernate.cache.HashtableCacheProvider</prop>
+		</props>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSource"/>
+		</property>
+	</bean>
+<!-- DEFINICION DEL SESSION FACTORY -->
+<import resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/commonContext.xml"/>	
+ <!-- DEFINICION DEL CONTEXT DE EVALUACION -->
+<import resource="evaluacionContext.xml"/>  
+</beans>

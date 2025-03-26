@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="{cliente.nombreCliente}" creationComplete="onCreationComplete()" xmlns:ns1="com.util.components.date.*">
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.PlasticoCliente;
+			import views.categorias.cliente.models.PlasticosXClienteModel;
+			import views.categorias.cliente.models.PlasticosModel;
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			
+			[Bindable]public var cliente:ClienteTransaccion;
+			
+			[Bindable]public var plasticosXClienteModel:PlasticosXClienteModel = new PlasticosXClienteModel();
+			
+			[Bindable]public var plasticosModel:PlasticosModel;
+			
+			public function onCreationComplete():void{
+				plasticosXClienteModel.plasticosModel = plasticosModel;				
+				plasticosXClienteModel.buscarPlasticosCliente(cliente);
+			}
+			
+			public function verMas(data:Object):void{
+				plasticosXClienteModel.plastico = data as PlasticoCliente;
+				vboxDetPlastico.width = 350;
+			}
+			
+			public function cambiarEstadoPlastico():void{
+				plasticosXClienteModel.cambiarEstadoPlastico(listaPlasticos.selectedItem as PlasticoCliente);				
+			}
+			
+			public function cambiarLugarPlastico():void{
+				plasticosXClienteModel.cambiarLugarPlastico(listaPlasticos.selectedItem as PlasticoCliente);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Resize id="resizeEff"/>
+	
+	<mx:VBox height="100%" width="50%">
+		<mx:ApplicationControlBar width="100%">
+			<mx:Label styleName="lblInfoBlanco" text="Plasticos"/>	
+		</mx:ApplicationControlBar>
+		<mx:List id="listaPlasticos" height="100%" width="100%" dataProvider="{cliente.plasticoClienteSet}" change="plasticosXClienteModel.buscarHistorial(event.target.selectedItem as PlasticoCliente)"
+			alternatingItemColors="[#808080, #B9B9B9]" alpha="0.7"  fontWeight="bold" color="#000000">
+			<mx:itemRenderer>
+				<mx:Component>
+					<mx:HBox width="100%" height="100%" horizontalGap="0" horizontalAlign="center" horizontalScrollPolicy="off">
+					<mx:Label text="{data.numero} - {data.estadoPlastico.descripcion}"/>
+					<mx:Button label="Ver mas" click="outerDocument.verMas(data)"/>
+					<mx:Button label="Cambiar estado" enabled="{outerDocument.plasticosModel.habilitarCambioEstado}" click="outerDocument.cambiarEstadoPlastico()"/>		
+					<mx:Button label="Cambiar lugar" enabled="{outerDocument.plasticosModel.habilitarCambioEstado}" click="outerDocument.cambiarLugarPlastico()"/>
+					</mx:HBox>
+				</mx:Component>	
+			</mx:itemRenderer>
+		</mx:List>
+	</mx:VBox>
+	
+	<mx:HBox width="50%" height="100%">
+		<mx:VBox height="100%" width="0" id="vboxDetPlastico" resizeEffect="resizeEff">
+			
+			<mx:ApplicationControlBar width="100%">
+				<mx:HBox width="50%" height="100%" horizontalAlign="left">
+				<mx:Label styleName="lblInfoBlanco" text="Detalle Plástico"/>	
+				</mx:HBox>
+				<mx:HBox width="50%" height="100%" horizontalAlign="right">
+					<mx:Button styleName="lblInfoBlanco" label="Ocultar" click="vboxDetPlastico.width = 0" cornerRadius="0"/>	
+				</mx:HBox>
+					
+			</mx:ApplicationControlBar>
+			<mx:Form width="100%">
+				<mx:FormItem label="Ultima modificación:">
+					<mx:TextInput editable="false" text="{dateFormatter.format(plasticosXClienteModel.plastico.ultimamodifFlex)}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Vigencia desde:">
+					<mx:TextInput editable="false" text="{dateFormatter.format(plasticosXClienteModel.plastico.vigenciaDesdeFlex)}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Vigencia hasta:">
+					<mx:TextInput editable="false" text="{dateFormatter.format(plasticosXClienteModel.plastico.vigenciaHastaFlex)}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Estado:">
+					<mx:TextInput editable="false" text="{plasticosXClienteModel.plastico.estadoPlastico.descripcion}"/>
+				</mx:FormItem>
+			</mx:Form>
+		</mx:VBox>
+		<mx:VBox height="100%" width="100%">
+			<mx:ApplicationControlBar width="100%">
+				<mx:Label styleName="lblInfoBlanco" text="Historial Plastico"/>	
+			</mx:ApplicationControlBar>		
+			<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" width="100%" height="100%" 
+				dataProvider="{plasticosXClienteModel.historialList}">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Fecha" dataField="fechaEstado" formatter="{dateFormatter}"/>
+					<mx:AdvancedDataGridColumn headerText="Estado">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.plasticoEstado.descripcion}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Lugar">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.plasticoLugar.descripcion}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Operador">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.operador.codigo} - {data.operador.apellido} - {data.operador.nombre}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+				</mx:columns>
+			</mx:AdvancedDataGrid>
+		</mx:VBox>
+	</mx:HBox>
+	
+	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+	
+</mx:HBox>

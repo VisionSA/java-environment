@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Menu>
+	<node label="Consultas">
+		<node label="Liquidaciones" module="ViewLiqComercioModule.swf"
+			data="0" />
+		<node label="Certificados de retención" module="ViewCertRetComercioModule.swf"
+			data="1" />
+<!-- 		<node label="Archivos TXT" module="ViewArchivosTxtComercioModule.swf" -->
+<!-- 			data="2" /> -->
+	</node>
+</Menu>

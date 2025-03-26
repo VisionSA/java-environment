@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <link rel="shortcut icon" href="/images/logo.png">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Tarjeta Fiel | Sirtac</title>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&display=swap" >
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" >
+
+<!-- <link src="css/alertify.css"       rel="stylesheet" type="text/css">
+<link src="css/alertifyThemes.css"      rel="stylesheet" type="text/css">
+<link src="css/alertifySemantic.css"    rel="stylesheet" type="text/css">
+<link src="css/alertifyBootstrap.css"   rel="stylesheet" type="text/css">
+<link src="css/firacode.css"            rel="stylesheet" type="text/css">
+<link href="css/icons.css"              rel="stylesheet" type="text/css"> -->
+
+
+<link href="css/vuetify.css" rel="stylesheet">
+<link href="css/sb-admin.css" rel="stylesheet">
+<link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="page-top">
+
+    <nav class="navbar-navbar-default" role="navigation">
+ <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle">
+    <i class="fas fa-bars"></i>
+    </button>
+    <a class="navbar-brand mr-1 text-white" href="index.html">Tarjeta Fiel | Sirtac</a>
+
+</nav>
+
+  <div id="wrapper2">
+
+    <!-- Sidebar -->
+    <ul class="sidebar navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">
+     
+          <span>Descargar Reporte</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="CargaDeContribuyentes.html">
+     
+          <span>Carga de Contribuyentes</span></a>
+      </li>
+   
+      <li class="nav-item">
+        <a class="nav-link" href="CargaDeExcluidos.html">
+      
+          <span>Carga de Excluidos</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="Alicuotas.html">
+    
+          <span>Alicuotas</span></a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="TipoDeRegistros.html">
+    
+          <span>Tipo de Registros</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="TipoDeOperacionesExceptuadas.html">
+   
+          <span>Tipo de Operaciones Exceptuadas </span></a>
+      </li>
+    </ul>
+
+    <div id="content-wrapper">
+
+      <div class="container-fluid">
+
+      </div>
+      
+      <div id="app">
+        <v-app id="inspire" >
+          <div ref="alicuotas">
+            
+           <v-card>
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Busqueda"
+                single-line
+                hide-details
+              ></v-text-field>  
+               <v-toolbar-title ><strong>Alicuotas</strong></v-toolbar-title>
+          <v-data-table 
+          class="alicuotas"
+          
+          dense
+            :headers="headers"
+            :items="desserts"
+            :items-per-page="100000"
+            hide-default-footer
+            sort-by="estado"
+            :search="search"
+          >
+            <template v-slot:top>
+              <v-toolbar
+                flat
+              >
+
+                <v-spacer>   <v-card
+                  flat
+                  class="py-0"
+                >
+                  <v-card-text>
+                    <v-row
+                      
+                      justify="center"
+                    >
+                   <div class="text-center">
+                    <v-btn-toggle
+                    v-model="toggle_exclusive"
+                    rounded
+                  >
+                    <v-btn
+                    @click="periodoAnterior"
+                    class="mx-2"
+                    fab
+                    dark
+                    small
+                    color="primary"
+                  >
+                    <v-icon dark>
+                      mdi-minus
+                    </v-icon>
+                  </v-btn> <span id="periodoBoton"
+                               
+                  > <strong>{{ periodoActual }}</strong>
+                  </span>
+                  <v-btn
+                @click="periodoSiguiente"
+                  class="mx-2"
+                  fab
+                  dark
+                  small
+                  color="primary"
+                >
+                  <v-icon dark>
+                    mdi-plus
+                  </v-icon>
+                </v-btn>
+                </div>
+              </v-btn-toggle>
+            </v-row>
+          </v-card-text>
+        </v-card>
+              </v-spacer>
+              <v-spacer> 
+                <div class="text-center">
+               <span
+                 
+               >
+              <strong>Estado:{{estadoActual}}</strong> 
+                </span>
+             </div>
+           </v-spacer>
+                <v-dialog
+                  v-model="dialog"
+                  max-width="500px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      color="primary"
+                      dark
+                      class="mb-2"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                    Nuevo Registro
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-card-title>
+                      <span class="text-h5" dark>{{ formTitle }}</span>
+                    </v-card-title>
+        
+                    <v-card-text>
+                      <v-container  
+                      >
+                        <v-row>
+                          <v-col
+                          
+                            cols="12"
+                            sm="6"
+                            md="4"
+                          >
+                            <v-text-field
+                              
+                              v-model="editedItem.letra"
+                              label="Letra"
+                              readonly
+                            ></v-text-field>
+                          </v-col>
+                          <v-col
+                            cols="12"
+                            sm="6"
+                            md="4"
+                          >
+                            <v-text-field
+                            class="alicuota-tabla"
+                              v-model="editedItem.alicuota"
+                              label="Alicuota"
+                            ></v-text-field>
+                          </v-col>
+
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+        
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="close"
+                      >
+                        Cancelar
+                      </v-btn>
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="save"
+                      >
+                        Guardar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+                <v-dialog v-model="dialogDelete" max-width="500px">
+                  <v-card>
+                    <v-card-title class="text-h5">Quiere eliminar este registro?</v-card-title>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
+                      <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                      <v-spacer></v-spacer>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-toolbar>
+            </template>
+            <template v-slot:item.actions="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(item)"
+              >
+                mdi-pencil
+              </v-icon>
+              <v-icon
+                small
+                @click="deleteItem(item)"
+              >
+                mdi-delete
+              </v-icon>
+            </template>
+            <v-spacer></v-spacer>
+          </v-data-table>
+        </v-card>
+        <br>
+        <template>
+          <v-row justify="center">
+            <v-dialog
+              v-model="dialogGuardar"
+              persistent
+              max-width="600px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+               
+               <br><div> <v-btn
+                  
+                  color="primary"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                 Guardar nuevo periodo
+                </v-btn>
+              </template>
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">Guardar periodo</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="4"
+                      >
+                        <v-text-field
+                          label="Periodo"
+                          v-model="periodoGuardado"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                      cols="12"
+                      sm="6"
+                      md="8"
+                    >
+                    <span class="text">Formato de periodo: AAAAMM <br> Ejemplo de Junio de 2021: 202106</span>
+                    </v-col>            
+                    </v-row>
+                    
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="dialogGuardar = false"
+                  >
+                    Cerrar
+                  </v-btn>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="guardarDatos"
+                    
+                  >
+                    Guardar
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-row>
+        </template>
+      </div>
+          </div>
+        </div>
+
+        <v-card-text>
+          <v-container  
+          >
+            <v-row>
+              <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-text-field
+              
+                  v-model="editedItem.Periodo"
+                  label="Periodo"
+                  
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+
+        </v-app>
+        </div>
+      </div>
+
+
+      
+    
+   <div>
+        <!-- Sticky Footer -->
+      <footer class="footer">
+        <div class="container1">
+          <div class="copyright text-center text-white my-auto">
+            <span>Tarjeta Fiel</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+    <!-- /.content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+  
+  <!-- links js -->
+  <!-- <script src="js/alertify.js"></script>
+  <script src="js/vue.js"></script>
+  <script src="js/vuetify.min.js"></script>
+  <script src="js/axios.min.js"></script> -->
+  <!-- scripts -->
+  <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin.min.js"></script>
+<script src="js/alicuotas.js"></script>
+
+</body>
+
+</html>

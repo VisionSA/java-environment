@@ -1,0 +1,1457 @@
+package com.bizitglobal.webapp.faces.beans.fondos;
+
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.component.html.HtmlSelectOneMenu;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+
+import com.bizitglobal.tarjetafiel.commons.filtros.Filtro;
+import com.bizitglobal.tarjetafiel.commons.interfaces.Paginacion;
+import com.bizitglobal.tarjetafiel.commons.util.Fecha;
+import com.bizitglobal.tarjetafiel.contabilidad.exception.EjercicioException;
+import com.bizitglobal.tarjetafiel.contabilidad.exception.PlanCuentaDosException;
+import com.bizitglobal.tarjetafiel.contabilidad.negocio.Ejercicio;
+import com.bizitglobal.tarjetafiel.contabilidad.negocio.PlanCuentaDos;
+import com.bizitglobal.tarjetafiel.fondos.exception.AsientoFondosException;
+import com.bizitglobal.tarjetafiel.fondos.exception.CajaException;
+import com.bizitglobal.tarjetafiel.fondos.exception.ClaseFondoException;
+import com.bizitglobal.tarjetafiel.fondos.exception.MovimientoException;
+import com.bizitglobal.tarjetafiel.fondos.exception.MovimientoMPException;
+import com.bizitglobal.tarjetafiel.fondos.negocio.AsientoFondos;
+import com.bizitglobal.tarjetafiel.fondos.negocio.AsientoItem;
+import com.bizitglobal.tarjetafiel.fondos.negocio.CajaApertura;
+import com.bizitglobal.tarjetafiel.fondos.negocio.Cheque;
+import com.bizitglobal.tarjetafiel.fondos.negocio.ChequeHistorial;
+import com.bizitglobal.tarjetafiel.fondos.negocio.ClaseFondo;
+import com.bizitglobal.tarjetafiel.fondos.negocio.Movimiento;
+import com.bizitglobal.tarjetafiel.fondos.negocio.MovimientoMP;
+import com.bizitglobal.tarjetafiel.general.exception.ConceptoGenException;
+import com.bizitglobal.tarjetafiel.general.exception.ImpresoraException;
+import com.bizitglobal.tarjetafiel.general.impresion.ImpresionTickets;
+import com.bizitglobal.tarjetafiel.general.negocio.ConceptoDetalleGen;
+import com.bizitglobal.tarjetafiel.general.negocio.ConceptoGen;
+import com.bizitglobal.tarjetafiel.general.negocio.Impresora;
+import com.bizitglobal.webapp.faces.beans.BaseBean;
+import com.bizitglobal.webapp.faces.beans.fondos.AdminChequeBean.Medio;
+import com.bizitglobal.webapp.faces.beans.util.PaginadorPorDemanda;
+import com.bizitglobal.webapp.faces.beans.util.ScrollBean;
+import com.bizitglobal.webapp.faces.util.Error;
+import com.bizitglobal.webapp.faces.util.Session;
+import com.bizitglobal.webapp.faces.util.Util;
+
+
+@SuppressWarnings({"rawtypes","unchecked"})
+public class MovimientoBean extends BaseBean {
+	private static final Logger log = Logger.getLogger(MovimientoBean.class);
+	private DecimalFormat formateador = new DecimalFormat("#0.00;");
+	private Filtro filtro = new Filtro();
+	private Movimiento movimiento;
+	private AsientoFondos asiento;
+	private AsientoItem asientoItemUnico;
+	private MovimientoMP movimientoMP;
+
+	private ClaseFondo clase;
+	private Long idMovimiento;
+	private Date fechaDesde;
+	private Date fechaHasta;
+	private static int numeroAsientoDetalleTabla = 0;
+
+	// definicion de un list del objeto base
+	private List movimientoList;
+	private List detalleMovList;
+	private List detalleAsientoList;
+	// Listas para la presentacion(HtmlSelectItems).
+	private boolean listado;
+	private List conceptoList;
+	private List conceptoItems = new ArrayList();
+	private List cajasList;
+	private List cajasItems = new ArrayList();
+	private List impresorasList;
+	private List impresorasItem = new ArrayList();
+	private List asientosDetalles;
+	private List cuentasDisponibles;
+	//
+	// Objetos Relacionados.
+	private Long idConceptoSeleccionada;
+	private HtmlSelectOneMenu conceptoHtml = new HtmlSelectOneMenu();
+	private Long idCajaSeleccionada;
+	private Long idImpresoraSeleccionada;
+
+	private Long idMovimientoHidden;
+	private PaginadorPorDemanda pagDeMov;
+	private String focoHidden;
+	// private boolean habilitada;
+	// private boolean busquedaPorPopup;
+
+	private PopupAltaAsiento popupAltaAsiento;
+	private String listaCuentas = "";
+	private boolean verDetalles;
+
+	private String popupReport = new String("");
+	private String codigoExterno;
+
+	private List fechasItems = new ArrayList();
+	private String idFechaSelect;
+
+
+	// private Map medioslist;
+	public MovimientoBean() {
+		super();
+		borrar();
+		// signoItems.clear();
+		// signoItems.add(new SelectItem(new Integer(0),"indistinto"));
+		// signoItems.add(new SelectItem(new Integer(1),"+"));
+		// signoItems.add(new SelectItem(new Integer(-1),"-"));
+		// medioslist = new HashMap();
+		// medioslist.put("1",new SelectItem(new Long(1),"Efectivo"));
+		// medioslist.put("2",new SelectItem(new Long(2),"Emisión de cheque propio"));
+		// medioslist.put("3",new SelectItem(new Long(3),"Buscar cheque propio"));
+		// medioslist.put("4",new SelectItem(new Long(4),"Transferencia bsncaria"));
+		// medioslist.put("5",new SelectItem(new Long(5),"Cargar cheque tercero"));
+		// medioslist.put("6",new SelectItem(new Long(6),"Buscar cheque tercero"));
+
+	}
+
+
+	public Movimiento getMovimiento() {
+		return movimiento;
+	}
+
+
+	public void setMovimiento(Movimiento movimiento) {
+		this.movimiento = movimiento;
+	}
+
+
+	public HtmlSelectOneMenu getConceptoHtml() {
+		return conceptoHtml;
+	}
+
+
+	public void setConceptoHtml(HtmlSelectOneMenu conceptoHtml) {
+		this.conceptoHtml = conceptoHtml;
+	}
+
+
+	public List getMovimientoList() {
+		return movimientoList;
+	}
+
+
+	public void setMovimientoList(List object) {
+		this.movimientoList = object;
+	}
+
+
+	public List getDetalleMovList() {
+		return detalleMovList;
+	}
+
+
+	public void setDetalleMovList(List detalleMovList) {
+		this.detalleMovList = detalleMovList;
+	}
+
+
+	public List getDetalleAsientoList() {
+		return detalleAsientoList;
+	}
+
+
+	public void setDetalleAsientoList(List detalleAsientoList) {
+		this.detalleAsientoList = detalleAsientoList;
+	}
+
+
+	public String getFocoHidden() {
+		return focoHidden;
+	}
+
+
+	public void setFocoHidden(String focoHidden) {
+		this.focoHidden = focoHidden;
+	}
+
+
+	public Filtro getFiltro() {
+		return filtro;
+	}
+
+
+	public void setFiltro(Filtro filtro) {
+		this.filtro = filtro;
+	}
+
+
+	public Long getIdMovimientoHidden() {
+		return idMovimientoHidden;
+	}
+
+
+	public void setIdMovimientoHidden(Long idMovimientoHidden) {
+		this.idMovimientoHidden = idMovimientoHidden;
+	}
+
+
+	public Long getIdMovimiento() {
+		return idMovimiento;
+	}
+
+
+	public void setIdMovimiento(Long idMovimiento) {
+		this.idMovimiento = idMovimiento;
+	}
+
+
+	public Date getFechaDesde() {
+		return fechaDesde;
+	}
+
+
+	public void setFechaDesde(Date fechaDesde) {
+		this.fechaDesde = fechaDesde;
+	}
+
+
+	public Date getFechaHasta() {
+		return fechaHasta;
+	}
+
+
+	public void setFechaHasta(Date fechaHasta) {
+		this.fechaHasta = fechaHasta;
+	}
+
+
+	public List getConceptoItems() {
+		return conceptoItems;
+	}
+
+
+	public void setConceptoItems(List conceptoItems) {
+		this.conceptoItems = conceptoItems;
+	}
+
+
+	public List getImpresorasItem() {
+		return impresorasItem;
+	}
+
+
+	public void setImpresorasItem(List impresorasItem) {
+		this.impresorasItem = impresorasItem;
+	}
+
+
+	public Long getIdConceptoSeleccionada() {
+		return idConceptoSeleccionada;
+	}
+
+
+	public void setIdConceptoSeleccionada(Long idConceptoSeleccionada) {
+		this.idConceptoSeleccionada = idConceptoSeleccionada;
+	}
+
+
+	public Long getIdImpresoraSeleccionada() {
+		return idImpresoraSeleccionada;
+	}
+
+
+	public void setIdImpresoraSeleccionada(Long idImpresoraSeleccionada) {
+		this.idImpresoraSeleccionada = idImpresoraSeleccionada;
+	}
+
+
+	public Long getIdCajaSeleccionada() {
+		return idCajaSeleccionada;
+	}
+
+
+	public void setIdCajaSeleccionada(Long idCajaSeleccionada) {
+		this.idCajaSeleccionada = idCajaSeleccionada;
+	}
+
+
+	public PaginadorPorDemanda getPagDeMov() {
+		return pagDeMov;
+	}
+
+
+	public void setPagDeMov(PaginadorPorDemanda pagDeMov) {
+		this.pagDeMov = pagDeMov;
+	}
+
+
+	public PopupAltaAsiento getPopupAltaAsiento() {
+		return popupAltaAsiento;
+	}
+
+
+	public void setPopupAltaAsiento(PopupAltaAsiento popupAltaAsiento) {
+		this.popupAltaAsiento = popupAltaAsiento;
+	}
+
+
+	public List getAsientosDetalles() {
+		return asientosDetalles;
+	}
+
+
+	public void setAsientosDetalles(List asientosDetalles) {
+		this.asientosDetalles = asientosDetalles;
+	}
+
+
+	public String getListaCuentas() {
+		return listaCuentas;
+	}
+
+
+	public void setListaCuentas(String listaCuentas) {
+		this.listaCuentas = listaCuentas;
+	}
+
+
+	public boolean isVerDetalles() {
+		return verDetalles;
+	}
+
+
+	public void setVerDetalles(boolean verDetalles) {
+		this.verDetalles = verDetalles;
+	}
+
+
+	public ClaseFondo getClase() {
+		return clase;
+	}
+
+
+	public void setClase(ClaseFondo clase) {
+		this.clase = clase;
+	}
+
+
+	public List getCajasItems() {
+		return cajasItems;
+	}
+
+
+	public void setCajasItems(List cajasItems) {
+		this.cajasItems = cajasItems;
+	}
+
+
+	public String getPopupReport() {
+		return popupReport;
+	}
+
+
+	public void setPopupReport(String popupReport) {
+		this.popupReport = popupReport;
+	}
+
+
+	public AsientoFondos getAsiento() {
+		return asiento;
+	}
+
+
+	public void setAsiento(AsientoFondos asiento) {
+		this.asiento = asiento;
+	}
+
+
+	public String getCodigoExterno() {
+		return codigoExterno;
+	}
+
+
+	public void setCodigoExterno(String codigoExterno) {
+		this.codigoExterno = codigoExterno;
+	}
+
+
+	public List getFechasItems() {
+		return fechasItems;
+	}
+
+
+	public void setFechasItems(List fechasItems) {
+		this.fechasItems = fechasItems;
+	}
+
+
+	public String getIdFechaSelect() {
+		return idFechaSelect;
+	}
+
+
+	public void setIdFechaSelect(String idFechaSelect) {
+		if (idFechaSelect != null)
+			this.idFechaSelect = idFechaSelect;
+	}
+
+
+	/************************************************************************
+	 * ACCIONES DEL BEAN DE CAJA
+	 ************************************************************************/
+
+	public String inicializar() {
+		borrar();
+		if (Session.getBean("ScrollBean") != null)
+		{
+			ScrollBean bean = (ScrollBean) Session.getBean("ScrollBean");
+			bean.setHiddenScrollY(new Integer(0));
+		}
+		// Aqui conformamos la lista de codigos de cuenta con su titulo.
+		try {
+			Filtro filtro = new Filtro("uso", Filtro.LIKE, "I");
+			// filtro.agregarCampoOperValor("fondos", Filtro.LIKE, "S");
+			filtro.agregarCampoOperValor("habilitada", Filtro.LIKE, "S");
+			cuentasDisponibles = contabilidadService.getPlanCuentaDosService().getPlanCuenta(filtro);
+			Iterator cuentasExistentes = cuentasDisponibles.iterator();
+			listaCuentas = "";
+			while (cuentasExistentes.hasNext()) {
+				PlanCuentaDos planCuenta = (PlanCuentaDos) cuentasExistentes.next();
+				if (planCuenta.getFormaPago() != null
+						&& !planCuenta.getFormaPago().getIdFormaPago().equals(new Long(0))) {
+					planCuenta.getFormaPago().getDescripcion();
+				}
+				listaCuentas += planCuenta.getIdPlanCuenta() + ":" + planCuenta.getTitulo() + ":";
+			}
+		} catch (PlanCuentaDosException e) {
+			e.printStackTrace();
+		}
+		popupAltaAsiento = new PopupAltaAsiento();
+		popupAltaAsiento.getAsiento().setFecha(new Date());
+		try {
+			try {
+				filtro.reset();
+				filtro.agregarCampoOperValor("fondos", Filtro.LIKEXS, "S");
+				// filtro.agregarCampoOperValor("esFiel", Filtro.LIKEXS, "N");
+				filtro.agregarOrderBy("codigoConcepto");
+				conceptoList = generalService.getConceptoGenService().getConcepto(filtro);
+			} catch (ConceptoGenException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				cajasList = fondosService.getCajaService().getCajas();
+			} catch (CajaException e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		cargarItems();
+		return "amMovimiento";
+	}
+
+
+	private void cargarItems() {
+
+		if (conceptoItems.size() != conceptoList.size()) {
+			conceptoItems.clear();
+			conceptoItems.add(new SelectItem(new Long(0), "Seleccionar Concepto"));
+			Iterator iterObj = conceptoList.iterator();
+			while (iterObj.hasNext()) {
+				ConceptoGen aux = (ConceptoGen) iterObj.next();
+				if (!aux.getEsFiel().equals("S") || listado) {
+					conceptoItems.add(new SelectItem(aux.getIdConcepto(), (aux.getCodigoConcepto().intValue() - 400) + " - " + aux.getDescripcion()));
+				}
+			}
+		}
+		if (!listado) {
+			cajasItems.clear();
+			cajasItems.add(new SelectItem(new Long(0), "Seleccione una Caja"));
+			cajasItems.addAll(Util.cargarSelectItem(cajasList));
+		}
+
+		if (impresorasItem.size() != impresorasList.size()) {
+			impresorasItem.clear();
+			impresorasItem.add(new SelectItem(new Long(0), "Seleccione una Impresora"));
+			impresorasItem.addAll(Util.cargarSelectItem(impresorasList));
+		}
+	}
+
+
+	public boolean calcularBalanceo() {
+		double totalHaber = 0;
+		double totalDebe = 0;
+		Iterator lo = asientosDetalles.iterator();
+		while (lo.hasNext()) {
+			WrapperAsientoDetalle asi = (WrapperAsientoDetalle) lo.next();
+			if (!asi.isSeBorra() && asi.aceptoMedio != null && asi.aceptoMedio.booleanValue()) {
+				if (asi.getDebe() != null) {
+					totalDebe += Double.valueOf(asi.getDebe().replace(',', '.')).doubleValue();
+				}
+				if (asi.getHaber() != null) {
+					totalHaber += Double.valueOf(asi.getHaber().replace(',', '.')).doubleValue();
+				}
+			}
+		}
+		return (totalDebe == totalHaber);
+	}
+
+
+	public void grabar(ActionEvent event) {
+		try {
+			if (validar()) {
+				boolean hayUnico = false;
+				int nroRenglon = 1;
+				// ARMO MOVIMIENTO
+				movimiento.setConcepto((ConceptoGen) Util.buscarElemento(
+						conceptoList, new ConceptoGen(idConceptoSeleccionada)));
+				movimiento.setSigno(new Integer(1));
+				movimiento.setEstado(new Character('A'));
+				movimiento.setFecha(new Date());
+				movimiento.setOperador(Session.getOperador());
+				movimiento.setCajaApertura(null); // Para verificar que exista solo una cuenta de caja
+				// ARMO ASIENTO
+				AsientoFondos asiento = popupAltaAsiento.getAsiento(); // Objeto para grabar y propagar
+				movimiento.setFechaAsiento(asiento.getFecha());
+				asiento.setAsientosItems(new HashSet());
+				asiento.setCotabilizado(new Character('N'));
+				asiento.setOperador(movimiento.getOperador());
+				Date fechaAux = Fecha.addDias(movimiento.getFecha(), -1); // Le resto un dia a la fecha actual para la comparacion con la fecha de
+																			// pago de la acreditacion
+				Iterator iter = asientosDetalles.iterator();
+				while (iter.hasNext()) {
+					WrapperAsientoDetalle wAsientoDet = (WrapperAsientoDetalle) iter.next();
+					if (wAsientoDet.aceptoMedio != null
+							&& wAsientoDet.aceptoMedio.booleanValue()
+							&& !wAsientoDet.isSeBorra()) {
+						AsientoItem asientoItem = wAsientoDet.devolverItem();
+						asientoItem.setAsiento(asiento);
+						// CONTROLO SI LA CUENTA CORRESPONDE A UNA CAJA
+						PlanCuentaDos cuenta = (PlanCuentaDos) Util.buscarElemento(cuentasDisponibles,
+								new PlanCuentaDos(asientoItem.getIdPlanCuenta()));
+						if (cuenta.getIdCaja() != null) {
+							/* @I5953 */CajaApertura cajaApertura = fondosService.getCajaAperturaService().getAperturaVigente(cuenta.getIdCaja());
+							if (cajaApertura == null) {
+								error.agregar("La cuenta '" + cuenta.getIdPlanCuenta() + "' pertenece a una caja que se encuentra cerrada. \n" +
+										"No se pueden realizar movimientos en una caja cerrada.");
+							} else {
+								// VERIFICO SI SE ESTA USANDO MAS DE UNA CUENTA DE CAJA
+								if (movimiento.getCajaApertura() == null) {
+									SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+									/* @F5953 */cajaApertura.setFechaApertura(simpleDateFormat.parse(simpleDateFormat.format(cajaApertura
+											.getFechaApertura())));
+									if (cajaApertura.getFechaApertura().after(popupAltaAsiento.getAsiento().getFecha())
+											|| popupAltaAsiento.getAsiento().getFecha().after(new Date()))
+										error.agregar("La fecha contable no puede ser anterior al día de la apertura de la caja o mayor al día de hoy.");
+									else {
+										movimiento.setCajaApertura(cajaApertura);
+										movimiento.setCaja(cajaApertura.getCaja());
+										movimiento.setSigno(asientoItem.getSigno());
+									}
+								} else {
+									error.agregar("No se pueden realizar movimientos entre dos cuentas de cajas.");
+								}
+							}
+						}
+						asientoItem.setChequeHistorial(new HashSet());
+						// ARMO EL MEDIO DE PAGO
+						if (wAsientoDet.isSoyUnico()) {
+							hayUnico = true;
+							movimiento.setImporte(wAsientoDet.sumarMedios());
+							asientoItem.setNroRenglon(new Integer(1));
+							// Necesario para la impresion
+							this.asientoItemUnico = asientoItem;
+							asientoItemUnico.setPlanCuenta(contabilidadService.getPlanCuentaDosService().leerPlanCuenta(
+									asientoItemUnico.getIdPlanCuenta()));
+							Iterator iterator = wAsientoDet.getMedios().iterator();
+							// Voy armando todos los historiales cos sus respectivos cheques y se asocian a asiento
+							// solo si no son efectivo(Importe directo)
+							while (iterator.hasNext()) {
+								Medio medio = (Medio) iterator.next();
+								Cheque cheque = medio.getCheque();
+								if (!cheque.getTipo().equals(Cheque.EFECTIVO)) {
+									ChequeHistorial historial = medio.getHistorial();
+									historial.setAsientoItem(asientoItem);
+									// historial.setMovimientoMP(movimientoMP);
+									if (medio.isAlta()) {
+										historial.setChequeEstado(fondosService.getChequeEstadoService().leerChequeEstado(new Long(1)));
+										if (cheque.getTipo().equals(Cheque.ACREDITACION) && fechaAux.after(cheque.getFechaPago()))
+											cheque.setProcesado('S');
+									} else { // Segun lo que se hasta ahora solo tendria estos dos casos
+										historial.setChequeEstado(fondosService.getChequeEstadoService().leerChequeEstado(new Long(4)));
+										cheque.setProcesado('S');
+									}
+									historial.setTimestamp(asiento.getFecha());
+									asientoItem.getChequeHistorial().add(historial);
+								}
+							}
+						} else {
+							if (asientoItem.getIdPlanCuenta() != null) {
+								nroRenglon = nroRenglon + 1;
+								asientoItem.setNroRenglon(new Integer(nroRenglon));
+								asientoItem.setMovimientoMPs(new HashSet());
+								MovimientoMP movimientoMP = new MovimientoMP();
+								movimientoMP.setFormaPago(wAsientoDet.getCuenta().getFormaPago());
+								movimientoMP.setMonto(asientoItem.getImporte());
+								movimientoMP.setMovimiento(movimiento);
+								// if (wAsientoDet.aceptoMedio != null && wAsientoDet.aceptoMedio.booleanValue()) {
+								Iterator iterator = wAsientoDet.getMedios().iterator();
+								// Voy armando todos los historiales cos sus respectivos cheques y se asocian a asiento
+								// solo si no son efectivo(Importe directo)
+								while (iterator.hasNext()) {
+									Medio medio = (Medio) iterator.next();
+									Cheque cheque = medio.getCheque();
+									/* @I3942 */if (cheque.getTipo().equals(Cheque.EFECTIVO)) {
+										movimientoMP.setAsientoItem(asientoItem);
+										/* @f3942 */} else {
+										ChequeHistorial historial = medio.getHistorial();
+										// No se por que en algunaos casos no se asocia el cheque compartido en el medio(lo intento solventar en la
+										// sig linea)
+										historial.setCheque(cheque);
+										historial.setMovimientoMP(movimientoMP);
+										if (medio.isAlta()) {
+											historial.setChequeEstado(fondosService.getChequeEstadoService().leerChequeEstado(new Long(1)));
+											if (cheque.getTipo().equals(Cheque.ACREDITACION) && fechaAux.after(cheque.getFechaPago()))
+												cheque.setProcesado('S');
+										} else { // Segun lo que se hasta ahora solo tendria estos dos casos
+											historial.setChequeEstado(fondosService.getChequeEstadoService().leerChequeEstado(new Long(4)));
+											cheque.setProcesado('S');
+										}
+										historial.setTimestamp(asiento.getFecha());
+										/* @I3942 */switch (movimiento.getConcepto().getTipoConcepto().getIdTipoConcepto().intValue()) {
+										case 3:
+										case 8:
+											movimientoMP.setAsientoItem(asientoItemUnico);
+											historial.setAsientoItem(asientoItemUnico);
+											asientoItemUnico.getChequeHistorial().add(historial);
+											break;
+										default:
+											movimientoMP.setAsientoItem(asientoItem);
+											historial.setAsientoItem(asientoItem);
+											asientoItem.getChequeHistorial().add(historial);
+											break;
+										/* @F3942 */}
+									}
+								}
+								// }
+
+								asientoItem.getMovimientoMPs().add(movimientoMP);
+								this.movimientoMP = movimientoMP; // Necesario para la impresion
+								// movimiento.getMovimientosMP().add(movimientoMP);
+							} else {
+								break;
+							}
+						}
+						asiento.getAsientosItems().add(asientoItem);
+					}
+				}
+				if (hayUnico) {
+					if (!error.hayErrores()) {
+						fondosService.getAsientoFondosService().grabarAsiento(asiento);
+						popup.setPopup(popup.ICONO_OK, "El movimiento ha sido almacenada exitosamente.");
+					}
+				} else {
+					error.agregar("El pimer detalle del asiento es de carga obligatoria");
+				}
+			}
+			ScrollBean scrollBean = (ScrollBean) Session.getBean("ScrollBean");
+			scrollBean.borrar();
+		} catch (AsientoFondosException e1) {
+			popup.setPopup(popup.ICONO_FALLA, "Fallo el alta del movimiento.");
+			e1.printStackTrace();
+		} catch (Exception e3) {
+			popup.setPopup(popup.ICONO_FALLA, "Fallo el alta del movimiento.");
+			e3.printStackTrace();
+		}
+	}
+
+
+	public String mostrarRevertir() {
+		if (idMovimientoHidden != null && !idMovimientoHidden.equals(new Long(0))) {
+			fechasItems.clear();
+			movimiento = (Movimiento) Util.buscarElemento(movimientoList, new Movimiento(idMovimientoHidden));
+			popup.setPopup(popup.ICONO_CONFIRMACION, "Se va a revertir el movimiento nro " + idMovimientoHidden + ", referido a '"
+					+ movimiento.getConcepto().getDescripcion() + "' por el importe de " + movimiento.getImporte());
+			fechasItems.add(new SelectItem("0", "Fecha de hoy"));
+			fechasItems.add(new SelectItem("1", "Fecha del movimiento (" + movimiento.getFechaAsientoFormat() + ")"));
+		}
+		return null;
+	}
+
+
+	public String revertir() {
+		try {
+			Date fecha;
+			if (idFechaSelect.equals("0"))
+				fecha = new Date();
+			else
+				fecha = movimiento.getFechaAsiento();
+			ConceptoGen conceptoRev = (ConceptoGen) generalService.getConceptoGenService()
+					.getConcepto(new Filtro("codigoConcepto", Filtro.IGUAL, "450")).get(0);
+			fondosService.getMovimientoService().generarReversion(idMovimientoHidden, fecha, conceptoRev, Session.getOperador());
+		} catch (MovimientoException e) {
+			e.printStackTrace();
+		} catch (ConceptoGenException e) {
+			e.printStackTrace();
+		}
+		popup.borrar();
+		return null;
+	}
+
+
+	public String cancelarPopup() {
+		popup.borrar();
+		return null;
+	}
+
+
+	public void borrar() {
+		borrarBaseBean();
+		alta = true;
+		popupReport = "";
+		listado = false;
+		tituloLargo = "TARJETA FIEL";
+		tituloCorto = "Alta de Movimientos";
+		movimientoList = new ArrayList();
+		detalleMovList = new ArrayList();
+		detalleAsientoList = new ArrayList();
+		movimiento = new Movimiento();
+		clase = new ClaseFondo();
+		idMovimiento = null;
+
+		fechaHasta = new Date();
+		fechaDesde = Fecha.addDias(fechaHasta, -1);
+
+		conceptoItems.clear();
+		idConceptoSeleccionada = new Long(0);
+		conceptoHtml.setValue(idConceptoSeleccionada);
+		idCajaSeleccionada = new Long(0);
+		idImpresoraSeleccionada = new Long(0);
+		impresorasList = new ArrayList();
+		asientosDetalles = new ArrayList();
+		verDetalles = false;
+		idMovimientoHidden = new Long(0);
+		idFechaSelect = "0";
+		// planCuenta=new PlanCuentaDos();
+		// idCaja = "";
+		// try {
+		// unaCaja = fondosService.getCajaService().getCajas(new Filtro());
+		// Iterator cajaIterator = unaCaja.iterator();
+		// while (cajaIterator.hasNext()) {
+		// Caja caj = (Caja)cajaIterator.next();
+		// caj.getSucursal();
+		// caj.getOperadorDefault();
+		// caj.getImpresora();
+		// }
+		// } catch (CajaException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// caja = new Caja();
+		// idImpresoraSeleccionada=new Long(0);
+		// idSucursalSeleccionada=new Long(0);
+		// idOperadorSeleccionado=new Long(0);
+		// habilitada=false;
+		// idPlanCuenta="";
+		// idPlanCuentaABuscar="";
+		// busquedaPorPopup=false;
+	}
+
+
+	public String cancelar() {
+		irAListarMovimiento();
+		return "";
+	}
+
+
+	public boolean validar() {
+		error.borrar();
+		if (idConceptoSeleccionada == null || idConceptoSeleccionada.equals(new Long(0)))
+			error.agregar("Debe seleccionar un Concepto");
+
+		if (popupAltaAsiento.getAsiento().getFecha() == null) {
+			error.agregar("La fecha contable es requerida");
+		} else {
+			try {
+				Ejercicio ejercicio = contabilidadService.getEjercicioService().ejercicioActual();
+				//if (ejercicio.getFechaPeriodo().after(popupAltaAsiento.getAsiento().getFecha()))
+				if (ejercicio.getFechaPeriodo().compareTo(popupAltaAsiento.getAsiento().getFecha()) > 0)
+					error.agregar(Error.COMPROBANTE_FECHA_CONTABLE_MENOR_PERIODO);
+				if (popupAltaAsiento.getAsiento().getFecha().after(ejercicio.getFechaCierre()))
+					error.agregar(Error.COMPROBANTE_FECHA_CONTABLE_MAYOR_CIERRE);
+				/* @I8241 */if (popupAltaAsiento.getAsiento().getFecha().after(Fecha.addDias(new Date(), 7)))
+					/* @F8241 */error.agregar("La fecha contable no puede ser mayor a la facha de hoy mas siete días.");
+			} catch (EjercicioException e) {
+				error.agregar(e.getMessage());
+				e.printStackTrace();
+			}
+		}
+
+		if (!calcularBalanceo()) {
+			error.agregar("El asiento se encuentra desbalanceado");
+		}
+
+		return !error.hayErrores();
+	}
+
+
+	public String irANuevoMovimiento() {
+		return inicializar();
+	}
+
+
+	public String irAImprimirComprobante() {
+		log.info("movimiento.getIdMovimiento() "+ movimiento.getIdMovimiento());
+		idMovimientoHidden = movimiento.getIdMovimiento();
+		idMovimiento = movimiento.getIdMovimiento();
+		//imprimirMovimiento();
+		imprimirMovimientoPrint();
+		return null;
+	}
+
+
+	public String irAListarMovimiento() {
+		inicializar();
+		listado = true;
+		try {
+			impresorasList = generalService.getImpresoraService().getImpresora(new Filtro());
+		} catch (ImpresoraException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		cargarItems();
+		tituloCorto = "Listado de Movimientos";
+		Session.redirect("/tarjetafiel/fondos/listarMovimiento.jsf");
+		return "";
+	}
+
+
+	// public String buscarCuentaPopup() {
+	// log.info("Ir a buscar una cuenta!!!");
+	// busquedaPorPopup=true;
+	// //popupReport = "";
+	// PlanCuentaBean bean = (PlanCuentaBean) Session.getBean("PlanCuentaBean");
+	// bean.inicializaBusqueda(11);
+	// String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+	// path += "/tarjetafiel/contabilidad/buscarPlanesDeCuenta.jsf";
+	// ejecutarJavaScript("popup('" + path + "',750,400), 'titlebar=no';");
+	// return null;
+	// }
+
+	public void cambioConcepto(ValueChangeEvent event) {
+		idConceptoSeleccionada = new Long(conceptoHtml.getValue().toString());
+		asientosDetalles.clear();
+		if (!idConceptoSeleccionada.equals(new Long(0))) {
+			verDetalles = true;
+			Integer signoUnica = new Integer(0); // Lo utilizo para completar las filas de la tabla que no estaban preconfiguradas
+			// Busco el concepro y cargo la claseFondo que lo creo
+			ConceptoGen concepto = (ConceptoGen) Util.buscarElemento(conceptoList, new ConceptoGen(idConceptoSeleccionada));
+			clase.setClase(concepto.getTipoConcepto().getIdTipoConcepto().intValue());
+			// Iterator compartidas = clase.cuentasCompartidas(cuentasDisponibles).iterator();
+			// listaCuentas = "";
+			// while (compartidas.hasNext()) {
+			// PlanCuentaDos planCuenta = (PlanCuentaDos) compartidas.next();
+			// listaCuentas += planCuenta.getIdPlanCuenta() + ":"+ planCuenta.getTitulo() + ":";
+			// }
+			popupAltaAsiento.getAsiento().setConcepto(concepto.getDescripcion());
+			// Armo la estructura del asiento
+			Iterator iter = concepto.getConceptoDetalleSet().iterator();
+			List auxiliar = new ArrayList();
+			while (iter.hasNext()) {
+				ConceptoDetalleGen detalle = (ConceptoDetalleGen) iter.next();
+				if (detalle.getActivo().equals("S")) {
+					if (detalle.getOrden().intValue() == 0) {
+						AsientoItem asientoItem = new AsientoItem();
+						asientoItem.setIdPlanCuenta(detalle.getCtacontable());
+						signoUnica = detalle.getSigno();
+						asientoItem.setSigno(signoUnica);
+						asientoItem.setImporte(new Double(0));
+						asientoItem.setLeyenda(concepto.getDescripcion());
+						WrapperAsientoDetalle detalleUnico = new WrapperAsientoDetalle(asientoItem);
+						detalleUnico.setSoyUnico(true);
+						asientosDetalles.add(detalleUnico);
+					} else {
+						AsientoItem asientoItem2 = new AsientoItem();
+						asientoItem2.setIdPlanCuenta(detalle.getCtacontable());
+						asientoItem2.setSigno(detalle.getSigno());
+						asientoItem2.setImporte(new Double(0));
+						asientoItem2.setLeyenda(concepto.getDescripcion());
+						WrapperAsientoDetalle detalleCompartido = new WrapperAsientoDetalle(asientoItem2);
+						auxiliar.add(detalleCompartido);
+					}
+				}
+			}
+			asientosDetalles.addAll(auxiliar);
+			signoUnica = new Integer(signoUnica.intValue() * -1);// Invierto el signo de la cuenta unica
+			for (int j = asientosDetalles.size(); j < 20; j++) {
+				AsientoItem asientoItem = new AsientoItem();
+				asientoItem.setImporte(new Double(0));
+				asientoItem.setSigno(signoUnica);
+				WrapperAsientoDetalle asientoDetalle = new WrapperAsientoDetalle(asientoItem);
+				asientosDetalles.add(asientoDetalle);
+			}
+		} else {
+			verDetalles = false;
+		}
+	}
+
+
+	public String listarMovimiento() {
+		popupReport = "";
+		movimientoList.clear();
+		detalleMovList.clear();
+		detalleAsientoList.clear();
+		try {
+			filtro.reset();
+			if (idMovimiento != null && !idMovimiento.equals(""))
+				filtro.agregarCampoOperValor("idMovimiento", Filtro.IGUAL, idMovimiento);
+			if (fechaDesde != null && fechaHasta != null) {
+				filtro.agregarCampoOperValor("fechaAsiento", Filtro.MAYOR_IGUAL, Filtro.getTO_DATE(fechaDesde));
+				filtro.agregarCampoOperValor("fechaAsiento", Filtro.MENOR_IGUAL, Filtro.getTO_DATE(Fecha.addDias(fechaHasta, 1)));
+			}
+			if (idCajaSeleccionada != null && !idCajaSeleccionada.equals(new Long(0)))
+				filtro.agregarCampoOperValor("caja", Filtro.IGUAL, idCajaSeleccionada);
+
+			if (idConceptoSeleccionada != null && !idConceptoSeleccionada.equals(new Long(0)))
+				filtro.agregarCampoOperValor("concepto", Filtro.IGUAL, idConceptoSeleccionada);
+
+			if (codigoExterno != null && !codigoExterno.equals(""))
+				filtro.agregarCampoOperValor("codigoExterno", Filtro.IGUAL, codigoExterno);
+
+			pagDeMov = new PaginadorPorDemanda(filtro, (Paginacion) fondosService.getMovimientoService(), movimientoList, 20, error,
+					"/tarjetafiel/fondos/listarMovimiento.jsf");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	public String verDetalleMov() {
+		error.borrar();
+		popupReport = "";
+		detalleMovList.clear();
+		detalleAsientoList.clear();
+		Filtro filtro1 = new Filtro();
+		filtro1.agregarCampoOperValor("movimiento.idMovimiento", Filtro.IGUAL, idMovimientoHidden);
+		try {
+			detalleMovList = fondosService.getMovimientoMPService().getMovimientoMPs(filtro1);
+			Iterator iter = detalleMovList.iterator();
+			while (iter.hasNext()) {
+				MovimientoMP movimientoMP = (MovimientoMP) iter.next();
+				movimientoMP.getFormaPago().getDescripcion();
+				if (movimientoMP.getAsientoItem() != null && detalleAsientoList.isEmpty()) {
+					asiento = movimientoMP.getAsientoItem().getAsiento();
+					Iterator iterator = asiento.getAsientosItems().iterator();
+					while (iterator.hasNext()) {
+						detalleAsientoList.add(new WrapperAsientoItem((AsientoItem) iterator.next()));
+					}
+				}
+			}
+		} catch (MovimientoMPException e) {
+			error.agregar("No se puede mostrar el detalle. Ocurrio un problema al intentar obtener los datos");
+			e.printStackTrace();
+		}
+		Session.redirect("/tarjetafiel/fondos/listarMovimiento.jsf");
+		return null;
+	}
+
+	public class PopupAltaAsiento {
+		private AsientoFondos asiento;
+
+
+		public PopupAltaAsiento() {
+			borrar();
+			asiento = new AsientoFondos();
+		}
+
+
+		public AsientoFondos getAsiento() {
+			return asiento;
+		}
+	}
+	
+	
+	public String imprimirMovimientoPrint() {
+		if (idMovimientoHidden != null && !idMovimientoHidden.equals(new Long(0))) {
+			// Movimiento movim = (Movimiento)Util.buscarElemento(movimientoList, new Movimiento(idMovimientoHiden));
+			try {
+				/*
+				 * buscar el asiento en base al movimiento 2 opciones: leer de nuevo el movimoento y propagarse desde ahi(me parece inperf) armar una
+				 * query que resuelva la complejidad movim.getMovimientosMP()
+				 */
+				Filtro filtro = new Filtro();
+				filtro.agregarCampoOperValor("asientoItem", Filtro.NOTNULL, "");
+				filtro.agregarCampoOperValor("movimiento.idMovimiento", Filtro.IGUAL, idMovimientoHidden);
+				// filtro.agregarCampoOperValor("asientoItem.nroRenglon", Filtro.IGUAL,"1");
+				List movimMPs = fondosService.getMovimientoMPService().getMovimientoMPs(filtro);
+				if (!movimMPs.isEmpty()) {
+					movimientoMP = (MovimientoMP) movimMPs.get(0);
+					AsientoItem item = movimientoMP.getAsientoItem();
+					try {
+						Iterator iter = item.getAsiento().getAsientosItems().iterator();
+						while (iter.hasNext()) {
+							asientoItemUnico = (AsientoItem) iter.next();
+							if (asientoItemUnico.getNroRenglon().equals(new Integer(1))) {
+								asientoItemUnico.setPlanCuenta(contabilidadService.getPlanCuentaDosService().leerPlanCuenta(
+										asientoItemUnico.getIdPlanCuenta()));
+								return imprimirMovimiento();
+							}
+						}
+						error.agregar("ERROR EN LA BASE DE DATOS!!!\nExisten dos o mas ASIENTOS_ITEMS, del mismo Movimientos_MP, con nro de renglon \"1\"\nConsulte con el administrador de la misma.");
+					} catch (PlanCuentaDosException e) {
+						e.printStackTrace();
+					}
+				} else {
+					error.agregar("ERROR EN LA BASE DE DATOS!!!\nExisten dos o mas ASIENTOS_ITEMS, del mismo Movimientos_MP, con nro de renglon \"1\"\nConsulte con el administrador de la misma.");
+				}
+			} catch (MovimientoMPException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//Session.redirect("/tarjetafiel/fondos/listarMovimiento.jsf");
+		return null;
+	}
+
+
+
+	/*************** Emiliano ******************/
+
+	public String imprimirMovimientoListar() {
+		if (idMovimientoHidden != null && !idMovimientoHidden.equals(new Long(0))) {
+			// Movimiento movim = (Movimiento)Util.buscarElemento(movimientoList, new Movimiento(idMovimientoHiden));
+			try {
+				/*
+				 * buscar el asiento en base al movimiento 2 opciones: leer de nuevo el movimoento y propagarse desde ahi(me parece inperf) armar una
+				 * query que resuelva la complejidad movim.getMovimientosMP()
+				 */
+				Filtro filtro = new Filtro();
+				filtro.agregarCampoOperValor("asientoItem", Filtro.NOTNULL, "");
+				filtro.agregarCampoOperValor("movimiento.idMovimiento", Filtro.IGUAL, idMovimientoHidden);
+				// filtro.agregarCampoOperValor("asientoItem.nroRenglon", Filtro.IGUAL,"1");
+				List movimMPs = fondosService.getMovimientoMPService().getMovimientoMPs(filtro);
+				if (!movimMPs.isEmpty()) {
+					movimientoMP = (MovimientoMP) movimMPs.get(0);
+					AsientoItem item = movimientoMP.getAsientoItem();
+					try {
+						Iterator iter = item.getAsiento().getAsientosItems().iterator();
+						while (iter.hasNext()) {
+							asientoItemUnico = (AsientoItem) iter.next();
+							if (asientoItemUnico.getNroRenglon().equals(new Integer(1))) {
+								asientoItemUnico.setPlanCuenta(contabilidadService.getPlanCuentaDosService().leerPlanCuenta(
+										asientoItemUnico.getIdPlanCuenta()));
+								return imprimirMovimiento();
+							}
+						}
+						error.agregar("ERROR EN LA BASE DE DATOS!!!\nExisten dos o mas ASIENTOS_ITEMS, del mismo Movimientos_MP, con nro de renglon \"1\"\nConsulte con el administrador de la misma.");
+					} catch (PlanCuentaDosException e) {
+						e.printStackTrace();
+					}
+				} else {
+					error.agregar("ERROR EN LA BASE DE DATOS!!!\nExisten dos o mas ASIENTOS_ITEMS, del mismo Movimientos_MP, con nro de renglon \"1\"\nConsulte con el administrador de la misma.");
+				}
+			} catch (MovimientoMPException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		Session.redirect("/tarjetafiel/fondos/listarMovimiento.jsf");
+		return null;
+	}
+
+
+	public String imprimirMovimiento() {
+		HttpServletRequest request = Session.getRequest();
+		log.info(popupReport);
+		if (idMovimientoHidden != null && movimientoMP != null) {
+			try {
+				String p1 = "?idMovimiento=" + idMovimientoHidden;
+				String p2 = "&URLImagen=" + Session.getHomePath() + "/img/fiel/logo_fiel.jpg";
+				String p3 = "&cuentaTitulo=" + asientoItemUnico.getPlanCuenta().getTitulo();
+				String p4 = "&cuentaImporte=" + asientoItemUnico.getImporte();
+				String p5 = "&cuentaConcepto=" + movimientoMP.getMovimiento().getConcepto().getDescripcion();
+				String p6;
+				if (asientoItemUnico.getSigno().intValue() == 1) {
+					p6 = "&cuentaSigno=" + "Debe";
+				} else {
+					p6 = "&cuentaSigno=" + "Haber";
+				}
+				String p7 = "&cuentaCodigo=" + asientoItemUnico.getIdPlanCuenta();
+				String p8 = "&cuentaIdAsientoItems=" + asientoItemUnico.getIdAsientoItem();
+				String page = request.getContextPath() + "/report/ComprobanteFondos.jrxml";
+				popupReport = "popup('" + page + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + "',1000,600)";
+				log.info(popupReport);
+			} catch (NullPointerException e) {
+				error.agregar("No se puede imprimir el reporte\nInsuficiencia de datos en el movimiento nro: " + idMovimiento);
+			}
+		}
+		return null;
+	}
+
+
+	/*************** \Emiliano ******************/
+	public String imprimirTicket() {
+		error.borrar();
+		idMovimiento = getIdMovimientoHidden();
+		if (idMovimiento != null && !idMovimiento.equals(new Integer(0))) {
+			movimiento = (Movimiento) Util.buscarElemento(movimientoList, new Movimiento(idMovimiento));
+			if (movimiento.getTicket() == null) {
+				error.agregar("El movimiento no tiene un ticket asociado");
+				return null;
+			}
+			if (idImpresoraSeleccionada.equals(new Long(0))) {
+				error.agregar("Para imprimir un ticket debe seleccionar una impresora");
+				return null;
+			}
+			try {
+				ImpresionTickets impresionTickets = new ImpresionTickets();
+				impresionTickets.reImprimirTicket(movimiento.getTicket(),
+						(Impresora) Util.buscarElemento(impresorasList, new Impresora(idImpresoraSeleccionada)));
+			} catch (Exception e) {
+				error.agregar("Ocrrio un error al reimprimir el ticket");
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	public class WrapperAsientoDetalle {
+		private AsientoItem asientoItem;
+		private int idAsienDetal;
+		private String denominacion;
+		private boolean signo; // true = debe / false = haber
+		private String centroCosto = "";
+		private Long idCentroCostoSeleccionado;
+		private boolean soyUnico = false;
+		private boolean seBorra = false;
+		private String indice;
+		private List medios;
+		private Boolean aceptoMedio = Boolean.FALSE;
+		private PlanCuentaDos cuenta;
+
+
+		public WrapperAsientoDetalle() {
+			idAsienDetal = ++numeroAsientoDetalleTabla;
+			// crearListaCentroCostos();
+		}
+
+
+		public WrapperAsientoDetalle(AsientoItem asientoItem) {
+			this.asientoItem = asientoItem;
+			signo = (asientoItem.getSigno().intValue() == 1);
+			idAsienDetal = ++numeroAsientoDetalleTabla;
+			indice = "amMovimientoForm:listado:" + (idAsienDetal - 1) + ":tit";
+			medios = new ArrayList();
+			buscarCuenta();
+			// if (asientoItem.getSigno() != null) {
+			// if (asientoItem.getSigno().intValue() == 1) {
+			// debe = String.valueOf(asientoItem.getImporte());
+			// } else {
+			// haber = String.valueOf(asientoItem.getImporte());
+			// }
+			// }
+		}
+
+
+		public AsientoItem devolverItem() {
+			asientoItem.setNroRenglon(new Integer(idAsienDetal));
+			if (asientoItem.getSigno() != null) {
+				if (asientoItem.getSigno().intValue() == 1) {
+					asientoItem.setImporte(sumarMedios());
+				} else {
+					asientoItem.setImporte(sumarMedios());
+				}
+			}
+			return asientoItem;
+		}
+
+
+		private void buscarCuenta() {
+			cuenta = (PlanCuentaDos) Util.buscarElemento(
+					cuentasDisponibles, new PlanCuentaDos(asientoItem.getIdPlanCuenta()));
+			if (cuenta != null)
+				denominacion = cuenta.getTitulo();
+		}
+
+
+		public Double sumarMedios() {
+			double resul = 0;
+			Iterator iter = medios.iterator();
+			while (iter.hasNext()) {
+				Medio medio = (Medio) iter.next();
+				resul += medio.getCheque().getImporte().doubleValue();
+			}
+			return new Double(resul);
+		}
+
+
+		public AsientoItem getAsientoItem() {
+			return asientoItem;
+		}
+
+
+		public void setAsientoItem(AsientoItem asientoItem) {
+			this.asientoItem = asientoItem;
+		}
+
+
+		public boolean isSoyUnico() {
+			return soyUnico;
+		}
+
+
+		public void setSoyUnico(boolean soyUnico) {
+			this.soyUnico = soyUnico;
+		}
+
+
+		public int getIdAsienDetal() {
+			return idAsienDetal;
+		}
+
+
+		public void setIdAsienDetal(int idAsienDetal) {
+			this.idAsienDetal = idAsienDetal;
+		}
+
+
+		public String getDenominacion() {
+			return denominacion;
+		}
+
+
+		public void setDenominacion(String denominacion) {
+			this.denominacion = denominacion;
+		}
+
+
+		public void setDebe(String debe) {
+		}
+
+
+		public String getDebe() {
+			return signo ? formateador.format(sumarMedios()) : null;
+		}
+
+
+		public void setHaber(String haber) {
+		}
+
+
+		public String getHaber() {
+			return !signo ? formateador.format(sumarMedios()) : null;
+		}
+
+
+		public String getCentroCosto() {
+			return centroCosto;
+		}
+
+
+		public void setCentroCosto(String centroCosto) {
+			this.centroCosto = centroCosto;
+		}
+
+
+		public Long getIdCentroCostoSeleccionado() {
+			return idCentroCostoSeleccionado;
+		}
+
+
+		public void setIdCentroCostoSeleccionado(Long idCentroCostoSeleccionado) {
+			this.idCentroCostoSeleccionado = idCentroCostoSeleccionado;
+		}
+
+
+		public boolean isSeBorra() {
+			return seBorra;
+		}
+
+
+		public void setSeBorra(boolean seBorra) {
+			this.seBorra = seBorra;
+		}
+
+
+		public String getIndice() {
+			return indice;
+		}
+
+
+		public PlanCuentaDos getCuenta() {
+			return cuenta;
+		}
+
+
+		public Boolean getAceptoMedio() {
+			return aceptoMedio;
+		}
+
+
+		public void setAceptoMedio(Boolean aceptoMedio) {
+			this.aceptoMedio = aceptoMedio;
+		}
+
+
+		public void actualizarMedio() {
+			FacesContext context = FacesContext.getCurrentInstance();
+			Map map = context.getExternalContext().getRequestParameterMap();
+			int fila = Integer.parseInt((String) map.get("filaSeleccionada"));
+			log.info("Fila en: " + fila);
+			System.out.println("result antes" + fila);
+			denominacion = fila + " ";
+			buscarCuenta();
+		}
+
+
+		public List getMedios() {
+			// completar correctamente el cheque
+			return medios;
+		}
+
+
+		public void setMedios(List medios) {
+			this.medios = medios;
+		}
+
+
+		/**
+		 * 1 "Efectivo" 2 "Emisión de cheque propio" 3 "Buscar cheque propio" 4 "Transferencia bsncaria" 5 "Cargar cheque tercero" 6
+		 * "Buscar cheque tercero"
+		 */
+		public void agregarMedio(ActionEvent event) {
+			error.borrar();
+			boolean cargarPopup = false;
+			AdminChequeBean bean = (AdminChequeBean) Session.getBean("AdminChequeBean");
+			if (cuenta != null) {
+				try {
+					Object[] array = clase.accionesDisponibles(cuenta, signo);
+					Integer i = (Integer) array[0];
+					Boolean b = (Boolean) array[1];
+					if (i == null) {
+						error.agregar("No se puede usar esta cuenta con esta clase.");
+					} else {
+						aceptoMedio = null;
+						bean.inicializar(i, b, this);
+						cargarPopup = true;
+					}
+				} catch (ClaseFondoException e) {
+					error.agregar("Error en la estructura de la cuenta. Verifiquela en el plan de cuentas");
+					e.printStackTrace();
+				} catch (Exception e) {
+					error.agregar("Error en la estructura de la cuenta. Verifiquela en el plan de cuentas");
+					e.printStackTrace();
+				}
+				if (cargarPopup) {
+					// if (asientoItem.getSigno().intValue() == 1) {
+					// cheque.setImporte(new Double(debe));
+					// } else {
+					// cheque.setImporte(new Double(haber));
+					// }
+					String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+					path += "/tarjetafiel/fondos/popup/chequePopup.jsf";
+					ejecutarJavaScript("popupPagina('" + path + "',750,600), 'titlebar=no';");
+				}
+			}
+		}
+	}
+
+	public class WrapperAsientoItem {
+		private AsientoItem asientoItem;
+		private String cuenta;
+
+
+		public WrapperAsientoItem(AsientoItem asientoItem) {
+			this.asientoItem = asientoItem;
+			try {
+				PlanCuentaDos aux = contabilidadService.getPlanCuentaDosService().leerPlanCuenta(asientoItem.getIdPlanCuenta());
+				cuenta = aux.getIdPlanCuenta() + " - " + aux.getTitulo();
+			} catch (PlanCuentaDosException e) {
+				cuenta = asientoItem.getIdPlanCuenta() + " - Descripcion no disponible.";
+			}
+		}
+
+
+		public AsientoItem getAsientoItem() {
+			return asientoItem;
+		}
+
+
+		public void setAsientoItem(AsientoItem asientoItem) {
+			this.asientoItem = asientoItem;
+		}
+
+
+		public String getCuenta() {
+			return cuenta;
+		}
+
+
+		public String getDebe() {
+			if (asientoItem.getSigno().intValue() == 1) {
+				return formateador.format(asientoItem.getImporte());
+			} else {
+				return null;
+			}
+		}
+
+
+		public String getHaber() {
+			if (asientoItem.getSigno().intValue() == 1) {
+				return null;
+			} else {
+				return formateador.format(asientoItem.getImporte());
+			}
+		}
+	}
+}
+
+// switch (cuenta.getTipoFondos().intValue()) {
+// case ClaseFondo.OTROS:
+// // bean.setSelectFiltro("0");
+// cargarPopup = false; // Sacar si no va
+// break;
+// case ClaseFondo.BANCOS:
+// if(cuenta.getFormaPago() == null){
+// error.agregar("Error de configuración en la cuanta. Falta la forma de pago");
+// cargarPopup = false;
+// }else{
+// switch (cuenta.getFormaPago().getIdFormaPago().intValue()) {
+// case 2:
+// bean.inicializar(AdminChequeBean.CHEQUE_PROPIO,true, cheque);
+// cargarPopup = true;
+// break;
+// case 3:
+// bean.inicializar(AdminChequeBean.ACREDITACION,true, cheque);
+// cargarPopup = true;
+// break;
+// }
+// }
+// break;
+// case ClaseFondo.CARTERA:
+// if(cuenta.getFormaPago() == null){
+// error.agregar("Error de configuración en la cuanta. Falta la forma de pago");
+// cargarPopup = false;
+// }else{
+// // Si es cartera y la cuenta es de cheque se abre la ventana de carga de cheques de terceros
+// if(cuenta.getFormaPago().getIdFormaPago().equals(new Long(2))){
+// bean.inicializar(AdminChequeBean.CHEQUE_TERCERO,true, cheque);
+// cargarPopup = true;
+// }
+// }
+// break;
+// }
+

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/testing/!svn/ver/733/Presentacion/src/main/java/com/bizitglobal/webapp/faces/beans/transacciones
+END
+LiquidacionComerciosParticularBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/testing/!svn/ver/714/Presentacion/src/main/java/com/bizitglobal/webapp/faces/beans/transacciones/LiquidacionComerciosParticularBean.java
+END
+GeneracionArchLiqComBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/testing/!svn/ver/726/Presentacion/src/main/java/com/bizitglobal/webapp/faces/beans/transacciones/GeneracionArchLiqComBean.java
+END
+AutorizacionTelefonicaBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/testing/!svn/ver/714/Presentacion/src/main/java/com/bizitglobal/webapp/faces/beans/transacciones/AutorizacionTelefonicaBean.java
+END
+RenovacionPlasticosBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/testing/!svn/ver/714/Presentacion/src/main/java/com/bizitglobal/webapp/faces/beans/transacciones/RenovacionPlasticosBean.java
+END
+ConciliacionCuponesBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/testing/!svn/ver/733/Presentacion/src/main/java/com/bizitglobal/webapp/faces/beans/transacciones/ConciliacionCuponesBean.java
+END
+LiquidacionClientesBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/testing/!svn/ver/822/Presentacion/src/main/java/com/bizitglobal/webapp/faces/beans/transacciones/LiquidacionClientesBean.java
+END

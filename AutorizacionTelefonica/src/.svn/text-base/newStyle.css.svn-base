@@ -1,0 +1,343 @@
+/* CSS file */
+TitleWindow
+{
+	borderColor: #919399;
+	title-style-name: titleMDI;
+	background-color: #EFEFEF;
+	padding-bottom: 5;
+	padding-left: 5;
+	padding-right: 5;
+	padding-top: 5;
+	background-alpha: 0.9;
+	borderAlpha: 1.0;
+}
+HBox.plastico
+{
+	backgroundImage: Embed(source='imgfiel/plasticoBack.png');
+}
+Alert
+{
+	backgroundColor: #00388B;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+	backgroundAlpha: 0.8;
+	borderColor: #00388B;
+	borderAlpha: 0.8;
+	titleStyleName: alertTitle;
+	controlBarStyleName: alertControlBar;
+	color: #FFFFFF;
+	button-style-name: buttonAlert;
+	statusStyleName: alertStatus;
+}
+
+Button.buttonAlert{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #A4A4A4, #B8B8B8;
+	cornerRadius: 2;
+	color: #FFFFFF;
+	
+}
+
+Application {
+   backgroundColor: #cccccc;
+   backgroundGradientColors: #ffffff, #666666;
+   backgroundGradientAlphas: 0.34, 0.34;
+   
+   modal-transparency-blur: 0;
+   modal-transparency: 0.5;   
+   modal-transparency-color: black;   
+   modal-transparency-duration: 150;
+}
+
+TextInput {
+   borderStyle: solid;
+   borderColor: #b7babc;
+   borderThickness: 2;
+   cornerRadius: 3;
+   backgroundAlpha: 0.69;
+   backgroundColor: #E0E0E0;
+   color: #000000;
+   textAlign: left;
+   letterSpacing: 0;
+   paddingLeft: 0;
+   paddingRight: 0;
+   fontFamily: Arial;
+   fontSize: 11;
+   fontWeight: normal;
+   dropShadowEnabled: true;
+   shadowDistance: 1;
+}
+HBox.top
+{
+	backgroundColor: #136CB3;
+	borderColor: #136CB3;
+}
+HBox.logo
+{
+	backgroundImage: Embed(source='imgfiel/logo.png');
+}
+LinkButton.vistas
+{
+	color: #FFFFFF;
+	fontFamily: Arial;
+	fontSize: 12;
+	paddingBottom: 2;
+	paddingLeft: 2;
+	paddingRight: 2;
+	paddingTop: 2;
+	textRollOverColor: #FFFFFF;
+}
+HBox.topDerecha
+{
+	horizontalAlign: right;
+	paddingBottom: 5;
+	paddingLeft: 5;
+	paddingRight: 5;
+	paddingTop: 5;
+	verticalAlign: bottom;
+}
+LinkButton.busqueda
+{
+	color: #FFFFFF;
+	fontSize: 12;
+	horizontalGap: 0;
+	themeColor: #727272;
+	verticalGap: 0;
+	textRollOverColor: #FFFFFF;
+	rollOverColor: #747474;
+	selectionColor: #939393;
+	fontFamily: Arial;
+}
+VBox.infocaja
+{
+	backgroundAlpha: 1.0;
+	backgroundColor: #919399;
+	horizontalAlign: left;
+	paddingBottom: 15;
+	paddingLeft: 10;
+	paddingRight: 10;
+	paddingTop: 15;
+	verticalAlign: middle;
+	verticalGap: 20;
+}
+HBox.seleccionado
+{
+	backgroundAlpha: 0.8;
+	backgroundColor: #EAEAEA;
+	borderStyle: solid;
+	cornerRadius: 5;
+	horizontalAlign: left;
+	paddingLeft: 5;
+	paddingRight: 5;
+	verticalAlign: middle;
+}
+Label.lblSeleccionado
+{
+	color: #000000;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+MenuBar
+{
+	color: #B0B0B0;
+	fillAlphas: 1.0, 1.0;
+	fillColors: #FFFFFF, #FFFFFF;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+	themeColor: #A6A6A6;
+	borderColor: #FFFFFF;
+	textAlign: left;
+}
+HBox.subMenu
+{
+	backgroundColor: #136CB3;
+}
+Label.lblInfo
+{
+	color: #000000;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+Label.tituloBusquedas
+{
+	color: #136CB3;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+LinkButton.busqueda2
+{
+	color: #000000;
+	themeColor: #7A7A7A;
+	textRollOverColor: #FFFFFF;
+	rollOverColor: #929292;
+	fontFamily: Arial;
+	fontSize: 12;
+}
+VBox.hboxBusquedas
+{
+	backgroundAlpha: 1.0;
+	backgroundColor: #EFEFEF;
+	horizontalAlign: center;
+	paddingBottom: 5;
+	paddingLeft: 10;
+	paddingRight: 10;
+	paddingTop: 5;
+	verticalAlign: middle;
+}
+LinkBar.linkBarBusquedas
+{
+	fontFamily: Arial;
+	fontSize: 12;
+}
+Label.lblInfoCaja
+{
+	color: #FFFFFF;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+
+HBox.hboxInfoCaja
+{
+	horizontalAlign: center;
+	verticalAlign: middle;
+}
+HBox.hboxMenu
+{
+	backgroundColor: #FFFFFF;
+	horizontalAlign: right;
+	verticalAlign: middle;
+}
+HBox.hboxDivBusqueda
+{
+	backgroundColor: #ffffff;
+}
+VBox.VboxBlock
+{
+	backgroundColor: #00388B;
+	borderColor: #C0C0C0;
+	borderStyle: solid;
+	borderThickness: 3;
+	color: #FFFFFF;
+	horizontalAlign: center;
+	verticalAlign: middle;
+}
+
+.titleMDI{
+	color: #FFFFFF;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+Label
+{
+	fontFamily: Arial;
+	fontSize: 11;
+}
+
+Button
+{
+	fontFamily: Arial;
+	fontSize: 11;
+}
+AdvancedDataGrid
+{
+	fontFamily: Arial;
+	fontWeight: normal;
+	textAlign: center;
+	fontSize: 11;
+	borderColor: #9FA4A7;
+	borderThickness: 3;		
+	headerColors: #136CB3, #B2D1E9;
+	color: #000000;
+	headerStyleName: advancedDataGridHeader;	
+	textSelectedColor: #2B333C;
+	
+}
+Panel
+{
+	borderColor: #919399;
+	title-style-name: titleMDI;
+	background-color: #EFEFEF;
+	padding-bottom: 5;
+	padding-left: 5;
+	padding-right: 5;
+	padding-top: 5;
+	background-alpha: 0.9;
+	borderAlpha: 1.0;
+}
+/*TabNavigator
+{
+	tabStyleName: tabNavigatorTab;
+	backgroundColor: #EFEFEF;	
+	fontFamily: Arial;
+	fontSize: 12;
+	selectedTabTextStyleName: tabNavigatorSelectedTabText;
+	backgroundAlpha: 1.0;
+	lastTabStyleName: tabNavigatorLastTab;
+	borderThickness: 1;	
+	borderColor: #000000;
+	backgroundSize: auto;
+}*/
+.advancedDataGridHeader
+{
+	fontFamily: Arial;
+	fontSize: 11;
+	fontWeight: bold;
+	color: #FFFFFF;
+}
+.tabNavigatorTab
+{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #136CB3, #B2D1E9;
+	cornerRadius: 0;
+	color: #FAFAFA;
+	borderColor: #000000;
+}
+.tabNavigatorSelectedTabText
+{
+	fontFamily: Arial;
+	fontSize: 12;
+	color: #000000;
+}
+.tabNavigatorLastTab
+{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #136CB3, #B2D1E9;
+	color: #FFFFFF;
+	cornerRadius: 0;
+	borderColor: #000000;
+}
+.alertTitle
+{
+	textAlign: left;
+	fontFamily: Arial;
+	fontSize: 12;
+	color: #FFFFFF;
+}
+.alertControlBar
+{
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+	color: #FFFFFF;
+}
+.alertStatus
+{
+}
+Label.titulos14
+{
+	fontSize: 14;
+}
+TextInput.txtInfoCaja
+{
+	color: #FF0000;
+	fontSize: 12;
+	fontWeight: bold;
+}
+

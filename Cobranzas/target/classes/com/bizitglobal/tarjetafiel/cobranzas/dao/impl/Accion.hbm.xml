@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.bizitglobal.tarjetafiel.cobranzas.negocio">
+  <class name="Accion" table="t_vis_cob_acciones" >
+  	<id name="idAccion" type="integer" column="c_id_accion">
+  		<generator class="increment"/>
+  	</id>
+  	<discriminator column="c_tipo_accion" type="string" />
+  	
+  	<subclass name="EnvioCarta" discriminator-value="1">
+  		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+  	</subclass> 
+  	
+  	<subclass name="CambioEstadoMora" discriminator-value="2">
+  		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+  	</subclass> 
+  	
+  	<subclass name="Teledirecto" discriminator-value="3">
+  		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+  	</subclass> 
+  	
+  	<subclass name="BloqueoPlastico" discriminator-value="4">
+  		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+  	</subclass> 
+  	
+  	<subclass name="LlamadoTelefonicoOficina" discriminator-value="5">
+  		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+  	</subclass> 
+  	
+  	<subclass name="Codesa" discriminator-value="6">
+  		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+  	</subclass>
+  	
+  	<subclass name="InformeBancoCentral" discriminator-value="7">
+  		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+  	</subclass>
+  	
+  	<subclass name="AsignarCobrador" discriminator-value="8">
+  		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+  	</subclass>
+  	
+  	<subclass name="FinalizarEtapaCobradores" discriminator-value="9">
+  		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+  	</subclass>
+  	
+  	<subclass name="CargoPorMora" discriminator-value="10">
+  		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+  	</subclass>
+  	
+  	<subclass name="EnvioAvisoUrgente" discriminator-value="11">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+  	
+	<subclass name="EnvioAvisoDocumentado" discriminator-value="12">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="EnvioAvisoPrejudicial" discriminator-value="13">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="LlamadasTelefonicas" discriminator-value="14">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="AsignarAbogado" discriminator-value="15">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="LiquidacionJudicial" discriminator-value="16">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	<subclass name="EnvioMailMora" discriminator-value="17">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	<subclass name="EnvioMailMora30" discriminator-value="18">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+
+	<subclass name="WSPTitular30" discriminator-value="19">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="SMSTitular30" discriminator-value="20">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="EnvioMailMora60" discriminator-value="21">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="WSPTitular60" discriminator-value="22">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="SMSTitular60" discriminator-value="23">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="EnvioMailMora90" discriminator-value="24">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="WSPTitularAdi90" discriminator-value="25">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="SMSTitularAdi90" discriminator-value="26">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="EnvioMailMora120" discriminator-value="27">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="WSPTitularAdi120" discriminator-value="28">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="SMSTitularAdi120" discriminator-value="29">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="NotificacionApp30" discriminator-value="30">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="NotificacionApp60" discriminator-value="31">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="NotificacionApp90" discriminator-value="32">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="NotificacionApp120" discriminator-value="33">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+	<subclass name="NotificacionApp3" discriminator-value="34">
+		<property name="descripcion" column="c_descripcion" type="string" length="20"/>
+	</subclass>
+	
+
+	
+	  	
+  </class>
+</hibernate-mapping>

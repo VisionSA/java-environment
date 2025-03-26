@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <link rel="shortcut icon" href="images/logo.png">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Tarjeta Fiel | Solicitud web</title>
+<!-- 
+ <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&display=swap" > -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" >
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+<!-- <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"> 
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"> -->
+
+<link href="css/alertify.css"       rel="stylesheet" type="text/css">
+<link href="css/alertifyThemes.css"      rel="stylesheet" type="text/css">
+<link href="css/alertifySemantic.css"    rel="stylesheet" type="text/css">
+<link href="css/alertifyBootstrap.css"   rel="stylesheet" type="text/css">
+<link href="css/firacode.css"            rel="stylesheet" type="text/css">
+
+
+<link href="css/vuetify.css" rel="stylesheet">
+<link href="css/sb-admin.css" rel="stylesheet">
+<link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="page-top">
+
+    <nav class="navbar-navbar-default" role="navigation">
+    <a class="navbar-brand mr-1 text-white" href="index.html">Tarjeta Fiel | Solicitud web</a>
+
+</nav>
+<div id="wrappers">
+
+<div id="content-wrappers">
+<div class="container-fluids" >
+
+<div id="app">
+<v-app id="inspire">
+<v-card-title>
+<v-row
+text-align="center"
+justify="space-around"
+>
+<v-text-field
+class="search"
+v-model="search"
+append-icon="mdi-magnify"
+label="Busqueda"
+single-line
+hide-details
+></v-text-field> 
+<template>
+
+<v-btn
+small
+@click="funcionColor1"
+color="#FFCDD2"
+>
+Rechazados
+</v-btn>
+
+<v-btn
+small
+@click="funcionColor2"
+color="#94f3f1"
+>
+Pendientes
+</v-btn>
+
+<v-btn
+small
+@click="funcionColor3"
+color="#FFFDE7"
+>
+Evaluacion
+</v-btn>
+
+<v-btn
+small
+@click="funcionColor4"
+color="#DCEDC8"
+>
+Revisión
+</v-btn>
+
+<v-btn
+small
+@click="funcionColorTabla2"
+class="boton1"
+
+>
+Color tabla
+</v-btn>
+
+<v-btn
+small  
+@click="recargar" 
+color="primary"
+>
+ Recargar
+</v-btn>
+
+</v-row>
+</template>
+</v-card-title>
+<v-card>
+  
+<v-data-table
+class="tabla"
+dense
+:headers="headers"
+:items="desserts"
+:page.sync="page"
+:items-per-page="itemsPerPage"
+hide-default-footer
+@page-count="pageCount = $event"
+:search="search"
+>
+
+<template v-slot:header.max_situacion_bcra="{ header }">
+  {{ header.text }}
+  <v-menu offset-y :close-on-content-click="false">
+    <template v-slot:activator="{ on, attrs }">
+      <v-btn icon v-bind="attrs" v-on="on">
+        <v-icon x-small :color="situacion ? 'primary' : ''">
+          mdi-filter
+        </v-icon>
+      </v-btn>
+    </template>
+    <div style="background-color: white; width: 280px">
+      <v-select
+      type="number"
+      :items="situacion"
+      v-model="max_situacion_bcra"
+      label="Situacion(BCRA)"
+      required
+      ></v-select>
+      <v-btn
+        @click="filtrarSituacion(max_situacion_bcra)"
+        small
+        text
+        color="primary"
+        class="ml-2 mb-2"
+      >Filtrar</v-btn>
+      <v-btn
+      @click="eliminarFiltroSituacion"
+      small
+      text
+      color="primary"
+      class="ml-2 mb-2"
+    >Borrar</v-btn>
+       </div>
+  </v-menu>
+</template>
+                             <!-- editar nombre -->
+<template v-slot:item.nombre="props">
+<v-edit-dialog
+:return-value.sync="props.item.nombre"
+large
+persistent
+@save="save(
+props.item.idSolicitud,
+props.item.nombre,
+props.item.apellido,
+props.item.telefono,
+props.item.estadoCivil,
+props.item.hijos,
+props.item.actividad,
+props.item.vencimiento,
+props.item.nroSolicitud,
+props.item.fechaNacimiento,
+props.item.direccion,
+props.item.email,
+props.item.observaciones,
+props.item.aceptada)"
+@cancel="cancel"
+@cerrar="cerrar"
+  >
+<div>{{ props.item.nombre }}</div>
+<template v-slot:input>
+<div class="mt-4 text-h6">
+Editar nombre
+</div>
+<v-text-field
+v-model="props.item.nombre"
+label="Editar nombre"
+single-line
+counter
+autofocus
+@save="save"
+@cancel="cancel"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+                           <!-- editar apellido -->
+<template v-slot:item.apellido="props">
+  <v-edit-dialog
+    :return-value.sync="props.item.apellido"
+    large
+    persistent
+    @save="save(
+      props.item.idSolicitud,
+      props.item.nombre,
+      props.item.apellido,
+      props.item.telefono,
+      props.item.estadoCivil,
+      props.item.hijos,
+      props.item.actividad,
+      props.item.vencimiento,
+      props.item.nroSolicitud,
+      props.item.fechaNacimiento,
+      props.item.direccion,
+      props.item.email,
+      props.item.observaciones,
+      props.item.aceptada)"
+    @cancel="cancel"
+    @cerrar="cerrar"
+  >
+<div>{{ props.item.apellido }}</div>
+<template v-slot:input>
+<div class="mt-4 text-h6">
+Editar apellido
+</div>
+<v-text-field
+v-model="props.item.apellido"
+label="Editar apellido"
+single-line
+counter
+autofocus
+@save="save"
+@cancel="cancel"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+                          <!-- editar telefono -->
+<template v-slot:item.telefono="props">
+  <v-edit-dialog
+    type="number"
+    :return-value.sync="props.item.telefono"
+    large
+    persistent
+    @save="save(
+props.item.idSolicitud,
+props.item.nombre,
+props.item.apellido,
+props.item.telefono,
+props.item.estadoCivil,
+props.item.hijos,
+props.item.actividad,
+props.item.vencimiento,
+props.item.nroSolicitud,
+props.item.fechaNacimiento,
+props.item.direccion,
+props.item.email,
+props.item.observaciones,
+props.item.aceptada)"
+    @cancel="cancel"
+    @cerrar="cerrar"
+  >
+<div>{{ props.item.telefono }}</div>
+<template v-slot:input>
+<div class="mt-4 text-h6">
+Editar telefono
+</div>
+<v-text-field
+type="number"
+v-model="props.item.telefono"
+label="Editar telefono"
+single-line
+counter
+autofocus
+@save="save"
+@cancel="cancel"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+                        <!-- editar domicilio -->
+<template v-slot:item.direccion="props">
+  <v-edit-dialog
+    :return-value.sync="props.item.direccion"
+    large
+    persistent
+    @save="save(
+      props.item.idSolicitud,
+      props.item.nombre,
+      props.item.apellido,
+      props.item.telefono,
+      props.item.estadoCivil,
+      props.item.hijos,
+      props.item.actividad,
+      props.item.vencimiento,
+      props.item.nroSolicitud,
+      props.item.fechaNacimiento,
+      props.item.direccion,
+      props.item.email,
+      props.item.observaciones,
+      props.item.aceptada)"
+    @cancel="cancel"
+    @cerrar="cerrar"
+  >
+<div>{{ props.item.direccion }}</div>
+<template v-slot:input>
+<div class="mt-4 text-h6">
+Editar domicilio
+</div>
+<v-text-field
+v-model="props.item.direccion"
+label="Editar domicilio"
+single-line
+counter
+autofocus
+@save="save"
+@cancel="cancel"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+                           <!-- editar correo -->
+<template v-slot:item.email="props">
+  <v-edit-dialog
+    :return-value.sync="props.item.email"
+    large
+    persistent
+    @save="save(
+      props.item.idSolicitud,
+      props.item.nombre,
+      props.item.apellido,
+      props.item.telefono,
+      props.item.estadoCivil,
+      props.item.hijos,
+      props.item.actividad,
+      props.item.vencimiento,
+      props.item.nroSolicitud,
+      props.item.fechaNacimiento,
+      props.item.direccion,
+      props.item.email,
+      props.item.observaciones,
+      props.item.aceptada)"
+   @cancel="cancel"
+    @cerrar="cerrar"
+  >
+<div>{{ props.item.email }}</div>
+<template v-slot:input>
+<div class="mt-4 text-h6">
+Editar correo
+</div>
+<v-text-field
+v-model="props.item.email"
+label="Editar correo"
+single-line
+counter
+autofocus
+@save="save"
+@cancel="cancel"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+                              <!-- ver repetidas -->
+<template v-slot:item.repetida="props">
+  <v-edit-dialog
+  max-width ="150px"
+    dense
+    :return-value.sync="props.item.repetida"
+    large
+    @open = "repetidos(props.item.dni,props.item.email,props.item.telefono)"
+>
+<div>{{ props.item.repetida }}</div>
+<template v-slot:input>
+<div class="mt-4-text-h6">
+Datos repetidos
+<v-data-table
+  dense
+  :headers="headers2"
+  :items="desserts2"
+  hide-default-footer
+  >
+  </v-data-table>
+ </div>
+</template>
+</v-edit-dialog>
+</template>
+
+                        <!-- Filtrar repetida -->
+<template v-slot:header.repetida="{ header }">
+{{ header.text }}
+<v-menu offset-y :close-on-content-click="false">
+<template v-slot:activator="{ on, attrs }">
+<v-btn icon v-bind="attrs" v-on="on">
+<v-icon x-small :color="repetidas ? 'primary' : ''">
+mdi-filter
+</v-icon>
+</v-btn>
+</template>
+<div style="background-color: white; width: 280px">
+<v-select
+:items="repetidas"
+v-model="repetidas2"
+label="Repetidas"
+required
+></v-select>
+<v-btn
+@click="filtrarRepetida(repetidas2)"
+small
+text
+color="primary"
+class="ml-2 mb-2"
+>Filtrar</v-btn>
+<v-btn
+@click="eliminarFiltroRepetida"
+small
+text
+color="primary"
+class="ml-2 mb-2"
+>Borrar</v-btn>
+</div>
+</v-menu>
+</template>
+
+                             <!-- Filtrar canal -->
+<template v-slot:header.canal="{ header }">
+{{ header.text }}
+<v-menu offset-y :close-on-content-click="false">
+<template v-slot:activator="{ on, attrs }">
+<v-btn icon v-bind="attrs" v-on="on">
+<v-icon x-small :color="canales ? 'primary' : ''">
+mdi-filter
+</v-icon>
+</v-btn>
+</template>
+<div style="background-color: white; width: 280px">
+<v-select
+
+:items="canales"
+v-model="canales2"
+label="Canal"
+required
+></v-select>
+<v-btn
+@click="filtrarCanal(canales2)"
+small
+text
+color="primary"
+class="ml-2 mb-2"
+>Filtrar</v-btn>
+<v-btn
+@click="eliminarFiltroCanal"
+small
+text
+color="primary"
+class="ml-2 mb-2"
+>Borrar</v-btn>
+</div>
+</v-menu>
+</template>
+
+                                  <!-- editar observaciones -->
+<template v-slot:item.observaciones="props">
+  <v-edit-dialog
+    :return-value.sync="props.item.observaciones"
+    large
+    persistent
+    @save="save(
+      props.item.idSolicitud,
+      props.item.nombre,
+      props.item.apellido,
+      props.item.telefono,
+      props.item.estadoCivil,
+      props.item.hijos,
+      props.item.actividad,
+      props.item.vencimiento,
+      props.item.nroSolicitud,
+      props.item.fechaNacimiento,
+      props.item.direccion,
+      props.item.email,
+      props.item.observaciones,
+      props.item.aceptada)"
+    @cancel="cancel"
+    @cerrar="cerrar"
+  >
+<div>{{ props.item.observaciones }}</div>
+<template v-slot:input>
+<div class="mt-4 text-h6">
+Editar observaciones
+</div>
+<v-text-field
+v-model="props.item.observaciones"
+label="Editar observacion"
+single-line
+counter
+autofocus
+@save="save"
+@cancel="cancel"
+></v-text-field>
+</template>
+</v-edit-dialog>
+</template>
+                              <!-- Filtrar estado -->
+<template v-slot:header.aceptada="{ header }">
+{{ header.text }}
+<v-menu offset-y :close-on-content-click="false">
+<template v-slot:activator="{ on, attrs }">
+<v-btn icon v-bind="attrs" v-on="on">
+<v-icon x-small :color="estados ? 'primary' : ''">
+mdi-filter
+</v-icon>
+</v-btn>
+</template>
+<div style="background-color: white; width: 280px">
+<v-select
+:items="estados2"
+v-model="estados3"
+label="Estados"
+required
+></v-select>
+<v-btn
+@click="filtrarEstado(estados3)"
+small
+text
+color="primary"
+class="ml-2 mb-2"
+>Filtrar</v-btn>
+<v-btn
+@click="eliminarFiltroEstado"
+small
+text
+color="primary"
+class="ml-2 mb-2"
+>Borrar</v-btn>
+
+</div>
+</v-menu>
+</template>
+                                <!-- editar estado -->
+<template v-slot:item.aceptada="props">
+<v-edit-dialog
+:return-value.sync="props.item.aceptada"
+large
+persistent
+@save="save(
+props.item.idSolicitud,
+props.item.nombre,
+props.item.apellido,
+props.item.telefono,
+props.item.estadoCivil,
+props.item.hijos,
+props.item.actividad,
+props.item.vencimiento,
+props.item.nroSolicitud,
+props.item.fechaNacimiento,
+props.item.direccion,
+props.item.email,
+props.item.observaciones,
+props.item.aceptada)"
+@cancel="cancel"
+@cerrar="cerrar"
+  >
+<div>{{ props.item.aceptada }}</div>
+<template v-slot:input>
+<div class="mt-4 text-h6">
+Editar estados
+</div>
+<v-select
+:items="estados"
+v-model="props.item.aceptada"
+label="Editar estado"
+single-line
+counter
+autofocus
+@save="save"
+@cancel="cancel"
+class="estadoCambiar"
+></v-select>
+</template>
+</v-edit-dialog>
+</template>
+
+<template v-slot:top>
+<v-dialog
+v-model   ="dialog"
+max-width ="1150px"
+> 
+
+<v-card>
+<v-container>
+<v-row>
+
+<v-col
+cols="4"
+sm="4"
+md="4"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.idSolicitud"
+label="ID"
+readonly
+></v-text-field>
+</v-col>
+
+ <v-col
+cols="4"
+sm="4"
+md="4"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.dni"
+label="DNI"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="4"
+sm="4"
+md="4"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.nombre"
+label="Nombre"
+
+></v-text-field>
+</v-col>
+
+<v-col
+cols="4"
+sm="4"
+md="4"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.apellido"
+label="Apellido"
+
+></v-text-field>
+</v-col>
+
+<v-col
+cols="4"
+sm="4"
+md="4"
+class="prueba"
+>
+<v-text-field
+type="email"
+hide-details="auto"
+v-model="showItem.email"
+label="Direccion de correo electronico"
+
+></v-text-field>
+</v-col>
+
+<v-col
+cols="4"
+sm="4"
+md="4"
+class="prueba"
+>
+<v-text-field
+type="number"
+hide-details="auto"
+v-model="showItem.telefono"
+label="Telefono"
+
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.estadoCivil"
+label="Estado civil"
+
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.hijos"
+label="Hijos"
+
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.actividad"
+label="Actividad"
+
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.vencimiento"
+label="Vencimiento"
+
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+type="number"
+hide-details="auto"
+v-model="showItem.nroSolicitud"
+label="Numero solicitud"
+
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+v-model="showItem.fechaNacimiento"
+label="Fecha nacimiento"
+hint="dd/mm/aaaa"
+persistent-hint
+></v-text-field>
+</v-col>
+
+<v-col
+cols="12"
+sm="12"
+md="12"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.direccion"
+label="Domicilio"
+
+></v-text-field>
+</v-col>
+
+<v-col
+cols="1"
+sm="1"
+md="1"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.sexo"
+label="Sexo"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="3"
+sm="3"
+md="3"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.fecha"
+label="Marca temporal"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.mora"
+label="Mora"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.max_situacion_bcra"
+label="Situacion(BCRA)"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.monto_bcra"
+label="Monto"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.cant_afec_bcra"
+label="Cantidad"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.cuil"
+label="Cuil"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.repetida"
+label="Repetida"
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.es_cliente"
+label="Cliente"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="1"
+sm="1"
+md="1"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.canal"
+label="Canal"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="2"
+sm="2"
+md="2"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.repetida_dni"
+label="DNI repetido"
+readonly
+></v-text-field>
+</v-col>
+
+<v-col
+cols="3"
+sm="3"
+md="3"
+class="prueba"
+>
+<v-select
+hide-details="auto"
+class="estadoColor"
+v-model="showItem.aceptada"
+label="Estados"
+:items="estados2"
+></v-select>
+</v-col>
+
+
+<v-col
+cols="12"
+sm="12"
+md="12"
+class="prueba"
+>
+<v-text-field
+hide-details="auto"
+v-model="showItem.observaciones"
+label="Observaciones"
+></v-text-field>
+</v-col>
+
+</v-row>
+</v-container>
+</v-card-text>
+
+<v-card-actions>
+<v-spacer></v-spacer>
+<v-btn
+color="blue darken-1"
+text
+@click="cerrar"
+>
+Cerrar
+</v-btn>
+<v-btn
+
+color="blue darken-1"
+text
+@click="guardarTarjeta
+(showItem.idSolicitud    ,showItem.nombre     ,showItem.apellido,
+ showItem.telefono       ,showItem.estadoCivil,showItem.hijos,
+ showItem.actividad      ,showItem.vencimiento,showItem.nroSolicitud,
+ showItem.fechaNacimiento,showItem.direccion  ,showItem.email,
+ showItem.observaciones  ,showItem.aceptada)"
+>
+Guardar
+</v-btn>
+</v-card-actions>  
+</v-card>   
+</v-dialog>
+
+</template>
+
+<!-- <template v-slot:item.vistas="{item}">
+<v-container fluid>
+  <v-container
+  class="checkbox"
+>
+  <v-checkbox
+  class="checkbox"
+    v-model="checkbox"
+  ></v-checkbox>
+</v-container>
+</template> -->
+
+<template v-slot:item.actions="{ item }">
+  <v-icon
+  small
+  class="mr-2"
+  @click="showItems (item)"
+  >
+  mdi-alert-circle-outline
+  </v-icon>
+</template>
+
+</v-data-table>
+<v-snackbar
+v-model="snack"
+:timeout="1000"
+:color="snackColor"
+>
+{{ snackText }}
+  
+<template v-slot:action="{ attrs }">
+<v-btn
+v-bind="attrs"
+text
+@click="snack = false"
+>
+Cerrar
+</v-btn>
+</template>
+</v-snackbar>
+
+</v-card>
+
+<div class="text-center pt-2">
+  <v-pagination
+    v-model="page"
+    :length="pageCount"
+    @click="funcionColor1"
+  ></v-pagination>
+  </div>
+</div>
+</div>
+
+
+
+<!-- Sticky Footer -->
+<footer class="footer">
+<div class="container1">
+<div class="copyright text-center text-white my-auto">
+<span>Tarjeta Fiel</span>
+</div>
+</div>
+</footer>
+</div>      
+        </div>
+      </v-app> 
+
+      
+        <!-- /#wrapper -->
+      
+        <!-- Scroll to Top Button-->
+        <!-- <a class="scroll-to-top rounded" href="#page-top"> -->
+          <!-- <i class="fas fa-angle-up"></i> -->
+        <!-- </a> -->
+        
+        <!-- links js -->
+        <!-- <script src="js/alertify.js"></script>
+        <script src="js/vue.js"></script>
+        <script src="js/vuetify.min.js"></script>
+        <script src="js/axios.min.js"></script> -->
+        <!-- scripts -->
+        <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> -->
+        <script src="js/vue.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        
+        
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <!-- Bootstrap core JavaScript-->
+        <script src="vendor/jquery/jquery.min.js"></script>
+      
+      
+        <!-- Core plugin JavaScript-->
+        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+      
+        <!-- Custom scripts for all pages-->
+        <script src="js/sb-admin.min.js"></script>
+      <script src="js/script.js"></script>
+      
+      </body>
+      
+      </html>

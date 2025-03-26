@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.bizitglobal.tarjetafiel.cobranzas.negocio">
+     
+    <sql-query name="clientesQueEntranEnMora">
+        <!-- Devuelve los clientes que han entrado en mora y no tienen un plan seteado. 
+             A estos clientes se les seteara el plan y la fecha en que entran en mora. -->
+    	<return alias="cliente" class="com.bizitglobal.tarjetafiel.transacciones.negocio.ClienteLiquidacion" lock-mode="read"/>
+		    Select DISTINCT(clientes.c_id_cliente), null as c_id_individuo, clientes.c_limite_credito, clientes.c_saldo_linea, clientes.c_id_plan_mora, clientes.c_fecha_mora,clientes.v_nombre, clientes.v_domicilio, clientes.v_localidad,clientes.v_cod_post, clientes.v_provincia 
+		    	from t_vis_tra_liq_clientes liqClientes inner join t_vis_tra_clientes clientes on clientes.c_id_cliente = liqclientes.c_id_cliente
+		    		inner join t_vis_tra_liquidaciones_cli liq on liqclientes.c_id_liquidacion_clientes = liq.c_id_liquidacion_clientes 
+		    		where clientes.c_id_estado_cobranza not in (9, 10) and clientes.c_id_estado_cliente not in (4) 
+		    			and liq.c_confirmada = 'S'
+		    			and (liqClientes.c_monto_total - liqclientes.c_importe_pagado) &gt; :importeDeGracia 
+		    			and TRUNC(liqclientes.c_fecha_vto_3)  &lt; TRUNC(SYSDATE)+1 
+		    			and (clientes.c_id_titular is null or clientes.c_id_titular = 0) 
+		    			and clientes.c_id_plan_mora is null 
+		    			and liqclientes.c_id_liq_cliente = (select max(liq1.c_id_liq_cliente) from t_vis_tra_liq_clientes liq1 
+              			inner join t_vis_tra_liquidaciones_cli  liqcli on liq1.c_id_liquidacion_clientes = liqcli.c_id_liquidacion_clientes and liqcli.c_confirmada = 'S'
+              			where liqclientes.c_id_cliente = liq1.c_id_cliente)
+		    			order by clientes.c_id_cliente
+	</sql-query>
+
+	<sql-query name="asociarPlanMoraACliente">
+        <!-- Setea el plan de mora al cliente de :idCliente y la fecha del dia actual -->
+		    Update t_vis_tra_clientes set c_id_plan_mora = :idPlanMora, 
+		    c_fecha_mora = (SElect min(x.c_fecha_vto_3) from t_vis_tra_liq_clientes x where x.c_id_cliente = :idCliente and x.c_importe_pagado &lt; x.c_monto_total)
+		     where c_id_cliente = :idCliente and c_id_plan_mora is null
+	</sql-query>
+	
+	<sql-query name="nulearPlanesPorDefecto">
+        <!-- Nulea todos los planes por defecto -->
+		    Update t_vis_cob_planes set c_es_plan_por_defecto = 'N'
+	</sql-query>
+	
+	<sql-query name="getClientesEnMora">
+        <!-- Devuelve los clientes que han entrado en mora -->
+    	<return alias="moroso" class="com.bizitglobal.tarjetafiel.cobranzas.negocio.Moroso"/>
+		    Select clientes.c_id_cliente as idCliente ,clientes.c_id_plan_mora as idPlanDeMora, clientes.c_fecha_mora as fechaMora, trunc(sysdate - clientes.c_fecha_mora) as diasEnMora from t_vis_tra_clientes clientes 
+		     where clientes.c_id_plan_mora is not null
+		     order by clientes.c_id_cliente
+	</sql-query>
+	
+	<sql-query name="cambiarEstadoACliente">
+        <!-- Setea el estado :estadoCobranza de cobranza al cliente de :idCliente-->
+		    Update t_vis_tra_clientes set c_id_estado_cobranza = :estadoCobranza where c_id_cliente = :idCliente
+	</sql-query>
+	
+	<sql-query name="cambiarEstadoPlan">
+        <!-- Setea el estado habilitado a :habilitad del plan de idPlan :idP-->
+		    Update t_vis_cob_planes set c_habilitado = :habilitad where c_id_plan = :idP
+	</sql-query>
+	
+	<sql-query name="marcarPlanPorDefecto">
+        <!-- Marca el plan de idPlan :idP como plan por defecto-->
+		    Update t_vis_cob_planes set c_es_plan_por_defecto = 'S' where c_id_plan = :idP
+	</sql-query>
+	
+	<sql-query name="desmarcarPlanPorDefecto">
+        <!-- Busca el plan por defecto y lo desmarca.-->
+		    Update t_vis_cob_planes set c_es_plan_por_defecto = 'N' where c_es_plan_por_defecto = 'S'
+	</sql-query>
+	
+	<sql-query name="insertarHistoricoMora">
+        <!-- Inserta en la tabla t_vis_cob_mora_hist un registro para mantener el historial de mora.-->
+		    INSERT
+			INTO T_VIS_COB_MORA_HIST
+			  (
+			    C_ID_MORA_HIST,
+			    C_ID_CLIENTE,
+			    C_FECHA_MORA_INICIO,
+			    C_FECHA_MORA_FIN,
+			    C_TIMESTAMP
+			  )
+			  VALUES
+			  (
+			    SEQ_ID_MORA_HIST.nextval,
+			    :idCliente,
+			    (SElect min(x.c_fecha_vto_3) from t_vis_tra_liq_clientes x where x.c_id_cliente = :idCliente and x.c_importe_pagado &lt; x.c_monto_total),
+			    null,
+			    trunc(sysdate)
+			  )
+	</sql-query>
+	
+	<sql-query name="insertarErrorEjecucion">
+        <!-- Inserta en la tabla t_vis_cob_mora_hist un registro para mantener el historial de mora.-->
+		    INSERT
+			INTO T_VIS_COB_ERROR_EJEC
+			  (
+			    C_ID_ERROR_EJEC,
+			    C_ID_CLIENTE,
+			    C_FECHA_ERROR,
+			    C_ACCION_ERROR,
+			    C_DESCRIPCION_ERROR
+			  )
+			  VALUES
+			  (
+			    SEQ_ID_ERROR_EJEC.nextval,
+			    :idCliente,
+			    trunc(sysdate),
+			    :idAccion,
+			    :descripcion
+			  )
+	</sql-query>
+	
+	
+	
+	
+</hibernate-mapping>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+		 creationComplete="onCreationComplete()" 
+		 width="100%" height="100%" 
+		 xmlns:cliente="views.categorias.cliente.*" 
+		 xmlns:viewStackEffects="org.efflex.mx.viewStackEffects.*" 
+		 horizontalAlign="center" xmlns:categorias="views.categorias.*" 
+		 xmlns:mate="http://mate.asfusion.com/" verticalGap="0">
+	
+	<cliente:EncabezadoClienteView id="encabezadoView" verticalScrollPolicy="off"  resizeEffect="{resize}" backgroundColor="#F0F0F0"  height="60"/>
+	<!--verticalGap="8" horizontalGap="8" paddingLeft="10"-->
+	<viewStackEffects:FadeZoom id="effect"/>
+	
+	<mx:VBox width="100%" height="100%" verticalGap="0">
+	<mx:ToggleButtonBar id="toggleVistas" dataProvider="{vistas}" width="100%" height="20" itemClick="clickHandler()"/>	
+		
+		<mx:ViewStack id="vistas" width="100%" height="100%" change="vistas_changeHandler(event)">
+			<cliente:LineaCreditoView showEffect="effect" hideEffect="effect" data="{ModelLocatorGeneral.HISTORICO}"/>
+			<cliente:GeneralClienteView showEffect="effect" hideEffect="effect" data="{ModelLocatorGeneral.GENERAL}"/>
+			<cliente:CtaCteClienteView showEffect="effect" hideEffect="effect" />
+			<cliente:ComposicionSaldoClienteView showEffect="effect" hideEffect="effect" />
+			<!--<cliente:ResumenCtaView showEffect="effect" hideEffect="effect" />-->
+			<cliente:TramitesView	showEffect="effect" hideEffect="effect" />
+			<!--<cliente:AgendaClienteView showEffect="effect" hideEffect="effect"/>-->
+			<!--<cliente:TramitesWorkflowView showEffect="effect" hideEffect="effect" />-->
+			<!--I100<cliente:AbogadosView showEffect="effect" hideEffect="effect" />
+			<cliente:HistoricoView showEffect="effect" hideEffect="effect" />		
+			<cliente:AnalisisCuentaView showEffect="effect" hideEffect="effect" />-->
+			<cliente:PlasticosView showEffect="effect" hideEffect="effect" />
+			<cliente:VerDocAdjuntos showEffect="effect" hideEffect="effect" id="verDocAdj"/>
+			<cliente:SimuladoresView showEffect="effect" hideEffect="effect" />
+			<!--<cliente:FuturosVencimientosView showEffect="effect" hideEffect="effect"/>-->
+		</mx:ViewStack>
+	</mx:VBox>
+	<mate:Listener  receive="{ this.toggleVistas.selectedIndex =0}" type="setearPestaniaDefault"/>	
+	
+	<mx:Resize id="resize"/>
+	
+	<mate:Listener type="resizeBusqueda" receive="encabezadoView.height = encabezadoModel.alto"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Button;
+			import mx.events.IndexChangedEvent;
+			
+			import com.tarjetafiel.proveedorconexion.event.ClientesGeneralEvent;
+			import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+			
+			import events.ClienteEvent;
+			
+			import mx.controls.Alert;
+			import mx.controls.ButtonBar;
+			import mx.events.ItemClickEvent;
+			import mx.utils.ObjectUtil;
+		     
+			  [Bindable]public var encabezadoModel:EncabezadoModel;  
+			  
+			  [Bindable]
+			  private var modelo : ModelLocatorGeneral = ModelLocatorGeneral.getInstance();
+			  
+			  
+			  
+			  public function onCreationComplete():void{
+			  		
+			  }
+			  
+			  public function initToggle():void {
+			  	toggleVistas.data = ModelLocatorGeneral.CERO;
+			  }
+			  
+			
+			  
+			  
+			  private function clickHandler():void {
+			  	if (vistas.selectedChild.data == ModelLocatorGeneral.HISTORICO && modelo.clienteSeleccionado.cliente != null){
+					 
+			  	}		  	
+			  }
+			  
+
+			protected function vistas_changeHandler(event:IndexChangedEvent):void
+			{
+
+			}
+
+		]]>
+	</mx:Script>
+	
+</mx:VBox>

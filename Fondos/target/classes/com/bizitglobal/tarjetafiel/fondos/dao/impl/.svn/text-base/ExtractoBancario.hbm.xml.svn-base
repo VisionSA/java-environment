@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.ExtractoBancario" table="T_VIS_FON_EXTRACTO_BANCARIO" >
+	<id name="idExtractoBancario" type="java.lang.Long" column="C_ID_EXTRACTO_BANCARIO">
+		<generator class="increment" />
+	</id>
+	
+	<property name="urlArchivo" type="java.lang.String" column="C_URL_ARCHIVO" not-null="true" length="500"/>
+	<property name="nroCliente" type="java.lang.String" column="C_NRO_CLIENTE" not-null="true" length="7"/>
+	<property name="fechaProceso" type="java.util.Date" column="C_FECHA_PROCESO" not-null="true" length="3594"/>
+	<property name="nombreArchivo" type="java.lang.String" column="C_NOMBRE_ARCHIVO" not-null="true" length="6"/>
+	<property name="cantRegistroHF" type="java.lang.Integer" column="C_CANT_REG_H_F" not-null="true" />
+	<property name="cantRegistroMF" type="java.lang.Integer" column="C_CANT_REG_M_F" not-null="false" />
+	<property name="registro" type="java.lang.String" column="C_REGISTRO" not-null="true" length="80"/>
+	<property name="registroF" type="java.lang.String" column="C_REGISTRO_F" not-null="true" length="80"/>
+	<property name="idBanco" type="java.lang.Long" column="C_ID_BANCO" not-null="false" />
+	<property name="fechaProcesoCadena" type="java.lang.String" column="C_FECHA_PROCESO_CADENA" not-null="true" length="8"/>
+	<property name="timeStamp" type="java.util.Date" column="C_TIMESTAMP" not-null="true" length="3594"/>
+	<property name="conciliado" type="java.lang.Character" column="C_CONCILIADO" not-null="false" />
+	
+	<set name="detallesExtracto" inverse="true" cascade="all">
+		<key>
+			<column name="C_ID_EXTRACTO_BANCARIO" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.DetalleExtracto"/>
+	</set>
+	
+	<many-to-one name="banco" class="com.bizitglobal.tarjetafiel.general.negocio.Banco" not-null="false" insert="false" update="false">
+		<column name="C_ID_BANCO" />
+	</many-to-one>
+	
+</class>
+</hibernate-mapping>

@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.impuestos.negocio.Retencion"  table="t_vis_imp_retenciones">
+    <id name="idRetencion" type="java.lang.Long" column="c_cod_retencion">
+        <generator class="increment" />
+    </id>
+
+    <property name="descripcion" type="java.lang.String" column="c_descripcion" length="50"/>
+
+    <property name="codigoRegimen" type="java.lang.String" column="c_codigo_regimen" length="10"/>
+    
+    <property name="codigoNorma" type="java.lang.String" column="c_codigo_norma" length="10"/>
+
+    <property name="acumulaPagos" type="java.lang.String" column="c_acumula_pagos" not-null="true" length="1"/>
+
+    <property name="minimoImponible" type="java.math.BigDecimal" column="c_minimo_imponible" length="10"/>
+
+    <property name="minimoRetencion" type="java.math.BigDecimal" column="c_minimo_retencion" 
+    		  not-null="true" length="10"/>
+
+    <property name="cuentaContable" type="java.lang.String" column="c_cuenta_contable" length="10"/>
+    
+	<property name="vigenciaHasta" type="java.sql.Timestamp" column="c_vigencia_hasta" length="3594"/>    
+	
+	<property name="vigenciaDesde" type="java.sql.Timestamp" column="c_vigencia_desde" length="3594"/>    	
+
+    <property name="idConceptoDetalle" type="java.lang.Long" column="c_id_concepto_detalle"/>
+
+    <!-- Associations -->
+    <many-to-one name="juridiccionActividad"  
+    			 class="com.bizitglobal.tarjetafiel.impuestos.negocio.JurisdiccionActividad" not-null="true">
+        <column name="c_id_juris_actividad" />
+    </many-to-one>
+    
+   	<many-to-one name="aplicable" class="com.bizitglobal.tarjetafiel.impuestos.negocio.Aplicable" not-null="true"  >
+        <column name="c_id_aplicable" />
+    </many-to-one>
+    
+    <many-to-one name="provincia" class="com.bizitglobal.tarjetafiel.general.negocio.Provincia" not-null="true"  >
+        <column name="c_id_provincia" />
+    </many-to-one>
+    
+    <set name="tramosRetenciones" inverse="false" cascade="none"  >
+        <key>
+            <column name="c_cod_retencion" />
+        </key>
+        <one-to-many class="com.bizitglobal.tarjetafiel.impuestos.negocio.TramosRetencion"/>
+    </set>
+
+</class>
+</hibernate-mapping>

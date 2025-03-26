@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" width="290" height="70">
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			
+		]]>
+	</fx:Script>
+	
+	<s:BorderContainer cornerRadius="5" width="266" height="50" 
+					   textAlign="center" borderWeight="2" dropShadowVisible="true" 
+					   backgroundColor="#0530E7" contentBackgroundColor="#4563F9" 
+					   backgroundAlpha="0.42" contentBackgroundAlpha="0.36">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+		</s:layout>
+		<s:Label text=".:: Cargando ::."  textAlign="center" width="100%" fontFamily="Verdana" fontWeight="bold" color="#014C81"/>
+		<mx:ProgressBar mode="event" labelPlacement="center" 
+						indeterminate="true" textAlign="center" fontStyle="normal" 
+						fontWeight="bold" chromeColor="#0006FF" fontSize="14" enabled="true" labelWidth="0"/>	
+	</s:BorderContainer>
+	
+	
+</s:Group>

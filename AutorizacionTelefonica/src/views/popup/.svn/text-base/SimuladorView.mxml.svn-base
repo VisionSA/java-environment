@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow title="Simulador de Cuotas" xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="600" height="400" showCloseButton="true" close="PopUpManager.removePopUp(this)" horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/">
+
+	<mx:HBox width="50%" horizontalAlign="center" verticalAlign="middle">
+		<mx:Label text="Monto" styleName="tituloBusquedas"/>
+		<mx:TextInput width="110" id="txtMonto"  text="{simuladorViewModel.monto}" keyDown="keyPress(event)"/>
+	</mx:HBox>
+	
+	<mx:HBox width="50%" horizontalAlign="center" verticalAlign="middle">
+		<mx:LinkButton id="simulLink" label="Simular cuotas" click="calcularCuota()"  keyDown="keyPress(event)"/>
+	</mx:HBox>
+	
+	
+	<mx:AdvancedDataGrid id="adg1"  designViewDataType="flat" dataProvider="{simuladorViewModel.arrayCuotas}" width="100%" height="100%"  doubleClick="this.seleccionarCuota()" doubleClickEnabled="true"  fontSize="18" fontWeight="bold">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Cuotas" dataField="cantidadCuota"/>
+			<mx:AdvancedDataGridColumn headerText="Importe Cuota" >
+			<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label fontSize="18" fontWeight="bold" text="{outerDocument.currencyFormatter.format(data.interes + data.capital)}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Total financiar" >
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label color="#ff0000" fontSize="18" fontWeight="bold" text="{outerDocument.currencyFormatter.format((data.interes + data.capital)*data.cantidadCuota)}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>			
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+     <mate:Listener type="{SimuladorEvent.DISABLED_SIMULADOR}"  method="{simuladorViewModel.onChangeCliente}"  />
+	<mx:CurrencyFormatter id="currencyFormatter" currencySymbol="$" rounding="nearest" precision="2"/>
+	<mx:HBox horizontalAlign="center" verticalAlign="middle" width="100%">
+			<mx:Button label="Aceptar" click="this.seleccionarCuota()"/>
+			<mx:Button label="Cancelar" click ="PopUpManager.removePopUp(this)"/>
+	</mx:HBox>
+    <mate:Listener receive="{txtMonto.setFocus()}" type="focusMonto"/>
+    
+	<mx:Script>
+		<![CDATA[
+			import com.util.components.alert.AlertWarning;
+			import mx.controls.Alert;
+			import com.util.components.alert.AlertError;
+			import com.util.components.alert.AlertOk;
+			import com.tarjetafiel.caja.vo.Cuota;
+			import events.SimuladorEvent;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import views.popup.ConfirmacionConsumoView;
+			import views.models.SimuladorViewModel;
+			[Bindable]public var simuladorViewModel:SimuladorViewModel;
+			
+			public var popUpConfirmar:ConfirmacionConsumoView = new ConfirmacionConsumoView();
+			
+			private function calcularCuota():void{
+				var monto:Number = Number(txtMonto.text);
+				if(Number(simuladorViewModel.disponible) - monto > 0){
+				        this.simuladorViewModel.monto= monto;  
+				  		this.simuladorViewModel.calcularCuota(monto);
+				} 		
+				 else   AlertWarning.show("Saldo insuficiente");
+		
+		    }
+		    
+		    		      
+			public function keyPress(evt:KeyboardEvent):void{
+				if(evt.keyCode == Keyboard.ENTER)
+				  if(simulLink.enabled)
+				    calcularCuota();
+			}
+			
+			private function seleccionarCuota():void {
+				simuladorViewModel.cuotaSeleccionada = adg1.selectedItem as Cuota;
+				PopUpManager.removePopUp(this);
+			}
+			
+		    private function confirmar():void {
+	        	simuladorViewModel.cuotaSeleccionada = adg1.selectedItem as Cuota
+	        	PopUpManager.addPopUp(popUpConfirmar,Application.application as DisplayObject, true);
+	        	PopUpManager.centerPopUp(popUpConfirmar);
+	        }
+	         private function inicializar():void{
+			   simuladorViewModel.inicializar();
+		     }
+     	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

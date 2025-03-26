@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.ChequeLugar" table="T_VIS_FON_CHEQUES_LUGAR" >
+	<id name="idChequeLugar" type="java.lang.Long" column="C_ID_CHEQUE_LUGAR">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_CHEQUE_LUGAR_ID</param>
+		</generator>	
+	</id>
+	
+	<property name="timestamp" type="java.util.Date" column="C_TIMESTAMP" not-null="true" length="3594"/>
+	
+    <many-to-one name="cheque" class="com.bizitglobal.tarjetafiel.fondos.negocio.Cheque" not-null="false" >
+		<column name="C_ID_CHEQUE" />
+	</many-to-one>
+	
+	<many-to-one name="lugar" class="com.bizitglobal.tarjetafiel.fondos.negocio.Lugar" not-null="false" >
+		<column name="C_ID_LUGAR" />
+	</many-to-one>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical"
+	creationComplete="init()">
+
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ConceptoCabecera;
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.vo.AccionVersion;
+			import events.GenericPlanEvent;
+			import model.CobranzasModelLocator;
+		
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+		
+			private function init():void {
+				inptDias.setFocus();
+				this.title = modelo.accionAAgregarSeleccionada.accion.descripcion;				
+				
+				if(modelo.listaConceptosCabecera == null){
+					new GenericPlanEvent(GenericPlanEvent.BUSCAR_CONCEPTOS_CABECERAS_EVENT,null).dispatch();
+				}
+				
+				// Si entro por modificar
+				if (!modelo.esNuevaAccion){
+					if (modelo.accionAAgregarSeleccionada.conceptoCabecera != null){
+						cmboConcepto.selectedItem = modelo.accionAAgregarSeleccionada.conceptoCabecera;	
+					}
+				}
+							
+			}					
+			
+			private function agregarAccion():void {
+				var av : AccionVersion = new AccionVersion();
+				av.dias = Number(inptDias.text);
+				
+				var concepto : ConceptoCabecera = modelo.listaConceptosCabecera.getItemAt(cmboConcepto.selectedIndex) as ConceptoCabecera;
+				
+				if (concepto.idConcepto != -1){
+					av.conceptoCabecera = concepto;
+				}
+								
+				if (modelo.esNuevaAccion){
+										
+					new GenericPlanEvent(GenericPlanEvent.AGREGAR_NUEVA_ACCION_EVENT,av).dispatch();
+					
+				}else {
+					
+					new GenericPlanEvent(GenericPlanEvent.MODIFICAR_ACCION_EVENT,av).dispatch();
+			
+				}
+				
+				salir(); 
+			}
+			
+			private function salir() : void {
+				modelo.accionAAgregarSeleccionada = null;
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:Form>
+		<mx:FormItem label="Cant Días:">
+			<mx:TextInput id="inptDias" width="67" text="{modelo.accionAAgregarSeleccionada.dias}" textAlign="right" restrict="0-9" enter="agregarAccion()"/>
+		</mx:FormItem>
+		<mx:FormItem label="Concepto:">
+			<mx:ComboBox id="cmboConcepto" width="163" dataProvider="{modelo.listaConceptosCabecera}" labelField="descripcion"/>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button label="Cancelar" width="80" click="salir()"/>
+		<mx:Button label="Aceptar" width="80" click="agregarAccion()"/>
+	</mx:ControlBar>
+	
+</mx:TitleWindow>

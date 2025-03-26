@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<categorias:VboxComun xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:categorias="views.categorias.*" 
+					  width="100%" height="100%"
+					  module="{VboxComun.URL_MODULES_COMERCIO}DetalleInformacionComercioModule.swf"
+					  label="Detalle Comercio">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.utils.ObjectUtil;
+			
+			import views.categorias.comercio.models.ListaComercioModel;
+			[Bindable]public var listaComercioModel:ListaComercioModel;
+
+		]]>
+	</mx:Script>
+	
+</categorias:VboxComun>

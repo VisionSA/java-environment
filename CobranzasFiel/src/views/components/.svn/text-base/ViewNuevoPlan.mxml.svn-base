@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" 
+	title="Crear Nuevo Plan">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Plan;
+			import events.GenericPlanEvent;
+			import mx.managers.PopUpManager;
+			import model.CobranzasModelLocator;
+			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			private function crearNuevoPlan():void {
+				var plan : Plan = new Plan();
+				plan.descripcion = inptNombre.text;
+				new GenericPlanEvent(GenericPlanEvent.CREAR_NUEVO_PLAN_EVENT,plan).dispatch();
+				salir();				
+			}
+			
+			private function salir():void {
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Form>
+		<mx:FormItem label="Nombre:">
+			<mx:TextInput id="inptNombre" width="167"/>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button label="Guardar" width="80" click="crearNuevoPlan()"/>
+		<mx:Button label="Cancelar" width="80" click="salir()"/>
+	</mx:ControlBar>
+	
+</mx:TitleWindow>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalAlign="middle">		
+	
+	<mx:RadioButtonGroup id="rdbGroup" />
+	
+	<mx:VBox>
+		<mx:HBox visible="{variasBusquedas}" includeInLayout="{variasBusquedas}">
+			<mx:RadioButton selected="true" label="Buscar Por Cliente" fontWeight="bold" color="#000000"
+				click="manager.clienteVisible = true,manager.comercioVisibleVisible = false,manager.liquidacionVisibleVisible=false,manager.resetList()"/>
+			<mx:RadioButton label="Buscar por comercio" fontWeight="bold" color="#000000"
+				click="manager.clienteVisible = false,manager.comercioVisibleVisible = true,manager.liquidacionVisibleVisible=false,manager.resetList()"/>
+			<mx:RadioButton label="Buscar por liquidación" fontWeight="bold" color="#000000"
+				click="manager.busquedaConsumosVisible = false,manager.clienteVisible = false,manager.comercioVisibleVisible = false,manager.liquidacionVisibleVisible=true,manager.resetList()"/>
+		</mx:HBox>
+		
+		<mx:HRule width="100%"/>
+		
+		<mx:HBox verticalAlign="middle" visible="{manager.clienteVisible}" includeInLayout="{manager.clienteVisible}">
+			<mx:Label text="Nro Cuenta Cliente:" styleName="lblInfoCaja"/>
+			<mx:TextInput restrict="0-9" id="txtCuentaCliente" width="130" enter="manager.buscarCliente(txtCuentaCliente.text,clienteDestino)"/>				
+			<mx:Label textAlign="left" styleName="labelAzulMediano" visible="{manager.busquedaConsumosVisible}" includeInLayout="{manager.busquedaConsumosVisible}" text="{manager.cliente.nombreCliente}" color="#C50000" fontWeight="bold" fontSize="16"/>				
+			<mx:Button label="Buscar Cliente" click="manager.buscarCliente(txtCuentaCliente.text)"/>	
+		</mx:HBox>
+						
+		<mx:HBox verticalAlign="middle" visible="{manager.comercioVisibleVisible}" includeInLayout="{manager.comercioVisibleVisible}">
+			<mx:Label text="Cod. Posnet:" styleName="lblInfoCaja"/>
+			<mx:TextInput restrict="0-9" id="txtCodPosnet"  width="130" enter="manager.buscarPorCodPosnet(txtCodPosnet.text)"/>				
+			<mx:Label textAlign="left" styleName="labelAzulMediano" visible="{manager.busquedaConsumosVisible}" includeInLayout="{manager.busquedaConsumosVisible}" text="{manager.empresa.razonSocial}" color="#C50000" fontWeight="bold" fontSize="16"/>				
+			<mx:Button label="Buscar Comercio" click="manager.buscarPorCodPosnet(txtCodPosnet.text)"/>	
+		</mx:HBox>
+		
+		<mx:HBox verticalAlign="middle" visible="{manager.liquidacionVisibleVisible}" includeInLayout="{manager.liquidacionVisibleVisible}">
+			<mx:Label text="Nro. Liquidacion:" styleName="lblInfoCaja"/>
+			<mx:TextInput restrict="0-9" id="txtIdLiquidacion"  width="130" enter="manager.buscarPorLiquidacion(txtIdLiquidacion.text)"/>										
+			<mx:Button label="Buscar Liquidacion" click="manager.buscarPorLiquidacion(txtIdLiquidacion.text)"/>	
+		</mx:HBox>
+		
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			[Bindable]public var clienteDestino:Boolean = false;
+			
+			[Bindable]public var manager:Manager;		
+			
+			[Bindable]public var variasBusquedas:Boolean = false; 
+			
+		]]>
+	</mx:Script>
+</mx:HBox>

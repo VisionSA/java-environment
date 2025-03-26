@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.Tcliente" table="t_clientes2">
+	<id name="cliente" type="java.lang.Long" column="c_cliente">
+		<generator class="increment" />
+	</id>
+	
+	<property name="antiguedad" type="java.lang.String" column="c_antiguedad" not-null="false" length="20"/>
+
+	<property name="barrio" type="java.lang.String" column="c_barrio" not-null="false" length="286"/>
+
+	<property name="calle" type="java.lang.String" column="c_calle" not-null="false" length="286"/>
+
+	<property name="cargo" type="java.lang.String" column="c_cargo" not-null="false" length="276"/>
+
+	<property name="codBis" type="java.lang.Long" column="c_cod_bis" not-null="false" length="512"/>
+
+	<property name="codPostal" type="java.lang.Long" column="c_cod_postal" not-null="false" length="1024"/>
+
+	<property name="cp1" type="java.lang.String" column="c_cp_1" not-null="false" length="1"/>
+
+	<property name="cp2" type="java.lang.Long" column="c_cp_2" not-null="false" length="1024"/>
+
+	<property name="cp3" type="java.lang.String" column="c_cp_3" not-null="false" length="3"/>
+
+	<property name="cuit" type="java.lang.String" column="c_cuit" not-null="false" length="13"/>
+
+	<property name="dirGenerica" type="java.lang.String" column="c_dir_generica" not-null="false" length="286"/>
+
+	<property name="dpto" type="java.lang.String" column="c_dpto" not-null="false" length="2"/>
+
+	<property name="mail" type="java.lang.String" column="c_e_mail" not-null="false" length="286"/>
+
+	<property name="empAnt" type="java.lang.String" column="c_emp_ant" not-null="false" length="276"/>
+
+	<property name="empTelef" type="java.lang.String" column="c_emp_telef" not-null="false" length="271"/>
+
+	<property name="empresa" type="java.lang.String" column="c_empresa" not-null="false" length="20"/>
+
+	<property name="fax" type="java.lang.String" column="c_fax" not-null="false" length="271"/>
+
+	<property name="nroCalle" type="java.lang.Long" column="c_nro_calle" not-null="false" length="1024"/>
+
+	<property name="nroOrden" type="java.lang.Long" column="c_nro_orden" not-null="false" length="512"/>
+
+	<property name="orientacion" type="java.lang.String" column="c_orientacion" not-null="false" length="1"/>
+
+	<property name="otroIngMonto" type="java.math.BigDecimal" column="c_otro_ing_monto" not-null="false" length="4098"/>
+
+	<property name="otroIngOrigen" type="java.lang.String" column="c_otro_ing_origen" not-null="false" length="286"/>
+
+	<property name="piso" type="java.lang.Long" column="c_piso" not-null="false" length="512"/>
+
+	<property name="refComerciales" type="java.lang.String" column="c_ref_comerciales" not-null="false" length="316"/>
+
+	<property name="rubro" type="java.lang.Long" column="c_rubro" not-null="false" length="768"/>
+
+	<property name="sueldo" type="java.math.BigDecimal" column="c_sueldo" not-null="false" length="4098"/>
+
+	<property name="sueldoFec" type="java.lang.String" column="c_sueldo_fec" not-null="false" length="4"/>
+
+	<property name="telefono" type="java.lang.String" column="c_telefono" not-null="false" length="271"/>
+
+</class>
+</hibernate-mapping>

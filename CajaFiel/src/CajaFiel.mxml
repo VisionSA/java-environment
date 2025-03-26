@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application creationComplete="this.onCreatinComplete()" xmlns:mx="http://www.adobe.com/2006/mxml" horizontalAlign="center" layout="vertical"
+	 top="0" verticalGap="0" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+	 xmlns:business="com.tarjetafiel.caja.business.*" xmlns:control="com.tarjetafiel.caja.control.*" 
+	 xmlns:flexmdi="http://flexmdi.googlecode.com/" xmlns:view="com.tarjetafiel.caja.view.*" 
+	 xmlns:busquedaClientes="com.tarjetafiel.caja.view.busquedaClientes.*" 
+	 xmlns:event="com.tarjetafiel.caja.event.*" width="100%" xmlns:caja="com.tarjetafiel.caja.view.caja.*" xmlns:clientes="com.tarjetafiel.caja.view.clientes.*">
+	<mx:Style source="newStyle.css"/>
+	<mx:VBox width="100%" height="100%" id="contGlobal" verticalGap="0" backgroundAlpha="0.5" borderStyle="none"  borderColor="#000000">
+		<mx:HBox alpha="1.0" height="82" styleName="top" width="100%">
+			<mx:HBox id="hbLogo" width="203"  height="100%">
+				<mx:Image id="imgLogo" source="{ManejadorIconos3.LOGO_FIEL(imgLogo,Application.application.url)}"/>
+			</mx:HBox>			
+			<mx:HBox width="100%" height="100%" styleName="topDerecha">
+				<mx:LinkButton styleName="vistas" click="showListaImpresoras()" label="Impresora Predetermianda - {ModelLocator.getInstance().impresorasModel.textImpresoraPredeterminada}" />
+				<mx:VRule height="25" visible="{ModelLocator.getInstance().ticketModel.ultimaRespuestaImpresion != null}" includeInLayout="{ModelLocator.getInstance().ticketModel.ultimaRespuestaImpresion != null}"/>				
+				<mx:LinkButton styleName="vistas" click="ModelLocator.getInstance().ticketModel.imprimirUltimoTicket()"
+					 label="Ultimo ticket" visible="{ModelLocator.getInstance().ticketModel.ultimaRespuestaImpresion != null}" includeInLayout="{ModelLocator.getInstance().ticketModel.ultimaRespuestaImpresion != null}"/>				
+				<mx:VRule height="25" visible="{ModelLocator.getInstance().ticketModel.ultimaRespuestaImpresion != null}" includeInLayout="{ModelLocator.getInstance().ticketModel.ultimaRespuestaImpresion != null}"/>
+				<mx:ToggleButtonBar dataProvider="{view}"/>
+			</mx:HBox>		
+		</mx:HBox>		
+		<mx:ViewStack height="100%" width="100%" id="view" verticalGap="0" horizontalGap="0">
+			<view:Clientes verticalScrollPolicy="off" id="vistaCliente" label="Vista Clientes" width="100%" height="100%"/>
+			<!--<view:Comercios  verticalScrollPolicy="off" id="vistaComercios" label="Vista Empresas" width="100%" height="100%"/>-->
+		</mx:ViewStack>															
+	</mx:VBox>
+	
+	<!--Este nos define todos los servicios remotos a los que podemos acceder -->
+	<business:Services />
+	
+	<!--Este nos define todas las acciones que se pueden realizar -->
+	
+	<control:Controller />
+	
+	<mx:Fade id="fadeApplication" alphaTo="1.0" alphaFrom="0.0" duration="200" target="{Application.application}"/>
+	<mx:Fade id="fadeIn" alphaTo="1.0" alphaFrom="0.0" duration="200" />				
+	<mx:Fade id="fadeOut" alphaTo="0.0" alphaFrom="1.0"  duration="200" />
+	<mx:Resize id="resize" />
+	
+	
+	<!-- XML Items Menu -->
+	<mx:XMLList id="xmlMenuCliente">
+		<root>
+			<!--node label="Clientes">
+				
+				<node label="Banco 2" modulo="com/tarjetafiel/caja/view/BancoABM2.swf" titulo="Banco 2 ABM"/>
+				<node label="Banco" modulo="com/tarjetafiel/caja/view/BancoABM.swf" titulo="Banco ABM"/>
+									
+				<node label="Consulta Liquidaciones" modulo="com/tarjetafiel/caja/view/clientes/ConsultaLiquidacionCliente.swf" id="consultaLiquidacionCliente" titulo="Consulta Cta. Cte."/>
+				<node label="Adelanto Efectivo" modulo="com/tarjetafiel/caja/view/clientes/AdelantoEfectivo.swf" titulo="Adelanto en Efectivo"/>
+				<node label="Cobro a agentes externos" modulo="" titulo=""/>				
+			</node-->			
+			<node label="Cajas">
+				<node id="descargaValores" label="Descarga de valores" contenedor="TitleWindow" modulo="descarga" titulo="Descarga de valores"/>				
+				<node id="cierreProvisorio" label="Cierre" contenedor="TitleWindow" modulo="arqueo" titulo="Cierre"/>
+				
+				<node label="Impresoras"  titulo="Lista de impresoras" modulo="impresoras" contenedor="TitleWindow"  />
+				
+			</node>			
+		</root>	
+		
+	</mx:XMLList>
+	
+	<!-- XML Items Menu -->
+	<mx:XMLList id="xmlMenuComercio">
+		<root>			
+			<node label="Empresas">
+				<node label="Entrega orden de pago" modulo="com/tarjetafiel/caja/view/comercios/PagoAComerciosView.swf" titulo="Entrega orden de pago"/>				
+				<node label="Consulta Liquidaciones" modulo="com/tarjetafiel/caja/view/comercios/ConsultaLiquidacionComercios.swf" titulo="Consulta Liquidaciones"/>							
+			</node>
+			<node label="Cajas">
+				<node id="descargaValores" label="Descarga de valores" contenedor="TitleWindow" modulo="com/tarjetafiel/caja/view/caja/DescargaDeValores.swf" titulo="Descarga de valores"/>				
+				<node id="cierreProvisorio" label="Cierre" contenedor="TitleWindow" modulo="com/tarjetafiel/caja/view/caja/ArqueoCajaView.swf" titulo="Cierre"/>
+				<!--node id="cierreDefinitivo" label="Cierre Definitivo" contenedor="TitleWindow" modulo="com/tarjetafiel/caja/view/caja/ArqueoCajaView.swf" titulo="Cierre Definitivo"/-->								
+				<node label="Impresoras" modulo="com/tarjetafiel/caja/view/caja/ImpresorasView.swf" contenedor="TitleWindow" titulo="Lista de impresoras"/>
+			</node>		
+		</root>
+	</mx:XMLList>	
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.event.BancoEvent;
+			import com.tarjetafiel.caja.event.CajaEvent;
+			import com.tarjetafiel.caja.event.ConceptosEvent;
+			import com.tarjetafiel.caja.event.OperadorEvent;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.view.AccesoDenegado;
+			import com.tarjetafiel.caja.view.caja.ImpresorasView;
+			import com.tarjetafiel.caja.vo.Operador;
+			import com.tarjetafiel.caja.vo.Telefono;
+			import com.util.components.alert.AlertError;
+			import com.util.components.alert.AlertOk;
+			import com.util.components.alert.AlertWarning;
+			import com.util.modules.ManagerModules;
+			import com.util.modules.MdiWindows;
+			import com.util.modules.TitleWindowCustom;
+			
+			import mx.controls.Alert;
+			import mx.controls.Button;
+			import mx.controls.ToggleButtonBar;
+			import mx.formatters.DateFormatter;
+			import mx.logging.Log;
+			import mx.logging.LogEventLevel;
+			import mx.logging.LogLogger;
+			import mx.managers.PopUpManager;
+			import mx.messaging.channels.NetConnectionChannel;
+			import mx.messaging.config.ServerConfig;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
+			import mx.managers.PopUpManager;
+			
+			import utils.ManejadorIconos3;								
+			public var nc:NetConnection = new NetConnection();
+			public var uri:String;
+			
+			private var popUpImpresoras:ImpresorasView = new ImpresorasView();
+								
+			private var df:DateFormatter = new DateFormatter();
+			
+			
+			
+			
+			/* private function showList(list:XMLList):void {
+				var item:XML;
+				for each(item in list) {
+					trace("item: " + item.toXMLString());
+				}
+			} */
+			
+			
+			private function showFullScreen():void{
+				
+				try{
+					switch (Application.application.stage.displayState) {
+						case StageDisplayState.FULL_SCREEN:
+							Application.application.stage.displayState = StageDisplayState.NORMAL;
+							break;
+						default:
+							Application.application.stage.displayState = StageDisplayState.FULL_SCREEN;
+							break;
+					}
+				} catch(err:Error){
+					AlertWarning.show("No se permite modo FullScreen");
+				}
+			
+			}
+			
+			private function showListaImpresoras():void{
+				/*  if(ManagerModules.ventanasAbiertas.array["com/tarjetafiel/caja/view/caja/ImpresorasView.swf"] != null) {
+					ManagerModules.ventanasAbiertas.showVentana("com/tarjetafiel/caja/view/caja/ImpresorasView.swf", null);
+				} else {
+					ManagerModules.getInstance().loadModule(new TitleWindowCustom()
+					,"com/tarjetafiel/caja/view/caja/ImpresorasView.swf","Lista de Imrpesoras");
+				}  */
+				
+				popUpImpresoras.init();									
+				 PopUpManager.addPopUp(popUpImpresoras,Application.application.contGlobal,true);
+				 PopUpManager.centerPopUp(popUpImpresoras);
+				 /* popUpMediosDePagos.adg1.setFocus(); */
+					
+				
+			}
+			
+			/*private function startConnectionRTMP():void{
+				weborbMessagingClient= new WeborbMessagingClient("/Fiel");							
+				weborbMessagingClient.addEventListener(WeborbMessagingClientStatusEvent.STATUS, netStatusHandler);				
+				weborbMessagingClient.connect();
+    			
+    			so = SharedObject.getRemote("controlCliente", weborbMessagingClient.connection.uri, true);    			
+			    so.addEventListener(SyncEvent.SYNC,recivedSo);
+			    so.connect(weborbMessagingClient.connection);	
+    			
+    			soMentenimiento = SharedObject.getRemote("controlMentenimiento", weborbMessagingClient.connection.uri, false);    			
+			    soMentenimiento.addEventListener(SyncEvent.SYNC,recivedSoMantenimiento);
+			    soMentenimiento.connect(weborbMessagingClient.connection);	
+    			
+			}*/				
+			
+			/*public function recivedSoMantenimiento(evt:SyncEvent):void{
+				if(soMentenimiento.data.mensaje != null && soMentenimiento.data.mensaje != ""){
+					if(!ModelLocator.getInstance().mensajes.load){
+						ModelLocator.getInstance().mensajes.load = true;
+						PopUpManager.addPopUp(ModelLocator.getInstance().mensajes,view);	
+						PopUpManager.centerPopUp(ModelLocator.getInstance().mensajes);
+					}					
+					df.formatString = "[HH:NN:SS]";
+					ModelLocator.getInstance().mensajes.txtMensajes.text += df.format(new Date()) + " - " +  soMentenimiento.data.mensaje.toString() + "\n";
+				}
+			}
+			
+			public function recivedSo(evt:SyncEvent):void{
+				so.setProperty("cantidadCajas",int(so.data.cantidadCajas)+1);				
+				so.setDirty("cantidadCajas");	
+				so.removeEventListener(SyncEvent.SYNC,recivedSo);					
+			}*/
+			
+			/*private function netStatusHandler(event:WeborbMessagingClientStatusEvent):void 
+			{
+    			if(event.status == WeborbMessagingClient.CLOSED){
+    				trace("NetConnection CLOSED");
+    			} else if(event.status == WeborbMessagingClient.CONNECTED){
+    				trace("NetConnection CONNECTED");
+    			} else if(event.status == WeborbMessagingClient.CONNECTING){
+    				trace("NetConnection CONNECTING");
+    			} else if(event.status == WeborbMessagingClient.DISCONNECTED){
+    				trace("NetConnection DISCONNECTED");
+    			} else if(event.status == WeborbMessagingClient.DOWN){
+    				trace("NetConnection DOWN");
+    			}
+			}*/
+									
+			private var httpConfig:HTTPService = new HTTPService();
+			
+			private function onCreatinComplete():void{
+																		
+				this.vistaCliente.setStyle("showEffect",this.fadeIn);
+				this.vistaCliente.setStyle("hideEffect",this.fadeOut);
+				/* this.vistaComercios.setStyle("showEffect",this.fadeIn);
+				this.vistaComercios.setStyle("hideEffect",this.fadeOut); */
+				
+				httpConfig.useProxy = false;
+				httpConfig.resultFormat = HTTPService.RESULT_FORMAT_XML;
+				var url:String = Application.application.url;				
+				url = url.replace(".html","");
+				url = url.replace(".swf","");
+				url = url.split("?")[0];				
+				var nameApp:String = Application.application.name.substr(0,Application.application.name.length-1);
+				url = url.replace(nameApp,"");
+				httpConfig.url = url + "config/caja-config.xml";	
+				httpConfig.addEventListener(FaultEvent.FAULT,faultHttpConfig);
+				httpConfig.addEventListener(ResultEvent.RESULT,resultHttpConfig);
+				httpConfig.send();
+																				
+			}
+			
+			private function faultHttpConfig(evt:FaultEvent):void{
+				AlertError.show(evt.fault.faultDetail);
+				httpConfig.removeEventListener(FaultEvent.FAULT,faultHttpConfig);
+				httpConfig.removeEventListener(ResultEvent.RESULT,resultHttpConfig);
+			}
+			
+			private function resultHttpConfig(event:ResultEvent):void{
+								
+				httpConfig.removeEventListener(FaultEvent.FAULT,faultHttpConfig);
+				httpConfig.removeEventListener(ResultEvent.RESULT,resultHttpConfig);
+				
+				var xml:XML =  new XML(event.result);
+				
+				var modo:String = xml.modo.toString();
+				
+				if(modo == "desarrollo"){
+					ModelLocator.getInstance().operadorModel.operador = new Operador();
+	  				//ModelLocator.getInstance().operadorModel.operador.codigo = 1212;
+	  				ModelLocator.getInstance().operadorModel.operador.codigo = 32;
+					ModelLocator.getInstance().operadorModel.operador.apellido = "Osvaldo";
+					ModelLocator.getInstance().operadorModel.operador.nombre = "Ruiz";					
+					//ModelLocator.getInstance().operadorModel.operador.clave = "1225";
+					ModelLocator.getInstance().operadorModel.operador.clave = "425";
+					ModelLocator.getInstance().operadorModel.operador.fechaAlta = new Date();
+					ModelLocator.getInstance().operadorModel.operador.estado = "H";
+					ModelLocator.getInstance().operadorModel.operador.username = "oruiz";
+						
+					var cajaEvent:CajaEvent = new CajaEvent(CajaEvent.BUSCAR_CAJA_APERTURA);
+					cajaEvent.dispatch();
+				} else {
+					if(Application.application.parameters.codigoOperador != null){					
+						var evt:OperadorEvent = new OperadorEvent(OperadorEvent.CONSULTAR_OPERADOR, Number(Application.application.parameters.codigoOperador));
+						evt.dispatch();					
+					} else {
+					
+						ModelLocator.getInstance().accesoDenegadoModel.addPopUpAccesoDenegado("No existe un operador logueado");					
+					}	
+				}
+				
+			}
+			
+		]]>
+	</mx:Script>
+</mx:Application>

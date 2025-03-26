@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.impuestos.negocio.Impuesto" table="t_vis_imp_impuestos">
+    <id name="idImpuesto" type="java.lang.Long" column="c_id_impuesto">
+        <generator class="increment" />
+    </id>
+
+    <property name="descripcion" type="java.lang.String" column="c_descripcion" not-null="true" length="50"/>
+
+    <property name="porcAlicuota" type="long" column="c_porc_alicuota" not-null="true" length="10"/>
+
+    <property name="percepcion" type="java.lang.Character" column="c_percepcion" length="1"/>
+
+    <property name="imponibleGncias" type="java.lang.Character" column="c_imponible_gncias" not-null="true" length="1"/>
+
+    <property name="importeMinimo" type="java.math.BigDecimal" column="c_importe_minimo" not-null="true" length="10"/>
+
+    <!-- Associations -->
+    <many-to-one name="partido" class="com.bizitglobal.tarjetafiel.general.negocio.Partido" not-null="false" cascade="save-update" >
+        <column name="c_id_partido" />
+    </many-to-one>
+
+    <many-to-one name="provincia" class="com.bizitglobal.tarjetafiel.general.negocio.Provincia" not-null="false"  cascade="save-update">
+        <column name="c_id_provincia" />
+    </many-to-one>
+    
+    <many-to-one name="categoria" class="com.bizitglobal.tarjetafiel.impuestos.negocio.Categoria" not-null="true"  cascade="save-update">
+        <column name="c_id_categoria_imp" />
+    </many-to-one>    
+
+</class>
+</hibernate-mapping>

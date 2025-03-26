@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import events.ComercioEvent;
+			
+			import managers.ComercioManager;
+			
+			import views.categorias.comercio.DetalleInformacionComercioView;
+			import views.categorias.comercio.EncabezadoComercioView;
+			import views.categorias.comercio.models.CtaCteComercioModel;
+			import views.categorias.comercio.models.LiquidacionComModel;
+			import views.categorias.comercio.models.ListaComercioModel;
+			import views.categorias.comercio.modules.DetalleInformacionComercioModule;
+			import views.categorias.comercio.popup.ListaComercioView;
+			
+		]]>
+	</mx:Script>
+	<Injectors targets="{[EncabezadoComercioView,ListaComercioView,DetalleInformacionComercioView,DetalleInformacionComercioModule]}">
+		<ObjectBuilder generator="{ListaComercioModel}">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="listaComercioModel"/>
+	</Injectors>
+	
+	
+	
+	<EventHandlers type="{ComercioEvent.BUSCAR_COMERCIOS}">
+		<MethodInvoker generator="{CtaCteComercioModel}" method="resetValues"/>
+		<MethodInvoker generator="{LiquidacionComModel}" method="resetValues"/>
+		<RemoteObjectInvoker instance="{comercioServices}" method="getCodComercioFlex" arguments="{[event.filtro, event.paginador]}">
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultListaComorecio" arguments="{resultObject}"/>
+				<EventAnnouncer type="restaurarCtaCteComercio"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker method="fault" generator="{ComercioManager}" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioEvent.BUSCAR_EMPRESAS}">
+		<MethodInvoker generator="{CtaCteComercioModel}" method="resetValues"/>
+		<MethodInvoker generator="{LiquidacionComModel}" method="resetValues"/>
+		<RemoteObjectInvoker instance="{empresaServices}" method="getEmpresaFlexConsulta" arguments="{[event.filtro, event.paginador]}">
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultListaComorecio" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker method="fault" generator="{ComercioManager}" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	<mx:RemoteObject destination="GenericSessionDestination" source="codComercioServiceTarget" id="comercioServices"/>
+	<mx:RemoteObject destination="GenericSessionDestination" source="empresaServiceTarget" id="empresaServices"/>
+	
+</EventMap>
+

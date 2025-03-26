@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:componentView="com.componentView.*" xmlns:categorias="views.categorias.*" >
+	<mx:Script>
+		<![CDATA[
+			import views.categorias.EncabezadoModel;
+			import mx.controls.LinkButton;	
+			import mx.core.Application;			
+			import utils.ManejadorIconos3;
+			
+			[Bindable]public var encabezadoModel:EncabezadoModel; 
+			private function limpiarCache():void{
+				encabezadoModel.dispatcher.dispatchEvent(new Event("limpiarCache"));			
+				
+				
+			}
+			
+			
+			
+			
+		]]>
+	</mx:Script>
+	
+	<!--<componentView:Top>
+	<componentView:arrayLinks>
+	<mx:Button styleName="togleButton" label="{encabezadoModel.labelButtonHeader}" click="this.encabezadoModel.changedSelectedBusqueda()" selected="{encabezadoModel.buttonHeaderSelected}"/>
+	<mx:Button styleName="togleButton" label="{encabezadoModel.labelButtonLimpiarHeader}" click="this.limpiarCache()" selected="{encabezadoModel.buttonHeaderSelected}"/>
+	<mx:ToggleButtonBar id="barra" dataProvider="{viewStackCategoria}" styleName="togleButton" buttonStyleName="buttonAlert" direction="horizontal">
+	</mx:ToggleButtonBar>		 
+	</componentView:arrayLinks>
+	</componentView:Top>-->
+	<!--<mx:VBox width="100"  height="100%" horizontalAlign="left" paddingLeft="3" paddingBottom="3" paddingRight="3">
+	<mx:Image id="imgLogo" source="{ManejadorIconos3.LOGO_FIEL_CHICO(imgLogo, Application.application.url)}" height="60%"/>-->
+	
+	<mx:HBox id="hBoxLink" width="100%" height="25" styleName="top" verticalAlign="bottom">	
+		<mx:ToggleButtonBar id="barra" dataProvider="{viewStackCategoria}" buttonStyleName="buttonAlert" height="100%" width="20%" direction="horizontal">
+		</mx:ToggleButtonBar>
+		<!--<mx:HBox  height="90%" width="100%" horizontalAlign="right">			
+		</mx:HBox>	
+		<mx:HBox  height="10%" width="12%" horizontalAlign="center">
+		<mx:Image id="imgLogo" source="{ManejadorIconos3.LOGO_FIEL_CHICO(imgLogo, Application.application.url)}" width="100%" height="100%" horizontalCenter="0" verticalCenter="0" />
+		
+		</mx:HBox>	-->
+	</mx:HBox>	
+	
+	<!--</mx:VBox>-->
+	
+	
+	<categorias:ViewCategorias id="viewStackCategoria" width="100%" height="100%"/>
+	
+</mx:VBox>

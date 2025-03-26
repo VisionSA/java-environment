@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VboxComun xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" horizontalScrollPolicy="off" creationComplete="init()" width="100%" 
+		   xmlns:ns1="com.dougmccune.containers.*" xmlns:maps="views.categorias.maps.*" xmlns:mate="http://mate.asfusion.com/" xmlns:maps1="views.categorias.comercio.maps.*" xmlns:managers="com.yahoo.astra.mx.managers.*">
+	<!-- ******************************************************************************************************* -->
+	<managers:AutoCompleteManager 
+		id="autoCompleteMgr" 
+		targets="{[txtCUIT,txtPOSNET,txtRAZONSOCIAL,txtNOMBREFANTASIA]}"
+		shareData="true" autoSave="true" />
+	
+	<mx:VBox  width="100%" height="60" horizontalGap="0" horizontalAlign="left" verticalAlign="top" verticalGap="-2" horizontalScrollPolicy="off">		
+		<mx:HBox width="90%" height="29" horizontalGap="0" horizontalAlign="left" verticalAlign="top" horizontalScrollPolicy="off">
+			
+			<mx:Label text="CUIT: " styleName="lblInfo"/>
+			<mx:TextInput id="txtCUIT" width="111"  keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+			
+			<mx:Label  text="Cod COMERCIO: " styleName="lblInfo" paddingLeft="7"/>
+			<mx:TextInput width="97" id="txtPOSNET" textAlign="left" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+			
+			
+			<mx:Label text="RAZÓN SOCIAL: " styleName="lblInfo"/>
+			<mx:TextInput id="txtRAZONSOCIAL" width="135"  keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+			
+			<mx:Label text="NN FANTASÍA: " styleName="lblInfo" paddingLeft="7"/>
+			<mx:TextInput id="txtNOMBREFANTASIA" width="144" textAlign="left" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+			
+			<mx:Label text="Generico: " styleName="lblInfo" paddingLeft="7"/>
+			<mx:TextInput id="txtGeneral" width="47" textAlign="left"   keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()" paddingRight="7"/>
+			
+			<mx:Label text="   " styleName="lblInfo" width="7"/>
+			
+			<mx:HBox width="10%" height="100%" horizontalGap="0" horizontalAlign="right" verticalAlign="top" >
+				<mx:Button label="Limpiar Campos" width="126"  click="this.limpiarBusqueda()" />
+				<mx:Label  text="Operador: " styleName="tituloBusquedas"/>
+				<mx:Label styleName="lblInfo" text="{applicationModel.operador.nombre + ' ' +applicationModel.operador.apellido}"  />
+			</mx:HBox>		
+		</mx:HBox>
+		
+		
+		<mx:HBox width="100%" height="34" horizontalGap="0" horizontalAlign="left" verticalAlign="top" verticalGap="-3" horizontalScrollPolicy="off">
+			
+			<mx:Label  text="CUIT: " styleName="tituloBusquedas" paddingLeft="7"/>
+			<mx:Label id="lblCuit" styleName="lblInfo" text="{listaComercioModel.comercio.sucEmpresa.empresa.cuit}" paddingLeft="7"/>
+			
+			<mx:Label text="Cod Posnet: " styleName="tituloBusquedas" paddingLeft="7"/>
+			<mx:Label id="lblCodPosnet" styleName="lblInfo" text="{listaComercioModel.comercio.codigoPosnet}" paddingLeft="7" />
+			
+			<mx:Label text="Razón Social: " styleName="tituloBusquedas" paddingLeft="7"/>
+			<mx:Label id="lblRazonSocial" styleName="lblInfo" text="{listaComercioModel.comercio.sucEmpresa.empresa.razonSocial}" paddingLeft="7"/>
+			
+			<mx:Label text="Nombre Fantasía: " styleName="tituloBusquedas" paddingLeft="7"/>
+			<mx:Label id="lblNombreFantasia" styleName="lblInfo" text="{listaComercioModel.comercio.sucEmpresa.descripcion}" paddingLeft="7"/>
+			
+			<mx:Label text="Estado Comercio: " styleName="tituloBusquedas" paddingLeft="7"/>
+			<mx:Label id="lblEstadoComercio" color="{(listaComercioModel.comercio.estado == 'H') ? 0xffffff:0xff0000}" styleName="lblInfo" text="{listaComercioModel.comercio.estado == 'H' ? 'Habilitado' : 'Deshabilitado'}" paddingLeft="7"/>
+						
+			<mx:Label text="   " styleName="lblInfo" width="50"/>
+			<mx:Button label="Reporte Comercio" enabled="{(listaComercioModel.comercio != null) ?  true  : false}" click="this.reporteComercio()" width="126"  height="27"/>
+			
+		</mx:HBox>
+	</mx:VBox>
+	
+<!-- ******************************************************************************************************* -->		
+	<maps1:ListaComercioEventMap/>
+	
+	<mate:Listener type="loadPopUpEvent" receive="loadPopUp()"/>
+	<mate:Listener type="changedEmpresa" receive="PopUpManager.removePopUp(popupListaComercios),popupListaComercios.load = false"/>
+	
+	<mate:Listener  receive="{ this.autoCompleteMgr.removeAll()}" type="limpiarCache"/>
+	
+<mx:Script>
+	<![CDATA[
+		import com.tarjetafiel.caja.vo.CodComercio;
+		import com.tarjetafiel.caja.vo.Empresa;
+		import com.tarjetafiel.caja.vo.SucEmpresa;
+		import com.util.components.alert.AlertOk;
+		import com.util.components.alert.AlertWarning;
+		import com.util.paginacion.Paginador;
+		
+		import events.ComercioEvent;
+		import events.ComercioManagerEvent;
+		
+		import managers.ClienteManager;
+		import managers.ComercioManager;
+		
+		import models.ApplicationModel;
+		
+		import mx.collections.ArrayCollection;
+		import mx.containers.Accordion;
+		import mx.controls.Alert;
+		import mx.core.Application;
+		import mx.core.UIComponentDescriptor;
+		import mx.managers.PopUpManager;
+		import mx.messaging.channels.StreamingAMFChannel;
+		
+		import views.categorias.cliente.models.EncabezadoClienteModel;
+		import views.categorias.comercio.models.ListaComercioModel;
+		import views.categorias.comercio.popup.ListaComercioView;
+
+		 /* [Embed(systemFont='Arial', fontWeight="bold", fontName='accordionHeader', mimeType='application/x-font')] 
+		 */ private var font1:Class;
+
+	
+	        [Bindable]private var paginador:Paginador;
+            [Bindable]public var listaComercioModel:ListaComercioModel;
+			
+			private var popupListaComercios:ListaComercioView = new ListaComercioView();
+			
+			private var buscarPor:String = "";
+			
+			private var codPosnet:String;
+	
+			private var valor:String = "";
+			 
+			//bandera para saber si hizo la busqueda por codigo posnet. 0 si no la  hizo por posnet; 1 si la hizo por posnet
+			private var banderaPosnet:int = 0;
+		
+		//bandera para saber si hizo la busqueda por codigo posnet. 0 si no la  hizo por posnet; 1 si la hizo por posnet
+		private var banderaCuit:int = 0; 
+		
+		[Bindable]public var applicationModel:ApplicationModel;
+					
+			private function init():void{
+				this.paginador = new Paginador();				
+				buscarPor = "cuit";						
+			}
+			
+/* @I5092 */	public function reporteComercio():void{
+				 listaComercioModel.reporteComercio(listaComercioModel.comercio.sucEmpresa.empresa.cuit.toString()); 
+				
+/* @F5092 */			}
+			public function buscar():void{				
+				
+				paginador.cantidadRegistros = 10;
+				paginador.cantidadPaginas = 0;
+				paginador.pagina = 0;
+				paginador.result = new Array();
+				
+				if ( txtCUIT.text.length == 0 && txtPOSNET.text.length == 0 && txtNOMBREFANTASIA.text.length == 0 &&
+					txtRAZONSOCIAL.text.length == 0 && txtGeneral.text.length == 0)
+				{
+					AlertWarning.show("Debe ingresar un parametro de busqueda");
+					return;
+				
+				
+				} else {
+					//buscar por Codigo Posnet
+					if (txtCUIT.text.length == 0  && txtNOMBREFANTASIA.text.length == 0 && txtRAZONSOCIAL.text.length == 0  
+						&& txtGeneral.text.length == 0){
+						buscarPor = "codigoPosnet";
+						valor = txtPOSNET == null ? "" : txtPOSNET.text;
+						banderaPosnet = 1;
+						banderaCuit=0;
+						listaComercioModel.buscarEmpresa = false;
+						listaComercioModel.tipoBusqueda = ComercioManager.BUSQ_POR_COD_COMERCIO;
+					}else{
+						//buscar por CUIT
+						if (txtPOSNET.text.length == 0  && txtNOMBREFANTASIA.text.length == 0 && txtRAZONSOCIAL.text.length == 0  
+							&& txtGeneral.text.length == 0){
+							buscarPor = "sucEmpresa.empresa.cuit";
+							valor = txtCUIT.text;
+							banderaPosnet = 0;
+							banderaCuit = 1;
+							listaComercioModel.buscarEmpresa = false;	
+							listaComercioModel.tipoBusqueda = ComercioManager.BUSQ_POR_CUIL;
+						}else{
+							//buscar por NOMBRE DE FANTASÍA
+							if (txtPOSNET.text.length == 0  && txtCUIT.text.length == 0 && txtRAZONSOCIAL.text.length == 0  
+								&& txtGeneral.text.length == 0){
+								buscarPor = "sucEmpresa.descripcion";
+								valor = txtNOMBREFANTASIA == null ? "" : txtNOMBREFANTASIA.text;
+								banderaPosnet = 0;
+								banderaCuit=0;
+								listaComercioModel.buscarEmpresa = false;
+								listaComercioModel.tipoBusqueda = ComercioManager.BUSQ_POR_NOMBRE_COMERCIO;
+							}else{
+								//buscar por RAZON SOCIAL
+								if (txtPOSNET.text.length == 0  && txtCUIT.text.length == 0 && txtNOMBREFANTASIA.text.length == 0  
+									&& txtGeneral.text.length == 0){
+									buscarPor = "sucEmpresa.empresa.razonSocial";
+									valor = txtRAZONSOCIAL == null ? "" : txtRAZONSOCIAL.text;
+									banderaPosnet = 0;
+									banderaCuit=0;
+									listaComercioModel.buscarEmpresa = false;
+									listaComercioModel.tipoBusqueda = ComercioManager.BUSQ_POR_RAZON_SOCIAL;
+								}
+							}
+						}
+					}
+					
+					this.limpiarBusqueda();
+					listaComercioModel.buscarComercio(buscarPor, valor.toUpperCase(),paginador);
+				}
+				
+			}
+			
+		public function loadPopUp():void{
+			//************************************************************           cambie el 0 por 1
+			if(popupListaComercios.load == false && (listaComercioModel.paginador.result.length > 0 && banderaPosnet != 1 )){
+				
+				PopUpManager.addPopUp(popupListaComercios,Application.application as DisplayObject,true);
+				PopUpManager.centerPopUp(popupListaComercios);
+				popupListaComercios.paginador.paginacionCompleta(listaComercioModel.paginador);
+				if(banderaCuit==1){
+					popupListaComercios.buscarComercios(listaComercioModel.paginador.result[0].idEmpresa);
+				}else{
+					popupListaComercios.load = true;
+				}
+				
+			}else{
+				if(listaComercioModel.paginador.result.length == 0){
+					AlertOk.show("La busqueda no obtuvo resultados");
+				}
+			}
+		}
+
+		private function limpiarBusqueda():void{
+			if(this.txtCUIT)
+				this.txtCUIT.text = "";
+			
+			if(this.txtPOSNET)
+				this.txtPOSNET.text = "";
+			
+			if(this.txtRAZONSOCIAL){
+				this.txtRAZONSOCIAL.text = "";					
+			}
+			if(this.txtNOMBREFANTASIA)
+				this.txtNOMBREFANTASIA.text = ""; 
+
+			if(this.txtGeneral)
+				this.txtGeneral.text = "";
+			
+			banderaPosnet = 0;
+			//setear los datos
+			listaComercioModel.limpiarDatos();
+		}
+				
+	]]>
+</mx:Script> 
+</VboxComun>

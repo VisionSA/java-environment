@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using an evaluation version of JasperAssistant (http://www.jasperassistant.com) -->
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="liqCodComercio" pageWidth="595" pageHeight="840" columnWidth="570" columnCount="1" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="java.util.*"/>
+	<import value="com.bizitglobal.webapp.faces.beans.util.*"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<import value="net.sf.jasperreports.engine.design.JasperDesign"/>
+
+
+	<parameter name="fecha_inicio" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_fin" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="id_lista_precio_comercio" isForPrompting="true" class="java.lang.Long"/>
+
+	
+	
+	
+	<queryString>
+		<![CDATA[
+                SELECT ccc.c_estado_impacto as estadoImpacto, ccc.c_id_ctacte_comercio as idCtaCteComercio, ccc.c_importe as importe,
+                ccc.c_id_cod_comercio as idCodComercio, emp.c_razon_social as razonSocial, clp.c_id_listaprecios as idListaPrecio, ccc.c_fecha_lote as fechaLote, "Rechazado Automatico" as rechazo
+                FROM (t_vis_tra_ctacte_comercios ccc
+                inner join t_vis_tra_transacciones tra on ccc.c_id_tranascciones = tra.c_id_tranascciones)
+                inner join t_vis_tra_comercios_lista_prec clp on tra.c_plan_cuotas = clp.c_codigo_posnet inner join t_vis_tra_cod_comercios codcom on codcom.c_id_cod_comercio = ccc.c_id_cod_comercio
+                inner join t_vis_gen_suc_empresas semp on semp.c_id_sucursal = codcom.c_id_sucursal
+                inner join t_vis_gen_empresas as emp on emp.c_id_empresa = semp.c_id_empresa
+                WHERE clp.c_id_listaprecios = $P{id_lista_precio_comercio} 
+                AND ccc.c_estado_impacto Like 'X'
+                AND ccc.c_fecha_lote >= $P{fecha_inicio}
+                AND ccc.c_fecha_lote <= $P{fecha_fin}
+                AND ccc.c_id_liq_comercio is null
+                group by 1,2,3,4,5,6,7   
+                Union
+                SELECT ccc.c_estado_impacto as estadoImpacto, ccc.c_id_ctacte_comercio as idCtaCteComercio, ccc.c_importe as importe, 
+                ccc.c_id_cod_comercio as idCodComercio, emp.c_razon_social as razonSocial, clp.c_id_listaprecios as idListaPrecio, ccc.c_fecha_lote as fechaLote, "Rechazado Manual" as rechazo
+                FROM (t_vis_tra_ctacte_comercios ccc
+                 inner join t_vis_tra_transacciones tra on ccc.c_id_tranascciones = tra.c_id_tranascciones)
+                 inner join t_vis_tra_comercios_lista_prec clp on tra.c_plan_cuotas = clp.c_codigo_posnet inner join t_vis_tra_cod_comercios codcom on codcom.c_id_cod_comercio = ccc.c_id_cod_comercio
+                inner join t_vis_gen_suc_empresas semp on semp.c_id_sucursal = codcom.c_id_sucursal
+                inner join t_vis_gen_empresas as emp on emp.c_id_empresa = semp.c_id_empresa
+                WHERE clp.c_id_listaprecios = $P{id_lista_precio_comercio} 
+                AND ccc.c_estado_impacto like 'R'
+                AND ccc.c_fecha_lote >= $P{fecha_inicio}
+                AND ccc.c_fecha_lote <= $P{fecha_fin}
+                AND ccc.c_id_liq_comercio is null
+                group by 1,2,3,4,5,6,7  
+        ]]>
+	</queryString>
+	<field name="idCtaCteComercio" class="java.lang.Long"/>
+	<field name="importe" class="java.math.BigDecimal"/>
+	<field name="estadoImpacto" class="java.lang.String"/>
+	<field name="idCodComercio" class="java.lang.Long"/>
+	<field name="idListaPrecio" class="java.lang.Long"/>
+	<field name="fechaLote" class="java.util.Date"/>
+	<field name="rechazo" class="java.lang.String"/>
+	<field name="razonSocial" class="java.lang.String"/>
+	
+	<group name="estadoImpacto">
+	    
+	
+		<groupExpression><![CDATA[$F{estadoImpacto}]]></groupExpression>
+		
+		<groupHeader>
+
+				<band height="20" isSplitAllowed="true" >
+				
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="15"
+						y="0"
+						width="540"
+						height="17"
+						forecolor="#000000"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Times New Roman" pdfFontName="Times-Roman" size="10" isPdfEmbedded ="true"/>
+					</textElement>
+			    	<textFieldExpression  class="java.lang.String"><![CDATA[$F{rechazo}]]></textFieldExpression>
+				</textField>
+
+				
+
+			</band>
+
+		</groupHeader>
+		
+		
+		
+
+       
+		
+		<groupFooter>
+			<band/>
+		</groupFooter>
+		
+	</group>
+	 
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		
+		
+		
+		<title>
+		</title>	
+		
+		
+		<pageHeader>
+			<band height="80" isSplitAllowed="true" >
+				
+				<rectangle radius="0" >
+					<reportElement
+						mode="Opaque"
+						x="12"
+						y="55"
+						width="555"
+						height="24"
+						forecolor="#000000"
+						backcolor="#000000"
+						key="element-22"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<rectangle radius="0" >
+					<reportElement
+						mode="Opaque"
+						x="10"
+						y="53"
+						width="555"
+						height="24"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="element-22"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				
+				<staticText>
+					<reportElement mode="Opaque" x="12" y="55" width="551" height="20" forecolor="#000000" backcolor="#CCCCCC" key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="12" isPdfEmbedded="true"/>
+					</textElement>
+				<text><![CDATA[CUPONES QUE PRESENTAN RECHAZO MANUAL O AUTOMATICO]]></text>
+				</staticText>
+				
+				
+			</band>
+		</pageHeader>
+		
+		<columnHeader>
+			<band height="20"  isSplitAllowed="true" >
+				<rectangle radius="0" >
+					<reportElement
+						mode="Opaque"
+						x="15"
+						y="0"
+						width="540"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-22"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="15"
+						y="0"
+						width="70"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<text><![CDATA[CtaCte Comercio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="85"
+						y="0"
+						width="70"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<text><![CDATA[Importe]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="155"
+						y="0"
+						width="45"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<text><![CDATA[Impacto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="200"
+						y="0"
+						width="60"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<text><![CDATA[CodComercio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="260"
+						y="0"
+						width="115"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<text><![CDATA[Razon Social]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="375"
+						y="0"
+						width="90"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<text><![CDATA[ListaPrecio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="465"
+						y="0"
+						width="90"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<text><![CDATA[Fecha Lote]]></text>
+				</staticText>
+			
+				
+				
+				
+			</band>
+		</columnHeader>
+		
+
+	    <detail>
+			<band height="10"  isSplitAllowed="true" >
+
+                <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="15"
+						y="0"
+						width="70"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				    <textFieldExpression   class="java.lang.Long"><![CDATA[$F{idCtaCteComercio}]]></textFieldExpression>
+				</textField>
+				
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="85"
+						y="0"
+						width="70"
+						height="10"
+						forecolor="#000000"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{importe}]]></textFieldExpression>
+				</textField>
+				
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="155"
+						y="0"
+						width="45"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<textFieldExpression  class="java.lang.String"><![CDATA[$F{estadoImpacto}]]></textFieldExpression>
+				</textField>
+
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="200"
+						y="0"
+						width="60"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Long"><![CDATA[$F{idCodComercio}]]></textFieldExpression>
+				</textField>
+				
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="260"
+						y="0"
+						width="115"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{razonSocial}]]></textFieldExpression>
+				</textField>
+				
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="375"
+						y="0"
+						width="90"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Long"><![CDATA[$F{idListaPrecio}]]></textFieldExpression>
+				</textField>
+				
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="465"
+						y="0"
+						width="90"
+						height="10"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" pdfFontName="Times" size="7" isPdfEmbedded="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{fechaLote}]]></textFieldExpression>
+				</textField>
+				
+				
+			</band>
+		</detail>
+		
+		
+		
+		
+
+		
+		
+		
+		
+		
+		
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+		
+</jasperReport>

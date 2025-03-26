@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   minWidth="955" 
+			   minHeight="600" 
+			   xmlns:business="com.bizit.consulta.web.business.*" 
+			   xmlns:controller="com.bizit.consulta.web.controller.*" 
+			   xmlns:view="com.bizit.consulta.web.view.*"
+			   initialize="application1_initializeHandler(event)"
+			   currentState="{modelo.estadoAplicacion}">
+	
+	<fx:Style source="ConsultaWebFlex.css"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.bizit.consulta.web.entity.PermisoWeb;
+			import com.bizit.consulta.web.event.LoginUsuarioEvent;
+			import com.bizit.consulta.web.model.FielWebModelLocator;
+			import com.bizit.consulta.web.utils.ManejadorMensajes;
+			import com.bizit.consulta.web.utils.ManejadorPantallas;
+			import com.bizit.consulta.web.view.CmpLogin;
+			import com.bizit.consulta.web.view.renderer.BotonAbrirSwf;
+			import com.bizit.consulta.web.vo.SetDataVo;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.events.ModuleEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Bindable]
+			private var modelo : FielWebModelLocator = FielWebModelLocator.getInstance();		
+
+			
+
+			protected function linkbutton1_clickHandler(event:MouseEvent):void
+			{
+				new LoginUsuarioEvent(LoginUsuarioEvent.LOG_OUT_EVENT,null).dispatch();
+			}
+			
+
+			protected function buttonbar1_changeHandler(event:IndexChangeEvent):void {
+				ManejadorPantallas.mostrarProgressBar();
+				moduleLoader.unloadModule();
+				moduleLoader.removeAllChildren();
+				
+				if(event.newIndex!=-1){
+					moduleLoader.loadModule((modelo.listaPermisoUsuarios.getItemAt(event.newIndex) as PermisoWeb).swf);	
+				}else {
+					ManejadorPantallas.cerrarProgressBar();
+				}
+				
+			}
+
+
+			protected function application1_initializeHandler(event:FlexEvent):void
+			{
+				modelo.setURLChannelDefinition();
+				//modelo.setUrlWebServices(xmlConfig.webService.@url);
+				configService.send();
+				Security.allowDomain("*");
+				Security.loadPolicyFile("http://201.251.111.21/crossdomain.xml");
+			}
+
+
+			protected function moduleLoader_readyHandler(event:ModuleEvent):void
+			{
+				ManejadorPantallas.cerrarProgressBar();
+			}
+
+
+			protected function moduleLoader_errorHandler(event:ModuleEvent):void
+			{
+				new SetDataVo("mlAplicacion", moduleLoader).guardarValor();
+				ManejadorMensajes.mostrarMensajeError("Error al cargar el modulo");
+			}
+
+
+			protected function state1_enterStateHandler(event:FlexEvent):void
+			{
+				btnBar.selectedIndex = -1;
+			}
+
+
+			protected function btnBar_valueCommitHandler(event:FlexEvent):void
+			{
+				if (moduleLoader != null && 
+					modelo.listaPermisoUsuarios != null)
+				{	
+					moduleLoader.loadModule((modelo.listaPermisoUsuarios.getItemAt(btnBar.selectedIndex) as PermisoWeb).swf);
+				}
+			}
+
+
+			protected function configService_faultHandler(event:FaultEvent):void
+			{
+				//Se setea una dirección por defecto
+				modelo.setUrlWebServices("http://201.251.111.21/Presentacion/services");
+				ManejadorMensajes.mostrarMensajeNotificacionMail("Error al los Servicios");
+			}
+
+
+			protected function configService_resultHandler(event:ResultEvent):void
+			{
+				modelo.setUrlWebServices(event.result.webService.@url);
+				//ManejadorMensajes.mostrarMensajeInformacion("Se estableció la url de servicios: " + modelo.webServiceUrl); 
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<business:Service id="services" />
+		<controller:FielWebController id="controller" />
+		<fx:XML id="xmlMenu" source="menuConsultaComercio.xml"/>
+		<!--<fx:XML id="xmlConfig" source="com/bizit/consulta/web/config/appConfig.xml"/>-->
+		<s:HTTPService id="configService" resultFormat="e4x"
+					   fault="configService_faultHandler(event)"
+					   result="configService_resultHandler(event)"
+					   url="com/bizit/consulta/web/config/appConfig.xml"/>
+	</fx:Declarations>
+	<s:layout>
+		<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout>
+	
+	<s:states>
+		<s:State name="LoginAppState"/>
+		<s:State name="AppState" enterState="state1_enterStateHandler(event)"/>
+	</s:states>
+	
+	<view:CmpLogin 
+		id="cmpLogin" visible="{modelo.usuarioWeb == null}" 
+		includeInLayout="{modelo.usuarioWeb == null}" />
+	
+	<!-- Layout General -->
+	<s:VGroup width="100%" height="100%" visible="false" includeInLayout="false"
+			  visible.AppState="true" includeInLayout.AppState="true" gap="0">
+		
+		<!-- Encabezado -->
+		<s:Group width="100%" height="15%"
+				  visible.AppState="true" includeInLayout.AppState="true">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+<!--@I4148-->					<s:SolidColor color="0x1784c2"/>
+				</s:fill>
+			</s:Rect>
+			<s:HGroup width="100%" height="100%">
+				<mx:Image  source.AppState="com/bizit/consulta/web/assets/images/encabezadoFiel1.jpg"
+						   width="100%" />
+				<s:Rect />
+				<mx:Image  source.AppState="com/bizit/consulta/web/assets/images/encabezadoFiel2.jpg"/>
+<!--@F4148-->			</s:HGroup>
+		</s:Group>
+		<s:Group width="100%" height="5%"
+				  visible.AppState="true" includeInLayout.AppState="true">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:LinearGradient rotation="90">
+						<s:GradientEntry color="0xE51B23" alpha="1.0"/>
+						<s:GradientEntry color="gray" alpha="0.01"/>
+					</s:LinearGradient>
+				</s:fill>
+			</s:Rect>
+			<s:HGroup width="100%" height="100%" textAlign="right" verticalAlign="middle" horizontalAlign="right">
+				<s:Label text="| Usuario: {modelo.usuarioWeb.email} | " styleName="labelUserInfo"/>
+<!--@I4923-->				<s:Label text="| Código Comercio: {modelo.usuarioWeb.usuarioComercioWeb.codigosPosnet} | " styleName="labelUserInfo"/>
+<!--@F4923-->				<!--<s:HGroup verticalAlign="middle">-->
+					<!--<s:Label text="{modelo.usuarioWeb.email}"  />-->
+					<mx:LinkButton label="Salir" click="linkbutton1_clickHandler(event)"/>
+				<!--</s:HGroup>-->
+			</s:HGroup>
+		</s:Group>
+		
+		<s:HGroup width="100%" height="100%" gap="0">
+			<!-- Layout Barra Lateral -->
+			<s:Group height="100%" width="10%">		
+				<!--<s:layout>
+					<s:VerticalLayout/>
+				</s:layout>-->
+				<s:Rect width="100%" height="100%">
+					<s:fill>
+						<s:LinearGradient rotation="90">
+							<s:GradientEntry color="gray" alpha="0.01" ratio="0.001"/>
+							<!--<s:GradientEntry color="black" alpha="1.0"/>-->
+							<s:GradientEntry color="black" alpha="1.0"/>
+						</s:LinearGradient>
+					</s:fill>
+				</s:Rect>
+				<!-- Barra Lateral-->	
+				<s:HGroup height="100%" paddingRight="5" paddingTop="5" paddingBottom="5" paddingLeft="5" visible="{modelo.usuarioWeb != null}" includeInLayout="{modelo.usuarioWeb != null}">
+					<s:ButtonBar id="btnBar" dataProvider="{modelo.listaPermisoUsuarios}" labelField="nombre" 
+								 change="buttonbar1_changeHandler(event)" 
+								 width="100%" requireSelection="true" valueCommit="btnBar_valueCommitHandler(event)">
+						<s:layout>
+							<s:TileLayout/>
+						</s:layout>
+					</s:ButtonBar>
+				</s:HGroup>
+			</s:Group>
+			
+			<!-- Body -->
+			<s:VGroup width="100%" height="100%">
+				<s:VGroup paddingLeft="5" paddingRight="5" width="100%" height="100%">					
+					<mx:ModuleLoader id="moduleLoader" width="100%" height="100%" paddingRight="5" 
+									 paddingBottom="5" paddingTop="5" visible="{modelo.usuarioWeb != null}" 
+									 includeInLayout="{modelo.usuarioWeb != null}" 
+									 ready="moduleLoader_readyHandler(event)" 
+									 error="moduleLoader_errorHandler(event)"/>
+				</s:VGroup>
+				<s:Group width="100%" height="3%">
+					<s:Rect width="100%" height="100%">
+						<s:fill>
+							<s:LinearGradient rotation="90">
+								<s:GradientEntry color="gray" alpha="0.01"/>
+								<s:GradientEntry color="black" alpha="1.0"/>
+							</s:LinearGradient>
+						</s:fill>
+					</s:Rect>
+				</s:Group>
+			</s:VGroup>
+		</s:HGroup>			
+	</s:VGroup>
+	
+</s:Application>

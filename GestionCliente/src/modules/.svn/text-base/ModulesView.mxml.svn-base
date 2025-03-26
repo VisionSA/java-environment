@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+		 width="100%" height="100%" 
+		 xmlns:modules="com.util.modules.*" 
+		 xmlns:principal="modules.principal.*" 
+		 >
+	
+	
+	<mx:ToggleButtonBar dataProvider="viewStack" width="100%"/>
+	
+	<mx:ViewStack width="100%" height="100%" id="viewStack">
+		<principal:GestionClienteView/>
+	</mx:ViewStack>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import events.OperadorEvent;
+			import models.ApplicationModel;
+			import managers.PermisosManager;
+			import modules.principal.Manager;
+			
+			[Bindable]public var permisosManager:PermisosManager;
+			
+			[Bindable]public var applicationModel:ApplicationModel;
+			
+		]]>
+	</mx:Script>
+	
+</mx:VBox>
+

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.bizitglobal.tarjetafiel.cobranzas.negocio">
+  <class name="PlanVersion" table="t_vis_cob_planes_version">
+  	<id name="idPlanVersion" type="integer" column="c_id_plan_version">
+  		<generator class="increment"/>
+  	</id>
+    <property name="descripcion" column="c_descripcion" type="string"/>
+  	<property name="fechaDesde" column="c_fechadesde" type="date"/>
+    <property name="queryClientesQueAplican" column="c_query_clientes_que_aplican" type="string"/>
+    <many-to-one name="plan"    
+		        class="Plan" not-null="true">
+        <column name="c_id_plan" />
+    </many-to-one>
+    
+    <set name="etapasVersion" inverse="false" cascade="all" lazy="false">
+		<key>
+			<column name="c_id_plan_version" />
+		</key>
+		<one-to-many class="EtapaVersion"/>
+	</set>
+  </class>
+</hibernate-mapping>

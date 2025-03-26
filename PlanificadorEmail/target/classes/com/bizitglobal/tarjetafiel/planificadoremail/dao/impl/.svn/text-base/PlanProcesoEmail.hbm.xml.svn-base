@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.planificadoremail.negocio.PlanProcesoEmail" table="T_VIS_PLA_PLANESPROCESOEMAIL" >
+	
+	<cache usage="read-write"/>
+	<id name="idPlan" type="java.lang.Long" column="C_ID_PLAN">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_PLAN_ID</param>
+		</generator>
+	</id>
+	
+	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="true" length="50"/>
+	<property name="fecCreacion" type="java.util.Date" column="C_FEC_CREACION" not-null="true" />
+	<property name="fecUltMod" type="java.util.Date" column="C_FEC_ULT_MOD" not-null="true"/>
+	<property name="idOperUltMod" type="java.lang.Long" column="C_OPERADOR_ULT_MOD" not-null="true" />
+    <property name="activo" type="java.lang.Boolean" column="C_ACTIVO"/>
+    <property name="query" type="java.lang.String" column="C_QUERY" not-null="true" length="255"/>
+    <property name="queryFrom" type="java.lang.String" column="C_QUERY_FROM" not-null="true" length="255"/>
+    <property name="queryWhere" type="java.lang.String" column="C_QUERY_WHERE" not-null="true" length="255"/>
+	<property name="frecuencia" type="java.lang.String" column="C_FRECUENCIA" length="255"/>
+	<property name="fecVigDesde" type="java.util.Date" column="C_VIG_DESDE" not-null="true"/>
+	<property name="fecVigHasta" type="java.util.Date" column="C_VIG_HASTA"/>
+	<property name="expressionEjecucion" type="java.lang.String" column="C_EXPRESSION_EJECCION" length="100"/>
+    
+  	<many-to-one name="template" class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.Template" not-null="true" lazy="false">
+		<column name="C_ID_TEMPLATE" />
+	</many-to-one>
+	
+	<set name="planColumnas" inverse="false" cascade="all" lazy="false">
+		<key>
+			<column name="C_ID_PLAN" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.PlanColumnas"/>
+	</set>
+    
+</class>
+</hibernate-mapping>

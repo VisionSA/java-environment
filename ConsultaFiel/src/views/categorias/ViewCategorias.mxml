@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ViewStack xmlns:mx="http://www.adobe.com/2006/mxml" height="100%" width="100%" xmlns:categorias="views.categorias.*" xmlns:effectClasses="org.efflex.mx.viewStackEffects.effectClasses.*" xmlns:viewStackEffects="org.efflex.mx.viewStackEffects.*">
+	<!--<viewStackEffects:FadeZoom  id="effect" />-->
+	<categorias:CategoriaCliente width="100%" height="100%" label="Cliente" />
+	<categorias:CategoriaComercio label="Comercio" />
+</mx:ViewStack>

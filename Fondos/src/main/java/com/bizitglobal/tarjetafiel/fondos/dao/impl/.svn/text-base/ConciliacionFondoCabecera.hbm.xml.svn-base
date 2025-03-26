@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.ConciliacionFondoCabecera" table="T_VIS_FON_CONCILIA_CABECERA" >
+	<id name="idCabeceraConciliacion" type="java.lang.Long" column="C_ID_CABECERA_CONCILIACION">
+		<generator class="increment" />
+	</id>
+	
+	<property name="comentario" type="java.lang.String" column="C_COMENTARIO" not-null="false" length="200" />
+	<property name="fechaGeneracion" type="java.util.Date" column="C_FECHA_GENERACION" not-null="false" length="3594"/>
+	<property name="fechaConfirmacion" type="java.util.Date" column="C_FECHA_CONFIRMACION" not-null="false" length="3594"/>
+	<property name="conciliado" type="java.lang.Character" column="C_CONCILIADO" not-null="true" />
+	<property name="fechaReversion" type="java.util.Date" column="C_FECHA_REVERSION" not-null="false" length="3594"/>
+	
+	<many-to-one name="operadorConfirmo" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="false"  cascade="none">
+		<column name="C_ID_OPERADOR" />
+	</many-to-one>
+	
+	<many-to-one name="operadorReversion" class="com.bizitglobal.tarjetafiel.operador.negocio.Operador" not-null="false"  cascade="none">
+		<column name="C_ID_OPERADOR_REVERSION" />
+	</many-to-one>
+	
+	<set name="conciliacionFondos" inverse="true" cascade="all">
+		<key>
+			<column name="C_ID_CABECERA_CONCILIACION" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.fondos.negocio.ConciliacionFondo"/>
+	</set>
+		
+	<many-to-one name="bancoPropio" class="com.bizitglobal.tarjetafiel.fondos.negocio.BancoPropio" not-null="true" >
+		<column name="C_ID_BANCO_PROPIO" />
+	</many-to-one>
+</class>
+</hibernate-mapping>

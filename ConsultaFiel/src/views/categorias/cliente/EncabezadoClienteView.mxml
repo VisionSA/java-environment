@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VboxComun xmlns="views.categorias.*" width="100%" xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="this.onCreationCompl()" xmlns:maps="views.categorias.cliente.maps.*"
+		   xmlns:mate="http://mate.asfusion.com/" horizontalAlign="left" verticalGap="8" xmlns:cliente="views.categorias.cliente.*"   xmlns:ns1="com.dougmccune.containers.*" xmlns:managers="com.yahoo.astra.mx.managers.*" xmlns:componentes="views.categorias.cliente.componentes.*" xmlns:formatters="utils.*" >
+	<!--@I4070-->	<formatters:CUITFormatter id="CUITFormatter"/>
+	<mate:Listener  receive="{ this.limpiarBusqueda()}" type="limpiarDatosCliente"/>
+	<mx:VBox  width="100%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top" verticalGap="-2">		
+    	<mx:HBox width="90%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top" >
+		
+			<mx:Label text="DNI: " styleName="lblInfo"/>
+			<mx:TextInput id="txtDNI" restrict="0-9" width="12%"  keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+                   
+                    	<mx:Label  text="Nro de cuenta: " styleName="lblInfo" paddingLeft="7"/>
+                    	<mx:TextInput width="10%" id="txtNroCuenta" textAlign="left"  restrict="0-9" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+		
+			
+			<mx:Label text="CUIL: " styleName="lblInfo"/>
+			<mx:TextInput id="txtCUIL" restrict="0-9" width="15%"  keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+			
+                    	<mx:Label text="Apellido: " styleName="lblInfo" paddingLeft="7"/>
+                    	<mx:TextInput id="txtApellido" width="15%" textAlign="left"  restrict="A-Z/a-z/ /" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+                    	<mx:Label text="Nombre: " styleName="lblInfo" paddingLeft="7"/>
+                    	<mx:TextInput id="txtNombre" width="15%" textAlign="left"  restrict="A-Z/a-z/ /" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>                   
+						<mx:Label text="Generico: " styleName="lblInfo" paddingLeft="7"/>
+						<mx:TextInput id="txtGeneral" width="20%" textAlign="left"   keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()" paddingRight="7"/>
+						<mx:Label text="   " styleName="lblInfo" paddingLeft="7" width="15%"/>
+			<mx:HBox width="10%" height="100%" horizontalGap="0" horizontalAlign="right" verticalAlign="top" >
+						<mx:Button label="Limpiar Campos" width="7%"  click="this.limpiarBusqueda()" />
+				<mx:Label  text="Operador: " styleName="tituloBusquedas"/>
+				<mx:Label styleName="lblInfo" text="{applicationModel.operador.nombre + ' ' +applicationModel.operador.apellido}" />
+			</mx:HBox>		
+		</mx:HBox>	
+		
+		<mx:HBox width="100%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top" verticalGap="-3" >
+			
+			<mx:Label  text="Nro de cuenta: " styleName="tituloBusquedas"/>
+			<mx:Label styleName="lblInfo" text="{currencyFormatter.format(encabezadoClienteModel.titular.idCliente)}" />
+				
+			<mx:Label text="CUIL/DNI: " styleName="tituloBusquedas" paddingLeft="7"/>
+			<mx:Label id="lblNroCuil" styleName="lblInfo" text="{((encabezadoClienteModel.titular.nuevoTipoCliente=='Garante') ?CUITFormatter.format(encabezadoClienteModel.titular.cuilConsulta) :CUITFormatter.format(encabezadoClienteModel.clienteEncontrado.individuo.cuil)) }" />
+			<mx:Label text="Apellido Nombre: " styleName="tituloBusquedas" paddingLeft="7"/>
+			<mx:Label id="lblNombreCliente" styleName="lblInfo" text="{encabezadoClienteModel.nombreCliente}" />
+				
+			
+				<mx:HBox width="100%" height="100%" horizontalGap="0" horizontalAlign="right" verticalAlign="top" >
+					<mx:Label styleName="tituloBusquedas" text="Tipo Cliente" paddingLeft="7"/>
+					<mx:Label styleName="lblInfo" text="{encabezadoClienteModel.titular.nuevoTipoCliente}"/>
+					<mx:Label text="Sit. Cobranza: " styleName="tituloBusquedas" paddingLeft="7"/>
+					<mx:Label id="lblSitComercial"  text="{encabezadoClienteModel.titular.estadoCobranza.descripcion}"							  
+							   styleName="{((encabezadoClienteModel.titular.estadoCobranza.idEstadoCobranza != 1)?'sitComercial':'lblInfo')}"
+							   color="{(encabezadoClienteModel.titular.estadoCobranza.idEstadoCobranza == 1) ? 0x000000:0xff0000}"/>
+					<mx:Label text="Sit. Comercial: " styleName="tituloBusquedas" paddingLeft="7"/>
+					<mx:Label id="lblSitCobranza" styleName="lblInfo" text="{encabezadoClienteModel.titular.estadoCliente.descripcion}"/>
+					<mx:Label text="Consumo: " styleName="tituloBusquedas" paddingLeft="7"/>
+					<mx:Label styleName="lblInfo" 
+							  text="{(encabezadoClienteModel.titular.habilitadoConsumo == 'H')?'Habilitado':'Deshabilitado'}" paddingRight="10"/>
+					<mx:Button label="Pendientes" width="120"  click="this.abrirClienteInfor()" />
+				</mx:HBox>
+		</mx:HBox>
+		
+		<mx:VBox width="100%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top"
+				 verticalGap="-5">
+		
+		<mx:HBox width="100%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top"
+				 verticalGap="-5">
+			
+			<mx:VBox width="100%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top"
+					 visible="{modelo.informacionCliente == 'SI'}" 
+					 includeInLayout="{modelo.informacionCliente == 'SI'}" verticalGap="-3">
+				<mx:HBox width="100%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top"
+						 visible="{modelo.informacionCliente == 'SI'}" 
+						 includeInLayout="{modelo.informacionCliente == 'SI'}" verticalGap="-5">
+			<mx:HBox visible="{encabezadoClienteModel.titular.domicilioValido == 0}" 
+					 includeInLayout="{encabezadoClienteModel.titular.domicilioValido == 0}" paddingBottom="0" paddingTop="0" verticalGap="-5" >
+				<mx:Image id="imgIconError" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="DOMICILIO NO INGREADO" />	
+			</mx:HBox>
+			
+			
+			<mx:HBox visible="{encabezadoClienteModel.titular.individuo.actividad.sucEmpresa == null}"
+					 includeInLayout="{encabezadoClienteModel.titular.individuo.actividad.sucEmpresa == null}"
+					 paddingBottom="0" paddingTop="0" paddingLeft="10">
+				<mx:Image id="imgIconError1" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="DATOS LABORALES NO INGRESADOS"/>	
+			</mx:HBox>
+			
+			
+			<mx:HBox visible="{encabezadoClienteModel.titular.individuo.telefonos.length == 0}"
+					 includeInLayout="{encabezadoClienteModel.titular.individuo.telefonos.length == 0}"
+					 paddingBottom="0" paddingTop="0" paddingLeft="10">
+				<mx:Image id="imgIconError2" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="TELEFONO NO INGRESADO"/>	
+			</mx:HBox>
+			
+			
+			<mx:HBox visible="{encabezadoClienteModel.titular.individuo.mails.length == 0}"
+					 includeInLayout="{encabezadoClienteModel.titular.individuo.mails.length == 0}"
+					 paddingBottom="0" paddingTop="0" paddingLeft="10">
+				<mx:Image id="imgIconError3" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="MAIL NO INGRESADO"/>	
+			</mx:HBox>
+			
+			
+			<mx:HBox
+				visible="{((modelo.revTelefonoLaboral == 'SI' )?true:false)}"
+				includeInLayout="{((modelo.revTelefonoLaboral == 'SI' )?true:false)}"
+				paddingBottom="0" paddingTop="0" paddingLeft="10">
+				<mx:Image id="imgIconError4" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="TELEFONO LABORAL NO INGRESADO"/>	
+			</mx:HBox>
+					
+					
+					
+			<mx:HBox
+				visible="{((modelo.revLineaCredito == 'SI' )?true:false)}"
+				includeInLayout="{((modelo.revLineaCredito == 'SI' )?true:false)}"
+				paddingBottom="0" paddingTop="0" paddingLeft="10">
+				<mx:Image id="imgIconError5" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="REVISAR LINEA DE CREDITO"/>	
+			</mx:HBox>
+					
+					
+			
+					
+			
+		</mx:HBox>
+			</mx:VBox>
+		
+		
+		<mx:HBox width="100%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top"
+				  verticalGap="-5">
+		
+		<mx:HBox
+			visible="{((modelo.titularAppRegistro == 'noregistrado' )?true:false)}"
+			includeInLayout="{((modelo.titularAppRegistro == 'noregistrado' )?true:false)}"
+			paddingBottom="0" paddingTop="0" paddingLeft="10">
+			<mx:Image id="imgIconError6" source="@Embed(source='/img/icon-error.gif')" />
+			<mx:Label color="red" text="TITULAR NO REGISTRO APP"/>	
+		</mx:HBox>
+		
+		<mx:HBox
+			visible="{((modelo.titularAppRegistro == 'registrado' )?true:false)}"
+			includeInLayout="{((modelo.titularAppRegistro == 'registrado' )?true:false)}"
+			paddingBottom="0" paddingTop="0" paddingLeft="10">
+			<mx:Image id="imgIconError7" source="@Embed(source='/img/icon_ok.jpg')" />
+			<mx:Label color="green" text="TITULAR REGISTRO APP"/>	
+		</mx:HBox>
+		
+		<mx:HBox
+			visible="{((modelo.adicionalAppRegistro == 'noregistrado' )?true:false)}"
+			includeInLayout="{((modelo.adicionalAppRegistro == 'noregistrado' )?true:false)}"
+			paddingBottom="0" paddingTop="0" paddingLeft="10">
+			<mx:Image id="imgIconError8" source="@Embed(source='/img/icon-error.gif')" />
+			<mx:Label color="red" text="ADICIONAL NO REGISTRO APP"/>	
+		</mx:HBox>
+		
+		<mx:HBox
+			visible="{((modelo.adicionalAppRegistro == 'registrado' )?true:false)}"
+			includeInLayout="{((modelo.adicionalAppRegistro == 'registrado' )?true:false)}"
+			paddingBottom="0" paddingTop="0" paddingLeft="10">
+			<mx:Image id="imgIconError9" source="@Embed(source='/img/icon_ok.jpg')" />
+			<mx:Label color="green" text="ADICIONAL REGISTRO APP"/>	
+		</mx:HBox>
+		
+		<mx:HBox
+			visible="{((modelo.adicionalAppRegistro == 'sinadicional' )?true:false)}"
+			includeInLayout="{((modelo.adicionalAppRegistro == 'sinadicional' )?true:false)}"
+			paddingBottom="0" paddingTop="0" paddingLeft="10">
+			<mx:Image id="imgIconError10" source="@Embed(source='/img/icon_ok.jpg')" />
+			<mx:Label color="blue" text="NO TIENE ADICIONAL PARA REGISTRAR APP"/>	
+		</mx:HBox>
+			
+			<mx:HBox
+				visible="{((encabezadoClienteModel.varBloqueDesbloqueApp == 'Deshabilite Transferencia' )?true:false)}"
+				includeInLayout="{((encabezadoClienteModel.varBloqueDesbloqueApp == 'Deshabilite Transferencia' )?true:false)}"
+				paddingBottom="0" paddingTop="0" paddingLeft="10">
+				<mx:Image id="imgIconError11" source="@Embed(source='/img/icon_ok.jpg')" />
+				<mx:Label color="green" text="HABILITADO COMPRAS POR APP"/>	
+			</mx:HBox>
+			
+			<mx:HBox
+				visible="{((encabezadoClienteModel.varBloqueDesbloqueApp == 'Habilite Transferencia' )?true:false)}"
+				includeInLayout="{((encabezadoClienteModel.varBloqueDesbloqueApp == 'Habilite Transferencia' )?true:false)}"
+				paddingBottom="0" paddingTop="0" paddingLeft="10">
+				<mx:Image id="imgIconError12" source="@Embed(source='/img/icon-error.gif')" />
+				<mx:Label color="red" text="BLOQUEADO COMPRAS POR APP"/>	
+			</mx:HBox>
+			
+			
+			
+		</mx:HBox>
+			
+		</mx:HBox>
+		</mx:VBox>
+			
+		</mx:VBox> 
+
+	<mx:NumberFormatter  id="currencyFormatter"   useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="." decimalSeparatorFrom="," decimalSeparatorTo=","/>  
+
+	<maps:RepactacionModelMap/>
+	<maps:AdelantoEfectivoModelMap/>
+	
+<mx:Script>
+
+	<![CDATA[
+		import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+		import com.util.block.ControlBlock;
+		import com.util.components.alert.AlertOk;
+		import com.util.components.alert.AlertYesNo;
+		import com.util.paginacion.Paginador;		
+		import managers.ClienteManager;
+		import views.categorias.cliente.popup.ClientesInformadosView;
+		import flash.events.EventDispatcher;
+		import flash.events.IEventDispatcher;
+		
+		import views.categorias.cliente.modules.SimuladorRefinanciacion;
+		
+		import mx.containers.Accordion;
+		import mx.controls.Alert;
+		import com.util.components.alert.AlertOk;
+		import mx.core.Application;
+		import mx.core.UIComponentDescriptor;
+		import mx.events.CloseEvent;
+		import mx.messaging.channels.StreamingAMFChannel;
+		import com.util.components.alert.AlertWarning;
+		
+		import utils.CUITFormatter;
+		
+		import views.categorias.cliente.models.EncabezadoClienteModel;
+		
+		import models.ApplicationModel;
+		import com.tarjetafiel.proveedorconexion.event.ClientesGeneralEvent;
+		
+		import mx.utils.StringUtil;
+		import views.categorias.models.AgendaModel;
+		import com.tarjetafiel.caja.vo.Operador;
+		import flash.display.DisplayObject;
+		import mx.managers.PopUpManager;	
+		
+		import events.ClienteEvent;
+		import flash.events.Event;
+		
+		import views.categorias.cliente.models.RepactacionModel;
+		import views.categorias.cliente.models.AdelantoEfectivoModel;
+		
+		
+		/*  [Embed(systemFont='Arial', fontWeight="bold", fontName='accordionHeader', mimeType='application/x-font')] 
+		 */ private var font1:Class;
+	
+	     private var paginador:Paginador;
+	     [Bindable]public var encabezadoClienteModel:EncabezadoClienteModel;
+		[Bindable]
+		private var modelo : ModelLocatorGeneral = ModelLocatorGeneral.getInstance();
+		
+		public var dispatcher:IEventDispatcher;
+		
+		[Bindable]public var applicationModel:ApplicationModel;
+		
+		[Bindable]public var simuladorRefinanciacion:SimuladorRefinanciacion;
+		
+		[Bindable] public  var agendaModel : AgendaModel;
+		
+		[Bindable]public var adelantoEfectivoModel:AdelantoEfectivoModel;
+		[Bindable]public var repactacionModel:RepactacionModel;
+			
+		private function limpiarBusqueda():void{
+				if(this.txtNombre)
+					this.txtNombre.text = "";
+				if(this.txtApellido)
+					this.txtApellido.text = "";
+				if(this.txtCUIL){
+					this.txtCUIL.text = "";					
+				}
+				if(this.txtDNI)
+					this.txtDNI.text = ""; 
+				if(this.txtNroCuenta)
+					this.txtNroCuenta.text = "";
+				
+				if(this.txtGeneral)
+					this.txtGeneral.text = "";
+				
+				this.txtDNI.setFocus();
+				
+				if (modelo.clienteSeleccionado.cliente != null) {
+					
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_HIST_EST_COBR_Y_COM_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_GESTORCUENTA_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_SALDOCUENTA_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_REFPREP_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_CORRIENTE_RESUMEN_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_FUTUROS_VENCIMIENTOS,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_HIST_ACCIONES_EVENT,null,null).dispatch(); 
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_HIST_ESTADOS_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_HIST_LINEA_CREDITO_EVENT,null,null).dispatch(); 
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_TRAMITES_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_DIGITALES_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_RECLAMOS_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_TITULAR_APP_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_ADICIONAL_APP_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_REVISIONCREDITO_EVENT,null,null).dispatch();
+					//new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_BANCO_CENTRAL_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_SERVIDOR_DOCUMENTOS_EVENT,null,null).dispatch();
+					new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_FECHA1_DOCUMENTOS_EVENT,null,null).dispatch();
+				}
+				
+				
+			}
+			
+		public function nombreCliente():String{
+			
+			
+			
+			if(encabezadoClienteModel.titular.nuevoTipoCliente=="Garante"){
+				return encabezadoClienteModel.titular.apellidoConsulta+ ", "+encabezadoClienteModel.titular.nombreConsulta;   
+				// mostrarPanelCliente = true;
+			} else {
+				return encabezadoClienteModel.nombreCliente; 
+			}
+		}  	
+		
+			
+			private function inicializarBusqueda():void{
+	
+			}
+		
+		
+			public function abrirClienteInfor():void{
+				if(modelo.listaControlClientes != null && modelo.listaControlClientes.length != 0) {
+					
+				
+					modelo.listaControlClientes.removeAll();
+				}
+				
+				//modelo.listaControlClientes.removeAll();
+				var popUpAgregarAgenda:ClientesInformadosView = new ClientesInformadosView();
+			
+				popUpAgregarAgenda.agendaModel = this.agendaModel;
+				
+				PopUpManager.addPopUp(popUpAgregarAgenda,Application.application as  DisplayObject, true);
+				PopUpManager.centerPopUp(popUpAgregarAgenda);	
+				
+				
+			}
+			
+			private function onCreationCompl():void{
+				this.paginador = new Paginador();											
+				 this.txtNroCuenta.setFocus();
+				 this.agendaModel.initComboOperadores();
+			}
+		
+		/**
+		 * @id 7469
+		 * baja_revista
+		 **/	
+		public function baja_revista():void{
+			AlertYesNo.show("¿Confirma la baja de la revista?",function (evt:CloseEvent):void{
+				if(evt.detail == Alert.YES){					
+					revista(Application.application.parameters.codigoOperador);						 
+				}
+				
+			});			
+			
+		}
+		
+		/**
+		 * @id 7469
+		 * revista
+		 **/	
+		 private function revista(operador:Number):void{
+			this.encabezadoClienteModel.realizar_baja_revista(operador);	
+		}	
+		
+		
+		/**
+		 * @id  8156
+		 * bloqueoDesbloqueo
+		 **/	
+		public function bloqueoDesbloqueo():void{
+			/* var nombre:String;
+			nombre = this.btnBloqueo.label; */
+			AlertYesNo.show("¿ " + encabezadoClienteModel.varBloqueDesbloque  + ", Si o No ?",function (evt:CloseEvent):void{
+				if(evt.detail == Alert.YES){					
+					bloqueoDesbloqueo_arg(Application.application.parameters.codigoOperador);						 
+				}
+				
+			});			
+			
+		}
+		
+		/**
+		 * @id 8156
+		 * bloqueoDesbloqueo_arg
+		 **/	
+		private function bloqueoDesbloqueo_arg(operador:Number):void{
+			this.encabezadoClienteModel.realizar_bloqueoDesbloqueo(operador);	
+		}
+			
+			
+			
+			public function buscar():void{
+						
+				this.paginador.cantidadRegistros =10;
+				this.paginador.pagina = 0;		
+				this.paginador.tipo_consulta = "particular";
+				var buscarPor: String="";
+				var nroPlastico :String="";
+				var cuil:String ="";
+				
+				adelantoEfectivoModel.resetImporte();
+				repactacionModel.resetValues();
+			 
+				
+				
+				
+				
+				
+				
+				if ( txtDNI.text.length == 0 && txtNroCuenta.text.length == 0 && txtCUIL.text.length == 0 && StringUtil.trim(txtApellido.text).length == 0  &&  StringUtil.trim(txtNombre.text).length == 0 
+				&& txtGeneral.text.length == 0 )
+				{
+					AlertWarning.show("Debe ingresar un parametro de busqueda");
+					return;
+				} else {
+					if ( txtNroCuenta.text.length == 0 && txtCUIL.text.length == 0 && txtApellido.text.length == 0  &&  txtNombre.text.length == 0 
+						&& txtGeneral.text.length == 0)
+					{
+						buscarPor= ClienteManager.BUSQ_POR_DNI;
+						this.encabezadoClienteModel.buscarCliente(paginador,txtDNI.text, buscarPor);
+					} else if (txtDNI.text.length == 0  && txtCUIL.text.length == 0 && txtApellido.text.length == 0  &&  txtNombre.text.length == 0 
+						&& txtGeneral.text.length == 0) 
+					{
+						buscarPor= ClienteManager.BUSQ_POR_NRO_CUENTA;						
+						this.encabezadoClienteModel.buscarCliente(paginador, txtNroCuenta.text, buscarPor);
+					
+						
+					}	else if (txtNroCuenta.text.length == 0 && txtDNI.text.length == 0   && txtApellido.text.length == 0  &&  txtNombre.text.length == 0 
+							&& txtGeneral.text.length == 0) 
+						{
+							buscarPor= ClienteManager.BUSQ_POR_CUIL;
+							this.encabezadoClienteModel.buscarCliente(paginador, txtCUIL.text, buscarPor);
+							
+						}
+					 else if ( txtDNI.text.length == 0 && txtNroCuenta.text.length == 0  && txtGeneral.text.length == 0 && txtCUIL.text.length == 0)
+					{
+						buscarPor= ClienteManager.BUSQ_POR_APELLIDO;
+						var parametro:String ="";
+						if(txtNombre.text=="")
+							parametro= StringUtil.trim(txtApellido.text);   
+						else  parametro= StringUtil.trim(txtApellido.text)+"."+StringUtil.trim(txtNombre.text);
+						this.encabezadoClienteModel.buscarCliente(paginador,parametro, buscarPor);
+					} else if (txtDNI.text.length == 0 && txtNroCuenta.text.length == 0 && txtCUIL.text.length == 0 && txtApellido.text.length == 0  &&  txtNombre.text.length == 0 )
+					{
+						buscarPor= ClienteManager.BUSQ_POR_GENERAL;
+						this.encabezadoClienteModel.buscarCliente(paginador, StringUtil.trim(txtGeneral.text), buscarPor);						
+					} else {
+						buscarPor= ClienteManager.BUSQ_POR_PARAMETRO;
+						this.paginador.tipo_consulta = "parametro";
+						this.encabezadoClienteModel.armarFiltro(txtDNI.text, txtNroCuenta.text, txtCUIL.text, StringUtil.trim(txtApellido.text),  StringUtil.trim(txtNombre.text),  StringUtil.trim(txtGeneral.text));
+						this.encabezadoClienteModel.buscarClientesListado(paginador);						
+					} 
+					
+					encabezadoClienteModel.dispatcher.dispatchEvent(new Event("setearPestaniaDefault"));
+					modelo.urlDocAdj = "/Presentacion/sinDocAdj.html";
+				}
+			    
+				
+			}
+			
+			
+		
+	]]>
+</mx:Script> 
+
+</VboxComun>
+

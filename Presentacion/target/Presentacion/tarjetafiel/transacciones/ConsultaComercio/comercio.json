@@ -1,0 +1,44 @@
+[
+	
+	{
+		"cod_comercio":"133",
+		"cuit":"cuit1",
+		"razon_social":"Razon Prueba 1",
+		"nombre_fantasia":"Fantasia prueba 1",
+		"domicilio":"domicilio prueba 1",
+		"departamento":"departamento prueba 1",
+		"estado":"A",
+		"grupo":"Grupo prueba 1"
+	},
+	{
+		"cod_comercio":"133",
+		"cuit":"cuit2",
+		"razon_social":"Razon Prueba 3",
+		"nombre_fantasia":"Fantasia prueba 3",
+		"domicilio":"domicilio prueba 3",
+		"departamento":"departamento prueba 3",
+		"estado":"A",
+		"grupo":"Grupo prueba 3"		
+	},
+	{
+		"cod_comercio":"133",
+		"cuit":"cuit3",
+		"razon_social":"Razon Prueba 3",
+		"nombre_fantasia":"Fantasia prueba 3",
+		"domicilio":"domicilio prueba 3",
+		"departamento":"departamento prueba 3",
+		"estado":"A",
+		"grupo":"Grupo prueba 3"		
+	},
+	{
+		"cod_comercio":"134",
+		"cuit":"cuit4",
+		"razon_social":"Razon Prueba 4",
+		"nombre_fantasia":"Fantasia prueba 4",
+		"domicilio":"domicilio prueba 4",
+		"departamento":"departamento prueba 4",
+		"estado":"A",
+		"grupo":"Grupo prueba 4"		
+	}
+
+]

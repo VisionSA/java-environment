@@ -1,0 +1,289 @@
+package com.bizitglobal.tarjetafiel.planificadoremail.service.impl;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.dao.DataAccessException;
+import org.quartz.CronExpression;
+
+import com.bizitglobal.tarjetafiel.commons.util.AlgoritmoEncriptacionAES;
+import com.bizitglobal.tarjetafiel.commons.util.ContextoProperties;
+import com.bizitglobal.tarjetafiel.commons.util.Convertidores;
+import com.bizitglobal.tarjetafiel.general.dao.IGenericDao;
+import com.bizitglobal.tarjetafiel.planificadoremail.dao.EmailInColaDao;
+import com.bizitglobal.tarjetafiel.planificadoremail.exception.EnvioEmailException;
+import com.bizitglobal.tarjetafiel.planificadoremail.exception.ImagenEmailException;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.EmailInCola;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.HistoricoPlan;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.ImagenEmail;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.ParamTemplate;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.PlanColumnas;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.PlanProcesoEmail;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.TipoParamTemp;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.UrlParametro;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.UrlTemplate;
+import com.bizitglobal.tarjetafiel.planificadoremail.negocio.ValoresParanEmail;
+import com.bizitglobal.tarjetafiel.planificadoremail.service.EnvioEmailService;
+
+
+@SuppressWarnings({"rawtypes","unchecked", "unused"})
+public class EnvioEmailServiceImpl implements EnvioEmailService {
+	private IGenericDao genericDao;
+	private EmailInColaDao emailInColaDao;
+
+
+	public Boolean actualizarEmailInCola(EmailInCola emailInCola)
+			throws EnvioEmailException {
+		Boolean resultado = true;
+		try {
+			this.genericDao.modificar(emailInCola);
+		} catch (Exception e) {
+			resultado = false;
+			// TODO: handle exception
+		}
+		return resultado;
+	}
+	
+//	public Boolean actualizarEmailInCola(EmailInCola emailInCola)
+//			throws EnvioEmailException {
+//		Boolean resultado = true;
+//		try {
+//	//		genericDao.ejecutarQuery("Update t_vis_tra_clientes set c_saldo_linea = "
+//	//				+ saldo + " Where c_id_cliente = " + idCliente,
+//	//				null);
+//			genericDao.ejecutarQuery("update  t_vis_pla_emailincola set c_estado = "
+//					+ emailInCola.getEstado() + " Where c_id_emailincola = " + emailInCola.getIdEmail(),
+//					null);
+//			
+//	//		update  t_vis_pla_emailincola c_estado = 'W' where c_id_emailincola
+//		} catch (Exception e) {
+//			resultado = false;
+//			// TODO: handle exception
+//		}
+//		return resultado;
+//	}
+	
+	
+
+
+	public ImagenEmail BuscarImagenEmail(Long idImagen)
+			throws ImagenEmailException {
+		ImagenEmail resultado = null;
+		try {
+			resultado = (ImagenEmail) this.genericDao.get(ImagenEmail.class,
+					idImagen);
+		} catch (Exception e) {
+		}
+		return resultado;
+	}
+
+
+	public EmailInCola buscarNextEmail() throws EnvioEmailException {
+		return emailInColaDao.buscarNextEmail();
+	}
+	
+	public List<EmailInCola> buscarTodosEmail() {
+		return emailInColaDao.buscarTodosEmail();
+	}
+
+
+	public EmailInCola buscarNextNotificacion() throws EnvioEmailException {
+		return emailInColaDao.buscarNextNotificacion();
+	}
+
+
+	public List findAll() throws EnvioEmailException {
+		List lstEmail = new ArrayList();
+		try {
+
+		} catch (DataAccessException ex) {
+			String msg = "Email no existen en la base de datos.";
+			throw new EnvioEmailException(msg, ex);
+		} catch (Exception e) {
+			String msg = "Email no existen en la base de datos.";
+			throw new EnvioEmailException(msg, e);
+		}
+
+		return lstEmail;
+	}
+
+
+	@Override
+	public EmailInCola leerEnvioEmail(Long id) throws EnvioEmailException {
+		EmailInCola emailInCola = new EmailInCola();
+		try {
+			emailInCola = (EmailInCola) genericDao.get(EmailInCola.class, id);
+		} catch (Exception e) {
+			throw new EnvioEmailException(e.getMessage(), e);
+			// TODO: handle exception
+		}
+		return emailInCola;
+	}
+
+
+	@Override
+	public Boolean correrPlanEnviarLiqByEmail(Long idPlan)
+			throws EnvioEmailException {
+		Boolean resultado = true;
+		PlanProcesoEmail planProcesoEmail = new PlanProcesoEmail();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String urlServerClienteWeb = "";
+		try {
+			urlServerClienteWeb = ContextoProperties.getProperty("urlServerClienteWeb");
+			planProcesoEmail = (PlanProcesoEmail) this.genericDao.get(PlanProcesoEmail.class, idPlan);
+
+			CronExpression cexp = new CronExpression(planProcesoEmail.getExpressionEjecucion());
+			Date fechaProxEjecucion = cexp.getNextValidTimeAfter(new Date());
+			if (true) {// if(sdf.format(new
+						// Date()).equals(sdf.format(fechaProxEjecucion))){
+				List lstColumnas = Convertidores.setToList(planProcesoEmail.getPlanColumnas());
+				Collections.sort(lstColumnas);
+
+				String sql = "";
+				sql += planProcesoEmail.getQuery();
+				PlanColumnas planColumnas = null;
+
+				List paramTemp = new ArrayList();
+				String claveUnica = "";
+				for (int i = 0; i < lstColumnas.size(); i++) {
+					planColumnas = (PlanColumnas) lstColumnas.get(i);
+					if (i > 0)
+						sql += ", ";
+					sql += " " + planColumnas.getCampo() + " as " + planColumnas.getParamTemplate().getParametro();
+
+					// agregar if que excluya los constantes
+					if (planColumnas.getParamTemplate().getParametro().equals(ParamTemplate.PARM_CLAVE))
+						claveUnica = planColumnas.getCampo();
+					else if (!planColumnas.getParamTemplate().getParametro().equals(ParamTemplate.PARM_EMAIL)
+							&& !planColumnas.getParamTemplate().getParametro().equals(ParamTemplate.PARM_IDENTIFICADOR)
+							&& !planColumnas.getParamTemplate().getParametro().equals(ParamTemplate.PARM_ASUNTO))
+						paramTemp.add(planColumnas.getParamTemplate());
+				}
+				sql += " From " + planProcesoEmail.getQueryFrom() + " ";
+				sql += " Where "
+						+ claveUnica
+						+ " not in (select eic.c_clave_unica  from t_vis_pla_emailincola eic  where eic.c_id_plan = "
+						+ planProcesoEmail.getIdPlan() + ") and "
+						+ planProcesoEmail.getQueryWhere();
+
+				List rs = this.genericDao.listarResulsetSql(sql);
+
+				Iterator itRs = rs.iterator();
+				EmailInCola emailInCola = null;
+				ValoresParanEmail valoresParanEmail = null;
+				// Se crea el Historial para agrupar los email por proceso y
+				// ejecucion del mismo
+				HistoricoPlan historicoPlan = new HistoricoPlan();
+				historicoPlan.setFecEjecucion(new Date());
+				historicoPlan.setPlanProcesoEmail(planProcesoEmail);
+				historicoPlan.setClaveUnica(String.valueOf(rs.size()) + "-" + historicoPlan.getFecEjecucion().getTime());
+				historicoPlan.setQueryEjecucion(sql);
+				historicoPlan.setArchivoTemp(planProcesoEmail.getTemplate().getArchivoTemp());
+
+				while (itRs.hasNext()) {
+					Map itemRs = (Map) itRs.next();
+
+					emailInCola = new EmailInCola();
+					emailInCola.setHistoricoPlan(historicoPlan);
+					emailInCola.setAsunto(itemRs.get(ParamTemplate.PARM_ASUNTO).toString());
+					emailInCola.setEmail(itemRs.get(ParamTemplate.PARM_EMAIL).toString());
+					emailInCola.setFecCreacion(new Date());
+					emailInCola.setPendiente(true);
+					emailInCola.setPlanProcesoEmail(planProcesoEmail);
+					emailInCola.setClaveUnica(itemRs.get(ParamTemplate.PARM_CLAVE).toString());
+					emailInCola.setEstado(EmailInCola.ESTADO_EMAIL_PENDIENTE);
+					emailInCola.setIdIdentificador(new Long(itemRs.get(ParamTemplate.PARM_IDENTIFICADOR).toString()));
+					List paramtros = new ArrayList();
+					Iterator iterParam = paramTemp.iterator();
+					while (iterParam.hasNext()) {
+						ParamTemplate auxParam = (ParamTemplate) iterParam.next();
+						valoresParanEmail = new ValoresParanEmail();
+						valoresParanEmail.setEmailInCola(emailInCola);
+						valoresParanEmail.setNombre(auxParam.getParametro());
+						switch (auxParam.getTipo().getIdTipo().intValue()) {
+						case TipoParamTemp.TIPO_CADENA:
+							valoresParanEmail.setValor(itemRs.get(
+									auxParam.getParametro()).toString());
+							break;
+						case TipoParamTemp.TIPO_IMAGEN:
+							valoresParanEmail.setValor(urlServerClienteWeb + itemRs.get(auxParam.getParametro()).toString());
+							break;
+						default:
+							valoresParanEmail.setValor(itemRs.get(auxParam.getParametro()).toString());
+							break;
+						}
+						emailInCola.getValoresParam().add(valoresParanEmail);
+					}
+
+					List rs2 = Convertidores.setToList(planProcesoEmail.getTemplate().getUrlTemplate()); // set
+
+					Iterator itRs2 = rs2.iterator();
+					while (itRs2.hasNext()) {
+						UrlTemplate auxUrlTemp = (UrlTemplate) itRs2.next();
+
+						List rs3 = Convertidores.setToList(auxUrlTemp.getUrlParamatros());// this.genericDao.listarResulsetSql(sql);
+						// //set
+
+						Iterator itRs3 = rs3.iterator();
+						String parametros = urlServerClienteWeb + auxUrlTemp.getDireccion();
+						String auxEncript = "";
+						while (itRs3.hasNext()) {
+							UrlParametro auxUrlParam = (UrlParametro) itRs3.next();
+
+							if (auxUrlParam.getParamTemp() != null
+									&& auxUrlParam.getParamTemp().getParametro() != null) {
+								if (!auxEncript.equals(""))
+									auxEncript += "&&";
+								auxEncript += auxUrlParam.getParamTemp().getParametro() + "==";
+								auxEncript += itemRs.get(auxUrlParam.getParamTemp().getParametro()).toString();
+							}
+						}
+						valoresParanEmail = new ValoresParanEmail();
+						valoresParanEmail.setNombre(auxUrlTemp.getNombre());
+						valoresParanEmail.setEmailInCola(emailInCola);
+
+						AlgoritmoEncriptacionAES encriptador = new AlgoritmoEncriptacionAES();
+						parametros += encriptador.encriptarURLEncoder(auxEncript);
+
+						valoresParanEmail.setValor(parametros);
+
+						emailInCola.getValoresParam().add(valoresParanEmail);
+					}
+
+					this.genericDao.guardar(emailInCola);
+				}
+			}
+		} catch (Exception e) {
+			throw new EnvioEmailException(e.getMessage(), e);
+			// TODO: handle exception
+		}
+		return resultado;
+	}
+
+
+	public IGenericDao getGenericDao() {
+		return genericDao;
+	}
+
+
+	public void setGenericDao(IGenericDao genericDao) {
+		this.genericDao = genericDao;
+	}
+
+
+	public EmailInColaDao getEmailInColaDao() {
+		return emailInColaDao;
+	}
+
+
+	public void setEmailInColaDao(EmailInColaDao emailInColaDao) {
+		this.emailInColaDao = emailInColaDao;
+	}
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<actionScriptProperties analytics="false" mainApplicationPath="ConsultaFiel.mxml" projectUUID="f1860e41-238d-4ea4-87d9-10080c6fb6c0" version="6">
+  <compiler additionalCompilerArguments="-locale en_US -services=config/services-config-server.xml" autoRSLOrdering="false" copyDependentFiles="true" flex3CompatMode="false" flexSDK="Flex 4.1 (build 16076)" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderLocation="DOCUMENTS/Presentacion/target/Presentacion" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+    <compilerSourcePath/>
+    <libraryPath defaultLinkType="1">
+      <libraryPathEntry kind="4" path="">
+        <excludedEntries>
+          <libraryPathEntry index="5" kind="3" linkType="4" path="${PROJECT_FRAMEWORKS}/libs/sparkskins.swc" useDefaultLinkType="true">
+            <crossDomainRsls>
+              <crossDomainRslEntry autoExtract="true" policyFileUrl="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" rslUrl="http://fpdownload.adobe.com/pub/swz/flex/4.1.0.16076/sparkskins_4.1.0.16076.swz"/>
+              <crossDomainRslEntry autoExtract="true" policyFileUrl="" rslUrl="sparkskins_4.1.0.16076.swz"/>
+            </crossDomainRsls>
+          </libraryPathEntry>
+          <libraryPathEntry index="4" kind="3" linkType="4" path="${PROJECT_FRAMEWORKS}/libs/spark.swc" useDefaultLinkType="true">
+            <crossDomainRsls>
+              <crossDomainRslEntry autoExtract="true" policyFileUrl="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" rslUrl="http://fpdownload.adobe.com/pub/swz/flex/4.1.0.16076/spark_4.1.0.16076.swz"/>
+              <crossDomainRslEntry autoExtract="true" policyFileUrl="" rslUrl="spark_4.1.0.16076.swz"/>
+            </crossDomainRsls>
+          </libraryPathEntry>
+        </excludedEntries>
+      </libraryPathEntry>
+      <libraryPathEntry kind="1" linkType="1" path="libs"/>
+      <libraryPathEntry kind="3" linkType="1" path="C:/entorno/repositorios/testing/ProveedorConexion/bin/ProveedorConexion.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/FielLib/bin/FielLib.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/BizitLib/bin/BizitLib.swc" useDefaultLinkType="false"/>
+    </libraryPath>
+    <sourceAttachmentPath/>
+  </compiler>
+  <applications>
+    <application path="ConsultaFiel.mxml"/>
+  </applications>
+  <modules>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/RetencionComercioModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/RetencionComercioModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/CtaCteContableModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/CtaCteContableModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/PlasticosModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/PlasticosModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/LiquidacionesComercioModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/LiquidacionesComercioModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/DetalleInformacionComercioModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/DetalleInformacionComercioModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/modules/AgendaModule.swf" optimize="true" sourcePath="src/views/categorias/modules/AgendaModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/SimuladorModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/SimuladorModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/CtaCteComercioModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/CtaCteComercioModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/GeneralClienteModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/GeneralClienteModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/comercio/modules/CompSaldoComercioModule.swf" optimize="true" sourcePath="src/views/categorias/comercio/modules/CompSaldoComercioModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/modules/LineaCreditoModule.swf" optimize="true" sourcePath="src/views/categorias/cliente/modules/LineaCreditoModule.mxml"/>
+    <module application="src/ConsultaFiel.mxml" destPath="views/categorias/cliente/VerDocAdjuntos.swf" optimize="true" sourcePath="src/views/categorias/cliente/VerDocAdjuntos.mxml"/>
+  </modules>
+  <buildCSSFiles/>
+</actionScriptProperties>

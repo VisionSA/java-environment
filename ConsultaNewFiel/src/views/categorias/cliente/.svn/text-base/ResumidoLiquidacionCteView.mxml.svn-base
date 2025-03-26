@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox   xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"    horizontalAlign="center" verticalAlign="top" visible="{resumenCtaClienteModel.mostrarPanel}">
+       	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat"  doubleClickEnabled="true"   doubleClick="this.cambiarVistaDetalle()"  dataProvider="{resumenCtaClienteModel.arrayLiquidaciones}" width="100%" height="100%">
+					<mx:columns>
+					     <mx:AdvancedDataGridColumn  headerText="N° Liquidacion:" dataField="idLiqCliente" />
+					      <mx:AdvancedDataGridColumn headerText="Fecha Liquidación" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.dateFormatter.format(data.fechaCierre)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+					     <mx:AdvancedDataGridColumn headerText="Primer Vencimiento" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.dateFormatter.format(data.fechaLiq)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>			           
+				        <mx:AdvancedDataGridColumn headerText="Monto Total" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label  text="{outerDocument.currencyFormatter.format(data.montoTotal)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            <mx:AdvancedDataGridColumn headerText="Importe Pagado" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label  text="{outerDocument.currencyFormatter.format(data.importePagado)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+					    <mx:AdvancedDataGridColumn headerText="Falta Pagar" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+					           <mx:Label  text="{outerDocument.currencyFormatter.format(data.montoTotal-data.importePagado)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            <mx:AdvancedDataGridColumn headerText="Pdf Liquidación" >
+			                 <mx:itemRenderer>
+			                <mx:Component>
+			                   <mx:HBox horizontalScrollPolicy="off" toolTip="{String(data.rutaPdf).replace('webapps','')}">
+			                   <mx:Script>
+								    <![CDATA[
+								    import com.tarjetafiel.caja.vo.LiqCliente;
+									import mx.controls.Alert;
+									import mx.events.CloseEvent;
+			                        
+			                         public  function abrirPDF(url:String):void {
+		   							   	  
+										   		if(data.rutaPdf && data.rutaPdf != "")
+										   	    	navigateToURL( new URLRequest( String(data.rutaPdf).replace('webapps','')+".pdf"),'_blank'); 
+									} 
+										   
+									   
+								    ]]>
+								</mx:Script>
+						         <mx:LinkButton label="{String(data.rutaPdf).replace('webapps','')+'.pdf'}" click="abrirPDF(data.rutaPdf)" rollOverColor="#fd9595"/>
+						        	</mx:HBox>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            
+			             
+			        </mx:columns>
+		</mx:AdvancedDataGrid>
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+	<mx:CurrencyFormatter  id="currencyFormatter" currencySymbol="$"  useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="."
+		 rounding="nearest" precision="2" decimalSeparatorFrom="," decimalSeparatorTo=","    alignSymbol="left"/>  
+        
+    
+  
+<mx:Script>
+	<![CDATA[
+		import com.tarjetafiel.caja.vo.LiqCliente;
+		import flash.net.navigateToURL;
+		import views.categorias.cliente.models.ResumenCtaClienteModel;
+		import mx.effects.easing.Back;
+		import com.tarjetafiel.caja.vo.MovimientoCtaCte;
+		import mx.controls.Alert;
+		     [Bindable]public var  resumenCtaClienteModel:ResumenCtaClienteModel;  
+		     public var primero: Boolean=true; 
+		     public var acumulado:  Number=0;
+		     
+		     public  function cambiarVistaDetalle():void{
+		     	var liq : LiqCliente = LiqCliente(adg1.selectedItem);
+		     	resumenCtaClienteModel.liquidacionSeleccionada = liq;  
+		     	resumenCtaClienteModel.dispatcher.dispatchEvent(new Event("cambiarAVistaDetalleResumen"));	
+		     }
+		     	
+		/* public function myStyleFunction(data:Object, column:AdvancedDataGridColumn):Object{ 
+           var nroFila:int = data.numeroFila; 
+           trace("Region: " + nroFila); 
+           if (nroFila == 2) 
+              return {background: true,  fontWeight:"bold", backgroundColor: 0x000044} 
+           else 
+              return {background: true, backgroundColor: 0xFF0000} 
+        } */
+        
+          public function myStyleFunction(data:Object, col: AdvancedDataGridColumn):Object
+       {
+           if(data["esImpuesto"] =='S')
+           {
+               return {background: true,color:'green',fontWeight:"bold",backgroundColor:"red"};
+           }
+           return {color:'blue',fontWeight:"bold"  };
+       } 
+		     
+		     
+		  
+		     
+		
+	]]>
+</mx:Script>
+
+	
+</mx:VBox>

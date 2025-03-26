@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VboxComun xmlns="views.categorias.*" 
+		   module="{VboxComun.URL_MODULES_CLIENTE}PlasticosModule.swf" 
+		   xmlns:mx="http://www.adobe.com/2006/mxml" 
+		   width="100%" height="100%" 
+		   label="Plasticos">
+</VboxComun>

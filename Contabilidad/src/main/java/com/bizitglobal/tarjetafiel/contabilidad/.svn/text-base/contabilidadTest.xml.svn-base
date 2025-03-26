@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+                       "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+ <!-- DEFINICION DEL DATA SOURCE -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/dataSource.xml"/>
+	
+ <!-- ================================================================================================ -->
+ <!-- =======================          DEFINICION DE SESSION FACTORY           ======================= -->
+ <!-- ================================================================================================ --> 
+ <bean class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" id="sessionFactory">
+  <property name="mappingResources">
+   <list>
+   	<value>com/bizitglobal/tarjetafiel/contabilidad/dao/impl/PlanCuentaDos.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/contabilidad/dao/impl/PlanCuentaSimple.hbm.xml</value>
+   	<value>com/bizitglobal/tarjetafiel/general/dao/impl/FormaPago.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/Operador.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/Pagina.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/Permiso.hbm.xml</value>    
+    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/Rol.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/MenuItem.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/MenuItemRelacion.hbm.xml</value>    
+    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/RolMenuItem.hbm.xml</value>
+    <value>com/bizitglobal/tarjetafiel/operador/dao/impl/RolPaginaPermiso.hbm.xml</value>
+    
+    	
+   </list>
+  </property>
+  <property name="hibernateProperties">
+   <props>
+    <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+    <prop key="hibernate.show_sql">true</prop>
+    <prop key="hibernate.cglib.use_reflection_optimizer">true</prop>
+    <prop key="hibernate.cache.provider_class">org.hibernate.cache.HashtableCacheProvider</prop>
+   </props>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+
+ <!-- DEFINICION DEL SESSION FACTORY -->
+ <import resource="classpath:/com/bizitglobal/tarjetafiel/commons/context/commonContext.xml"/>	
+	
+ <!-- DEFINICION DEL CONTEXT DE OPERADORES -->
+ <import resource="contabilidadContext.xml"/>  
+	
+</beans>

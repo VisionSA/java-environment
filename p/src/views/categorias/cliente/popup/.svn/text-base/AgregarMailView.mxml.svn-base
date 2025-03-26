@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ESCAPE) removePopUp()"  creationComplete="init()" layout="vertical" showCloseButton="true" close="PopUpManager.removePopUp(this)" horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/" xmlns:ns1="com.util.paginacion.*"
+				height="166" title="Agregar E-MAIL" width="400">
+	<mx:EmailValidator id="mailValidator" source="{txtEmail}" property="text" required="true" invalidCharError="Caracter incorrecto" invalidDomainError="Formato de mail incorrecto"
+					   invalidIPDomainError="Formato de mail incorrecto" invalidPeriodsInDomainError="Formato de mail incorrecto" missingAtSignError="Formato de mail incorrecto"
+					   missingPeriodInDomainError="Formato de mail incorrecto" missingUsernameError="Formato de mail incorrecto"/>
+	<mx:VBox paddingTop="0" paddingRight="0" paddingLeft="0" height="100%" width="100%">
+		<mx:HBox  paddingRight="0" paddingLeft="0" height="100%" width="100%" horizontalAlign="left" verticalAlign="top" >
+			<mx:Form width="100%" height="100%"  paddingBottom="0" paddingRight="0" paddingLeft="0">
+				<mx:FormItem label="Apellido y Nombre: " styleName="tituloBusquedas" width="100%">
+					<mx:Label id="txtEmailModificar"  text="{apellidoNombre}" styleName="lblInfo"/>					
+				</mx:FormItem>
+				<mx:FormItem label="E-MAIL: " styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtEmail" maxChars="50" errorString="" width="100%" />
+				</mx:FormItem>
+				<!--<mx:FormItem label="DESCRIPCION: " styleName="tituloBusquedas" width="100%">
+					<mx:TextInput id="txtDescrip" maxChars="10"/>
+				</mx:FormItem>-->
+			</mx:Form>
+		</mx:HBox>
+	</mx:VBox>
+	<mx:VBox width="100%" paddingTop="10">
+		<mx:HBox width="100%" horizontalAlign="center">	
+			<mx:Button label="Guardar" width="90" click="guardar()"/>
+			<mx:Button label="Salir" width="90" click="removePopUp()"/>
+		</mx:HBox>
+	</mx:VBox>
+		
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.tarjetafiel.caja.vo.Email;
+			import com.util.components.alert.AlertOk;
+			import com.util.paginacion.PaginacionEvent;
+			import mx.core.Application;
+			
+			import models.ApplicationModel;
+			
+			import managers.ClienteManager;
+			
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			import mx.validators.ValidationResult;
+			
+			import views.categorias.cliente.models.GeneralClienteModel;
+			
+			[Bindable]public var generalClienteModel:GeneralClienteModel;
+			
+			[Bindable]public var applicationModel:ApplicationModel = new ApplicationModel();
+			
+			public var idIndividuo:Number;
+			
+			[Bindable]public var apellidoNombre:String;
+			
+			
+		    private function init():void {
+				this.txtEmail.setFocus();
+			}
+			
+			public function removePopUp():void{
+				//popUpVisible = false;
+				cleanData();
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function guardar():void {
+				//controlo el campo txtEmail
+				var valido:ValidationResultEvent = mailValidator.validate(txtEmail.text);
+				if (valido.type==ValidationResultEvent.VALID)
+				{
+					
+					//creo el objeto mail para guardar
+					var mail:Email = new Email();
+					mail.email=this.txtEmail.text;
+					/* mail.descripcion=this.txtDescrip.text; */
+					/* mail.operador = applicationModel.operador; */
+					/* mail.operador = Application.application.operador; */
+					generalClienteModel.agregarMail(mail,idIndividuo);
+					this.removePopUp();
+				}
+			}
+		
+			private function cleanData():void {
+				//creo el objeto mail para guardar
+				this.txtEmail.text = "";
+				/* this.txtDescrip.text = ""; */
+				this.txtEmail.errorString="";
+			}
+			
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

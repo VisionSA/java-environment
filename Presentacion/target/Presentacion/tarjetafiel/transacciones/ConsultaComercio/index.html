@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <link rel="shortcut icon" href="images/logo.png">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <title>Tarjeta Fiel | Consultas Comercio</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@1.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"> 
+  <link href="css/alertify.css"                        rel="stylesheet" type="text/css">
+  <link href="css/alertifyThemes.css"                  rel="stylesheet" type="text/css">
+  <link href="css/alertifySemantic.css"                rel="stylesheet" type="text/css">
+  <link href="css/alertifyBootstrap.css"               rel="stylesheet" type="text/css">
+  <link href="css/firacode.css"                        rel="stylesheet" type="text/css">
+  <link href="css/vuetify.css"                         rel="stylesheet">
+  <link href="css/sb-admin.css"                        rel="stylesheet">
+  <link href="css/style.css"                           rel="stylesheet">
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  </head>
+<body id="page-top">
+
+    <nav class="navbar-navbar-default" role="navigation">
+    <a class="navbar-brand mr-1 text-white" href="index.html">Tarjeta Fiel | Consultas Comercio</a>
+  </nav>
+
+<div id="app">
+<v-app id="inspire">
+
+  
+
+            <!-- --------------------------cinta de busquedas--------------------------- -->
+
+<!-- codigo posnet -->
+<v-row class="filaCinta" style="height: 15px;">
+<p>
+<v-subheader class="codSubheader">Cod posnet</v-subheader>
+</p>&nbsp;
+<v-col
+style="height: 15px;"
+x-small
+dense
+cols="-1"
+md="-1"
+sm="-1"
+id="cod_comercio"
+>
+<v-text-field
+class="codSubheaderInput"
+hide-details="auto"
+placeholder="CODIGO"
+v-on:keyup.enter="buscarCod_comercio(codigoCinta)"
+v-model="codigoCinta"
+id="cod_comercio"
+type="number"
+>
+</v-text-field>
+<v-dialog transition="dialog-bottom-transition" max-width="1800" v-model="dialog">
+  <v-toolbar color="primary" dense dark>COMERCIOS ENCONTRADOS</v-toolbar>
+<!-- @ondblclick="buscarRazonSocial(razonCinta)"
+@click="buscarRazonSocial(razonCinta)"
+dentro de v-text-field -->
+
+ <v-data-table
+    style="padding-bottom: 0px;"
+    dense
+    :headers="TablaGeneral"
+    :items="contenidoTabla"
+    :page.sync="page"
+    :items-per-page="itemsPerPage"
+    hide-default-footer
+    @page-count="pageCount = $event"
+  >
+  <template v-slot:item.codPosnet="props">
+    <v-edit-dialo
+      @open="props.item.codPosnet"
+      @click= "buscarCod_comercio(props.item.codPosnet)"
+    >
+      {{ props.item.codPosnet }}
+  </template>
+
+  <template v-slot:item.cuit="props">
+  <v-edit-dialo
+    @open="props.item.cuit"
+    @click= "buscarCod_comercio(props.item.codPosnet)"
+  >
+    {{ props.item.cuit }}
+  </v-edit-dialog>
+</template>
+
+<template v-slot:item.razon_social="props">
+  <v-edit-dialo
+    @open="props.item.razon_social"
+    @click="buscarCod_comercio(props.item.codPosnet)"
+  >
+    {{ props.item.razon_social }}
+  </v-edit-dialog>
+</template>
+
+<template v-slot:item.nombre_fantasia="props">
+  <v-edit-dialo
+    @open="props.item.nombre_fantasia"
+    @click="buscarCod_comercio(props.item.codPosnet)"
+  >
+    {{ props.item.nombre_fantasia }}
+  </v-edit-dialog>
+</template>
+
+<template v-slot:item.domicilio="props">
+  <v-edit-dialo
+    @open="props.item.domicilio"
+    @click="buscarCod_comercio(props.item.codPosnet)"
+  >
+    {{ props.item.domicilio }}
+  </v-edit-dialog>
+</template>
+
+<template v-slot:item.partido="props">
+  <v-edit-dialo
+    @open="props.item.partido"
+    @click="buscarCod_comercio(props.item.codPosnet)"
+  >
+    {{ props.item.partido }}
+  </v-edit-dialog>
+</template>
+
+<template v-slot:item.grupo="props">
+  <v-edit-dialo
+    @open="props.item.grupo"
+    @click="buscarCod_comercio(props.item.codPosnet)"
+  >
+    {{ props.item.grupo }}
+  </v-edit-dialog>
+</template>
+
+<template v-slot:item.estado="props">
+  <v-edit-dialo
+    @open="props.item.estado"
+    @click="buscarCod_comercio(props.item.codPosnet)"
+  >
+    {{ props.item.estado }}
+  </v-edit-dialog>
+</template>
+ </v-data-table>
+ <div class="text-center pt-2" id="paginacion">
+  <v-pagination v-model="page" :length="pageCount"></v-pagination>
+</div>
+</v-dialog>
+</v-col>
+
+<!-- v-on:keyup.enter="...."         busca al pulsar enter -->
+<!-- v-model="..." toma los datos de input y los muestra por medio de v-on:keyup.enter... -->
+
+<!-- CUIT -->
+<p>
+<v-subheader class="cuitSubheader">CUIT</v-subheader>
+</p>&nbsp;
+<v-col
+x-small
+dense
+cols="-1"
+md="-1"
+sm="-1"
+id="CUIT"
+>
+<v-text-field 
+class="cuitSubheaderInput"
+hide-details="auto"
+placeholder="CUIT"
+id=CUIT 
+type="number" 
+v-model="CUITCinta" 
+v-on:keyup.enter="buscarCuit(CUITCinta)"
+></v-text-field>
+</v-col>
+
+<!-- razon social -->
+<p>
+<v-subheader>Razon social</v-subheader>
+</p> &nbsp;
+<v-col
+x-small
+dense
+cols="2"
+md="2"
+sm="2"
+id=razon_social
+>
+
+<v-text-field 
+hide-details="auto"
+placeholder="RAZON SOCIAL"
+id=razon_social 
+type="text" 
+v-model="razonCinta" 
+v-on:keyup.enter="buscarRazonSocial(razonCinta)"
+></v-text-field>
+</v-col>
+
+<!-- nn fantasia -->
+<p>
+<v-subheader>Nn Fantasia</v-subheader>
+</p>&nbsp;
+<v-col
+x-small
+dense
+cols="2"
+md="2"
+sm="2"
+id="Nn_fantasia"
+>
+
+<v-text-field 
+hide-details="auto"
+placeholder="FANTASIA"
+id=Nn_fantasia 
+type="text" 
+v-model="fantasiaCinta" 
+v-on:keyup.enter="buscarNnFantasia(fantasiaCinta)"
+></v-text-field>
+</v-col>
+
+<!-- grupo -->
+<p>
+<v-subheader class="grupoSubheader">Grupo</v-subheader>
+</p>&nbsp;
+<v-col
+x-small
+dense
+cols="1"
+md="1"
+sm="1"
+id="grupo"
+v-model="grupo1"
+>
+<v-text-field 
+hide-details="auto"
+placeholder="GRUPO"
+v-on:keyup.enter="buscarGrupo(grupoCinta)" 
+id="grupo" 
+v-model="grupoCinta"
+></v-text-field>
+</v-col>
+
+<!-- generico -->
+<p>
+<v-subheader class="genericoSubheader">Generico</v-subheader>
+</p>&nbsp;
+<v-col
+x-small
+dense
+cols="2"
+md="1"
+sm="2"
+id="generico"
+>
+<v-text-field 
+hide-details="auto"
+placeholder="GENERICO"
+x-small
+v-on:keyup.enter="buscarGenerico(genericoCinta)"
+id="generico"
+v-model="genericoCinta" 
+></v-text-field>
+</v-col>
+</v-row>
+
+        <!-- -----------------------datos mostrados en cinta de busquedas----------------------- -->
+
+<!-- codigo posnet -->
+<v-row class="filaCinta1" style="height: 1px;">
+<p>
+<v-subheader class="codSubheader">Cod Posnet</v-subheader>
+</p>&nbsp;
+<v-col
+style="height: 15px;"
+x-small
+dense
+cols="-1"
+sm="-1"
+md="-1"
+id="cod_comercio"
+>
+<v-text-field
+class="codSubheaderInput"
+hide-details="auto"
+x-small
+readonly
+placeholder="CODIGO"
+v-model.lazy="cod_comerciosVer"
+id="cod_comercio"
+>
+</v-text-field>
+</v-col>
+
+<!-- CUIT -->
+<p>
+<v-subheader class="cuitSubheader">CUIT</v-subheader>
+</p>&nbsp;
+<v-col
+
+x-small
+dense
+cols="-1"
+sm="-1"
+md="-1"
+id="CUIT"
+>
+<v-text-field
+class="cuitSubheaderInput"
+hide-details="auto"
+x-small
+readonly
+placeholder="CUIT"
+v-model.lazy="cuitVer"
+id="CUIT">
+{{cuitVer}}
+</v-text-field>
+</v-col>
+
+<!-- razon social -->
+<p>
+<v-subheader>Razon social</v-subheader>
+</p>&nbsp;
+<v-col
+x-small
+dense
+cols="2"
+md="2"
+sm="2"
+id=razon_social1
+>
+<v-text-field
+hide-details="auto"
+x-small
+readonly
+placeholder="RAZON SOCIAL"
+v-model.lazy="razon_socialVer"
+id="razon_social1">
+{{razon_socialVer}}
+</v-text-field>
+</v-col>
+
+<!-- nn fantasia -->
+<p>
+<v-subheader>Nn Fantasia</v-subheader>
+</p>&nbsp;
+<v-col
+
+x-small
+dense
+cols="2"
+md="2"
+sm="2"
+id="Nn_fantasia1"
+>
+<v-text-field
+hide-details="auto"
+x-small
+readonly
+placeholder="FANTASIA"
+v-model.lazy="nombre_fantasiaVer"
+id="Nn_fantasia1">
+{{nombre_fantasiaVer}}
+</v-text-field>
+</v-col>
+
+<!-- grupo -->
+<p>
+<v-subheader class="grupoSubheader">Grupo</v-subheader>
+</p>&nbsp;
+<v-col
+
+x-small
+dense
+cols="1"
+sm="1"
+md="1"
+id="grupo1"
+>
+<v-text-field
+hide-details="auto"
+x-small
+readonly
+placeholder="GRUPO"
+v-model.lazy="grupoVer"
+id="grupo1">
+{{grupoVer}}
+
+</v-text-field>
+</v-col>
+
+<!-- estado -->
+<p>
+<v-subheader class="estadoSubheader">Estado</v-subheader>
+</p>&nbsp;&nbsp;&nbsp;
+<v-col
+
+x-small
+dense
+cols="1"
+md="1"
+sm="1"
+id="estado1"
+>
+
+<v-text-field
+class="estadoSubheaderInput"
+hide-details="auto"
+x-small
+readonly
+placeholder="ESTADO"
+v-model.lazy="estadoVer"
+id="estado1">
+{{estadoVer}}
+</v-text-field>
+</v-col>
+</v-row>
+        <!-- ------------------------------botones------------------------------------- -->
+<v-row class="botones" >
+<!-- boton limpiar campos -->
+<v-btn
+name="btnLimpiar"
+id="limpiar"
+type="reset"
+@click="clear"
+x-small
+dense
+cols="1"
+sm="1"
+md="1"
+color="primary"
+>
+Limpiar campos
+</v-btn>
+
+&nbsp;
+<!-- boton habilitar/deshabilitar -->
+<v-btn
+name="boton"
+id="botonHD"
+x-small
+dense
+cols="1"
+sm="1"
+md="1"
+color="primary"
+>
+Habilitar/Deshabilitar
+</v-btn>
+
+&nbsp;
+<!-- boton reportes -->
+<v-btn
+name="boton"
+id="botonReporte"
+x-small
+dense
+cols="1"
+sm="1"
+md="1"
+color="primary"
+>
+Reportes
+</v-btn>
+&nbsp;
+<p class="derecha"><b>Operador: {{nombreOperador}}</b></p>
+
+</v-row>
+
+              <!-- ------------------------cabecera tabs-------------------------- -->
+<v-tabs
+v-model="tab"
+background-color="primary"
+dark
+>
+<v-tab
+v-for="item in items"
+:key="item.tab"
+>
+{{ item.tab }}
+
+</v-tab>
+</v-tabs>
+              
+              <!-- ------------------- contenido tablas-------------------- -->
+
+<v-row class="derecha" style="padding-top: 15px;">
+
+<!-- telefono -->
+<v-col cols="3">
+<p class="text-left"><b>TELEFONO/S</b></p>
+<template>
+<v-data-table
+id="tablaTelefonos"
+dense
+:headers="telefono"
+:items="contenidoTelefono"
+hide-default-footer
+></v-data-table>
+</template>
+</v-col>
+
+<!-- emails -->
+<v-col cols="4">
+<p class="text-left"><b>EMAIL/S</b></p>
+<template>
+<v-data-table
+dense
+:headers="email"
+:items="contenidoEmail"
+hide-default-footer
+></v-data-table>
+</template>
+</v-col>
+
+<!-- usuarios autorizados  -->
+<v-col cols="7">
+<p class="text-left"><b>USUARIOS AUTORIZADO/S</b></p>
+<template>
+<v-data-table
+dense
+:headers="autorizados"
+:items="contenidoAutorizados"
+hide-default-footer
+></v-data-table>
+</template>
+</v-col>
+
+<!-- usuarios responsables -->
+<v-col cols="7">
+<p class="text-left"><b>USUARIOS RESPONSABLE/S</b></p>
+<template>
+<v-data-table
+dense
+:headers="responsables"
+:items="contenidoResponsables"
+hide-default-footer
+></v-data-table>
+</template>
+</v-col>
+
+<!-- agenda  -->
+<v-col cols="7">
+<v-col>
+<p class="text-left">
+<b id="agendatexto">AGENDA</b> 
+&nbsp; &nbsp;&nbsp;&nbsp; 
+<b id="fechatexto">Fecha desde</b>
+<input id="fecha" type="date" placeholder="fecha" v-model="agendaFechaDesde">
+&nbsp; &nbsp;&nbsp;&nbsp;
+<b id="fechatexto">Fecha Hasta</b>
+<input id="fecha" type="date" placeholder="fecha" v-model="agendaFechaHasta">
+&nbsp; &nbsp;&nbsp;&nbsp;
+<!-- boton buscar agenda -->
+<v-btn
+name="boton"
+
+id="botonAgenda"
+x-small
+dense
+cols="1"
+sm="1"
+md="1"
+color="primary"
+@click="BuscarAgenda1(agendaFechaDesde,agendaFechaHasta)"
+>
+Buscar
+</v-btn>
+&nbsp; &nbsp;&nbsp;&nbsp;
+
+<!-- boton nuevo evento agenda -->
+<v-dialog
+transition="dialog-bottom-transition"
+max-width="800"
+>
+<template v-slot:activator="{ on, attrs }">
+<v-btn
+x-small
+dense
+cols="1"
+sm="1"
+md="1"
+color="primary"
+v-bind="attrs"
+v-on="on"
+>
+Nuevo evento
+</v-btn>
+</template>
+<template v-slot:default="dialog1">
+<v-card>
+<v-toolbar
+color="primary"
+dense
+dark
+>Eventos</v-toolbar>
+<v-card-text>
+
+  <template>
+    <div>
+      <!-- <v-text-field v-model="agendaFecha"       hide-details="auto" id="fecha"       class="fecha"       label="Fecha" type="date" required readonly></v-text-field> -->
+      <v-text-field v-model="agendaComentarios" hide-details="auto" id="comentarios" class="comentarios" label="Descripcion" required></v-text-field>
+      <v-text-field v-model="agendaDescripcion" hide-details="auto" id="descripcion" class="descripcion" label="Comentarios" required></v-text-field>
+      <!-- <v-text-field v-model="agendaOperador"    hide-details="auto" id="operador"    class="operador"    label="Operador" required></v-text-field> -->
+    </div>
+  </template>
+
+</v-card-text>
+
+<v-card-actions class="justify-end">
+<v-btn
+text
+@click="guardarEvento"
+>Guardar</v-btn>
+</v-card-actions>
+</v-card>
+</template>
+</v-dialog>
+</p>
+</v-col>  
+<!-- tabla agenda  -->
+<template>
+<v-data-table
+dense
+:headers="Agenda"
+:items="contenidoAgenda"
+hide-default-footer
+></v-data-table>
+</template>
+</v-col>
+
+<!-- sucursales -->
+<!-- <v-col cols="7">
+<p class="text-left"><b>SUCURSALES</b></p>
+<template>
+<v-data-table
+dense
+:headers="Sucursales"
+:items="contenidoSucursales"
+hide-default-footer
+></v-data-table>
+</template>
+</v-col> -->
+
+<!-- <v-col cols="7">
+  <p class="text-left"><b>Razon social</b></p>
+  <template>
+    <v-data-table
+    dense
+    :headers="RazonSocialTabla"
+    :items="contenidoRazonSocial"
+    hide-default-footer>
+    </v-data-table>
+    </template>
+</v-col>  -->
+
+</v-row>
+
+ <!-- ----------------editar tablas-------------------- -->
+<!-- <template v-slot:item.horario1="props">
+  <v-edit-dialog
+  :return-value.sync="props.item.telefonoArrayTab2"
+  @save="save(telefonoArrayTab2)"
+  @cancel="cancel"
+  >
+  {{ props.item.telefonoArrayTab2 }}
+  
+  <v-text-field
+  type="time"
+  v-model="props.item.telefonoArrayTab2"
+  label="Editar telefono"
+  ></v-text-field>
+  </template>
+  </v-edit-dialog>
+  </template> -->
+
+<!-- ------------------------contenido lista-------------------------- -->
+<v-row  id="fila1" style="padding-top: 0px;height: 8px;margin-top: -30px"> 
+<p><v-subheader cols="1" id="achicar" class="text-left">Razon social</v-subheader></p> &nbsp;
+<v-col cols="2">
+<v-text-field 
+hide-details="auto"
+placeholder="RAZON SOCIAL"
+id=razon_socialTab 
+type="text" 
+v-model="razonTab"              
+readonly>
+</v-text-field>
+</v-col>
+</v-row>
+
+<v-row class="fila1"  id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+<p><v-subheader cols="1" id="achicar" >Nn fantasia</v-subheader></p>&nbsp;
+<v-col cols="2">
+<v-text-field 
+hide-details="auto"
+placeholder="NOMBRE DE FANTASIA"
+id=Nn_fantasiaTab
+type="text" 
+v-model="fantasiaTab"              
+readonly>
+</v-text-field>
+</v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Rubro</v-subheader></p>&nbsp;
+  <v-col cols="2">    
+    <v-text-field 
+  hide-details="auto"
+  placeholder="RUBRO"
+  id=rubroTab
+  type="text" 
+  v-model="rubroTab"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Actividad</v-subheader></p>&nbsp;
+    <v-col cols="2">    
+      <v-text-field 
+    hide-details="auto"
+    placeholder="ACTIVIDAD"
+    id=actividadTab
+    type="text" 
+    v-model="actividadTab"              
+    readonly>
+    </v-text-field>
+    </v-col>
+  </v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+<p><v-subheader cols="1" id="achicar" class="fila1">ID comercio</v-subheader></p>&nbsp;
+  <v-col cols="2">    
+    <v-text-field 
+  hide-details="auto"
+  placeholder="ID COMERCIO"
+  id=idComercioTab
+  type="text" 
+  v-model="idComercioTab"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+<p><v-subheader cols="1" id="achicar" class="fila1">Pagina Web</v-subheader></p>&nbsp;
+  <v-col cols="2">  
+  <v-text-field 
+  hide-details="auto"
+  placeholder="PAGINA WEB"
+  id=paginaWebTab
+  type="text" 
+  v-model="paginaWebTab"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+<p><v-subheader cols="1" id="achicar" class="fila1">Fecha alta</v-subheader></p>&nbsp;
+  <v-col cols="2">    
+    <v-text-field 
+  hide-details="auto"
+  placeholder="FECHA ALTA"
+  id=fechaAltaTab
+  type="text" 
+  v-model="fechaAltaTab"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+<p><v-subheader cols="1" id="achicar" class="fila1">Fecha baja</v-subheader></p>&nbsp;
+  <v-col cols="2">    
+    <v-text-field 
+  hide-details="auto"
+  placeholder="FECHA BAJA"
+  id=fechaBajaTab
+  type="text" 
+  v-model="fechaBajaTab"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+<p><v-subheader cols="1" id="achicar" class="fila1"><b>Domicilio</b></v-subheader></p>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+<p><v-subheader cols="1" id="achicar" class="fila1" >Calle</v-subheader></p>&nbsp;
+<v-col cols="2">  
+  <v-text-field 
+  hide-details="auto"
+  placeholder="CALLE"
+  id=domicilioCalle
+  type="text" 
+  v-model="domicilioCalle"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Numeración</v-subheader></p>&nbsp;
+<v-col cols="2">  
+  <v-text-field 
+  hide-details="auto"
+  placeholder="Numeracion"
+  id=domicilioNumeracion
+  type="text" 
+  v-model="domicilioNumero"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Orientación</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="Orientación"
+  id=domicilioOrientacion
+  type="text" 
+  v-model="domicilioOrientacion"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Manzana</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="MANZANA"
+  id=domicilioManzana
+  type="text" 
+  v-model="domicilioManzana"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Monoblock</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="MONOBLOCK"
+  id=domicilioMonoblock
+  type="text" 
+  v-model="domicilioMonoblock"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Piso</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="PISO"
+  id=domicilioPiso
+  type="text" 
+  v-model="domicilioPiso"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Departamento</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="DEPARTAMENTO"
+  id=domicilioDepartamento
+  type="text" 
+  v-model="domicilioDepartamento"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Area</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="AREA"
+  id=domicilioArea
+  type="text" 
+  v-model="domicilioArea"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Barrio</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="BARRIO"
+  id=domicilioBarrio
+  type="text" 
+  v-model="domicilioBarrio"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<!-- <v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Localidad</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="LOCALIDAD"
+  id=domicilioLocalidad
+  type="text" 
+  v-model="departamento"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row> -->
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Partido</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="PARTIDO"
+  id=domicilioPartido
+  type="text" 
+  v-model="domicilioPartido"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Cod. Postal</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="COD. POSTAL"
+  id=domicilioCodigoPostal
+  type="text" 
+  v-model="domicilioCodigoPostal"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Provincia</v-subheader></p>&nbsp;
+<v-col cols="2">  
+  <v-text-field 
+  hide-details="auto"
+  placeholder="Provincia"
+  id=domicilioProvincia
+  type="text" 
+  v-model="domicilioProvincia"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1">Generico</v-subheader></p>&nbsp;
+<v-col cols="2"> 
+  <v-text-field 
+  hide-details="auto"
+  placeholder="GENERICO"
+  id=genericoTab
+  type="text" 
+  v-model="genericoTab"              
+  readonly>
+  </v-text-field>
+  </v-col>
+</v-row>
+ <!-- ---------------------------telefono prueba(eliminar v-text field , dejar lo demas)-------------- -->
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1"></v-subheader></p>&nbsp;
+<v-col cols="2"> 
+
+  </v-col>
+</v-row>
+ <!-- ---------------------------telefono prueba(eliminar v-text field , dejar lo demas)-------------- -->
+<v-row class="fila1" id="fila" style="padding-top: 0px;margin-top: 0px;height: 8px;">
+  <p><v-subheader cols="1" id="achicar" class="fila1"></v-subheader></p>&nbsp;
+<v-col cols="2"> 
+
+  </v-col>
+</v-row>
+
+<!-- {{ items.tab}} -->
+
+                  <!-- -------------------tablas tab--------------------- -->
+
+ <!-- <v-row class="text-left">  
+<v-row id="tabla1" cols="2">
+<v-card class="tarjeta2">
+  <template>
+    <v-simple-table v-slot:default class="tarjeta2" dense>
+      <template v-slot:default>
+        <thead>
+          <tr>
+            <th id="colorAzul" class="text-left">
+              Emails
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr  class="text-left"
+            v-for="item in Email"
+            :key="item.name"
+          >
+          <td>{{ item.Email }}</td>
+          <v-col><p>Email 1</p></v-col>
+             <v-divider
+              v-else-if="item.divider"
+              :key="index"
+              :inset="inset"
+              ></v-divider>
+          <v-col><p>Email 2</p></v-col>
+        </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
+  </template>
+  </v-card>
+</v-row> -->
+
+<!-- &nbsp; -->
+<!--
+<v-row id="tabla2" cols="2">
+  <v-card class="tarjeta2">
+    <template>
+      <v-simple-table>
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th id="colorAzul" class="text-left">
+                Responsables
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr  class="text-left"
+              v-for="item in desserts"
+              :key="item.name"
+            >
+              <td>{{ item.responsables }}</td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </template>
+    </v-card>
+  </v-col>
+
+  &nbsp;
+
+  <v-row id="tabla3" cols="2">
+    <v-card class="tarjeta3">
+      <template>
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th id="colorAzul" class="text-left">
+                  Agenda
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  class="text-left"
+                v-for="item in desserts"
+                :key="item.name"
+              >
+                <td>{{ item.agenda }}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </template>
+      </v-card>
+    </v-col>
+
+    &nbsp;
+
+    <v-col id="tabla4" cols="2">
+      <v-card class="tarjeta4">
+        <template>
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th id="colorAzul" class="text-left">
+                    Sucursales
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr  class="text-left"
+                  v-for="item in desserts"
+                  :key="item.name"
+                >
+                  <td>{{ item.sucursales }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </template>
+        </v-card>
+      </v-col>
+    </v-row> -->
+
+
+     <!-- ------------------------contenido tabs1-------------------------- -->
+
+     <!-- <v-tabs-items v-model="tab" id="ocultar" >
+     <v-tab-item >
+     <v-container class="contenedorTabs" id="ocultar">
+     <v-card-text id="ocultar">
+     
+     <v-row class="row1" id="ocultar">
+     <p><v-subheader cols="1" id="achicar" class="text-left" id="ocultar">Razon socialssss</v-subheader></p> 
+     <v-col cols="1" class="text-left">
+     <v-text-field 
+       hide-details="auto"
+       placeholder="RAZON SOC."
+       id=razon_socialTab 
+       type="text" 
+       v-model="razonTab"              
+       readonly>
+       </v-text-field>
+       </v-col>
+     
+       <p><v-subheader cols="1" id="achicar" class="text-left">Nn fantasia</v-subheader></p>
+     <v-col cols="1" class="text-left">
+     <v-text-field 
+       hide-details="auto"
+       placeholder="Fantasia"
+       id=Nn_fantasiaTab
+       type="text" 
+       v-model="fantasiaTab"              
+       readonly>
+       </v-text-field>
+       </v-col>
+     
+       <p><v-subheader cols="1" id="achicar" class="text-left">Telefono</v-subheader></p>
+     <v-col cols="2" class="text-left"><v-text-field 
+       hide-details="auto"
+       placeholder="Telefono"
+       id=telefonoTab
+       type="text" 
+       v-model="telefonoTab"              
+       readonly>
+       </v-text-field>
+       </v-col>
+     
+       <p><v-subheader cols="1" id="achicar" class="text-left">Rubro</v-subheader></p>
+       <v-col cols="1" class="text-left"><v-text-field 
+       hide-details="auto"
+       placeholder="Rubro"
+       id=rubroTab
+       type="text" 
+       v-model="rubroTab"              
+       readonly>
+       </v-text-field>
+       </v-col>
+     
+       <p><v-subheader cols="1" id="achicar" class="text-left">Email</v-subheader></p>
+       <v-col cols="2" class="text-left"><v-text-field 
+         hide-details="auto"
+         placeholder="Email"
+         id=emailTab
+         type="text" 
+         v-model="emailTab"              
+         readonly>
+         </v-text-field>
+       </v-col>
+     </v-row>
+     
+     <v-row class="row2">
+     
+     
+     
+     <p><v-subheader cols="1" id="achicar" class="text-left">Actividad</v-subheader></p>
+       <v-col cols="1" class="text-left"><v-text-field 
+       hide-details="auto"
+       placeholder="Actividad"
+       id=actividadTab
+       type="text" 
+       v-model="actividadTab"              
+       readonly>
+       </v-text-field>
+     </v-col>
+     
+     <p><v-subheader cols="1" id="achicar" class="text-left">ID comercio</v-subheader></p>
+       <v-col cols="1" class="text-left"><v-text-field 
+       hide-details="auto"
+       placeholder="ID Comercio"
+       id=idComercioTab
+       type="text" 
+       v-model="idComercioTab"              
+       readonly>
+       </v-text-field>
+     </v-col>
+     
+     <p><v-subheader cols="1" id="achicar" class="text-left">Pagina Web</v-subheader></p>
+     <v-col cols="2" class="text-left"><v-text-field 
+       hide-details="auto"
+       placeholder="Pagina Web"
+       id=paginaWebTab
+       type="text" 
+       v-model="paginaWebTab"              
+       readonly>
+       </v-text-field>
+       </v-col>
+     
+       <p><v-subheader cols="1" id="achicar" class="text-left">Fecha alta</v-subheader></p>
+       <v-col cols="1" class="text-left"><v-text-field 
+       hide-details="auto"
+       placeholder="Fecha Alta"
+       id=fechaAltaTab
+       type="text" 
+       v-model="fechaAltaTab"              
+       readonly>
+       </v-text-field>
+     </v-col>
+     
+     <p><v-subheader cols="1" id="achicar" class="text-left">Fecha baja</v-subheader></p>
+       <v-col cols="1" class="text-left"><v-text-field 
+       hide-details="auto"
+       placeholder="Fecha baja"
+       id=fechaBajaTab
+       type="text" 
+       v-model="fechaBajaTab"              
+       readonly>
+       </v-text-field>
+     </v-col>
+     </v-row>
+     
+     <v-row class="row3">
+     
+     <p><v-subheader cols="1" id="achicar" class="text-left">Domicilio</v-subheader></p>
+     <v-col cols="11" class="text-left"><v-text-field 
+       hide-details="auto"
+       placeholder="Domicilio"
+       id=domicilioTab
+       type="text" 
+       v-model="domicilioTab"              
+       readonly>
+       </v-text-field>
+       </v-col>
+     
+     </v-row>
+      -->
+     <!-- {{ item.tab}} -->
+
+</div>
+
+<!-- Sticky Footer -->
+</div>
+</v-app>
+<!-- <footer class="footer">
+<div class="container1">
+<div class="copyright text-center text-white my-auto">
+<span>Tarjeta Fiel</span>
+</div>
+</div>
+</footer> -->
+
+<!-- /#wrapper -->
+
+<!-- Scroll to Top Button-->
+<!-- <a class="scroll-to-top rounded" href="#page-top"> -->
+<!-- <i class="fas fa-angle-up"></i> -->
+<!-- </a> -->
+
+<!-- links js -->
+<script src="js/axios.min.js"></script>
+<script src="js/vue.min.js"></script>
+<script src="js/vuetify.min.js"></script>
+<script src="js/alertify.js"></script>
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="js/sb-admin.min.js"></script>
+<script src="js/script.js"></script>
+<div id="html"></div>
+
+</body>
+
+</html>

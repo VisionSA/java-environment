@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" creationComplete="cobradoresModel.buscarPaises(); buscarCobradores()" xmlns:mate="http://mate.asfusion.com/" horizontalAlign="center">
+	<mx:HBox id="caja">
+			<mx:Label text="País: "/>
+			<mx:ComboBox id="cmbPaises" change="cmbProvincias.dataProvider = (cmbPaises.selectedItem as Pais).provinciaSet" labelField="nombre"/>
+			<mx:Label text="Provincia: "/>
+			<mx:ComboBox id="cmbProvincias" labelField="nombre" change="{cobradoresModel.listarPartidosXProvincia(cmbProvincias.selectedItem as Provincia)}"/>
+	</mx:HBox>
+	<mx:DataGrid id="grillaPartidos" dataProvider="{cobradoresModel.partidosArray}" height="400">
+		<mx:columns>
+			<mx:DataGridColumn dataField="descripcion" headerText="Partido" width="200"/>
+			
+			<mx:DataGridColumn id="idDelCobrador" dataField="idCobrador" headerText="Cobrador"/>
+			
+			<mx:DataGridColumn  dataField="idCobrador" headerText="Cobrador" width="200" >
+				<mx:itemRenderer>
+				    <mx:Component>
+				          <mx:VBox >
+					          <mx:Script>
+									<![CDATA[
+										import mx.controls.Alert;
+										import com.tarjetafiel.caja.vo.Partido;
+										import com.tarjetafiel.caja.vo.Cobrador;
+										import flash.sampler.getInvocationCount;
+															
+										public function tomarSeleccionCobrador(d:Object):int {
+											//cmbCob.selectedItem = cmbCob.dataProvider[0];
+											if (d.idCobrador) {
+												for (var concep:int=0; cmbCob.dataProvider[concep]!=null ;concep++) {
+													if (cmbCob.dataProvider[concep].idCobrador ==  data.idCobrador) {
+														//cmbCob.selectedItem = cmbCob.dataProvider[concep];
+														return concep;
+														//break;
+													};
+												}
+												return 0;
+											}
+											return 0;
+											
+										}
+									]]>
+							</mx:Script>
+				    	<mx:ComboBox id="cmbCob" dataProvider="{outerDocument.cobradoresModel.cobradoresArray}" selectedIndex="{tomarSeleccionCobrador(data)}"
+				    		 labelField="nombre" change="data.idCobrador = (cmbCob.selectedItem as Cobrador).idCobrador; outerDocument.cobradoresModel.agregarPartidoAActualizar(data as Partido)"
+				    		width="200" height="30" />
+				    	</mx:VBox>
+				    </mx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+		
+		</mx:columns>
+	</mx:DataGrid>
+	<mx:HBox>
+		<mx:Button label="Cancelar" click="{cobradoresModel.cancelarCambios()}"/>
+		<mx:Button label="Guardar cambios" click="{cobradoresModel.guardarPartidosModificados()}" />
+	</mx:HBox>
+	
+	<mate:Listener id="escuchaSeleccionPais" type="{CobradoresEvent.TOMAR_SELECCION_PAIS}" receive="refrescaListaPaises()"/>
+	<mate:Listener id="escuchaSeleccionProvincia" type="{CobradoresEvent.TOMAR_SELECCION_PROVINCIA}" receive="refrescaListaPartidos()"/>
+	<mate:Listener id="escuchaListaCobradores" type="{CobradoresEvent.TOMAR_COBRADORES}" receive="refrescaListaCobradores()"/>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import events.PaisEvent;
+			import events.CobradoresEvent;
+			import model.CobradoresModel;
+			import com.tarjetafiel.caja.vo.Provincia;
+			import com.tarjetafiel.caja.vo.Pais;
+			import events.CobradoresEvent;
+			import mx.controls.Alert;
+			
+			[Bindable]public var cobradoresModel:CobradoresModel;
+			
+			public function buscarCobradores():void {
+				if (cobradoresModel) {
+					cobradoresModel.buscarCobradores();
+				}
+				
+			}
+			
+			public function refrescaListaPaises():void {
+				     cmbPaises.dataProvider = cobradoresModel.paisesArray;
+				     cmbProvincias.dataProvider = (cmbPaises.selectedItem as Pais).provinciaSet;
+				     grillaPartidos.dataProvider = cobradoresModel.partidosArray;
+			}
+			
+			public function refrescaListaPartidos():void {
+				grillaPartidos.dataProvider = cobradoresModel.partidosArray;
+			}
+			
+			public function refrescaListaCobradores():void {
+				Alert.show("do Something... do what you want!");
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:VBox>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import managers.EventoManager;
+			import events.EventosEvent;
+			import managers.ClienteManager;
+			import views.categorias.cliente.models.AgendaClienteModel;
+			import views.categorias.cliente.modules.AgendaClienteModule;
+		
+		]]>
+	</mx:Script>
+	<Injectors target="{AgendaClienteModule}">
+   		<ObjectBuilder generator="{AgendaClienteModel}">
+   			<Property targetKey="dispatcher" source="{scope.dispatcher}"/>
+   		</ObjectBuilder>
+   		<PropertyInjector source="{lastReturn}" targetKey="agendaClienteModel"/>
+   	</Injectors>	
+   	
+	<Injectors target="{AgendaClienteModel}">
+   		<PropertyInjector source="{EventoManager}" sourceKey="arrayEventosClientes" targetKey="arrayEventosClientes"/>
+   	</Injectors>
+   	
+   	<EventHandlers type="{EventosEvent.GUARDAR_EVENTO}">
+	 	<RemoteObjectInvoker instance="{eventosCliente}" method="grabarEventoCliente" arguments="{event.evento}">
+	 		<resultHandlers>
+	 			<MethodInvoker generator="{EventoManager}" arguments="{resultObject}" method="resultGuardarEvento"/>
+	 		</resultHandlers>
+	 		<faultHandlers>
+	 			<MethodInvoker generator="{EventoManager}" arguments="{fault}" method="fault"/>
+	 		</faultHandlers>
+	 	</RemoteObjectInvoker>
+	 </EventHandlers>
+	 
+	 <EventHandlers type="{EventosEvent.ACTUALIZAR_EVENTO}">
+	 	<RemoteObjectInvoker instance="{eventosCliente}" method="actualizarEventoCliente" arguments="{event.evento}">
+	 		<resultHandlers>
+	 			<MethodInvoker generator="{EventoManager}" method="resultActualizarEvento"/>
+	 		</resultHandlers>
+	 		<faultHandlers>
+	 			<MethodInvoker generator="{EventoManager}" arguments="{fault}" method="fault"/>
+	 		</faultHandlers>
+	 	</RemoteObjectInvoker>
+	 </EventHandlers>
+	 
+	 <EventHandlers type="{EventosEvent.ELIMINAR_EVENTO}">
+	 	<RemoteObjectInvoker instance="{eventosCliente}" method="borrarEventoCliente" arguments="{event.evento}">
+	 		<resultHandlers>
+	 			<MethodInvoker generator="{EventoManager}" arguments="{resultObject}" method="resultEliminarEvento"/>
+	 		</resultHandlers>
+	 		<faultHandlers>
+	 			<MethodInvoker generator="{EventoManager}" arguments="{fault}" method="fault"/>
+	 		</faultHandlers>
+	 	</RemoteObjectInvoker>
+	 </EventHandlers>
+	 
+	 <EventHandlers type="{EventosEvent.BUSCAR_EVENTOS_CLIENTE}">		
+		<RemoteObjectInvoker instance="{eventosCliente}" method="getEventosClientesFlex" arguments="{[event.fechaDesde,event.fechaHasta,event.idCliente]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{EventoManager}" method="resultBuscarEventosCliente" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{EventoManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	  </EventHandlers>
+	 
+	 <mx:RemoteObject id="eventosCliente" destination="GenericDestination" source="eventosClienteServiceTarget"/>
+   	
+</EventMap>

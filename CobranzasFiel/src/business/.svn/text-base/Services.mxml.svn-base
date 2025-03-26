@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceLocator xmlns="com.adobe.cairngorm.business.*" xmlns:mx="http://www.adobe.com/2006/mxml">
+		
+	<mx:RemoteObject 
+		id="tareaService" 
+		destination="GenericDestination"
+		showBusyCursor="true" 
+		source="tareaPendienteServiceTarget"/>	
+	
+	<mx:RemoteObject 
+		id="planService" 
+		destination="GenericDestination"
+		showBusyCursor="true" 
+		source="planServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="planVersionService" 
+		destination="GenericDestination" 
+		source="planVersionServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="etapaVersionService" 
+		destination="GenericDestination" 
+		source="etapaVersionServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="accionService" 
+		destination="GenericDestination" 
+		source="accionServiceTarget"/>
+	
+	<mx:RemoteObject 
+		id="etapaService" 
+		destination="GenericDestination" 
+		source="etapaServiceTarget"/>
+	
+	<mx:RemoteObject 
+		id="conceptoService" 
+		destination="GenericDestination" 
+		source="conceptoServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="cobradoresService" 
+		destination="GenericDestination" 
+		source="cobradorServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="ejecucionPlanService" 
+		destination="GenericDestination" 
+		source="ejecucionPlanServiceTarget"/>	
+	
+	<mx:RemoteObject 
+		id="individuoDomicilioService" 
+		destination="GenericDestination" 
+		source="individuoDomicilioServiceTarget"/>
+			
+	<mx:RemoteObject 
+		id="provinciaService" 
+		destination="GenericDestination" 
+		source="provinciaServiceTarget"/>
+	
+	<mx:RemoteObject 
+		id="partidoService" 
+		destination="GenericDestination" 
+		source="partidoServiceTarget"/>	
+		
+	<mx:RemoteObject 
+		id="reciboService" 
+		destination="GenericDestination" 
+		source="reciboServiceTarget"/>		
+	
+	
+	<mx:RemoteObject 
+		id="colaboradorService" 
+		destination="GenericDestination" 
+		source="colaboradorServiceTarget"/>
+	
+</ServiceLocator>

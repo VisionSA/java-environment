@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.impuestos.negocio.ImpuestosIndividuo"  table="t_vis_imp_impuestos_individuos">
+    <id name="idImpIndividuo" type="java.lang.Long" column="c_id_imp_individuo">
+        <generator class="increment" />
+    </id>
+
+    <!-- Associations -->
+    <many-to-one name="individuo" class="com.bizitglobal.tarjetafiel.impuestos.negocio.Individuo" not-null="true"  >
+        <column name="c_id_individuo" />
+    </many-to-one>
+    
+    <many-to-one name="categoria" class="com.bizitglobal.tarjetafiel.impuestos.negocio.Categoria" not-null="true"  >
+        <column name="c_id_categoria_imp" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

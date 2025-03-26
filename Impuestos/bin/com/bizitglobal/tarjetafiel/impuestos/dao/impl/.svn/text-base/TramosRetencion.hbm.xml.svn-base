@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.impuestos.negocio.TramosRetencion" table="t_vis_imp_tramos_retenciones">
+    <id name="idTramoRetencion" type="java.lang.Long" column="c_id_tramo_retencion">
+        <generator class="increment" />
+    </id>
+
+  	<property name="montoDesde" type="java.math.BigDecimal" column="c_monto_desde" not-null="true" length="18"/>
+    
+    <property name="montoHasta" type="java.math.BigDecimal" column="c_monto_hasta" not-null="true" length="18"/>
+    
+    <property name="montoMinimo" type="java.math.BigDecimal" column="c_monto_minimo" not-null="true" length="10"/>
+
+    <property name="porcRetencion" type="java.lang.Float" column="c_porc_retencion" length="10"/>
+
+    <property name="sobreExedente" type="java.math.BigDecimal" column="c_sobre_exedente" length="10"/>
+
+    <!-- Associations -->
+    <many-to-one name="retencion" cascade="none" class="com.bizitglobal.tarjetafiel.impuestos.negocio.Retencion" not-null="true"  >
+        <column name="c_cod_retencion" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

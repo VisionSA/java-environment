@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" resize="PopUpManager.centerPopUp(this)" 
+	show="this.adg1.setFocus()" creationComplete="onCreationComplete()" keyDown="this.keyPress(event)" 
+	close="closePopUp()" layout="vertical" title="Medios de Pagos" xmlns:textInput="com.util.components.textInput.*" 
+	showCloseButton="true" xmlns:controles="com.tarjetafiel.caja.view.clientes.controles.*" xmlns:view="com.tarjetafiel.caja.view.*" height="572">	
+	
+	<mx:HBox verticalAlign="middle" paddingTop="5" paddingBottom="5" horizontalAlign="center" paddingLeft="5" paddingRight="5" width="100%">
+	<mx:Label text="Importe a pagar:" styleName="tituloBusquedas"/>		
+	<mx:TextInput text="{currencyFormat.format(pagoModel.importeTotal)}" fontSize="12" fontWeight="bold" width="200" textAlign="center"/>
+	<mx:VRule height="20" width="10"/>	
+	<mx:Label text="Importe Pagado:" styleName="tituloBusquedas"/>		
+	<textInput:TextInputMoneda text="{pagoModel.importePgado}" editable="false" fontSize="12" fontWeight="bold" width="200" textAlign="center"/>
+	</mx:HBox>
+	
+	<mx:HBox height="100%" width="100%" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5">		
+		<mx:VBox>				
+			<mx:VBox id="vboxFP" height="100%" horizontalAlign="left" paddingLeft="5" paddingRight="5" creationComplete="habilitarMedios()" width="100%">			
+				<controles:CheckBoxMedioPago enabled="false" label="1- Efectivo" click="addPagoEfectivo()" id="chkEfectivo" idFormaPago="1" />
+				<controles:CheckBoxMedioPago enabled="false" label="2- Cheques" idFormaPago="2" id="chkCheques" click="addPagoCheque()" selected="{pagoModel.chkPagoCheque}"/>
+				<controles:CheckBoxMedioPago enabled="false" label="3- Tickets" id="chkTitulos" idFormaPago="5" click="addPagoTitulos()"/>					
+				<controles:CheckBoxMedioPago enabled="false" id="chkDeposito" label="4- Deposito Bancario" idFormaPago="6" click="addPagoDeposito()"/>
+				<controles:CheckBoxMedioPago enabled="false" label="6- Repactaciones" id="chkRepactacion" idFormaPago="8" click="repactar()"/>
+				<controles:CheckBoxMedioPago enabled="false" label="7- Refinanciaciones" id="chkRefinanciacion" idFormaPago="10" click="refinanciar()"/>
+				<controles:CheckBoxMedioPago enabled="false" label="8- Tarjeta Debito" id="chkTarjetaDebito" idFormaPago="11" click="addPagoTarjetaDebito()"/>
+				<!--controles:CheckBoxMedioPago enabled="false" label="8- Compensaciones " id="chkCompensaciones"/-->			
+			</mx:VBox>
+			<mx:VBox width="100%" visible="{pagoModel.pagarTodo}" includeInLayout="{pagoModel.pagarTodo}">				
+				<mx:Label text="Pago Min. Repac." styleName="textInputNegroMediano"/>
+				<textInput:TextInputMoneda editable="false"  text="{repactacionModel.pagoMinimoConPagoCuenta}" styleName="textInputAzulMediano"/>
+			</mx:VBox>
+		</mx:VBox>
+		<mx:VBox verticalAlign="middle" horizontalAlign="center" width="100%" height="100%">
+			<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" height="100%" width="100%" dataProvider="{pagoModel.arrayMedios}">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Medio" dataField="descripcion" width="50">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.formaPago.descripcion}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Importe" formatter="{currencyFormat}" dataField="monto" width="50"/>
+					<mx:AdvancedDataGridColumn headerText="Modificar" width="30">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Button label="Modificar" click="outerDocument.modificarMedio()" enabled="{data.modificar}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Eliminar" width="30">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Button label="Eliminar" click="outerDocument.removeMedio()" enabled="{data.eliminar}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+				</mx:columns>
+			</mx:AdvancedDataGrid>				
+		</mx:VBox>		
+	</mx:HBox>
+	<mx:VBox verticalAlign="middle" horizontalAlign="center" width="100%" visible="{repactacionModel.repactacionVisible}" includeInLayout="{repactacionModel.repactacionVisible}">
+				<mx:Label text="Repactación" styleName="textInputNegroMediano"/>
+				<mx:AdvancedDataGrid id="adg2" dataProvider="{repactacionModel.descripcionRepactacion}" designViewDataType="flat" width="100%" height="150">
+					<mx:columns>
+						<mx:AdvancedDataGridColumn headerText="Detalle" dataField="descripcion" width="50">
+						</mx:AdvancedDataGridColumn>						
+						<mx:AdvancedDataGridColumn headerText="Valor" itemRenderer="com.tarjetafiel.caja.view.clientes.controles.ItemRenderValorRepactacion" width="30" dataField="valor">							
+						</mx:AdvancedDataGridColumn>
+					</mx:columns>
+				</mx:AdvancedDataGrid>
+			</mx:VBox>	
+	<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center">
+		<mx:HBox verticalAlign="middle" horizontalAlign="left" width="50%">
+			<mx:Button label="Ctrl + P - Pagar" click="calcularVuelto()"/>
+		</mx:HBox>
+		<mx:HBox verticalAlign="middle" horizontalAlign="right" width="50%">
+			<mx:Button label="Impresoras" click="ModelLocator.getInstance().impresorasModel.showListaImpresoras()" />
+			<mx:Button label="Ctrl + E - Sim. Repactación" click="simularRepactacion()" enabled="{!repactacionModel.repactacionVisible}"/>
+			<mx:Button label="Ctrl + R - Sim. Refinanciación" click="simularRefinanciacion()" enabled="{!repactacionModel.repactacionVisible}"/>
+		</mx:HBox>
+	</mx:HBox>	
+	<mx:CurrencyFormatter currencySymbol="$" id="currencyFormat" rounding="nearest" precision="2"/>
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.view.ViewNumeroRecibo;
+			import mx.utils.ObjectUtil;
+			import mx.core.IFlexDisplayObject;
+			import com.tarjetafiel.caja.vo.Cheque;
+			import com.util.modules.TitleWindowCustom;
+			import com.util.modules.ManagerModules;
+			import com.tarjetafiel.caja.view.clientes.controles.ItemRenderValorRepactacion;
+			import com.tarjetafiel.caja.model.PagoModel;
+			import com.tarjetafiel.caja.model.LiqClienteModel;
+			import com.tarjetafiel.caja.model.RepactacionModel;
+			import mx.controls.CheckBox;
+			import com.tarjetafiel.caja.model.FormaPagoCajaModel;
+			import com.tarjetafiel.caja.event.RepactacionEvent;			
+			import com.tarjetafiel.caja.view.Cheques;
+			import com.tarjetafiel.caja.view.SuVuelto;		
+			import com.util.components.alert.AlertWarning;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			import com.tarjetafiel.caja.vo.FormaPago;
+			import com.tarjetafiel.caja.vo.Movimiento;
+			import com.tarjetafiel.caja.vo.MovimientoMP;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import com.tarjetafiel.caja.event.ClientesEvent;
+			import com.tarjetafiel.caja.event.PagoEvent;
+			import com.tarjetafiel.caja.vo.LiqCliente;
+			import com.util.components.alert.AlertOk;
+			import com.tarjetafiel.caja.vo.Concepto;
+			import com.tarjetafiel.caja.model.ConceptosModel;
+			import com.tarjetafiel.caja.vo.ConceptoDetalle;
+			import com.tarjetafiel.caja.vo.CtaCteCliente;
+			import com.tarjetafiel.caja.vo.PagosCliente;
+			import com.tarjetafiel.caja.vo.IMedioPago;
+			import com.tarjetafiel.caja.vo.MedioPagoEfectivo;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			
+			private var popUpVuelto:SuVuelto = new SuVuelto();
+			private var ingresarImporte:IngresarImporte = new IngresarImporte();
+			private var popUpRepactacion:Repactacion = new Repactacion();
+			private var popUpDeposito:DepositoBancario = new DepositoBancario();
+			private var popUpTarjetaDebito:TarjetaDebito = new TarjetaDebito();
+			
+			
+			[Bindable]private var repactacionModel:RepactacionModel = ModelLocator.getInstance().repactacionModel;
+			[Bindable]private var formaPagoCajaModel:FormaPagoCajaModel = ModelLocator.getInstance().formaPagoCajaModel;
+			[Bindable]private var liqClienteModel:LiqClienteModel = ModelLocator.getInstance().liqClienteModel;
+			[Bindable]private var pagoModel:PagoModel = ModelLocator.getInstance().pagoModel; 
+			
+			private function calcularVuelto():void{
+				if((pagoModel.importeIngresadoCorrecto(currencyFormat)) || repactacionModel.liqClienteRepactacion != null){
+					if(pagoModel.importeEfectivo > 0){
+						PopUpManager.addPopUp(popUpVuelto,this,true); 
+						PopUpManager.centerPopUp(popUpVuelto);
+						popUpVuelto.showPopUp();					
+					} else {
+					pagar();
+					}	
+				} else {
+					AlertWarning.show("El pago se debe efectuar por completo");
+				}
+			}
+			
+			
+			
+			private function repactar():void{
+				//hay que verificar el estado del cliente				
+				if(chkRepactacion.selected){
+					repactacionModel.simular = false;
+					this.chkRepactacion.selected = true;
+					repactacionModel.refinanciacion = false;
+					if(repactacionModel.suPago >= liqClienteModel.getTotalLiqRepactacion()){
+						AlertWarning.show("No es necesario repactar.\nToda la deuda es cancelada",function (evt:CloseEvent):void{
+							chkRepactacion.selected = false;
+						});
+							
+					} else {				
+						PopUpManager.addPopUp(popUpRepactacion,Application.application.contGlobal,true);
+						PopUpManager.centerPopUp(popUpRepactacion);									
+						popUpRepactacion.recalcularCuota();						
+					}
+				} else {
+					repactacionModel.liqClienteRepactacion = null;					
+					this.adg1.selectedIndex = this.adg1.rowCount - 1;
+					this.removeMedio();					
+					//this.changeFormaPago(8,true);
+				}
+			}
+			
+			private function refinanciar():void{
+				//hay que verificar el estado del cliente				
+				if(chkRefinanciacion.selected){
+					repactacionModel.simularRef = false;
+					repactacionModel.refinanciacion = true;
+					this.chkRefinanciacion.selected = true;
+					//repactacionModel.setArrayRepactaciones(liqClienteModel.getRepactaciones());
+					if(repactacionModel.suPago >= liqClienteModel.getTotalLiqRepactacion()){
+						AlertWarning.show("No es necesario refinanciar.\nToda la deuda es cancelada",function (evt:CloseEvent):void{
+							chkRefinanciacion.selected = false;
+						});
+							
+					} else {				
+						PopUpManager.addPopUp(popUpRepactacion,Application.application.contGlobal,true);
+						PopUpManager.centerPopUp(popUpRepactacion);									
+						popUpRepactacion.recalcularCuota();						
+					}
+				} else {
+					repactacionModel.liqClienteRepactacion = null;					
+					this.adg1.selectedIndex = this.adg1.rowCount - 1;
+					this.removeMedio();					
+					//this.changeFormaPago(10,true);
+				}
+			}
+			
+			private function simularRepactacion():void{
+				//hay que verificar el estado del cliente				
+				pagoModel.importePgadoTemp = pagoModel.importePgado;
+				repactacionModel.simular = true;
+				repactacionModel.simularRef = false;
+				repactacionModel.refinanciacion = false;				
+				if(repactacionModel.suPago >= liqClienteModel.getTotalLiqRepactacion()){
+					AlertWarning.show("No es necesario repactar.\nToda la deuda es cancelada",function (evt:CloseEvent):void{
+						chkRepactacion.selected = false;
+					});
+						
+				} else {				
+					PopUpManager.addPopUp(popUpRepactacion,Application.application.contGlobal,true);
+					PopUpManager.centerPopUp(popUpRepactacion);									
+					popUpRepactacion.recalcularCuota();
+				}
+			}
+			
+			private function simularRefinanciacion():void{
+				//hay que verificar el estado del cliente				
+				pagoModel.importePgadoTemp = pagoModel.importePgado;
+				repactacionModel.simularRef = true;
+				repactacionModel.simular = false;
+				repactacionModel.refinanciacion = true;
+				if(repactacionModel.suPago >= liqClienteModel.getTotalLiqRepactacion()){
+					AlertWarning.show("No es necesario refinanciar.\nToda la deuda es cancelada",function (evt:CloseEvent):void{
+						chkRepactacion.selected = false;
+					});
+						
+				} else {				
+					PopUpManager.addPopUp(popUpRepactacion,Application.application.contGlobal,true);
+					PopUpManager.centerPopUp(popUpRepactacion);									
+					popUpRepactacion.recalcularCuota();
+				}
+			}
+			
+			private function closeRepactacion(evt:Event):void{
+				//this.chkRepactacion.enabled = false;
+				var movMp:MovimientoMP = new MovimientoMP();
+				movMp.monto = repactacionModel.importeFinanciar;						
+				movMp.formaPago = formaPagoCajaModel.getFormaPago(8);																						
+				pagoModel.addMedio(movMp);
+				this.changeFormaPago(8,false);
+				this.chkRepactacion.enabled = true;
+				this.chkRefinanciacion.enabled = false;
+				
+			}
+			
+			private function closeRefinanciacion(evt:Event):void{
+				//this.chkRepactacion.enabled = false;
+				var movMp:MovimientoMP = new MovimientoMP();
+				movMp.monto = repactacionModel.importeFinanciar;						
+				movMp.formaPago = formaPagoCajaModel.getFormaPago(10);																						
+				pagoModel.addMedio(movMp);
+				this.changeFormaPago(10,false);
+				this.chkRepactacion.enabled = false;
+				this.chkRefinanciacion.enabled = true;
+				
+			}
+			
+			private function changeFormaPago(id:int, enabled:Boolean):void{
+				
+				
+				for each(var chk:CheckBoxMedioPago in vboxFP.getChildren()){
+					if(chk.idFormaPago != id){
+						chk.enabled = enabled;
+					}			
+				}
+				
+				if(enabled){
+					habilitarMedios();
+					repactacionModel.repactacionVisible = false;
+				}
+											
+				for each(var mov:MovimientoMP in this.adg1.dataProvider){					
+					if(mov.formaPago.idFormaPago != id && !enabled){
+						mov.eliminar = false;
+					} else {
+						mov.eliminar = true;	
+					}
+					mov.modificar = enabled;					
+				}
+			}
+			
+			private function cancelarRepactacion(evt:RepactacionEvent):void{
+				this.chkRepactacion.selected = false;
+				ModelLocator.getInstance().repactacionModel.liqClienteRepactacion = null;
+			}
+			
+			private function cancelarRefinanciacion(evt:RepactacionEvent):void{
+				this.chkRefinanciacion.selected = false;
+				ModelLocator.getInstance().repactacionModel.liqClienteRepactacion = null;
+			}
+			
+			private function habilitarMedios():void{
+				for each(var chk:CheckBoxMedioPago in vboxFP.getChildren()){				
+					chk.enabled = false;						
+				}
+				for each (var forma:CajaMP in formaPagoCajaModel.arrayFormaPago){
+					for each(var cb:CheckBoxMedioPago in vboxFP.getChildren()){
+					
+						if(forma.formaPago.idFormaPago == cb.idFormaPago && !cb.selected){
+							if(cb.idFormaPago == 8 || cb.idFormaPago == 10){
+								cb.enabled = true && pagoModel.pagarTodo;								
+							} else {
+								cb.enabled = true;	
+							}							
+							break;
+						} 
+					}
+					
+				}
+			}
+			
+			private function addPagoTitulos():void{
+				chkTitulos.selected = true;
+				ingresarImporte.estado = IngresarImporte.NUEVO;
+				showIngresarPagoTitulos();
+			}
+			
+			public function showIngresarPagoTitulos():void{
+				ingresarImporte.addEventListener(CloseEvent.CLOSE,pagoTitulosClose);
+				PopUpManager.addPopUp(ingresarImporte,Application.application.contGlobal,true);
+				PopUpManager.centerPopUp(ingresarImporte);
+				ingresarImporte.txtImporte.setFocus();
+			}	
+			
+			private function pagoTitulosClose(evt:CloseEvent):void{
+				ingresarImporte.removeEventListener(CloseEvent.CLOSE,pagoTitulosClose);
+				if(ingresarImporte.importeIngresado != 0){
+					var medio:MovimientoMP;
+					if(ingresarImporte.estado == IngresarImporte.NUEVO){
+						medio = new MovimientoMP();
+						medio.monto = ingresarImporte.importeIngresado;						
+						medio.formaPago = formaPagoCajaModel.getFormaPago(5);																						
+						pagoModel.addMedio(medio);
+						chkTitulos.enabled = false;				
+					} else if(ingresarImporte.estado == IngresarImporte.ACTUALIZAR){												
+						var medioViejo:MovimientoMP = MovimientoMP(this.adg1.selectedItem);
+						medio = new MovimientoMP();						
+						medio.formaPago = formaPagoCajaModel.getFormaPago(medioViejo.formaPago.idFormaPago);
+						medio.monto = ingresarImporte.importeIngresado;											
+						pagoModel.modificarMedio(medio, medioViejo);									
+					}					
+				} else {
+					chkTitulos.selected = false;
+					chkTitulos.enabled = true;
+				}									
+			}
+			
+			private function addPagoDeposito():void{
+				chkDeposito.selected = true;
+				ModelLocator.getInstance().depositoBancarioModel.movimMp = new MovimientoMP();
+				ModelLocator.getInstance().depositoBancarioModel.movimMp.cheque = new Cheque();
+				PopUpManager.addPopUp(popUpDeposito,Application.application as DisplayObject, true);
+				PopUpManager.centerPopUp(popUpDeposito);
+				popUpDeposito.setFocus();
+			}
+			
+			 private function addPagoTarjetaDebito():void{
+				chkTarjetaDebito.selected = true;
+				ModelLocator.getInstance().tarjetaDebitoModel.movimMp = new MovimientoMP();
+				ModelLocator.getInstance().tarjetaDebitoModel.movimMp.cheque = new Cheque();
+				PopUpManager.addPopUp(popUpTarjetaDebito,Application.application as DisplayObject, true);
+				PopUpManager.centerPopUp(popUpTarjetaDebito);
+				popUpTarjetaDebito.setFocus();
+			} 
+			
+			private function addPagoCheque():void{			
+				pagoModel.chkPagoCheque = true;
+				pagoModel.esModificarCheque = false;
+				ModelLocator.getInstance().chequeModel.esModificable = false;
+				var vent : IFlexDisplayObject = PopUpManager.createPopUp(this,Cheques,true);
+				PopUpManager.centerPopUp(vent);
+			}			
+						
+			private function onCreationComplete():void{				
+				popUpVuelto.addEventListener(CloseEvent.CLOSE,pagar);
+				popUpDeposito.addEventListener(CloseEvent.CLOSE, function (evt:CloseEvent):void{
+					chkDeposito.selected = false;
+				});
+				popUpRepactacion.addEventListener(RepactacionEvent.AGREGAR_REPACTACION,closeRepactacion);
+				popUpRepactacion.addEventListener(RepactacionEvent.CANCELAR_REPACTACION,cancelarRepactacion);
+				popUpRepactacion.addEventListener(RepactacionEvent.CANCELAR_REFINANCIACION,cancelarRefinanciacion);
+				popUpRepactacion.addEventListener(RepactacionEvent.AGREGAR_REFINANCIACION,closeRefinanciacion);
+				
+				popUpTarjetaDebito.addEventListener(CloseEvent.CLOSE, function (evt:CloseEvent):void{
+					chkTarjetaDebito.selected = false;
+				});
+			}
+			
+			private function pagoFinalizado():void{				
+				dispatchEvent(new CloseEvent(CloseEvent.CLOSE));				
+				PopUpManager.removePopUp(this);				
+			}
+			
+			private function pagar(evt:CloseEvent=null):void{						
+				
+				if(evt == null || evt.detail == 1){
+					if(pagoModel.arrayMedios.length > 0){
+						var ctaCteCliente:CtaCteCliente = new CtaCteCliente();				
+						var concepto:Concepto = ModelLocator.getInstance().conceptosModel.getConcepto(ConceptosModel.COBRANZAS);
+						ctaCteCliente.conceptoDetalle = concepto.conceptoDetalleSet != null && concepto.conceptoDetalleSet.length > 0 ? concepto.conceptoDetalleSet[0] : null;
+						ctaCteCliente.fechaContableFlex = new Date();
+						ctaCteCliente.fechaFacturacionFlex = new Date();
+						ctaCteCliente.estadoImpacto = "C";
+						ctaCteCliente.signo = ctaCteCliente.conceptoDetalle.signo;
+						ctaCteCliente.importe = pagoModel.getImporteSinRefinanciacion();				
+						for each(var liq:LiqCliente in pagoModel.arrayLiqPagar){
+							liq.clienteTransaccion = ModelLocator.getInstance().clienteSeleccionado.cliente;									
+						}
+						
+						pagoModel.funcionPagoRealizado=pagoFinalizado;
+						pagoModel.ctaCteCliente=ctaCteCliente;
+						pagoModel.suVuelto=popUpVuelto.suVuelto;
+						
+						var vent : IFlexDisplayObject = PopUpManager.createPopUp(this,ViewNumeroRecibo,true);
+						PopUpManager.centerPopUp(vent);
+					} else {
+						AlertWarning.show("No existen medios de pagos ingresados");
+					}
+				}
+			}
+			
+			public function keyPress(evt:KeyboardEvent):void{
+				
+				if(evt.ctrlKey){
+					if(String.fromCharCode(evt.charCode) == "1"){
+						if(chkEfectivo.enabled)
+							addPagoEfectivo();
+					} else if(String.fromCharCode(evt.charCode) == "2"){
+						if(chkCheques.enabled)
+							addPagoCheque();						
+					} else if(String.fromCharCode(evt.charCode) == "3"){
+						if(chkTitulos.enabled)
+							addPagoTitulos();
+					} else if(String.fromCharCode(evt.charCode) == "4"){
+						if(chkDeposito.enabled)
+							addPagoDeposito();
+					} else if(String.fromCharCode(evt.charCode) == "5"){
+						
+					} else if(String.fromCharCode(evt.charCode) == "6"){
+						if(chkRepactacion.enabled)
+							repactar();
+					} else if(String.fromCharCode(evt.charCode) == "7"){
+						if(chkRefinanciacion.enabled)
+							refinanciar();
+					} else if(String.fromCharCode(evt.charCode) == "8"){
+						
+					} else if(String.fromCharCode(evt.charCode).toUpperCase() == "P"){
+						calcularVuelto();
+					} 
+				} else {
+					if(evt.keyCode == Keyboard.ESCAPE){
+						closePopUp();
+					} 	
+				}
+				
+			}
+			
+			private function closePopUp():void{
+				pagoModel.removeLiqAPagar();
+				PopUpManager.removePopUp(this);
+				ModelLocator.getInstance().repactacionModel.liqClienteRepactacion = null;
+			}
+			
+			public function init():void{
+				if(this.chkEfectivo != null){
+					//this.chkEfectivo.enabled = true;
+					this.chkEfectivo.selected = false;	
+					//this.chkTitulos.enabled = true;
+					this.chkTitulos.selected = false;
+					//this.chkRepactacion.enabled = pagoModel.pagarTodo;
+					//this.chkRefinanciacion.enabled = pagoModel.pagarTodo;
+					this.chkRepactacion.selected = false;
+					this.chkRefinanciacion.selected = false;
+					this.habilitarMedios();
+				}							
+			}
+			
+			public function showIngresarPagoEfectivo():void{
+				ingresarImporte.addEventListener(CloseEvent.CLOSE,pagoEfectivoClose);
+				PopUpManager.addPopUp(ingresarImporte,Application.application.contGlobal,true);
+				PopUpManager.centerPopUp(ingresarImporte); 
+				ingresarImporte.txtImporte.setFocus();
+			}					
+			
+			private function pagoEfectivoClose(evt:CloseEvent):void{
+				ingresarImporte.removeEventListener(CloseEvent.CLOSE,pagoEfectivoClose);
+				if(ingresarImporte.importeIngresado != 0){
+					var medio:MovimientoMP;
+					if(ingresarImporte.estado == IngresarImporte.NUEVO){
+						medio = new MovimientoMP();
+						medio.monto = ingresarImporte.importeIngresado;						
+						medio.formaPago = formaPagoCajaModel.getFormaPago(1);																						
+						pagoModel.addMedio(medio);
+						chkEfectivo.enabled = false;				
+					} else if(ingresarImporte.estado == IngresarImporte.ACTUALIZAR){												
+						var medioViejo:MovimientoMP = MovimientoMP(this.adg1.selectedItem);
+						medio = new MovimientoMP();						
+						medio.formaPago = formaPagoCajaModel.getFormaPago(medioViejo.formaPago.idFormaPago);
+						medio.monto = ingresarImporte.importeIngresado;											
+						pagoModel.modificarMedio(medio, medioViejo);									
+					}					
+				} else {
+					chkEfectivo.selected = false;
+					chkEfectivo.enabled = true;
+				}									
+			}
+			
+			public function removeMedio():void{
+				var imedio:MovimientoMP = MovimientoMP(this.adg1.selectedItem);
+				if(imedio.formaPago.idFormaPago == 1){
+					this.chkEfectivo.enabled = true;
+					this.chkEfectivo.selected = false;
+				} else if(imedio.formaPago.idFormaPago == 5){
+					this.chkTitulos.enabled = true;
+					this.chkTitulos.selected = false;
+				} else if(imedio.formaPago.idFormaPago == 8){
+					this.changeFormaPago(8,true);
+					this.chkRepactacion.enabled = true;
+					this.chkRepactacion.selected = false;					
+				}else if(imedio.formaPago.idFormaPago == 10){
+					this.changeFormaPago(10,true);
+					this.chkRefinanciacion.enabled = true;
+					this.chkRefinanciacion.selected = false;					
+				}
+				
+				pagoModel.removeMedio(imedio);
+			}
+			
+			private function addPagoEfectivo():void{
+				if(this.chkEfectivo.enabled){
+					this.chkEfectivo.selected = true;
+					ingresarImporte.estado = IngresarImporte.NUEVO;
+					this.showIngresarPagoEfectivo();	
+				}
+			}
+			
+			public function modificarMedio():void{
+				var imedio:MovimientoMP = pagoModel.arrayMedios.getItemAt(this.adg1.selectedIndex) as MovimientoMP;
+				if(imedio.formaPago.idFormaPago == 1){
+					ingresarImporte.txtImporte.text = MovimientoMP(this.adg1.selectedItem).monto.toString();
+					ingresarImporte.estado = IngresarImporte.ACTUALIZAR;
+					this.showIngresarPagoEfectivo();
+				} else if(imedio.formaPago.idFormaPago == 2){																		
+					pagoModel.chkPagoCheque = true;
+					pagoModel.esModificarCheque = true;
+					ModelLocator.getInstance().chequeModel.cheque = imedio.cheque;
+					ModelLocator.getInstance().chequeModel.esModificable = true;
+					ModelLocator.getInstance().chequeModel.mp = imedio;
+					var vent:IFlexDisplayObject = PopUpManager.createPopUp(this,Cheques,true);
+					PopUpManager.centerPopUp(vent);											
+				} else if(imedio.formaPago.idFormaPago == 5){
+					ingresarImporte.txtImporte.text = MovimientoMP(this.adg1.selectedItem).monto.toString();
+					ingresarImporte.estado = IngresarImporte.ACTUALIZAR;
+					showIngresarPagoTitulos();
+				} else if(imedio.formaPago.idFormaPago == 6){
+					ModelLocator.getInstance().depositoBancarioModel.movimMpOld = imedio;
+					PopUpManager.addPopUp(popUpDeposito,Application.application as DisplayObject,true);
+					PopUpManager.centerPopUp(popUpDeposito);
+					popUpDeposito.setFocus();
+				} else if(imedio.formaPago.idFormaPago == 11){
+					ModelLocator.getInstance().tarjetaDebitoModel.movimMpOld = imedio;
+					PopUpManager.addPopUp(popUpTarjetaDebito,Application.application as DisplayObject,true);
+					PopUpManager.centerPopUp(popUpTarjetaDebito);
+					popUpTarjetaDebito.setFocus();
+				}
+			}
+						
+			
+		]]>
+	</mx:Script>
+	
+</mx:TitleWindow>

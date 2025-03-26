@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceLocator xmlns="com.adobe.cairngorm.business.*" xmlns:mx="http://www.adobe.com/2006/mxml">
+		
+	<mx:RemoteObject 
+		id="extractoService" 
+		destination="GenericDestination" 
+		source="extractoBancarioServiceTarget"/>	
+	
+	<mx:RemoteObject 
+		id="detalleExtractoService" 
+		destination="GenericDestination" 
+		source="detalleExtractoServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="movimientoConciliableService" 
+		destination="GenericDestination" 
+		source="movimientoConciliableServiceTarget"/>
+	
+	<mx:RemoteObject 
+		id="bancoPropioService" 
+		destination="GenericDestination" 
+		source="bancoPropioServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="conciliacionFondoService" 
+		destination="GenericDestination" 
+		source="conciliacionFondoServiceTarget"/>
+
+
+	<mx:RemoteObject 
+		id="conciliacionFondoCabeceraService" 
+		destination="GenericDestination" 
+		source="conciliacionFondoCabeceraServiceTarget"/>
+				
+	<mx:RemoteObject 
+		id="acreditacionFondoService" 
+		destination="GenericDestination" 
+		source="acreditacionFondoServiceTarget"/>
+		
+	<mx:RemoteObject 
+		id="asientoFondosService" 
+		destination="GenericDestination" 
+		source="asientoFondosServiceTarget"/>
+				
+	<!--<mx:RemoteObject 
+		id="reciboService" 
+		destination="GenericDestination" 
+		source="reciboServiceTarget"/>-->		
+	
+</ServiceLocator>

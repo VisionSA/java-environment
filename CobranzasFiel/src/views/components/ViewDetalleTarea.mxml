@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--@I5520--><mx:TitleWindow 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical"
+	creationComplete="init()"
+ title="{'Detalle Tarea '+modelo.tareaSeleccionada.descripcion}" xmlns:renderer="views.renderer.*">
+<!--@F5520-->	
+	<mx:Script>
+		<![CDATA[
+/*@I5520*/			import events.GenericTareasPendientesEvent;
+			
+			import model.CobranzasModelLocator;
+			
+			import mx.core.Application;
+			import mx.core.IFlexDisplayObject;
+			import mx.events.ResizeEvent;
+			import mx.managers.PopUpManager;
+/*@F5520*/			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			[Bindable]
+			private var tieneDireccion : Boolean = false;
+			
+			[Bindable]
+			private var mostrarURLArchivo : Boolean = false;
+			
+			private function init():void{
+				tieneDireccion = modelo.tareaSeleccionada.idAccion != 3 && modelo.tareaSeleccionada.idAccion != 14;
+				mostrarURLArchivo = !modelo.esConfirmable && tieneDireccion;
+				
+				new GenericTareasPendientesEvent(GenericTareasPendientesEvent.BUSCAR_DETALLES_TAREAS_EVENT,modelo.tareaSeleccionada).dispatch();
+			}
+			
+			private function cerrarPopUp():void{
+				
+				// Limpio la lista de detalles tareas
+				modelo.listaDetalleTareas = null;
+				
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function abrirViewModificar():void{				
+/*@I5520*/				var vent : IFlexDisplayObject = PopUpManager.createPopUp(Application.application as DisplayObject,ViewModificarDetallesCliente,true);
+/*@F5520*/				PopUpManager.centerPopUp(vent);
+			}
+			
+			private function seleccionarDetalleTarea():void {
+				var obj : Object = modelo.listaDetalleTareas.getItemAt(dgDetalle.selectedIndex);
+				new GenericTareasPendientesEvent(GenericTareasPendientesEvent.SELECCIONAR_DETALLE_TAREA_EVENT,obj).dispatch();				
+			}
+			
+			private function getFecha(item:Object, column:DataGridColumn):String {
+				return df.format(item.ultimoPagoEfectuado);
+			}
+/*@I5520*/			
+			private function formatCobrador(data:Object, column:DataGridColumn):String
+			{
+				return data.apellidoCobrador + ", " + data.nombreCobrador;
+			}
+/*@F5520*/
+		]]>
+	</mx:Script>
+		
+	<mx:DateFormatter id="df" formatString="DD/MM/YYYY"/>
+	<mx:DataGrid id="dgDetalle" dataProvider="{modelo.listaDetalleTareas}" itemClick="seleccionarDetalleTarea()">
+			<mx:columns>
+				  <mx:DataGridColumn headerText="Dom. Válido" textAlign="center" width="100" visible="{tieneDireccion}">
+				  	<mx:itemRenderer>
+				  		<mx:Component>
+				  			<mx:HBox width="100%" horizontalAlign="center">
+				  				<renderer:IconDomicilio data="{data}"/>
+				  			</mx:HBox>
+				  		</mx:Component>
+				  	</mx:itemRenderer>
+				  </mx:DataGridColumn>
+				  <mx:DataGridColumn dataField="idUsuario" headerText="Id Cliente" textAlign="right" width="100"/>
+				  <mx:DataGridColumn dataField="apellidoCliente" headerText="Apell Cli" textAlign="center"/>
+				  <mx:DataGridColumn dataField="nombreCliente" headerText="Nombre Cli" textAlign="center"/>
+				  <mx:DataGridColumn dataField="montoAdeudado" headerText="Debe" textAlign="right" width="80"/>
+				  <mx:DataGridColumn dataField="ultimoPagoEfectuado" labelFunction="getFecha" headerText="Fecha Último Pago" textAlign="right" width="120" visible="{!tieneDireccion}"/>
+				  <mx:DataGridColumn dataField="telefonosCliente" headerText="Telefonos" visible="{!tieneDireccion}" width="120">
+				  	<mx:itemRenderer>
+				  		<mx:Component>
+				  			<mx:Label text="{data.telefonosCliente}" toolTip="{data.telefonosCliente}" />
+				  		</mx:Component>
+<!--@I5520-->				  	</mx:itemRenderer>
+				  </mx:DataGridColumn>
+				  <mx:DataGridColumn labelFunction="formatCobrador" headerText="Nombre Cob" textAlign="center" visible="{modelo.tareaSeleccionada.idAccion == 8}" width="200"/>
+				  <mx:DataGridColumn dataField="nombreCobrador" headerText="Nombre Abog" textAlign="center" visible="{modelo.tareaSeleccionada.idAccion == 15}" width="100"/>
+<!--@F5520-->				  <mx:DataGridColumn headerText="URL" textAlign="center" visible="{mostrarURLArchivo}" width="500">
+				  		<mx:itemRenderer>
+				  			<mx:Component>
+				  				<mx:HBox horizontalScrollPolicy="off" toolTip="{data.urlArchivo}">
+				  					<mx:Script>
+				  					<![CDATA[
+				  						import events.GenericTareasPendientesEvent;
+				  						import model.CobranzasModelLocator;
+				  					
+				  						private function abrirPDF(url:String):void{
+				  							new GenericTareasPendientesEvent(GenericTareasPendientesEvent.ABRIR_PDF_EVENT,url).dispatch()
+										}
+				  					]]>
+					  				</mx:Script>
+					  				<mx:LinkButton label="{data.urlArchivo}" rollOverColor="#fd9595" click="abrirPDF(data.urlArchivo)"/>
+				  				</mx:HBox>				  				
+				  			</mx:Component>
+				  		</mx:itemRenderer>
+				  </mx:DataGridColumn>
+				  
+			</mx:columns>		
+	</mx:DataGrid>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button label="Datos" width="100" click="abrirViewModificar()" visible="{tieneDireccion}" enabled="{modelo.detalleTareaSeleccionada != null}"/>
+		<mx:Button label="Salir" width="100" click="cerrarPopUp()"/>
+	</mx:ControlBar>
+	
+</mx:TitleWindow>

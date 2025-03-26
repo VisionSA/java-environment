@@ -1,0 +1,611 @@
+/* CSS file */
+DateField
+{
+	disabledColor: #000000;
+}
+DateFiledMultiLan
+{
+}
+ApplicationControlBar
+{
+	drop-shadow-enabled: false;
+	fillAlphas: 1.0, 0.7;
+	fillColors: #136CB3, #0E4977;
+	cornerRadius: 0;
+}
+TitleWindow
+{
+	borderColor: #919399;
+	title-style-name: titleMDI;
+	background-color: #EFEFEF;
+	padding-bottom: 5;
+	padding-left: 5;
+	padding-right: 5;
+	padding-top: 5;
+	background-alpha: 0.9;
+	borderAlpha: 1.0;
+}
+Label.saldo
+{
+	color: #198600;
+	fontWeight: bold;
+	fontSize: 14;
+}
+Alert
+{
+	backgroundColor: #00388B;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+	backgroundAlpha: 0.8;
+	borderColor: #00388B;
+	borderAlpha: 0.8;
+	titleStyleName: alertTitle;
+	controlBarStyleName: alertControlBar;
+	color: #FFFFFF;
+	button-style-name: buttonAlert;
+	statusStyleName: alertStatus;
+}
+OLAPDataGridGroupRenderer
+{
+
+}
+AxisRenderer
+{
+}
+OLAPDataGrid
+{
+	rowAxisHeaderStyleName: oLAPDataGridRowAxisHeader;
+	horizontalGridLines: true;
+	verticalGridLines: true;
+}
+
+Button.buttonAlert{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #A4A4A4, #B8B8B8;
+	cornerRadius: 2;
+	color: #FFFFFF;
+	textSelectedColor: #000000;
+	disabledColor: #DFDFDF;	
+	
+}
+/*@I3918*/
+Application {
+   backgroundColor: #FFFFFF;
+   backgroundGradientColors: #FFFFFF, #AAAAAA;
+   backgroundGradientAlphas: 0.34, 0.34;
+   modal-transparency-blur: 0;
+   modal-transparency: 0.5;   
+   modal-transparency-color: black;   
+   modal-transparency-duration: 150;
+}
+/*@F3918*/
+TextInput {
+   borderStyle: solid;
+   borderColor: #b7babc;
+   borderThickness: 2;
+   cornerRadius: 3;
+   backgroundAlpha: 0.69;
+   backgroundColor: #E0E0E0;
+   color: #000000;
+   textAlign: left;
+   letterSpacing: 0;
+   paddingLeft: 0;
+   paddingRight: 0;
+   fontFamily: Arial;
+   fontSize: 11;
+   fontWeight: normal;
+   dropShadowEnabled: true;
+   shadowDistance: 1;
+}
+HBox.top
+{
+	backgroundColor: #136CB3;
+	borderColor: #136CB3;
+}
+
+LinkButton.vistas
+{
+	color: #FFFFFF;
+	fontFamily: Arial;
+	fontSize: 12;
+	paddingBottom: 2;
+	paddingLeft: 2;
+	paddingRight: 2;
+	paddingTop: 2;
+	textRollOverColor: #FFFFFF;	
+}
+HBox.topDerecha
+{
+	horizontalAlign: right;
+	paddingBottom: 5;
+	paddingLeft: 5;
+	paddingRight: 5;
+	paddingTop: 5;
+	verticalAlign: bottom;
+}
+LinkButton.busqueda
+{
+	color: #FFFFFF;
+	fontSize: 12;
+	horizontalGap: 0;
+	themeColor: #727272;
+	verticalGap: 0;
+	textRollOverColor: #FFFFFF;
+	rollOverColor: #747474;
+	selectionColor: #939393;
+	fontFamily: Arial;
+}
+VBox.infocaja
+{
+	backgroundAlpha: 1.0;
+	backgroundColor: #919399;
+	horizontalAlign: left;
+	paddingBottom: 15;
+	paddingLeft: 10;
+	paddingRight: 10;
+	paddingTop: 15;
+	verticalAlign: middle;
+	verticalGap: 20;
+}
+HBox.seleccionado
+{
+	backgroundAlpha: 0.8;
+	backgroundColor: #EAEAEA;
+	borderStyle: solid;
+	cornerRadius: 5;
+	horizontalAlign: left;
+	paddingLeft: 5;
+	paddingRight: 5;
+	verticalAlign: middle;
+}
+Label.lblSeleccionado
+{
+	color: #000000;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+MenuBar
+{
+	color: #B0B0B0;
+	fillAlphas: 1.0, 1.0;
+	fillColors: #FFFFFF, #FFFFFF;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+	themeColor: #A6A6A6;
+	borderColor: #FFFFFF;
+	textAlign: left;
+}
+HBox.subMenu
+{
+	backgroundColor: #136CB3;
+}
+Label.lblInfo
+{
+	color: #000000;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+Label.lblInfoBlanco
+{
+	color: #FFFFFF;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+Label.tituloBusquedas
+{
+	color: #136CB3;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+LinkButton.busqueda2
+{
+	color: #000000;
+	themeColor: #7A7A7A;
+	textRollOverColor: #FFFFFF;
+	rollOverColor: #929292;
+	fontFamily: Arial;
+	fontSize: 12;
+}
+VBox.hboxBusquedas
+{
+	backgroundAlpha: 1.0;
+	backgroundColor: #EFEFEF;
+	horizontalAlign: center;
+	paddingBottom: 5;
+	paddingLeft: 10;
+	paddingRight: 10;
+	paddingTop: 5;
+	verticalAlign: middle;
+}
+LinkBar.linkBarBusquedas
+{
+	fontFamily: Arial;
+	fontSize: 12;
+}
+Label.lblInfoCaja
+{
+	color: #FFFFFF;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+
+HBox.hboxInfoCaja
+{
+	horizontalAlign: center;
+	verticalAlign: middle;
+}
+HBox.hboxMenu
+{
+	backgroundColor: #FFFFFF;
+	horizontalAlign: right;
+	verticalAlign: middle;
+}
+HBox.hboxDivBusqueda
+{
+	backgroundColor: #ffffff;
+}
+VBox.VboxBlock
+{
+	backgroundColor: #00388B;
+	borderColor: #C0C0C0;
+	borderStyle: solid;
+	borderThickness: 3;
+	color: #FFFFFF;
+	horizontalAlign: center;
+	verticalAlign: middle;
+}
+.titleMDI{
+	color: #FFFFFF;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+}
+Label
+{
+	fontFamily: Arial;
+	fontSize: 11;
+}
+
+Button
+{
+	fontFamily: Arial;
+	fontSize: 11;
+}
+ButtonBar
+{
+	color: #000000;
+	buttonStyleName: buttonBarButton;
+	firstButtonStyleName: buttonBarFirstButton;
+	lastButtonStyleName: buttonBarLastButton;
+	horizontalAlign: center;
+}
+AdvancedDataGrid
+{
+	fontFamily: Arial;
+	fontWeight: normal;
+	textAlign: center;
+	fontSize: 11;
+	borderColor: #9FA4A7;
+	borderThickness: 3;		
+	headerColors: #136CB3, #B2D1E9;
+	color: #000000;
+	headerStyleName: advancedDataGridHeader;	
+	textSelectedColor: #2B333C;
+	
+}
+Panel
+{
+	borderColor: #136CB3;
+	title-style-name: titleMDI;
+	background-color: #EFEFEF;
+	padding-bottom: 5;
+	padding-left: 5;
+	padding-right: 5;
+	padding-top: 5;
+	background-alpha: 0.9;
+	borderAlpha: 0.8;
+	controlBarStyleName: panelControlBar;
+	statusStyleName: panelStatus;
+	borderThicknessLeft: 1;
+	borderThicknessRight: 1;
+	borderThicknessTop: 0;
+	cornerRadius: 4;
+	borderThicknessBottom: 1;
+}
+Button.buttonNavigateAcordion
+{
+	color: #FFFFFF;
+	fillAlphas: 1.0, 1.0;
+	fillColors: #136CB3, #0E4977;
+	textRollOverColor: #FFFFFF;
+}
+ToggleButtonBar
+{
+	buttonStyleName: toggleButtonBarButton;
+	firstButtonStyleName: toggleButtonBarFirstButton;
+	lastButtonStyleName: toggleButtonBarLastButton;
+	color: #FFFFFF;
+	selectedButtonTextStyleName: toggleButtonBarSelectedButtonText;
+}
+/*TabNavigator
+{
+	tabStyleName: tabNavigatorTab;
+	backgroundColor: #EFEFEF;	
+	fontFamily: Arial;
+	fontSize: 12;
+	selectedTabTextStyleName: tabNavigatorSelectedTabText;
+	backgroundAlpha: 1.0;
+	lastTabStyleName: tabNavigatorLastTab;
+	borderThickness: 1;	
+	borderColor: #000000;
+	backgroundSize: auto;
+}*/
+.advancedDataGridHeader
+{
+	fontFamily: Arial;
+	fontSize: 11;
+	fontWeight: bold;
+	color: #FFFFFF;
+}
+.tabNavigatorTab
+{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #136CB3, #B2D1E9;
+	cornerRadius: 0;
+	color: #FAFAFA;
+	borderColor: #000000;
+}
+.tabNavigatorSelectedTabText
+{
+	fontFamily: Arial;
+	fontSize: 12;
+	color: #000000;
+}
+.tabNavigatorLastTab
+{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #136CB3, #B2D1E9;
+	color: #FFFFFF;
+	cornerRadius: 0;
+	borderColor: #000000;
+}
+.alertTitle
+{
+	textAlign: left;
+	fontFamily: Arial;
+	fontSize: 12;
+	color: #FFFFFF;
+}
+.alertControlBar
+{
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: bold;
+	color: #FFFFFF;
+}
+.alertStatus
+{
+}
+Label.titulos14
+{
+	fontSize: 14;
+}
+TextInput.txtInfoCaja
+{
+	color: #FF0000;
+	fontSize: 12;
+	fontWeight: bold;
+}
+.buttonBarButton
+{
+	color: #000000;
+}
+.buttonBarFirstButton
+{
+	color: #000000;
+}
+.buttonBarLastButton
+{
+	color: #000000;
+}
+VBox.VboxComun
+{
+	backgroundColor: #848282;
+	horizontalAlign: center;
+	verticalAlign: middle;
+}
+
+
+HAccordion
+        {
+            backgroundColor: #FFFFFF;
+            borderStyle: "solid";
+            
+            paddingBottom: -1;
+            paddingLeft: -1;
+            paddingRight: -1;
+            paddingTop: -1;
+            verticalGap: -1;
+            horizontalGap: -1;
+            textAlign: "right";
+        }
+        
+        VAccordion
+        {
+            backgroundColor: #FFFFFF;
+            borderStyle: "solid";
+            
+            paddingBottom: -1;
+            paddingLeft: -1;
+            paddingRight: -1;
+            paddingTop: -1;
+            verticalGap: -1;
+            horizontalGap: -1;
+            textAlign: "left";
+        }
+        
+        /*
+        //------------------------------
+        //  AccordionHeader
+        //------------------------------
+        */
+        
+        AccordionHeader
+        {
+        /*    selectedFillColors: #FFFFFF, #FFFFFF; */ /* overrides the calculated fillcolors */
+            
+        /*    disabledIcon: null; */
+            disabledSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+        /*    downIcon: null; */
+            downSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+            horizontalGap: 5;
+        /*    overIcon: null; */
+            overSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+            paddingTop: 5;
+            paddingBottom: 5;
+        /*    selectedDisabledIcon: null; */
+            selectedDisabledSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+        /*    selectedDownIcon: null; */
+            selectedDownSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+        /*    selectedOverIcon: null; */
+            selectedOverSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+        /*    selectedUpIcon: null; */
+            selectedUpSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+            
+        /*    upIcon: null; */
+            upSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+            
+             fontFamily: accordionHeader; 
+            fontWeight:bold;
+            fontSize:11;
+            fontSharpness:-200;
+            fontThickness:-100;
+            fontGridFitType: none;
+            
+            
+        }
+Accordion
+{
+	fontFamily: Arial;
+	headerStyleName: accordionHeader;
+}
+.accordionHeader
+{
+	fontFamily: Arial;
+	color: #FFFFFF;
+	fillAlphas: 1.0, 1.0;
+	fillColors: #136CB3, #0E4977;
+}
+.panelControlBar
+{
+	fontFamily: Arial;
+}
+.panelStatus
+{
+}
+.toggleButtonBarButton
+{
+	fillAlphas: 0.5, 1.0, 0.5, 0.5;
+	fillColors: #0090FF, #136CB3, #FFFFFF, #136CB3;
+	color: #FFFFFF;
+	textSelectedColor: #000000;
+	textRollOverColor: #000000;
+	textAlign: center;
+}
+.toggleButtonBarFirstButton
+{
+	fillAlphas: 0.5, 0.5, 0.5, 0.5;
+	fillColors: #0090FF, #136CB3, #FFFFFF, #136CB3;
+	color: #FFFFFF;
+	textRollOverColor: #000000;
+}
+.toggleButtonBarLastButton
+{
+	fillAlphas: 0.5, 0.5, 0.5, 0.5;
+	fillColors: #0090FF, #136CB3, #FFFFFF, #136CB3;
+	color: #FFFFFF;
+	textRollOverColor: #000000;
+}
+.toggleButtonBarSelectedButtonText
+{
+	color: #000000;
+}
+
+Button.togleButton
+{
+	color: #FBFBFB;
+	disabledColor: #BDBDBD;
+	fillAlphas: 1.0, 1.0;
+	fillColors: #136CB3, #0E4977;
+	textSelectedColor: #000000;
+	textRollOverColor: #FFFFFF;
+}
+.oLAPDataGridRowAxisHeader
+{
+}
+
+.textInputRojoGrande
+{
+	color: #FF0000;
+	fontSize: 20;
+	fontWeight: bold;
+	textAlign: center;
+}
+.textInputAzulGrande
+{
+	color: #001EFF;
+	fontSize: 20;
+	fontWeight: bold;
+	textAlign: center;
+}
+.textInputNegroGrande
+{
+	fontSize: 20;	
+	fontWeight: bold;
+	textAlign: center;
+}
+
+.textInputRojoMediano
+{
+	color: #FF0000;
+	fontSize: 16;
+	fontWeight: bold;
+	textAlign: center;
+}
+.textInputAzulMediano
+{
+	color: #001EFF;
+	fontSize: 16;
+	fontWeight: bold;
+	textAlign: center;
+}
+.textInputNegroMediano
+{
+	fontSize: 16;	
+	fontWeight: bold;
+	textAlign: center;
+}
+/*@I3918*/HBox.modBackground
+{
+	paddingBottom: 5;
+	paddingLeft: 5;
+	paddingRight: 5;
+	paddingTop: 5;
+	backgroundColor: #136CB3; 
+	backgroundAlpha: 0.25;
+}
+FormItem.frmItmBusqueda
+{
+	color: #C9D1D3;
+	fontSharpness: 5;
+	fontWeight: bold;
+	horizontalAlign: right;
+}
+/*@F3918*/

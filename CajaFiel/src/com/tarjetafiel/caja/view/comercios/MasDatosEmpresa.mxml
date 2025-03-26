@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="this.contenedor.setFocus()" keyDown="if(event.keyCode == Keyboard.ESCAPE)this.closePopUp()" close="this.closePopUp()" title="{ModelLocator.getInstance().empresaModel.empresa.razonSocial}" showCloseButton="true">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Empresa;
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			
+			private function closePopUp():void{
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:VBox height="100%" width="100%" id="contenedor">
+		
+		<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+			<mx:Text text="C.U.I.T:" styleName="text15Bold"/>
+			<mx:Text text="{ModelLocator.getInstance().empresaModel.empresa.cuit}" fontSize="13" fontStyle="italic" fontWeight="normal"/>	
+		</mx:HBox>
+		<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+			<mx:Text text="Rubro:" styleName="text15Bold"/>
+			<mx:Text text="{ModelLocator.getInstance().empresaModel.empresa.rubro.descripcion}" fontSize="13" fontStyle="italic" fontWeight="normal"/>
+		</mx:HBox>			
+		<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+			<mx:Text text="Liquida por:" styleName="text15Bold"/>
+			<mx:Text text="{ModelLocator.getInstance().empresaModel.empresa.tipoLiquidacion == Empresa.LIQUIDA_COMERCIO ? 'Comercio' : 'C.U.I.T.'}" fontSize="13" fontStyle="italic" fontWeight="normal"/>			
+		</mx:HBox>		
+		<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+			<mx:Text text="Cantidad de Comercios:" styleName="text15Bold"/>
+			<mx:Text text="{ModelLocator.getInstance().empresaModel.empresa.sucEmpresas.length.toString()}" fontSize="13" fontStyle="italic" fontWeight="normal"/>
+		</mx:HBox>							
+	</mx:VBox>
+	
+</mx:TitleWindow>

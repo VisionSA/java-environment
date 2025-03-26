@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceLocator xmlns="com.adobe.cairngorm.business.*" xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+		]]>
+	</mx:Script>
+
+	<mx:ChannelSet id="remotingChannels">
+		<!-- Para que la configuración de los canales quede bien definido, se debe llamar anteriormente al metodo 
+		     setURLChannelDefinition que se encuentra en la clase ModelLocatorGeneral pasandole como parametro
+		     la url del contexto, en flex 3 se obtiene con Application.application.url y con flex 4 FlexGlobals.topLevelApplication.url
+		-->
+		<mx:AMFChannel id="amf" url="{ModelLocatorGeneral.getInstance().AMFChannelDefinition}" />
+	</mx:ChannelSet>
+	
+	<mx:RemoteObject
+		id="lineaCreditoTemporal"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="lineaCredComposServiceImpl"/>
+	
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="clientes" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="clienteTransaccionServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="clientesPlastico" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="plasticoClienteServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="banco" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="bancoNuevoServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="empresa" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="empresaServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="liqComercio" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="liqComercioLPServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="liqComercioLpDetalle" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="liqComercioDetServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="ctaCteComercio" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="ctaCteComercioServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="login" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="operadorServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="liquidacionCliente" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="liqClienteServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="liquidacionDetalleCliente" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="ctaCteClienteServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="pagosCliente" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="pagosClienteServiceTarget"/>
+	
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="conceptos" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="conceptoServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="bancoPropio" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"
+		source="bancoPropioServiceTarget"/>		
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="formaPagoCaja" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="cajaMPServiceTarget"/>
+	
+	<mx:RemoteObject 
+		channelSet="{remotingChannels}"
+		id="caja" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="cajaServiceTarget"/>
+	
+	<mx:RemoteObject 
+		channelSet="{remotingChannels}"
+		id="cajaApertura" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="cajaAperturaServiceTarget"/>
+	
+	<mx:RemoteObject 
+		channelSet="{remotingChannels}"
+		id="chequeEstados" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="chequeEstadoServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="calculoCuotas" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="calculoCuotaServicesTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="adelantoEfectivo" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="adelantoEfectivoServicesTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="impresoras" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="impresoraServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="cheque" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="chequeServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="formaPagoValor" 
+		destination="GenericSessionDestination" 	
+		showBusyCursor="true"	
+		source="formaPagoValorServiceTarget"/>
+	
+	<mx:RemoteObject 
+		channelSet="{remotingChannels}"
+		id="arqueoService" 
+		destination="GenericDestination" 	
+		showBusyCursor="true"	
+		source="cajaArqueoServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="movimientoService" 
+		destination="GenericDestination" 	
+		showBusyCursor="true"	
+		source="movimientoServiceTarget"/>	
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="chequeLugarService" 
+		destination="GenericDestination" 	
+		showBusyCursor="true"	
+		source="chequeLugarServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="reImpresionService"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="com.bizitglobal.tarjetafiel.general.impresion.ImpresionTickets"			
+		/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="pagoAComercioService"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="liqComPagoServiceTarget"
+		/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="individuoEvaluacionService"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="individuoEvaluacionServiceTarget"
+		/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="iliquidacionComercioService"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="liquidacionServiceTarget"
+		/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="chequeHistorial"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="chequeHistorialServiceTarget"
+		/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="recibo"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="reciboServiceTarget"
+		/>
+		
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="estadoCliente"
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="estadoClienteService"
+		/>
+	
+	<mx:RemoteObject 
+		channelSet="{remotingChannels}"
+		id="tareaService" 
+		destination="GenericDestination"
+		showBusyCursor="true" 
+		source="tareaPendienteServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="lineaCredito" 
+		destination="GenericDestination"
+		showBusyCursor="true" 
+		source="lineaCredHistoricoService"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="colaboradorService" 
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="colaboradorServiceTarget"/>
+	
+	
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="digitalService" 
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="digitalServiceTarget"/>
+	
+	<mx:RemoteObject
+		channelSet="{remotingChannels}"
+		id="tipoDigitalService" 
+		destination="GenericDestination"
+		showBusyCursor="true"
+		source="tipoDigitalServiceTarget"/>
+
+</ServiceLocator>

@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="contLibroDiario"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.bizitglobal.webapp.faces.beans.util.*" />
+	<import value="net.sf.jasperreports.engine.design.JasperDesign" />
+
+	<parameter name="fecha_uno" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_dos" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_tres" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_cuatro" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_cinco" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_seis" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_siete" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_ocho" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_nueve" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_diez" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_once" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_doce" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_trece" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="id_sucursal" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="ejercicio" isForPrompting="true" class="java.lang.Long"/>
+	<parameter name="lista_cuentas" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="URLImagen" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[Select nroimputa, mes, orden , debe, haber, titulo From 
+(Select ad.c_id_plan_cuenta as nroimputa, 'Apertura' as mes, 0 as orden, 
+                        (Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} AND cabe.c_tipo_asiento = 1
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_numero_imputa = ad.c_id_plan_cuenta
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} AND cabeDos.c_tipo_asiento = 1 
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_numero_imputa = ad.c_id_plan_cuenta
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Junio' as Mes, 1 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_uno}
+                                AND a.c_fecha_contab < $P{fecha_dos}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_uno}
+                                AND b.c_fecha_contab < $P{fecha_dos}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Julio' as Mes, 2 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_dos}
+                                AND a.c_fecha_contab < $P{fecha_tres}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_dos}
+                                AND b.c_fecha_contab < $P{fecha_tres}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Agosto' as Mes, 3 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_tres}
+                                AND a.c_fecha_contab < $P{fecha_cuatro}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_tres}
+                                AND b.c_fecha_contab < $P{fecha_cuatro}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Septiembre' as Mes, 4 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_cuatro}
+                                AND a.c_fecha_contab < $P{fecha_cinco}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_cuatro}
+                                AND b.c_fecha_contab < $P{fecha_cinco}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Octubre' as Mes, 5 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_cinco}
+                                AND a.c_fecha_contab < $P{fecha_seis}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_cinco}
+                                AND b.c_fecha_contab < $P{fecha_seis}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Noviembre' as Mes, 6 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_seis}
+                                AND a.c_fecha_contab < $P{fecha_siete}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_seis}
+                                AND b.c_fecha_contab < $P{fecha_siete}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Diciembre' as Mes, 7 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_siete}
+                                AND a.c_fecha_contab < $P{fecha_ocho}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_siete}
+                                AND b.c_fecha_contab < $P{fecha_ocho}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Enero' as Mes, 8 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_ocho}
+                                AND a.c_fecha_contab < $P{fecha_nueve}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_ocho}
+                                AND b.c_fecha_contab < $P{fecha_nueve}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Febrero' as Mes, 9 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_nueve}
+                                AND a.c_fecha_contab < $P{fecha_diez}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_nueve}
+                                AND b.c_fecha_contab < $P{fecha_diez}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Marzo' as Mes, 10 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_diez}
+                                AND a.c_fecha_contab < $P{fecha_once}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_diez}
+                                AND b.c_fecha_contab < $P{fecha_once}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Abril' as Mes, 11 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >= $P{fecha_once}
+                                AND a.c_fecha_contab < $P{fecha_doce}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >= $P{fecha_once}
+                                AND b.c_fecha_contab < $P{fecha_doce}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+SELECT ad.c_id_plan_cuenta as nroimputa, 'Mayo' as Mes, 12 as orden, 
+					(Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} ANd cabe.c_tipo_asiento = 2
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_fecha_contab >=  $P{fecha_doce}
+                                AND a.c_fecha_contab <  $P{fecha_trece}
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} ANd cabeDos.c_tipo_asiento = 2
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_fecha_contab >=  $P{fecha_doce}
+                                AND b.c_fecha_contab <  $P{fecha_trece}
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+
+Union
+Select ad.c_id_plan_cuenta as nroimputa, 'Cierre' as mes, 13 as orden, 
+                        (Select nvl(SUM(DECODE(a.c_signo,'C',0,'D',a.c_importe)),0) from t_cont_asientos_d a INNER JOIN 
+                                                                                     t_cont_asientos_c cabe ON a.c_asiento = cabe.c_asiento
+                           WHERE a.c_ejercicio = $P{ejercicio} AND (cabe.c_tipo_asiento = 4 OR cabe.c_tipo_asiento = 5)
+                                AND a.c_empresa = $P{id_sucursal} AND a.c_numero_imputa = ad.c_id_plan_cuenta
+                                AND a.c_numero_imputa = ad.c_id_plan_cuenta)  as debe, 
+                    (Select nvl(SUM(DECODE(b.c_signo,'C',b.c_importe,'D',0)),0) from t_cont_asientos_d b INNER JOIN 
+                                                                                     t_cont_asientos_c cabeDos ON b.c_asiento = cabeDos.c_asiento
+                           WHERE b.c_ejercicio = $P{ejercicio} AND (cabeDos.c_tipo_asiento = 4 OR cabeDos.c_tipo_asiento = 5)
+                                AND b.c_empresa = $P{id_sucursal} AND b.c_numero_imputa = ad.c_id_plan_cuenta
+                                AND b.c_numero_imputa = ad.c_id_plan_cuenta)  as haber, 			
+                    nvl(ad.titulo,'') as titulo
+FROM dual, t_vis_cont_plan_cuenta ad 
+WHERE $P{lista_cuentas} Like ('%, '||ad.c_id_plan_cuenta||',%') 
+)
+Group by nroimputa, mes, orden , debe, haber, titulo
+Order By 6, 3 ASC]]></queryString>
+
+	<field name="NROIMPUTA" class="java.math.BigDecimal"/>
+	<field name="MES" class="java.lang.String"/>
+	<field name="ORDEN" class="java.math.BigDecimal"/>
+	<field name="DEBE" class="java.math.BigDecimal"/>
+	<field name="HABER" class="java.math.BigDecimal"/>
+	<field name="TITULO" class="java.lang.String"/>
+
+	<variable name="SUM_debe" class="java.math.BigDecimal" resetType="Group" resetGroup="titulo" calculation="Sum">
+		<variableExpression><![CDATA[$F{DEBE}]]></variableExpression>
+	</variable>
+	<variable name="SUM_haber" class="java.math.BigDecimal" resetType="Group" resetGroup="titulo" calculation="Sum">
+		<variableExpression><![CDATA[$F{HABER}]]></variableExpression>
+	</variable>
+
+		<group  name="titulo" >
+			<groupExpression><![CDATA[$F{TITULO}]]></groupExpression>
+			<groupHeader>
+			<band height="15"  isSplitAllowed="true" >
+				<rectangle radius="0" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="535"
+						height="15"
+						forecolor="#FFFFFF"
+						backcolor="#FFFFFF"
+						key="rectangle"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="0"
+						width="316"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TITULO}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="saldoant" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="50"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="160"
+						y="0"
+						width="40"
+						height="15"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Debe]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="200"
+						y="0"
+						width="75"
+						height="15"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier-Bold" size="8" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_debe}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="275"
+						y="0"
+						width="40"
+						height="15"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Haber]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="315"
+						y="0"
+						width="80"
+						height="15"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier-Bold" size="8" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_haber}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="395"
+						y="0"
+						width="40"
+						height="15"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Saldo]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="450"
+						y="0"
+						width="80"
+						height="15"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier-Bold" size="8" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_debe}.add($V{SUM_haber}.negate())]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="300"
+						y="25"
+						width="150"
+						height="15"
+						key="staticText"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Saldo Período]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="450"
+						y="25"
+						width="80"
+						height="15"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier-Bold" size="8" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_debe}.add($V{SUM_haber}.negate())]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="39"
+						width="534"
+						height="0"
+						forecolor="#000000"
+						key="line"/>
+					<graphicElement stretchType="NoStretch" pen="1Point"/>
+				</line>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="18"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="3"
+						y="4"
+						width="100"
+						height="10"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Mes]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="290"
+						y="4"
+						width="80"
+						height="10"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Debe]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="370"
+						y="4"
+						width="80"
+						height="10"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Haber]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="450"
+						y="4"
+						width="80"
+						height="10"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Saldo]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="12"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="3"
+						y="0"
+						width="100"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{MES}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="290"
+						y="0"
+						width="80"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{DEBE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="370"
+						y="0"
+						width="80"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{HABER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="450"
+						y="0"
+						width="80"
+						height="12"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" leftPadding="2" rightBorder="None" rightBorderColor="#000000" rightPadding="2" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier" size="7" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_debe}.add($V{SUM_haber}.negate())]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

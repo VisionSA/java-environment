@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 click="group_clickHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.business.ConstantesEstados;
+			import com.fiel.caja.judicial.event.ImpresorasEvent;
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.Caja;
+			import com.tarjetafiel.caja.vo.CajaApertura;
+			import com.tarjetafiel.caja.vo.Impresora;
+			import com.tarjetafiel.proveedorconexion.vo.SetDataVo;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.utils.StringUtil;
+			
+			import utils.ManejadorIconos;
+			import utils.ManejadorMensajes;
+			import utils.ManejadorPantallas;
+			
+			[Bindable]
+			public var modelo:CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			[Inspectable]
+			public var impresora:Impresora = null;
+			
+			[Inpsectable]
+			public var predeterminada:Boolean = false;
+			
+			
+			[Inspectable]
+			public function refresh():void
+			{
+				predeterminada = modelo.cajaApertura.caja.impresora.idImpresora == impresora.idImpresora;
+				imgImpresora.source = predeterminada?ManejadorIconos.DEFAULT_PRINTER:ManejadorIconos.PRINTER;
+				lblNombre.text = impresora.descripcion;
+				lblPath.text = impresora.path;
+				this.toolTip = StringUtil.substitute("{0}{1}",impresora.descripcion, predeterminada?" - Predeterminada":"");
+			}
+
+			protected function group_clickHandler(event:MouseEvent):void
+			{
+				if (!predeterminada)
+				{
+					ManejadorMensajes.mostrarMensajeYesNo(StringUtil.substitute("¿Desea guardar la impresora {0} como predeterminada?",
+									impresora.descripcion),setImpresoraPredeterminada);
+				}
+			}
+			
+			private function setImpresoraPredeterminada(event:CloseEvent):void
+			{
+				if (event.detail == Alert.YES)
+				{
+					//new ImpresorasEvent(ImpresorasEvent.GUARDAR_PREDETERMINADA, impresora).dispatch();
+					var tmpCajaApertura:CajaApertura = modelo.cajaApertura;
+					tmpCajaApertura.caja.impresora = impresora;
+					new SetDataVo(modelo, "cajaApertura", tmpCajaApertura).guardarValor();
+					//new SetDataVo(modelo, "estadoActualVImpresoras", ConstantesEstados.ESTADO_VI_REFRESCAR_LISTA).guardarValor();
+				}
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:Dissolve id="fadeEff" duration="450"/>
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout paddingBottom="1" paddingLeft="1"
+						  paddingRight="1" paddingTop="1"
+						  horizontalAlign="center"/>
+	</s:layout>
+	<mx:Image id="imgImpresora" source="{ManejadorIconos.PRINTER}" autoLoad="true" addedEffect="fadeEff" removedEffect="fadeEff"/>
+	<s:Label id="lblNombre" text="Impresora" textAlign="center" addedEffect="fadeEff" removedEffect="fadeEff"/>
+	<s:Label id="lblPath" text="Ruta" textAlign="center" addedEffect="fadeEff" removedEffect="fadeEff"/>
+	
+</s:Group>

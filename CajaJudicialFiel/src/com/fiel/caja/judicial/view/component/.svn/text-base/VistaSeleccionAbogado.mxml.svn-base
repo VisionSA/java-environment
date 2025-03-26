@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--@I3820--><s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   creationComplete="titlewindow1_creationCompleteHandler(event)"
+			   close="titlewindow1_closeHandler(event)"
+			   title="Abogados Activos"
+			   keyUp="components_keyUpHandler(event)">
+<!--@F3820-->	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.event.CajaJudicialEvent;
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.Abogado;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.StringUtil;
+			
+			import skin.BotonAceptarSkin;
+			import skin.BotonCancelarSkin;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import utils.ManejadorMensajes;
+			import utils.ManejadorPantallas;
+			import utils.constantes.ConstantesTeclado;
+			
+			[Bindable]
+			private var modelo : CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+/*@I3820*/				ManejadorPantallas.mostrarProgressBar();
+				new CajaJudicialEvent(CajaJudicialEvent.BUSCAR_LISTA_ABOGADOS_EVENT,null).dispatch();
+/*@F3820*/				cmboAbogados.setFocus();/*@F3820*/
+			}
+			
+			private function obtenerLabelAbogado (item:Object):String{
+				var abogado : Abogado = item as Abogado;
+				return StringUtil.substitute("{0}, {1}",abogado.apellido.toUpperCase(),abogado.nombres.toUpperCase());
+			}
+			
+			
+			
+			[Bindable]
+			private var a : Abogado = null;
+			
+			protected function btnAceptar_clickHandler(event:MouseEvent):void
+			{
+				if (cmboAbogados.selectedIndex != -1){
+					a = modelo.listaAbogados.getItemAt(cmboAbogados.selectedIndex) as Abogado;					
+					if(modelo.abogadoSeleccionado == null){
+						modelo.abogadoSeleccionado = a;
+						cerrarPopUp();
+					}else {
+						if (modelo.abogadoSeleccionado.idColaborador != a.idColaborador){
+							ManejadorMensajes.mostrarMensajeYesNo("Cambiar el abogado limpia la grilla con los clientes que ha agregado\n¿Desea cambiarlo?"
+								,cambiarAbogadoYlimpiarGrilla,"CambiarAbogado");
+						}
+					}
+				}
+				
+			}
+			
+			private function cambiarAbogadoYlimpiarGrilla(event:CloseEvent):void{
+				if(event.detail == Alert.YES){
+					modelo.abogadoSeleccionado = a;	
+					new CajaJudicialEvent(CajaJudicialEvent.LIMPIAR_GRILLA_EVENT,null).dispatch();
+					cerrarPopUp();
+				}				
+			}
+			
+			
+			protected function btnCancelar_clickHandler(event:MouseEvent):void
+			{
+				cerrarPopUp();
+			}
+			
+			private function cerrarPopUp():void{
+				
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				cerrarPopUp();
+			}
+			
+			
+			protected function cmboAbogados_changeHandler(event:IndexChangeEvent):void
+			{
+				if (event.newIndex > -1){
+					a = event.currentTarget.selectedItem as Abogado;	
+				}
+			}
+			
+/*@I3820*/		/**
+			* Función para detectar cuando se presiona una tecla para método abreviado en el combo
+			* **/	
+			protected function components_keyUpHandler(event:KeyboardEvent):void
+			{
+				switch(event.keyCode)
+				{
+					case Keyboard.ENTER:
+					{
+						if (cmboAbogados.selectedIndex > -1)
+						{
+							btnAceptar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						}
+						break;
+					}
+						//Abre la ventana agregar medio de pago
+					case Keyboard.ESCAPE:
+					{
+						btnCancelar.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+					}
+						
+					default :
+					{
+						break;
+					}
+				}
+			}
+/*@F3820*/				
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<mx:Form>
+		<mx:FormItem label="Abogados:">
+<!--@I3820-->			<s:DropDownList id="cmboAbogados" prompt="Seleccione un Abogado" selectedIndex="-1" 
+										 dataProvider="{modelo.listaAbogados}" labelFunction="obtenerLabelAbogado" 
+										 width="180" change="cmboAbogados_changeHandler(event)"
+										 keyUp="components_keyUpHandler(event)"/>		
+<!--@F3820-->		</mx:FormItem>
+	</mx:Form>
+	<s:HGroup width="100%" horizontalAlign="right" paddingRight="10" paddingBottom="10">
+		<s:Button id="btnAceptar" label="Aceptar" click="btnAceptar_clickHandler(event)" enabled="{a.idColaborador != modelo.abogadoSeleccionado.idColaborador}" skinClass="skin.BotonAceptarSkin"/>
+		<s:Button id="btnCancelar" label="Cancelar" click="btnCancelar_clickHandler(event)" skinClass="skin.BotonCancelarSkin"/>
+	</s:HGroup>
+</s:TitleWindow>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.BancoPropio" table="T_VIS_FON_BANCOS_PROPIOS" >
+		
+	<id name="idBancoPropio" type="java.lang.Long" column="C_ID_BANCO_PROPIO">
+		<generator class="increment" />
+	</id>
+	
+	<property name="tipoCuenta" type="java.lang.String" column="C_TIPO_CUENTA" not-null="true" length="50"/>
+	<property name="numeroCuenta" type="java.lang.String" column="C_NUMERO_CUENTA" not-null="true" length="20"/>
+	<property name="cbu" type="java.lang.String" column="C_CBU" not-null="true" length="20"/>
+	<property name="numeroSucursal" type="java.lang.Long" column="C_NUMERO_SUCURSAL" not-null="true" />
+	<property name="plaza" type="java.lang.Long" column="C_PLAZA" not-null="true" />
+	<property name="habilitado" type="java.lang.Character" column="C_HABILITADO" not-null="true" />
+
+    <many-to-one name="moneda" class="com.bizitglobal.tarjetafiel.general.negocio.Moneda" not-null="false" >
+		<column name="C_ID_MONEDA" />
+	</many-to-one>
+  
+    <many-to-one name="banco" class="com.bizitglobal.tarjetafiel.general.negocio.Banco" not-null="false" >
+		<column name="C_ID_BANCO" />
+	</many-to-one>
+	
+	<many-to-one name="sucursal" class="com.bizitglobal.tarjetafiel.general.negocio.SucursalFiel" not-null="false" >
+		<column name="C_ID_SUCURSAL" />
+	</many-to-one>
+	
+	<many-to-one name="planCuenta" class="com.bizitglobal.tarjetafiel.contabilidad.negocio.PlanCuentaDos" not-null="true" >
+		<column name="C_ID_PLAN_CUENTA" />
+	</many-to-one>
+</class>
+</hibernate-mapping>

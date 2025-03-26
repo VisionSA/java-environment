@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import managers.ClienteManager;
+			import views.categorias.cliente.models.ComposicionSaldoClienteModel;
+			import views.categorias.cliente.DetalleComposicionSaldoView;
+			import views.categorias.cliente.ResumidoComposicionSaldoView;
+			import views.categorias.cliente.modules.ComposicionSaldoClienteModule;
+		
+		]]>
+	</mx:Script>
+	<Injectors targets="{[ComposicionSaldoClienteModule,ResumidoComposicionSaldoView,DetalleComposicionSaldoView]}">
+		<ObjectBuilder generator="{ComposicionSaldoClienteModel}">
+		 <Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="composicionSaldoClienteModel"/>
+	</Injectors>
+	
+   <Injectors target="{ComposicionSaldoClienteModel}">		
+		<PropertyInjector targetKey="saldoAnteriorComposicionSaldo" sourceKey="saldoAnteriorComposicionSaldo" source="{ClienteManager}"/>
+	</Injectors>
+     
+     <Injectors target="{ComposicionSaldoClienteModel}">		
+		<PropertyInjector targetKey="arrayComposicionSaldo" sourceKey="arrayComposicionSaldo" source="{ClienteManager}"/>
+	</Injectors> 
+    
+     <Injectors target="{ComposicionSaldoClienteModel}">		
+		<PropertyInjector targetKey="arrayComposicionSaldoDetalles" sourceKey="arrayComposicionSaldoDetalles" source="{ClienteManager}"/>
+	</Injectors> 
+</EventMap>

@@ -1,0 +1,175 @@
+9
+
+dir
+800
+https://testingpc/svn/testing/Presentacion/src/main/java/com/bizitglobal/webapp/faces/beans
+https://testingpc/svn/testing
+
+
+
+2020-04-20T16:33:58.285200Z
+733
+gaston
+has-props
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+BaseBean.java
+file
+
+
+
+
+2018-07-20T14:42:09.102915Z
+d3549aef63bd5fd404cd183b4cb567f8
+2017-12-07T12:02:26.781992Z
+144
+esteban
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5021
+
+banco
+dir
+
+evaluacion
+dir
+
+InfoSistemaBean.java
+file
+
+
+
+
+2018-07-20T14:42:09.118902Z
+2ae528d9b3c0ffdbd2899503df3114bf
+2017-12-07T12:02:26.781992Z
+144
+esteban
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+10048
+
+impuestos
+dir
+
+fondos
+dir
+
+error
+dir
+
+SessionBean.java
+file
+
+
+
+
+2018-07-20T14:42:09.123899Z
+3cfb67a6f3036d514fa0d3cd2fadd023
+2017-12-07T12:02:26.781992Z
+144
+esteban
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+449
+
+parametro
+dir
+
+transacciones
+dir
+
+proveedores
+dir
+
+exportar
+dir
+
+login
+dir
+
+workflow
+dir
+
+operador
+dir
+
+util
+dir
+
+general
+dir
+
+contabilidad
+dir
+

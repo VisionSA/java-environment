@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="init();" horizontalAlign="center" verticalAlign="middle">
+	<!--
+		Flex Component Upload
+		http://www.cristianhernandez.org
+	-->
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.ComboBox;
+			import com.util.block.ControlBlock;
+			import com.util.components.alert.AlertError;
+			import mx.controls.Alert;
+		import flash.net.FileReference;
+		import flash.net.URLRequest;
+		import flash.net.URLRequestMethod
+		import mx.events.ItemClickEvent;
+		import flash.events.Event;
+
+		[Inspectable(defaultValue=false)]
+        private var _autoUpload:Boolean;
+        //
+        [Inspectable(defaultValue=undefined)]
+        private var _params:Object;
+        //
+        //[Inspectable(defaultValue="UploadFile")]
+        private var _upload_url:String;
+        //
+        
+        public var nombreFiltro:String;
+        
+        public var extensionFiltro:String;
+        
+        public var combo:ComboBox;
+        
+		private var fileFilter:FileFilter;
+		private var fileref:FileReference = new FileReference();
+		private var imagenSeleccionada:Boolean = false;
+       	
+       	private function init():void{
+       		
+       		if(nombreFiltro && extensionFiltro){
+       			fileFilter = new FileFilter(nombreFiltro, extensionFiltro);
+       		}
+       		
+       		
+			fileref.addEventListener(Event.SELECT, selectHandler);
+ 			fileref.addEventListener(Event.OPEN, openHandler);
+			fileref.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+			fileref.addEventListener(Event.COMPLETE, completeHandler);
+			fileref.addEventListener(HTTPStatusEvent.HTTP_STATUS,function (evt:HTTPStatusEvent):void{				
+				if(evt.status.toString() == "406"){
+					AlertError.show("Error en el formato del archivo");
+				} else if(evt.status.toString() == "409"){
+					AlertError.show("El archivo ya existe");
+				}else {
+					AlertError.show("STATUS " + evt.status);	
+				}
+				ControlBlock.getInstance().remove();
+				
+			});
+			
+			fileref.addEventListener(IOErrorEvent.IO_ERROR, function(evt:IOErrorEvent):void{
+				ControlBlock.getInstance().remove();
+				//AlertError.show(evt.text);
+			});
+			subir_btn.enabled = false;
+       	}
+		
+		public function set uploadURL(_str:String):void{
+			_upload_url = _str
+		}
+		public function set params(o:Object):void{
+			_params = o;
+		}
+		public function get fileName():String{
+			return file_path.text;
+		}
+		private function searchFile():void{
+			extensionFiltro = combo.selectedItem.nombreSufijo+'*.*';	
+			
+			fileFilter.extension = combo.selectedItem.nombreSufijo+'*.*'; 
+			/* extensionFiltro = combo.selectedItem.nombreSufijo+'*.*';
+			fileFilter.description = combo.selectedItem.nombreSufijo+'*.*';
+			Alert.show(fileFilter.extension); */
+			/* Alert.show(combo.selectedItem.nombreSufijo); */
+			_params = {"tipoArchivo" : combo.selectedItem.nombreSufijo};
+			if(fileFilter){
+				fileref.browse([fileFilter]);				
+			}
+			else {
+				fileref.browse();
+			}
+		}
+		public function reset():void{
+			uploadProgress.setProgress(0,1);
+			file_path.text = "";
+		}
+		
+		public function uploadFile():void{
+			ControlBlock.getInstance().add();
+			if(_upload_url){
+				var request:URLRequest = new URLRequest();
+				var variables:URLVariables;
+				if(_params){
+					variables = new URLVariables();
+					for(var d:Object in _params){
+						variables[d] = _params[d]
+					}
+					request.data = variables;
+				}
+				
+				request.method = URLRequestMethod.GET;
+		    	request.url = _upload_url;
+		    	fileref.upload(request);
+		 } else {
+		 	AlertError.show("No se espcifico una URL");
+		 }
+		 
+			
+		}
+		private function selectHandler(event:Event):void {
+			fileFilter.extension = combo.selectedItem.nombreSufijo+'*.*'; 
+			dispatchEvent(new Event("fileSelected"));
+			subir_btn.enabled = true;
+    		file_path.text = fileref.name;		
+		}
+		private function openHandler(event:Event):void {
+			// is opened
+		}
+		private function progressHandler(event:ProgressEvent):void {
+			uploadProgress.setProgress(event.bytesLoaded, event.bytesTotal);
+		}
+		private function completeHandler(event:Event):void {
+		    ControlBlock.getInstance().remove();
+			
+/* @F4170 */ 		    /* file_path.text = ""; */		    
+		    uploadProgress.label = "";
+		    dispatchEvent(new Event("fileUploaded"));
+		    uploadProgress.setProgress(0,1);
+		}
+
+		]]>
+	</mx:Script>
+	<mx:Metadata>
+		[Event(name="fileUploaded", type="flash.events.Event")]
+		[Event(name="fileSelected", type="flash.events.Event")]
+	</mx:Metadata>
+	<mx:Form>
+		<!--<mx:FormItem label="Subir Archivo:">-->
+		<mx:FormItem label=" ">
+		<mx:HBox>
+			<mx:Button label="Buscar..." click="searchFile()"/>
+			<mx:Button label="Subir" id="subir_btn" click="uploadFile();"/>
+		</mx:HBox>
+		</mx:FormItem>
+		<mx:FormItem label="Archivo">
+			<mx:Text id="file_path" text=""/>
+		</mx:FormItem>
+		<mx:FormItem label="Progreso">
+			<mx:ProgressBar id="uploadProgress" label="" mode="manual" width="150"  labelPlacement="center"/>
+		</mx:FormItem>
+	</mx:Form>
+</mx:VBox>

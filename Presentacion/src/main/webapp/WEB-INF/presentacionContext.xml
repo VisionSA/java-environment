@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+                       "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="archivoUnionPDFServiceTarget"
+		class="com.bizitglobal.webapp.service.impl.ArchivoUnionPDFServiceImpl">
+		<property name="liqClienteServ" ref="liqClienteService" />
+	</bean>
+	<bean id="archivoUnionPDFService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true">
+		<property name="target" ref="archivoUnionPDFServiceTarget"></property>
+		<property name="transactionManager" ref="myTxManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="getArchivoUnionPDF">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+	</bean>
+  
+	
+
+	<bean id="archivoLiqComercioServiceTarget"
+		class="com.bizitglobal.webapp.service.impl.ArchivoLiqComercioServiceImpl">
+		<property name="archivoCuponesService" ref="archivoCuponesServiceTarget" />
+	</bean>
+	<bean id="archivoLiqComercioService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true">
+		<property name="target" ref="archivoLiqComercioServiceTarget"></property>
+		<property name="transactionManager" ref="myTxManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="getArchivoLiqComercio">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+	</bean>
+<!-- @I6247--> 
+	<bean id="autorizacionEcoService"
+	class="com.bizitglobal.webapp.service.impl.AutorizacionEcoServiceImpl">
+	<property name="notaCreditoDebitoService" ref="notaCreditoDebitoServiceTarget" />
+	</bean>
+<!-- @F6247--> 
+  
+ </beans>
+ 

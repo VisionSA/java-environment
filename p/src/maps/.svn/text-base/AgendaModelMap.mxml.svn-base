@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import events.EventosEvent;
+			
+			import managers.ClienteManager;
+			import managers.EventoManager;
+			
+			import views.categorias.models.AgendaModel;
+			import views.categorias.modules.AgendaModule;
+			import views.categorias.cliente.modules.LineaCreditoModule;
+			import views.categorias.cliente.popup.AgregarAgendaView;
+			import views.categorias.cliente.popup.AgregarBolqueoAgendaView;
+			import views.categorias.cliente.popup.ClientesInformadosView;
+			import views.categorias.cliente.TramitesView;
+			import views.categorias.cliente.EncabezadoClienteView;
+			import views.categorias.cliente.popup.LibreDeudaAgendaView;
+			import views.categorias.cliente.popup.SaldoBancoAgendaView;
+			import views.categorias.cliente.popup.CuentaAlDiaAgendaView;
+			
+		
+		]]>
+	</mx:Script>
+	<Injectors targets="{[AgendaModule,LineaCreditoModule,AgregarAgendaView,AgregarBolqueoAgendaView,TramitesView,ClientesInformadosView,EncabezadoClienteView,LibreDeudaAgendaView,SaldoBancoAgendaView,CuentaAlDiaAgendaView]}">
+   		<ObjectBuilder generator="{AgendaModel}">
+   			<Property targetKey="dispatcher" source="{scope.dispatcher}"/>
+   		</ObjectBuilder>
+   		<PropertyInjector source="{lastReturn}" targetKey="agendaModel"/>
+   	</Injectors>
+	
+	
+	<Injectors target="{AgendaModel}">
+   		<PropertyInjector source="{EventoManager}" sourceKey="arrayEventos" targetKey="arrayEventos" />
+   	</Injectors>
+	
+	
+   	
+<!--@I4053-->   	
+<!--@F4053-->
+</EventMap>

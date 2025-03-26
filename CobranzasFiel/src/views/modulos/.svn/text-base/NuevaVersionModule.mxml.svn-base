@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical"
+	creationComplete="init()" 
+	xmlns:modulos="views.modulos.*" 
+	xmlns:components="views.components.*">
+		
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Container;
+			import views.components.ViewPanelEtapa;
+			import mx.containers.Panel;
+			import com.tarjetafiel.caja.vo.PlanVersion;
+			import mx.managers.DragManager;
+			import mx.core.DragSource;
+			import mx.utils.ObjectUtil;
+			import com.tarjetafiel.caja.vo.Accion;
+			import mx.controls.Alert;
+			import mx.events.DragEvent;
+			import com.tarjetafiel.caja.vo.Etapa;
+			import com.tarjetafiel.caja.vo.EtapaVersion;
+			import mx.core.Application;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import events.GenericPlanEvent;
+			import mx.managers.PopUpManager;
+			import model.CobranzasModelLocator;
+			
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			private function salir():void {
+				modelo.versionSeleccionada = null;
+				Application.application.modulo.unloadModule();
+ 				Application.application.modulo.url = "views/modulos/EditarPlanModule.swf";                				
+			}
+			
+			
+			private function guardar():void {
+				var pv : PlanVersion = new PlanVersion();
+				pv.descripcion = inptNombre.text;
+				pv.fechaDesde = DateField.stringToDate(dfFechaDesde.text,"DD/MM/YYYY");
+				pv.queryClientesQueAplican = txtArea.text;
+				
+				
+				/*
+				 * Esto es necesario ya que es la forma en la que agregamos los días de cada etapa al modelo
+				 */
+				for each (var child:Object in modelo.hBoxPaneles_nv.getChildren()){
+					if (child is ViewPanelEtapa){
+						(child as ViewPanelEtapa).etapaVersion.dias = Number((child as ViewPanelEtapa).inptDias.text);
+					}					
+				}
+				
+				new GenericPlanEvent(GenericPlanEvent.GUARDAR_VERSION_EVENT,pv).dispatch();
+				
+				salir();
+				
+			}
+			
+			private function init():void {
+				
+				inptNombre.setFocus();
+				
+				new GenericPlanEvent(GenericPlanEvent.BUSCAR_ETAPAS_EVENT,null).dispatch();
+				
+				modelo.esNuevaVersion = true;
+				modelo.versionSeleccionada = new PlanVersion();
+				
+				
+				if (modelo.listaAccionesDisponibles == null){
+					new GenericPlanEvent(GenericPlanEvent.BUSCAR_ACCIONES_DISPONIBLES_EVENT,null).dispatch();
+				}
+				
+				/* Se agrega la referencia al modelo para que pueda modificarse desde el command */
+				modelo.hBoxPaneles_nv = hBoxEtapas;
+				
+			}
+			
+			private function itemSeleccionado():void{
+				
+				var obj : Object = modelo.listaAccionesDisponibles.getItemAt(dgAccionesDisponibles.selectedIndex);
+				var accion : Accion = new Accion();
+				accion.descripcion = obj.descripcion;
+				accion.idAccion = obj.idAccion;		
+				
+				new GenericPlanEvent(GenericPlanEvent.SELECCIONAR_ACCION_DISPONIBLE_EVENT,accion).dispatch();		
+					
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:DateFormatter id="df" formatString="DD/MM/YYYY"/>
+	
+	<mx:HBox>
+		<mx:Form>
+			<mx:FormItem label="Nombre:">
+				<mx:TextInput id="inptNombre" />
+			</mx:FormItem>
+			<mx:FormItem label="Vigencia Desde:">
+				<mx:DateField id="dfFechaDesde" formatString="DD/MM/YYYY" />
+			</mx:FormItem>		
+		</mx:Form>
+		<mx:Form>
+			<mx:FormItem label="Filtro:">
+				<mx:TextArea id="txtArea" width="245" />
+			</mx:FormItem>
+		</mx:Form>
+	</mx:HBox>
+	
+	<mx:HBox id="hBoxEtapas" focusEnabled="false">
+		<mx:Panel width="100%" height="100%" layout="absolute" title="Acciones Disponibles" focusEnabled="false">
+			<mx:DataGrid id="dgAccionesDisponibles" x="0" y="0" width="100%" height="100%" showHeaders="false" dragEnabled="true" dataProvider="{modelo.listaAccionesDisponibles}" dragStart="itemSeleccionado()" focusEnabled="false">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Acciones" dataField="descripcion"/>
+				</mx:columns>
+			</mx:DataGrid>
+		</mx:Panel>
+		
+		<mx:VRule height="100%"/>
+		
+		
+	</mx:HBox>
+	<mx:HBox horizontalAlign="right" width="100%" paddingTop="10">
+		<mx:Button label="Guardar" width="90" click="guardar()"/>
+		<mx:Button label="Cancelar" width="90" click="salir()"/>
+	</mx:HBox>		
+</mx:Module>

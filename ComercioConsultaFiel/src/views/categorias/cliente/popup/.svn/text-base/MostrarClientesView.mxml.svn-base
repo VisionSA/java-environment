@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ESCAPE) removePopUp()"  creationComplete="init()" layout="vertical" showCloseButton="true" close="PopUpManager.removePopUp(this)" horizontalAlign="left" xmlns:mate="http://mate.asfusion.com/" xmlns:ns1="com.util.paginacion.*" height="400" title="Clientes Encontrados" width="1046"
+				xmlns:formatters="utils.*">
+		<formatters:CUITFormatter id="CUITFormatter"/>
+	<mx:AdvancedDataGrid id="adg1"  designViewDataType="flat" dataProvider="{encabezadoClienteModel.arrayClientes}" 
+		width="100%" height="100%" doubleClick="{this.seleccionarCliente()}" doubleClickEnabled="true" >
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Nro Cuenta" textAlign="right" width="80">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{outerDocument.currencyFormatter.format(data.cuentaConsulta)}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			
+			
+			<mx:AdvancedDataGridColumn headerText="CUIL/DNI:" textAlign="right" width="100">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{outerDocument.CUITFormatter.format(data.cuilConsulta)}" textAlign="right"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>			
+			
+			<mx:AdvancedDataGridColumn headerText="apellido" textAlign="left" width="100">
+			<mx:itemRenderer>
+	            <mx:Component>
+		           <mx:Label text="{data.apellidoConsulta}" textAlign="left"/>
+	            </mx:Component>
+            </mx:itemRenderer>
+            </mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Nombre" textAlign="left" width="100">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.nombreConsulta}" textAlign="left"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			
+			<mx:AdvancedDataGridColumn headerText="Tipo Cliente" textAlign="left" width="200">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{outerDocument.getTipoCliente(data)}"/>						
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			<mx:AdvancedDataGridColumn headerText="Domiclio" width="250">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{data.domicilioConsulta}" textAlign="left" />
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			
+			<mx:AdvancedDataGridColumn headerText="Departamento" textAlign="left" width="100">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Label text="{outerDocument.getPartido(data)}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	<ns1:PaginadorComp id="paginador" creationComplete="this.paginador.addEventListener(PaginacionEvent.PAGINAR, paginar)">
+	</ns1:PaginadorComp>
+	
+	<mx:NumberFormatter  id="currencyFormatter"   useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="." decimalSeparatorFrom="," decimalSeparatorTo=","/>  
+	
+    <mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.tarjetafiel.caja.vo.Domicilio;
+			import com.tarjetafiel.caja.vo.IndividuoEvaluacion;
+			import com.util.paginacion.PaginacionEvent;
+			
+			import managers.ClienteManager;
+			
+			import mx.managers.PopUpManager;
+			import mx.utils.StringUtil;
+			import mx.controls.Alert;
+			
+			import views.categorias.cliente.models.EncabezadoClienteModel;
+			
+			[Bindable]public var encabezadoClienteModel:EncabezadoClienteModel;		
+			
+			
+			private function buscarComercio():void{
+			}
+			
+			private function buscarComercios():void{
+				/*var cuit:String = txtCuit.text;
+				var razonSocial:String = txtRazonSocial.text;
+				var sucursal:String = txtSucursal.text;
+				this.busquedaComercioViewModel.buscarComercio(cuit,razonSocial,sucursal);*/
+		    }
+		    
+		    
+		    private function init():void {
+				this.adg1.setFocus();								
+			}
+			
+			public function removePopUp():void{
+				//popUpVisible = false;
+				PopUpManager.removePopUp(this);
+			}
+		    
+		    public function paginar(evt:PaginacionEvent):void{
+				this.paginador.paginador.result = new Array();
+				if (paginador.paginador.tipo_consulta == "particular") {
+					encabezadoClienteModel.buscarCliente(paginador.paginador,null,null);
+				} else {
+					encabezadoClienteModel.buscarClientesListado(paginador.paginador);
+				}
+				
+			}
+			
+			public function getApeyNom(data:Object):String{
+				var clienteTransaccion:ClienteTransaccion = data as ClienteTransaccion;
+				return clienteTransaccion.individuo.apellido+ ", "+  clienteTransaccion.individuo.nombres;  
+			}
+			
+			public function getTipoCliente(data:Object):String{
+				var clienteTransaccion:ClienteTransaccion = data as ClienteTransaccion;
+				if (clienteTransaccion.nuevoTipoCliente == "Adicional" ) {
+					return clienteTransaccion.referenciaConsulta + clienteTransaccion.nombreTitularConsulta;
+				} else 
+				return clienteTransaccion.referenciaConsulta + clienteTransaccion.individuo.apellido+ ", "+  clienteTransaccion.individuo.nombres;  
+			}
+			
+			public function getDomicilio(data:Object):String{
+				var clienteTransaccion:ClienteTransaccion = data as ClienteTransaccion;
+				if (clienteTransaccion.individuo.domicilio) {
+					var domicilio:Domicilio;
+					 domicilio = clienteTransaccion.individuo.domicilio;
+					 var domicilioStr:String;
+					 domicilioStr = StringUtil.trim(domicilio.calleNombre);
+					 if ((StringUtil.trim(domicilio.calleNumero) != "") && (StringUtil.trim(domicilio.calleNumero) != "-")) {
+						 domicilioStr += " " + StringUtil.trim(domicilio.calleNumero);
+					 }
+					 
+					 if ( (StringUtil.trim(domicilio.orientacion) != "") && (StringUtil.trim(domicilio.orientacion) != "-") ) {
+						 domicilioStr += " " + StringUtil.trim(domicilio.orientacion);
+					 }
+					
+					 if ( (StringUtil.trim(domicilio.manzana) != "") && (StringUtil.trim(domicilio.manzana) != "-") ) {
+						 domicilioStr += " Mz. " + StringUtil.trim(domicilio.manzana);
+					 }
+					 
+					 if ( (StringUtil.trim(domicilio.monoblock) != "") && (StringUtil.trim(domicilio.monoblock) != "-") ) {
+						 domicilioStr += " Mb. " + StringUtil.trim(domicilio.monoblock);
+					 }
+					 
+					 if  (!isNaN(domicilio.piso)) {
+						 domicilioStr += " Piso: " + (domicilio.piso);
+					 }
+					 
+					if ( (StringUtil.trim(domicilio.depto) != "") && (StringUtil.trim(domicilio.depto) != "-") ) {
+							 domicilioStr += " Dpto. " + StringUtil.trim(domicilio.depto);
+					}
+					
+					if ( (StringUtil.trim(domicilio.areaSector) != "") && (StringUtil.trim(domicilio.areaSector) != "-") ) {
+						domicilioStr += " Area. " + StringUtil.trim(domicilio.areaSector);
+					}
+					
+					if ( (StringUtil.trim(domicilio.generico) != "") && (StringUtil.trim(domicilio.generico) != "-") ) {
+						domicilioStr += " ( " + StringUtil.trim(domicilio.areaSector) + " )";
+					}
+					
+					if ( (StringUtil.trim(domicilio.barrio.descripcion) != "") && (StringUtil.trim(domicilio.barrio.descripcion) != "-") ) {
+						domicilioStr += " Barrio: " + StringUtil.trim(domicilio.barrio.descripcion);
+					}
+					
+					if ( (StringUtil.trim(domicilio.localidad.nombre) != "") && (StringUtil.trim(domicilio.localidad.nombre) != "-") ) {
+						domicilioStr += " Localidad: " + StringUtil.trim(domicilio.localidad.nombre);
+					}
+					 
+					return domicilioStr;
+					} else {
+					return "  ";
+				}
+				  
+			}
+			
+			public function getPartido(data:Object):String{
+				var clienteTransaccion:ClienteTransaccion = data as ClienteTransaccion;
+				if (clienteTransaccion.individuo.domicilio) {
+					var domicilio:Domicilio;
+					domicilio = clienteTransaccion.individuo.domicilio;
+					return domicilio.localidad.partido.descripcion;	
+				} else {
+					return "  ";
+				}
+				
+			}
+			
+			private function seleccionarCliente():void {
+				var buscarPor:String= ClienteManager.BUSQ_POR_NRO_CUENTA;
+				encabezadoClienteModel.seleccionarCliente(adg1.selectedItem as ClienteTransaccion,paginador.paginador,ClienteManager.BUSQ_POR_NRO_CUENTA);
+	       		//this.encabezadoClienteModel.buscarCliente(encabezadoClienteModel.clienteSeleccionado.individuo.cuil, buscarPor);	       		
+			}
+				/*busquedaComercioViewModel.comercioSeleccionado = adg1.selectedItem as CodComercio;
+				trace(adg1.selectedItem);
+				busquedaComercioViewModel.dispatcher.dispatchEvent(new Event("focusEnListaPrecio"));
+				PopUpManager.removePopUp(this);*/
+		
+			
+			
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

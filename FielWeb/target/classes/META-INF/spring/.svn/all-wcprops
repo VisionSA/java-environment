@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/META-INF/spring
+END
+database.properties
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/META-INF/spring/database.properties
+END
+config.properties
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/META-INF/spring/config.properties
+END
+email.properties
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/META-INF/spring/email.properties
+END
+applicationContext.xml
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/META-INF/spring/applicationContext.xml
+END

@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleGeneral xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalScrollPolicy="off"
+	backgroundAlpha="1.0" alpha="1.0" layout="vertical" xmlns:componentes="views.categorias.cliente.componentes.*" paddingTop="5" paddingRight="5" paddingLeft="5" paddingBottom="5" backgroundColor="#848282" xmlns:maps="views.categorias.cliente.maps.*" xmlns:formatters="utils.*">
+	<formatters:CUITFormatter id="CUITFormatter"/>
+	
+	<mx:Style>
+		.myHeaderStyles {
+			borderStyle:none;
+			border:0;
+			
+		}
+	</mx:Style>
+	   <!--mx:HBox width="100%">
+        	<mx:Repeater id="rep" dataProvider="{generalClienteModel.arrayTitularAdiscionales}">
+           		<componentes:ButtonNavigateAccordion label="{rep.currentItem.individuo.nombreCompleto}" index="{rep.currentIndex}" navigateIndexEvent="{navigateAccordion(event)}"/>           		
+            	<mx:Button label="{rep.currentItem.individuo.nombreCompleto}" click="accordion.selectedIndex=0;"/>
+            </mx:Repeater>
+       </mx:HBox-->
+       
+      <!-- <mx:ToggleButtonBar dataProvider="accordion" backgroundColor="#E81F1F"/>
+	   <mx:ViewStack height="100%" width="100%" id="accordion"  alpha="1.0" includeInLayout="{generalClienteModel.visibleAcordion}" visible="{generalClienteModel.visibleAcordion}">
+-->	     <mx:Repeater id="repCli" dataProvider="{generalClienteModel.arrayTitularAdiscionales}" repeat="handleRepeat()">
+	        <!--<mx:ViewStack  height="100%" width="100%" label="{repCli.currentItem.individuo.nombreCompleto}" -->
+	          <mx:HBox label="{repCli.currentItem.individuo.nombreCompleto}" horizontalAlign="center"  horizontalGap="0" verticalAlign="top" height="100%" width="100%">	          		         
+	          <mx:Panel title="{repCli.currentItem.individuo.nombreCompleto}" borderThicknessBottom="0" borderThicknessLeft="0" borderThicknessRight="0" borderThicknessTop="0" width="100%" headerHeight="20" height="100%" styleName="{((repCli.currentItem.estadoCliente.idEstadoCliente != 4)?'panelTitle':'panelTitle1')}">
+	            <mx:VBox backgroundColor="#FFFFFF" borderColor="#F7F9FA" horizontalGap="0" width="100%" height="100%" verticalGap="-6" horizontalAlign="left">
+	                
+					<mx:HBox  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" visible="{repCli.currentItem.individuo.domicilio != null}" includeInLayout="{repCli.currentItem.individuo.domicilio != null}" horizontalGap="0">
+						<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" visible="{repCli.currentItem.individuo.domicilio != null}" includeInLayout="{repCli.currentItem.individuo.domicilio != null}">
+							<mx:HBox visible="{repCli.currentItem.individuo.domicilio != null}" includeInLayout="{repCli.currentItem.individuo.domicilio != null}">
+							
+						<mx:Label text="Calle: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="15%" text="{repCli.currentItem.individuo.domicilio.calleNombre}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label text="Nro: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="3%" text="{(isNaN(repCli.currentItem.individuo.domicilio.calleNumero))? '':repCli.currentItem.individuo.domicilio.calleNumero}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label text="Orientacion: " styleName="tituloBusquedas" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="2%"  text="{repCli.currentItem.individuo.domicilio.orientacion}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label text="Manzana: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="5%" text="{repCli.currentItem.individuo.domicilio.manzana}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label text="Monoblock: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="5%" text="{repCli.currentItem.individuo.domicilio.monoblock}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>	
+						
+						
+						<mx:Label text="Piso: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="2%" text="{(isNaN(repCli.currentItem.individuo.domicilio.piso))?'':repCli.currentItem.individuo.domicilio.piso}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label text="Dpto: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="2%" text="{repCli.currentItem.individuo.domicilio.dpto}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label text="Area: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="5%" text="{repCli.currentItem.individuo.domicilio.areasector}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+								
+						<mx:Label text="Barrio: " styleName="tituloBusquedas" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="15%" text="{repCli.currentItem.individuo.domicilio.barrio.descripcion}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						</mx:HBox>
+						</mx:Form>
+						</mx:HBox>	
+						
+					<mx:HBox  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" visible="{repCli.currentItem.individuo.domicilio != null}" includeInLayout="{repCli.currentItem.individuo.domicilio != null}" horizontalGap="0">
+						<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" visible="{repCli.currentItem.individuo.domicilio != null}" includeInLayout="{repCli.currentItem.individuo.domicilio != null}">
+							
+						<mx:HBox paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" visible="{repCli.currentItem.individuo.domicilio.calleNumero != null}" includeInLayout="{repCli.currentItem.individuo.domicilio.calleNumero != null}">
+									
+						<mx:Label text="Localidad: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="10%" text="{repCli.currentItem.individuo.domicilio.localidad.nombre}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label text="Partido: "  styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+						<mx:Label styleName="lblInfo" width="10%" text="{repCli.currentItem.individuo.domicilio.localidad.partido.descripcion}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+						
+						<mx:Label text="Cod. Postal: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+						<mx:Label styleName="lblInfo" width="3%" text="{repCli.currentItem.individuo.domicilio.codigoPostal}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+						<mx:Label text="Provincia: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label styleName="lblInfo" width="7%" text="{repCli.currentItem.individuo.domicilio.localidad.provincia.nombre}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						<mx:Label text="Generico: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+						<mx:Label styleName="lblInfo" width="10%" text="{repCli.currentItem.individuo.domicilio.generico}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+						</mx:HBox>
+									
+								
+						</mx:Form>
+						
+				    </mx:HBox>
+					
+					<mx:HBox visible="{repCli.currentItem.individuo.domicilio == null}" includeInLayout="{repCli.currentItem.individuo.domicilio == null}" horizontalGap="0">
+						<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" visible="{repCli.currentItem.individuo.domicilio == null}" includeInLayout="{repCli.currentItem.individuo.domicilio == null}">
+							<mx:HBox visible="{repCli.currentItem.individuo.domicilio == null}" includeInLayout="{repCli.currentItem.individuo.domicilio == null}">
+								
+								<mx:Label text="Domicilio: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="25%" text="{repCli.currentItem.domicilio}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label text="Localidad: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="15%" text="{repCli.currentItem.localidad}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label text="Cod. Postal: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="3%" text="{repCli.currentItem.codPost}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+							
+								<mx:Label text="Provincia: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="100%" text="{repCli.currentItem.provincia}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								
+							</mx:HBox>
+							
+							
+						</mx:Form>
+						
+					</mx:HBox>
+					
+					<mx:VBox width="100%" height="10" paddingTop="3"   textAlign="left" paddingBottom="3" paddingLeft="0" paddingRight="0" verticalAlign="middle">
+						
+						<mx:HRule width="100%"  strokeWidth="1"  strokeColor="black" />
+						
+					</mx:VBox>
+					
+					<!--<mx:VBox width="100%" height="5%">
+						<mx:HBox   width="100%" height="10%">
+						<mx:Label text="E-Mail" styleName="tituloBusquedas" width="50%"/>
+						<mx:VBox visible="{repCli.currentItem.individuo.mails.length  != 0}">
+											<mx:Button label="{encabezadoClienteModel.envioResumen}" click="this.admiEnvioResumen()"/>
+						</mx:VBox>
+							
+							
+						<mx:Label text="Teléfonos" styleName="tituloBusquedas" width="50%"/>	
+							
+					</mx:HBox> 
+					
+				  </mx:VBox> -->
+					<mx:VBox width="100%" height="24%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6">
+						
+						
+							<mx:HBox width="100%" height="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" >
+		
+								
+								<mx:Form width="10%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6"> 
+									<mx:FormItem label="T. y Doc:" styleName="tituloBusquedas" textAlign="left" width="100%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+										<mx:Label text="{repCli.currentItem.individuo.tipoDocumento.descripcion + ' - ' + currencyFormatter.format(repCli.currentItem.individuo.nroDocumento) }" styleName="lblInfo" paddingBottom="0" paddingTop="0" height="7%"/>
+									</mx:FormItem>
+									<mx:FormItem label="Cuil: " styleName="tituloBusquedas" textAlign="left" width="100%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+										<mx:Label styleName="lblInfo" text="{CUITFormatter.format(repCli.currentItem.individuo.cuil)}" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>
+									<mx:FormItem label="Fec Nac:" styleName="tituloBusquedas" textAlign="left"  width="100%" paddingTop="0"   paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+										<mx:Label styleName="lblInfo" text="{dateFormatter.format(repCli.currentItem.individuo.fechaNacimientoFlex)}" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>									
+								</mx:Form>
+								<mx:Form width="15%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6">
+									<mx:FormItem label="Edad:" styleName="tituloBusquedas" textAlign="left" width="100%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+										<mx:Label styleName="lblInfo" text="{repCli.currentItem.individuo.edad}" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>
+									<mx:FormItem label="Sexo:" styleName="tituloBusquedas" textAlign="left" width="100%" paddingTop="0"    paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3"  >
+										<mx:Label styleName="lblInfo" text="{repCli.currentItem.individuo.sexo}" paddingBottom="0" paddingTop="0" />
+									</mx:FormItem>
+									<mx:FormItem label="E.Civil:" styleName="tituloBusquedas"  width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+										<mx:Label styleName="lblInfo" text="{repCli.currentItem.individuo.estadoCivil.descripcion}" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>									
+								</mx:Form>
+								
+								<mx:Form width="15%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6">
+								<mx:FormItem label="Alta:" styleName="tituloBusquedas" width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+									<mx:Label text="{dateFormatter.format(repCli.currentItem.fechaAlta)}" styleName="lblInfo" paddingBottom="0" paddingTop="0" />
+								</mx:FormItem>
+								<mx:FormItem label="Baja:" styleName="tituloBusquedas"  width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+									<mx:Label styleName="lblInfo" text="{((repCli.currentItem.estadoCliente.idEstadoCliente == 4)?dateFormatter.format(repCli.currentItem.fechaEstadoClienteFlex):'')}" paddingBottom="0" paddingTop="0"/>
+								</mx:FormItem>
+								<mx:FormItem label="Promotor:" styleName="tituloBusquedas"   width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+									<mx:Label styleName="lblInfo" text="{repCli.currentItem.individuo.promotorIndividuo}" paddingBottom="0" paddingTop="0"/>
+								</mx:FormItem>
+								</mx:Form>
+									
+								<mx:Form width="20%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6"> 
+									<mx:FormItem label="Eduacion:" styleName="tituloBusquedas" width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+										<mx:Label text="{repCli.currentItem.individuo.educacion.descripcion}" styleName="lblInfo" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>
+									<mx:FormItem label="Profesion:" styleName="tituloBusquedas"  width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+										<mx:Label styleName="lblInfo" text="{repCli.currentItem.individuo.profesion.descripcion}" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>
+									<mx:FormItem label="Vinculo:" styleName="tituloBusquedas"   width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+										<mx:Label styleName="lblInfo" text="{repCli.currentItem.individuo.vinculo.descripcion}" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>
+									
+								</mx:Form>
+								
+								
+								
+								<mx:Form width="30%" height="100%"  paddingTop="2"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6" > 
+									<mx:HBox  verticalGap="0" width="100%" height="100%">									
+						
+								<mx:DataGrid id="adg1" height="100%" dataProvider="{repCli.currentItem.individuo.mails}" width="50%" variableRowHeight="true" >
+									
+								<mx:columns>
+									<mx:DataGridColumn >
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:Label styleName="lblInfo" text="{outerDocument.getEmail(data)}"/>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+							
+								</mx:columns>
+							</mx:DataGrid>
+							
+							
+							<mx:DataGrid height="100%" dataProvider="{repCli.currentItem.individuo.telefonos}" width="50%">
+								<mx:columns>
+									<mx:DataGridColumn  >
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:Label styleName="lblInfo" text="{outerDocument.getNumeroTelefono(data)}"/>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+								</mx:columns>
+							</mx:DataGrid>
+							</mx:HBox> 
+							</mx:Form>		
+							
+							
+							
+							</mx:HBox>
+						
+						<mx:VBox width="100%" height="10" paddingTop="3"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="3" verticalAlign="middle">
+							
+							<mx:HRule width="100%"  strokeWidth="1"  strokeColor="black" />
+							
+						</mx:VBox>
+						
+						
+						
+						<mx:HBox width="100%" height="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" >
+							
+						<mx:VBox width="80%" height="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"  verticalGap="-6">
+							
+							<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6"> 
+								<mx:HBox  verticalGap="0">
+								<mx:FormItem label="R.Social:" styleName="tituloBusquedas" width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+									<mx:Label text="{repCli.currentItem.individuo.actividad.sucEmpresa.empresa.razonSocial}" styleName="lblInfo" paddingBottom="0" paddingTop="0"/>
+								</mx:FormItem>
+								<mx:FormItem label="Sucursal:" styleName="tituloBusquedas"  width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+									<mx:Label styleName="lblInfo" text="{repCli.currentItem.individuo.actividad.sucEmpresa.descripcion}" paddingBottom="0" paddingTop="0"/>
+								</mx:FormItem>
+								<mx:FormItem label="Cuit:" styleName="tituloBusquedas"   width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+									<mx:Label styleName="lblInfo" text="{CUITFormatter.format(repCli.currentItem.individuo.actividad.sucEmpresa.empresa.cuit)}" paddingBottom="0" paddingTop="0"/>
+								</mx:FormItem>
+								
+								</mx:HBox>
+						</mx:Form>
+						
+						
+						
+							<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6"> 
+								<mx:HBox  verticalGap="-6">
+									<mx:FormItem label="Actividad:" styleName="tituloBusquedas"  width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+										<mx:Label styleName="lblInfo" text="{repCli.currentItem.individuo.actividad.ocupacion.descripcion}" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>
+									<mx:FormItem label="F.Ingreso:"  styleName="tituloBusquedas"  width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+										<mx:Label styleName="lblInfo" text="{dateFormatter.format(repCli.currentItem.individuo.actividad.fechaIngresoFlex)}" paddingBottom="0" paddingTop="0" />
+									</mx:FormItem>
+									<mx:FormItem label="Cargo:" styleName="tituloBusquedas" width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+										<mx:Label text="{repCli.currentItem.individuo.actividad.cargo}" styleName="lblInfo" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>
+									<mx:FormItem label="Antig:" styleName="tituloBusquedas"  width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+										<mx:Label styleName="lblInfo" text="{(isNaN(repCli.currentItem.individuo.actividad.antiguedad)?'':repCli.currentItem.individuo.actividad.antiguedad)}" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>
+									<mx:FormItem label="Sueldo:" styleName="tituloBusquedas"   width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3">
+										<mx:Label styleName="lblInfo" text="{(isNaN(repCli.currentItem.individuo.actividad.sueldoNeto)?'':repCli.currentItem.individuo.actividad.sueldoNeto)}" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>
+									<mx:FormItem label="Otros Ingresos Desc:" styleName="tituloBusquedas"  width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+										<mx:Label styleName="lblInfo" text="{repCli.currentItem.individuo.actividad.otrosIngresosDesc}" paddingBottom="0" paddingTop="0"/>
+									</mx:FormItem>
+									<mx:FormItem label="Otro Ingreso:"  styleName="tituloBusquedas"  width="100%" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" indicatorGap="3" >
+										<mx:Label styleName="lblInfo" text="{(isNaN(repCli.currentItem.individuo.actividad.otrosIngresosMonto)?'':repCli.currentItem.individuo.actividad.otrosIngresosMonto)}" paddingBottom="0" paddingTop="0" />
+									</mx:FormItem>
+						
+								</mx:HBox>
+							</mx:Form>
+						
+						
+									
+						<mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"  verticalGap="-6">
+							<mx:HBox  verticalGap="-6">
+								
+								<mx:Label text="Calle: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="15%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.calleNombre}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label text="Nro: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="3%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.calleNumero}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label text="Orientacion: " styleName="tituloBusquedas" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="2%"  text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.orientacion}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label text="Manzana: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="5%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.manzana}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label text="Monoblock: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="5%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.monoblock}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>	
+								
+								
+								<mx:Label text="Piso: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="2%" text="{(isNaN(repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.piso))?'':repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.piso}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label text="Dpto: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="2%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.dpto}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label text="Area: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="5%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.areasector}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								
+								<mx:Label text="Barrio: " styleName="tituloBusquedas" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+								
+								<mx:Label styleName="lblInfo" width="15%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.barrio.descripcion}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+				
+							</mx:HBox>
+						</mx:Form>
+			  
+				 <mx:Form width="100%" height="100%"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" >
+					 
+					 <mx:HBox paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" visible="{repCli.currentItem.individuo.domicilio.calleNumero != null}" includeInLayout="{repCli.currentItem.individuo.domicilio.calleNumero != null}">
+						 
+						 <mx:Label text="Localidad: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						 
+						 <mx:Label styleName="lblInfo" width="10%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.localidad.nombre}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						 
+						 <mx:Label text="Partido: "  styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						 
+						 <mx:Label styleName="lblInfo" width="10%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.localidad.partido.descripcion}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						 
+						 
+						 <mx:Label text="Cod. Postal: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						 
+						 <mx:Label styleName="lblInfo" width="3%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.codigoPostal}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						 
+						 <mx:Label text="Provincia: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						 
+						 <mx:Label styleName="lblInfo" width="7%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.localidad.provincia.nombre}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						 
+						 <mx:Label text="Generico: " styleName="tituloBusquedas"  paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						 
+						 <mx:Label styleName="lblInfo" width="10%" text="{repCli.currentItem.individuo.actividad.sucEmpresa.domicilio.generico}" paddingTop="0"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
+						
+						 
+						 
+						 
+					 </mx:HBox>
+					 
+					 
+				 </mx:Form>
+		      </mx:VBox>
+							<mx:Form width="15%" height="100%"  paddingTop="5"   textAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" verticalGap="-6" > 
+								<mx:HBox  verticalGap="0" width="100%" height="100%">
+							<mx:DataGrid height="80%" dataProvider="{repCli.currentItem.individuo.actividad.sucEmpresa.sucTelefonos}" width="100%" >
+								<mx:columns>
+									<mx:DataGridColumn>
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:Label styleName="lblInfo" text="{outerDocument.getNumeroTelefono(data)}"/>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+								</mx:columns>
+							</mx:DataGrid>
+								</mx:HBox>
+							</mx:Form>
+							
+				</mx:HBox>			
+			
+							
+							
+					
+										
+					</mx:VBox>
+					
+				</mx:VBox>
+				</mx:Panel>		 
+		       
+					 
+				</mx:HBox>
+		        <!--/mx:ViewStack-->
+		     </mx:Repeater>   
+           <!-- </mx:ViewStack>-->
+         <mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+    <maps:GeneralModelMap/>
+   
+	<mx:NumberFormatter  id="currencyFormatter"   useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="." decimalSeparatorFrom="," decimalSeparatorTo=","/>  
+
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.tarjetafiel.caja.vo.Email;
+			import com.tarjetafiel.caja.vo.Telefono;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import com.util.components.alert.AlertOk;
+			import com.util.components.alert.AlertYesNo;
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			
+			import views.categorias.cliente.EncabezadoClienteView;
+			import views.categorias.cliente.componentes.ButtonNavigateAccordion;
+			import views.categorias.cliente.models.GeneralClienteModel;
+			import views.categorias.cliente.models.EncabezadoClienteModel;
+			
+			[Bindable]public var generalClienteModel:GeneralClienteModel;
+			[Bindable]public var encabezadoClienteModel:EncabezadoClienteModel;
+			
+			/* private function navigateAccordion(evt:Event):void{
+				accordion.selectedIndex = ButtonNavigateAccordion(evt.currentTarget).index;
+			} */
+			
+			/**
+			 * @id 37
+			 * Administrar Envio de resumen
+			 **/	
+			public function admiEnvioResumen():void{
+				var mensaje:String=""; 
+				/* if 	(encabezadoClienteModel.envioResumen == 'Resumen E-Mail') {
+					mensaje = 'Resumen Impreso';
+				}else {
+					mensaje = 'Resumen E-Mail';
+				} */
+				
+				AlertYesNo.show("¿Confirma el cambio a " + mensaje + " la forma de envio del resumen del cliente?",function (evt:CloseEvent):void{
+					if(evt.detail == Alert.YES){					
+						envioResumen(Application.application.parameters.codigoOperador);						 
+					}
+					
+				});			
+				
+			}
+			
+			/**
+			 * @id 37
+			 * Administrar Envio de resumen
+			 **/	
+			private function envioResumen(operador:Number):void{
+				/* this.encabezadoClienteModel.realizar_envio_resumen(operador); */	
+			}
+			
+			
+			
+			public function getNumeroTelefono(data:Object):String{
+				var tel:Telefono = data as Telefono;
+				var tipoTel:String="";
+				if(tel.esCelular=="S")
+					tipoTel= "Cel:";
+				else{  
+					if(tel.esFax=="S")
+						tipoTel= "Fax:";
+					else  tipoTel="Tel:";
+				}		   	   
+				var codArea:String = tel.codArea == null ? "" : tel.codArea;
+				return tipoTel+codArea +"-"+ tel.nroTlefono;	
+			}
+			
+			public function getDescripcionTelefono(data:Object):String{
+				var tel:Telefono = data as Telefono;
+				
+				var tipo:String = tel.tipo == null ? "" : tel.tipo.descripcion;
+				var descripcion:String = tel.descripcion == null ? "" : tel.descripcion;
+				return tipo +":"+descripcion;	
+			}
+			 /*@I3945*/			/**
+			 * @id 3945
+			 * Lee el mail de la lista de objetos de Email
+			 * */
+			public function getEmail(data:Object):String{
+				var mail:Email = data as Email;
+				
+				var result:String = mail.email == null ? "" : mail.email;
+				return result;	
+			}
+			/**
+			 * @id 3945
+			 * Lee la descripcion de la lista de objetos de Email
+			 * */
+			public function getEmailDescripcion(data:Object):String{
+				var mail:Email = data as Email;
+				
+				var result:String = mail.descripcion == null ? "" : mail.descripcion;
+				return result;	
+			}
+			
+			/**
+			 * @id 50
+			 * Lee el operador de la lista de objetos de Email
+			 * */
+			public function getEmailOperador(data:Object):String{
+				var mail:Email = data as Email;
+				
+				var result:String = mail.operador == null ? "" : mail.operador.apellido + " "+ mail.operador.nombre;
+				return result;	
+			}
+			
+			/**
+			 * @id 50
+			 * Lee el fecha alta de la lista de objetos de Email
+			 * */
+			public function getEmailFecha(data:Object):String{
+				var mail:Email = data as Email;
+				
+				var result:String = mail.fechaAlta == null ? "" : dateFormatter.format(mail.fechaAlta);
+				return result;	
+			}
+			
+			
+			
+			/**
+			 * @id 3945
+			 * permite agregar un nuevo telefono a la lista
+			 * */
+			public function addTelefono():void{
+				setIndividuoId();
+				/* this.generalClienteModel.abrirPopUpAgregarTelefono(); */
+				return;	
+			}
+			/**
+			 * @id 3945
+			 * permite agregar un nuevo email a la lista
+			 * */
+			public function addMail():void{
+				setIndividuoId();
+				/* this.generalClienteModel.abrirPopUpAgregarMail(); */
+				return;	
+			}
+			/**
+			 * @id 35
+			 * permite  modicar   email a la lista
+			 * */
+			public function modificarMail(data):void{
+				var mail:Email = data as Email;	
+				setIndividuoId();
+				/* this.generalClienteModel.popUpModificarMail.email = mail;
+				this.generalClienteModel.abrirPopUpModicarMail();		 */					
+			}
+			
+			/**
+			 * @id 35
+			 * permite  eliminar  email a la lista
+			 * */
+			public function eliminarMail(data):void{
+				AlertYesNo.show("¿Confirma eliminar email ?",function (evt:CloseEvent):void{
+					if(evt.detail == Alert.YES){
+						eliminarMail1(data);	
+					}
+				});												
+			}
+			
+			
+			public function eliminarMail1(data):void{ 
+				var mail:Email = data as Email;
+				/* var index:Number=tbbClientes.selectedIndex; */
+				/* if(index < 0){
+					index = 0;
+				}
+				var id:Number = ClienteTransaccion(generalClienteModel.arrayTitularAdiscionales[index]).individuo.idIndividuo; */
+				
+				/* this.generalClienteModel.eliminarMail(mail.idEmail,id);	 */
+				
+			}
+			
+			
+			
+			/**
+			 * @id 3945
+			 * guarda el id del individuo actual en el Telefono
+			 * */
+			public function setIndividuoId():void{
+				/* var index:Number=tbbClientes.selectedIndex;
+				if(index < 0){
+					index = 0;
+				}
+				var id:Number = ClienteTransaccion(generalClienteModel.arrayTitularAdiscionales[index]).individuo.idIndividuo;
+				this.generalClienteModel.popUpAgregarTelefono.idIndividuo=id;
+				this.generalClienteModel.popUpAgregarMail.idIndividuo=id;
+				this.generalClienteModel.popUpModificarMail.idIndividuo=id; */
+			}
+			/*@F3945*/			
+			public function handleRepeat():void{
+				//repCli.currentIndex;
+				
+				if(repCli.currentItem.idTitular){
+					generalClienteModel.esTitular= false;
+				}	
+				else generalClienteModel.esTitular= true;	
+			}
+			
+			
+			
+			
+         	
+         	
+
+		]]>
+	</mx:Script>
+
+</ModuleGeneral>

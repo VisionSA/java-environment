@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="{cliente.nombreCliente}" creationComplete="onCreationComplete()" xmlns:ns1="com.util.components.date.*"
+		 horizontalGap="0" verticalAlign="top" verticalGap="0">
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ClienteTransaccion;
+			import com.tarjetafiel.caja.vo.PlasticoCliente;
+			
+			import mx.controls.Alert;
+			import mx.utils.StringUtil;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
+			import mx.controls.Label;
+			import com.util.block.ControlBlock;
+			import com.tarjetafiel.caja.vo.PlasticoCliente;
+			import models.ApplicationModel;	
+			import com.util.components.alert.AlertYesNo;
+			import mx.events.CloseEvent;		
+			
+			import views.categorias.cliente.models.PlasticosModel;
+			import views.categorias.cliente.models.PlasticosXClienteModel;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]public var cliente:ClienteTransaccion;
+			
+			[Bindable]public var plasticosXClienteModel:PlasticosXClienteModel = new PlasticosXClienteModel();
+			
+			[Bindable]public var plasticosModel:PlasticosModel;
+			
+			[Bindable]public var ListPlasticos:ArrayCollection;
+			
+			[Bindable]public var titulo:String;
+			
+			[Bindable]public var applicationModel:ApplicationModel;
+			
+			[Bindable]private var fontHtmlOpenRed:String = "<font color='#AF0000'>";
+			[Bindable]private var fontHtmlOpenGreen:String = "<font color='#006900'>";
+			[Bindable]private var fontHtmlClose:String = "</font>"; 
+			
+			
+			
+			/*@I5394*/			var df:DateFormatter = new DateFormatter();
+			
+			public function onCreationComplete():void{
+				plasticosXClienteModel.plasticosModel = plasticosModel;				
+				plasticosXClienteModel.buscarPlasticosCliente(cliente);
+			}
+			
+			
+			
+			
+			
+			/* public function verMas(data:Object):void{
+			plasticosXClienteModel.plastico = data as PlasticoCliente;
+			vboxDetPlastico.width = 350;
+			} */
+			
+			
+			public function getRecibioPlastico(data:Object):String{
+				//Alert.show(data.documento +" "+  data.apellido + " " + data.nombre + " " + data.parentesco + " " + data.fechaEntrega);
+				
+				/* Alert.show(applicationModel.operador.codigo+''); */
+				return data.documento +" "+  data.apellido + " " + data.nombre + " " + data.parentesco + " " + data.fechaEntrega + " " + data.observacion ;
+				
+			}
+			
+			public function cambiarEstadoPlastico():void{
+							//plasticosXClienteModel.cambiarEstadoPlastico(adg2.selectedItem as PlasticoCliente);
+				
+			//	Alert.show(" apellido " + cliente.individuo.apellido + " id " + ClienteTransaccion (ListPlasticos[0]).idCliente + " cuil "+ ClienteTransaccion	(ListPlasticos[0]).individuo.cuil );
+				
+				AlertYesNo.show("¿Confirma el reemplazo del plastico del cliente " + StringUtil.trim(cliente.individuo.apellido) + " " + StringUtil.trim(cliente.individuo.nombres) + " ?",function (evt:CloseEvent):void{
+					if(evt.detail == Alert.YES){					
+						generarReemplazoPlastico();						 
+					}
+					
+				});	
+				
+			}			
+			
+			private function generarReemplazoPlastico():void{
+				plasticosXClienteModel.generarReemplazoPlastico(StringUtil.trim(ClienteTransaccion	(ListPlasticos[0]).individuo.cuil),StringUtil.trim(ClienteTransaccion (ListPlasticos[0]).idCliente+''),StringUtil.trim(cliente.individuo.apellido),StringUtil.trim(cliente.individuo.nombres),cliente.idCliente)	
+			}
+			
+			public function cambiarLugarPlastico():void{
+				plasticosXClienteModel.cambiarLugarPlastico(adg2.selectedItem as PlasticoCliente);
+			}
+			
+			public function setDescripcion(data:Object):String{
+				
+				
+				return StringUtil.trim(data.estadoPlastico.descripcion) ;
+				
+				
+			}
+			
+			public function setDescripcion1(data:Object):String{
+				
+				
+				return StringUtil.trim(data.plasticoEstado.descripcion) ;
+				
+				
+			}	
+			
+		]]>
+	</mx:Script>
+	
+	
+	<mx:Resize id="resizeEff"/>
+	
+	<mx:VBox height="100%" width="60%" horizontalGap="0" verticalAlign="top" verticalGap="0">
+		<mx:Panel title="{cliente.individuo.nombreCompleto}" borderThicknessBottom="0" borderThicknessLeft="0" borderThicknessRight="0"
+				  borderThicknessTop="0" width="100%" headerHeight="20" height="100%"
+				  styleName="{((cliente.estadoCliente.idEstadoCliente != 4)?'panelTitle':'panelTitle1')}">
+			
+			<mx:AdvancedDataGrid id="adg2" designViewDataType="flat" width="100%" height="100%" sortableColumns="false" sortItemRenderer="{null}"
+								 dataProvider="{cliente.plasticoClienteSet}" change="plasticosXClienteModel.buscarHistorial(event.target.selectedItem as PlasticoCliente)">
+				<mx:columns>					
+					
+					<mx:AdvancedDataGridColumn headerText="Estado" textAlign="left" width="55">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label  text = "{outerDocument.setDescripcion(data)}" styleName="{((data.estadoPlastico.idPlasticoEstado == 1)?'activo':'desactivo')}" textAlign="left" />
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="F.Lote" textAlign="left" width="60" formatter="{dateFormatter}">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{outerDocument.dateFormatter.format(data.plasticoLote.fechaEmbozo)}"  />
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>					
+					<mx:AdvancedDataGridColumn headerText="Lote" textAlign="right" width="50">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{ data.plasticoLote.numeroLoteFormateado}" />
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					
+					<mx:AdvancedDataGridColumn headerText="Numero" dataField="numero"  textAlign="right" width="100"/>
+					<mx:AdvancedDataGridColumn headerText="Desde" dataField="vigenciaDesdeFlex" formatter="{dateFormatter}" textAlign="left" width="60"/>
+					<mx:AdvancedDataGridColumn headerText="Hasta" dataField="vigenciaHastaFlex" formatter="{dateFormatter}" textAlign="left" width="60"/>
+					<mx:AdvancedDataGridColumn headerText="Lugar" textAlign="left" width="90">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.plasticoLugar.descripcion}" textAlign="left"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Operacion" textAlign="left" width="75">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.nomOperacion}" textAlign="left"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Motivo" textAlign="left" width="70">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.motivoCierre}" textAlign="left"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="" textAlign="left" width="90" >
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Button label="Reemp.Plastico" 
+										   click="outerDocument.cambiarEstadoPlastico()" enabled="{(data.estadoPlastico.idPlasticoEstado == 1)?true:false}" />
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>					
+				</mx:columns>
+			</mx:AdvancedDataGrid>
+			
+		</mx:Panel>
+	</mx:VBox>
+	
+	<mx:HBox width="40%" height="100%" horizontalGap="0" verticalAlign="top" verticalGap="0">
+		
+		<mx:VBox height="100%" width="100%" horizontalGap="0" verticalAlign="top" verticalGap="0">			
+			
+			<mx:Panel title="Historial Plastico" borderThicknessBottom="0" borderThicknessLeft="0" borderThicknessRight="0"
+					  borderThicknessTop="0" width="100%" headerHeight="20" height="100%"
+					  styleName="lblInfoBlanco">
+				
+				<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" width="100%" height="100%" sortableColumns="false"
+									 dataProvider="{plasticosXClienteModel.historialList}" sortItemRenderer="{null}">
+					<mx:columns>
+						<mx:AdvancedDataGridColumn headerText="Fecha" dataField="fechaEstado" formatter="{dateFormatter}" textAlign="left" width="55"/>
+						<mx:AdvancedDataGridColumn headerText="Estado" textAlign="left" width="60">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.setDescripcion1(data)}"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Lugar" textAlign="left" width="100">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{data.plasticoLugar.descripcion}"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Operador" textAlign="left" width="80">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text=" {data.operador.apellido} - {data.operador.nombre}"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn headerText="Recibio Plastico" textAlign="left" width="140">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{outerDocument.getRecibioPlastico(data)}"/>
+								</mx:Component>
+							</mx:itemRenderer>
+						</mx:AdvancedDataGridColumn>
+					</mx:columns>
+				</mx:AdvancedDataGrid>
+			</mx:Panel>
+		</mx:VBox>
+	</mx:HBox>
+	
+	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YY"/>
+	
+</mx:HBox>

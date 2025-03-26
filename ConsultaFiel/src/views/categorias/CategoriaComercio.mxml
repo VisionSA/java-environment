@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"  width="100%" creationComplete="onCreationComplete()" height="100%" xmlns:cliente="views.categorias.cliente.*" xmlns:viewStackEffects="org.efflex.mx.viewStackEffects.*"
+		 xmlns:comercio="views.categorias.comercio.*"
+		 xmlns:comercio1="views.categorias.comercio.modules.*" 
+		 xmlns:comercio2="views.categorias.modules.*" 
+		 xmlns:categorias="views.categorias.*" xmlns:mate="http://mate.asfusion.com/" xmlns:modules="views.categorias.comercio.modules.*">
+	<comercio:EncabezadoComercioView id="encabezadoView" verticalScrollPolicy="off" height="63" resizeEffect="{resize}" />
+	<!--<viewStackEffects:FadeZoom id="effect"/>-->
+	<mx:ToggleButtonBar dataProvider="{vistas}" width="100%" />	
+	<mx:ViewStack id="vistas" width="100%" height="100%">
+		<comercio1:DetalleInformacionComercioModule  backgroundAlpha="1.0"/>
+		<comercio1:CtaCteComercioModule  backgroundAlpha="1.0"/>
+		<comercio1:CompSaldoComercioModule  backgroundAlpha="1.0"/>
+		<comercio1:CtaCteContableModule  backgroundAlpha="1.0"/>
+<!--@I4053-->		<comercio2:AgendaModule  backgroundAlpha="1.0"/>
+<!--@F4053-->		<comercio1:LiquidacionesComercioModule  backgroundAlpha="1.0"/>
+		<comercio1:RetencionComercioModule  backgroundAlpha="1.0"/>
+		<!--<comercio:ListaPrecioComercioView  backgroundAlpha="1.0"/> -->	
+		<!--<comercio:ResumenCtaView /-->
+	</mx:ViewStack>
+	
+	<mx:Resize id="resize"/>
+	
+	<mate:Listener type="resizeBusqueda" receive="if(encabezadoView)encabezadoView.height = encabezadoModel.alto"/>
+	
+	<mx:Script>
+		<![CDATA[
+			  [Bindable]public var encabezadoModel:EncabezadoModel; 
+			  
+			  public function onCreationComplete():void{
+			  		this.encabezadoView.height = encabezadoModel.alto;
+			  }
+			  			
+		]]>
+	</mx:Script>
+	
+</mx:VBox>

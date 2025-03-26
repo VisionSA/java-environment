@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"  width="100%" creationComplete="onCreationComplete()" height="100%" xmlns:cliente="views.categorias.cliente.*" xmlns:viewStackEffects="org.efflex.mx.viewStackEffects.*" xmlns:comercio="views.categorias.comercio.*" xmlns:categorias="views.categorias.*" xmlns:mate="http://mate.asfusion.com/" xmlns:modules="views.categorias.comercio.modules.*">
+	<comercio:EncabezadoComercioView id="encabezadoView" verticalScrollPolicy="off" height="70" resizeEffect="{resize}" />
+	<viewStackEffects:FadeZoom id="effect"/>
+	<mx:ToggleButtonBar dataProvider="{vistas}" width="100%" />	
+	<mx:ViewStack id="vistas" width="100%" height="100%">
+		<comercio:DetalleInformacionComercioView showEffect="effect" hideEffect="effect" backgroundAlpha="1.0"/>
+		<comercio:CuentaCorrienteComercioView showEffect="effect" hideEffect="effect" backgroundAlpha="1.0"/>
+		<comercio:LiquidacionesComercioView showEffect="effect" hideEffect="effect" backgroundAlpha="1.0"/>
+		<comercio:RetencionComercioView showEffect="effect" hideEffect="effect" backgroundAlpha="1.0"/>
+		<!--<comercio:ListaPrecioComercioView showEffect="effect" hideEffect="effect" backgroundAlpha="1.0"/> -->	
+		<!--<comercio:ResumenCtaView showEffect="effect" hideEffect="effect"/-->
+	</mx:ViewStack>
+	
+	<mx:Resize id="resize"/>
+	
+	<mate:Listener type="resizeBusqueda" receive="if(encabezadoView)encabezadoView.height = encabezadoModel.alto"/>
+	
+	<mx:Script>
+		<![CDATA[
+			  [Bindable]public var encabezadoModel:EncabezadoModel; 
+			  
+			  public function onCreationComplete():void{
+			  		/* this.encabezadoView.height = encabezadoModel.alto; */
+			  }
+			  			
+		]]>
+	</mx:Script>
+	
+</mx:VBox>

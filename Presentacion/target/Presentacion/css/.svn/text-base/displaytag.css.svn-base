@@ -1,0 +1,140 @@
+.tableA {
+	border: 1px solid #666;
+	width: 80%;
+	margin: 0 0 0 0 !important;
+	font-family : verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #000000;
+    padding: 2;
+    border-style: solid;
+    border-width: none;
+    width: 630px;	
+}
+
+.thA,.tdA {
+	padding: 2px 4px 2px 4px !important;
+	text-align: left;
+	vertical-align: top;
+}
+
+.thB,.tdB {
+	padding: 2px 4px 2px 4px !important;
+	text-align: right;
+	vertical-align: top;
+}
+
+.tdC {
+	padding: 2px 4px 2px 4px !important;
+	text-align: center;
+	vertical-align: top;
+}
+
+thead tr {
+	background-color: #6996CD;
+}
+
+th.sorted {
+	background-color: #6996CD;
+}
+
+thA a,thA a:visited {
+	color: black;
+}
+
+a {
+	color: black;
+}
+
+th a:hover {
+	text-decoration: underline;
+	color: black;
+}
+
+th.sorted a,th.sortable a {
+	background-position: right;
+	display: block;
+	width: 100%;
+}
+
+th.sortable a {
+	color: #FFFFFF;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+	background-image: url(../img/arrow_off.png);
+}
+
+th.order1 a {
+	background-color: #6996CD;
+	background-image: url(../img/arrow_down.png);
+}
+
+th.order2 a {
+	background-color: #6996CD;
+	background-image: url(../img/arrow_up.png);
+}
+
+tr.odd {
+	background-color: #EFEFE7;
+}
+
+tr.even {
+	background-color: #FFFFFF
+}
+
+tr.tableRowEven{
+	background-color: #FFFFFF
+}
+
+div.exportlinks {
+	background-color: #BBBBBB;
+	border: 1px dotted #999;
+	padding: 2px 4px 2px 4px;
+	margin: 20px 0 100px 0;
+	width: 60%;
+}
+
+span.export {
+	padding: 0 4px 1px 20px;
+	display: inline;
+	display: inline-block;
+	cursor: pointer;
+}
+
+span.excel {
+	background-image: url(../img/ico_file_excel.png);
+}
+
+span.csv {
+	background-image: url(../img/ico_file_csv.png);
+}
+
+span.xml {
+	background-image: url(../img/ico_file_xml.png);
+}
+
+span.pdf {
+	background-image: url(../img/ico_file_pdf.png);
+}
+
+span.rtf {
+	background-image: url(../img/ico_file_rtf.png);
+}
+
+span.pagebanner {
+	background-color: #E6E6E6;
+	padding: 2px 4px 2px 4px;
+	width: 79%;
+	margin-top: 10px;
+	display: block;
+	border-bottom: none;
+}
+
+span.pagelinks {
+	background-color: #E6E6E6;
+	padding: 1px 1px 1px 1px;
+	width: 79%;
+	display: block;
+	border-top: none;
+	margin-bottom: -5px;
+}

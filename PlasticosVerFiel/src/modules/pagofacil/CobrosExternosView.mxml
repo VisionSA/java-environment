@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Administración de Plásticos"
+	 xmlns:pagofacil="modules.pagofacil.*" xmlns:modules="com.util.modules.*" verticalAlign="middle"
+	  horizontalAlign="center" creationComplete="onCreationComplete()">
+	
+	<pagofacil:MainEventMap/>
+	
+	<!--<mx:VBox horizontalAlign="center" verticalAlign="middle" id="vboxPermisos">
+			<mx:Label text="Validando Permisos" id="labelPermisos" width="100%" textAlign="center" fontSize="30" color="#FF0000"/>			
+	</mx:VBox>-->
+	
+	<modules:VboxLoadModule module="modules/pagofacil/ProcesarPagoFacilModule.swf" label="Reclamos de Clientes"/>
+	<!--<mx:ToggleButtonBar dataProvider="viewPagosExternos" id="toggleButton" visible="false" includeInLayout="false"/>
+	<mx:ViewStack width="100%" height="100%" id="viewPagosExternos" visible="false" includeInLayout="false">		
+		<modules:VboxLoadModule module="modules/pagofacil/ProcesarPagoFarmacia.swf" label="Procesar archivo Farmacia"/>
+	</mx:ViewStack>-->
+	
+	<mx:Script>
+		<![CDATA[
+			import events.OperadorEvent;
+			import models.ApplicationModel;
+			import managers.PermisosManager;
+			
+			[Bindable]public var permisosManager:PermisosManager;
+			
+			[Bindable]public var applicationModel:ApplicationModel;
+			
+			private function onCreationComplete():void{
+				
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

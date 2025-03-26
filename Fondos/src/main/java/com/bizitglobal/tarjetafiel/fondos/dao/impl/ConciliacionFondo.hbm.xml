@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.ConciliacionFondo" table="T_VIS_FON_CONCILIACION" >
+	<id name="idConciliacion" type="java.lang.Long" column="C_ID_CONCILIACION">
+		<generator class="increment" />
+	</id>
+	
+	<property name="tipo" type="java.lang.Character" column="C_TIPO" not-null="true" />
+	<property name="idRegistro" type="java.lang.Long" column="C_ID_REGISTRO" not-null="true" />
+	<property name="importe" type="java.lang.Double" column="C_IMPORTE" not-null="true" />
+	<property name="signo" type="java.lang.Integer" column="C_SIGNO" not-null="true" />
+	
+	<many-to-one name="conciliacionFondoCabecera" class="com.bizitglobal.tarjetafiel.fondos.negocio.ConciliacionFondoCabecera" not-null="false">
+		<column name="C_ID_CABECERA_CONCILIACION" />
+	</many-to-one>
+	
+</class>
+</hibernate-mapping>

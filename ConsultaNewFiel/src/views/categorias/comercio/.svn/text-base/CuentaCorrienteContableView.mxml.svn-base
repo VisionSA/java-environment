@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VboxComun xmlns="views.categorias.*" horizontalScrollPolicy="off" verticalScrollPolicy="off" 
+	module="{VboxComun.URL_MODULES_COMERCIO}CtaCteContableModule.swf" 
+	xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Cta.Cte. Contable" backgroundAlpha="1.0">
+	
+</VboxComun>

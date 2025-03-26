@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.planificadoremail.negocio.ImagenEmail" table="T_VIS_PLA_IMAGES" >
+	
+
+	<id name="idImag" type="java.lang.Long" column="C_ID_IMG">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_IMAGEN_ID</param>
+		</generator>
+	</id>
+	
+	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="true" length="100"/>
+	<property name="imagen" type="java.sql.Blob" column="C_IMAGE" />
+    
+</class>
+</hibernate-mapping>

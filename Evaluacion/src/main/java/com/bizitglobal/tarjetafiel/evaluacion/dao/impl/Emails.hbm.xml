@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.Emails" table="t_vis_eva_emails" >
+	<id name="idEmails" type="java.lang.Long" column="c_id_eva_email">
+		<generator class="increment" />
+	</id>
+
+	<many-to-one name="email" class="com.bizitglobal.tarjetafiel.general.negocio.Email" not-null="false" cascade="all">
+		<column name="c_id_email" />
+	</many-to-one>
+
+<!--@I3945-->	<many-to-one name="individuoEvaluacion" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.IndividuoEvaluacion" not-null="false" cascade="none">
+<!--@F3945-->		<column name="c_id_individuo" />
+	</many-to-one>
+
+</class>
+</hibernate-mapping>

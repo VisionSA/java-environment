@@ -1,0 +1,129 @@
+9
+
+dir
+800
+https://testingpc/svn/testing/Presentacion/src/main/webapp/tarjetafiel
+https://testingpc/svn/testing
+
+
+
+2019-11-14T21:37:29.092800Z
+717
+ssola
+has-props
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+banco
+dir
+
+evaluacion
+dir
+
+fondos
+dir
+
+impuestos
+dir
+
+fallaGeneral.jsp
+file
+
+
+
+
+2018-09-15T14:00:33.734841Z
+8f1c14ed5931037a0ed0e8abfae74785
+2018-09-14T22:13:33.127200Z
+542
+gaston
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1540
+
+parametro
+dir
+
+operador
+dir
+
+transacciones
+dir
+
+infoSistema.jsp
+file
+
+
+
+
+2018-09-15T14:00:33.750465Z
+12577bc426cf54c3d67f741a65d90c7e
+2018-09-14T22:13:33.127200Z
+542
+gaston
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+15136
+
+contabilidad
+dir
+
+general
+dir
+
+proveedores
+dir
+
+permiso
+dir
+

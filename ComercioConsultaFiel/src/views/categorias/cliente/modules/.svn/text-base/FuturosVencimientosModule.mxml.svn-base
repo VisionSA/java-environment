@@ -1,0 +1,56 @@
+<ModuleGeneral xmlns="views.categorias.*" initialize="{init()}">
+	<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+			 label="Fut. Venc.">
+		<mx:Script>
+			<![CDATA[
+				import com.tarjetafiel.proveedorconexion.event.ClientesGeneralEvent;
+				import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+				
+				import mx.formatters.CurrencyFormatter;
+				
+				public var currencyFormat:CurrencyFormatter;
+				
+				private function init():void
+				{
+					this.currencyFormat = new CurrencyFormatter();
+					this.currencyFormat.currencySymbol 	= "$";
+					this.currencyFormat.rounding		="nearest";
+					this.currencyFormat.precision 		= 2;
+				}
+				
+				private function verDetalleFuturosVenc():void{
+					
+					try{
+						//buscar los item de la ctacte que se correspondan con la fecha de
+						//facturacion
+					} catch(err:Error){
+						trace(err);
+					}
+					
+				}
+			]]>
+		</mx:Script>
+		<!--<mx:CurrencyFormatter currencySymbol="$" id="currencyFormat" rounding="nearest" precision="2"/>-->
+		<mx:Button enabled="{ModelLocatorGeneral.getInstance().clienteSeleccionado.cliente != null}" label="Consultar Futuros Vencimientos" click="new ClientesGeneralEvent(ClientesGeneralEvent.BUSCAR_FUTUROS_VENCIMIENTOS,null,null).dispatch()"/>
+		<mx:AdvancedDataGrid id="adg1" doubleClick="this.verDetalleFuturosVenc()" doubleClickEnabled="true" sortableColumns="false" designViewDataType="flat" 
+							 dataProvider="{ModelLocatorGeneral.getInstance().clienteSeleccionado.futurosVencimientos}" 
+							 width="100%" height="100%"  fontWeight="bold">
+			<mx:columns>
+				<mx:AdvancedDataGridColumn headerText="Fecha" >
+					<mx:itemRenderer>
+						<mx:Component>
+							<mx:Label fontSize="16"  text="{data.fecha}"/>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:AdvancedDataGridColumn>
+				<mx:AdvancedDataGridColumn headerText="Importe">
+					<mx:itemRenderer>
+						<mx:Component>
+							<mx:Label fontSize="16" text="{outerDocument.currencyFormat.format(data.monto)}"/>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:AdvancedDataGridColumn>									
+			</mx:columns>
+		</mx:AdvancedDataGrid>	
+	</mx:VBox>
+</ModuleGeneral>

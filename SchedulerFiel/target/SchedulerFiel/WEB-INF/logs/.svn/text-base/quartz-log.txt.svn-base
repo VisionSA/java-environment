@@ -1,0 +1,39 @@
+2009-10-23 12:12:33,859 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:12:33,937 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:12:34,156 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:18:02,984 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:18:03,000 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:18:03,203 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:19:00,093 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:19:00,109 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:19:00,312 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:19:44,734 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:19:44,750 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:19:44,953 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:20:32,890 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:20:32,906 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:20:33,109 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:40:45,718 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:40:45,734 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:40:45,937 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:42:38,250 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:42:38,265 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:42:38,468 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:46:19,625 INFO  [ContainerBackgroundProcessor[StandardEngine[Catalina]]] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:46:19,640 INFO  [ContainerBackgroundProcessor[StandardEngine[Catalina]]] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:46:19,796 INFO  [ContainerBackgroundProcessor[StandardEngine[Catalina]]] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:51:58,828 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:51:58,843 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:51:59,046 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:53:08,906 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:53:08,921 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:53:09,109 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:54:45,484 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:54:45,500 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:54:45,703 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:55:39,250 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:55:39,265 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:55:39,421 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:56:15,312 INFO  [main] config.DefaultConfiguration (DefaultConfiguration.java:89) - Loading global messages from ApplicationResources
+2009-10-23 12:56:15,328 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'
+2009-10-23 12:56:15,484 INFO  [main] velocity.VelocityManager (VelocityManager.java:220) - Initializing velocity using 'velocity.properties'

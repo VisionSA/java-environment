@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"  width="820" height="100"  creationComplete="puedoBorrarVersion(); puedoGrabarNuevaVersion();">
+	              	<mx:VBox width="100%" height="100%">
+	              	    <mx:HBox width="100%" height="100%">
+			                <mx:HBox width="300" verticalAlign="middle" height="30" >
+			                	<mx:Label text="Descripción:" paddingLeft="20" />
+			                    <mx:TextInput text="{planVersion.descripcion}" change="planVersion.descripcion = txtDescripcionVersion.text" id="txtDescripcionVersion" width="200"  paddingRight="20"/>	
+			                </mx:HBox>
+			                <mx:HBox  verticalAlign="middle" height="30" width="300">
+			                	<mx:Label text="Vigencia desde:" paddingLeft="20"/>
+			                    <mx:DateField selectedDate="{planVersion.fechaDesde}" id="fechaEntradaVigencia" change="planVersion.fechaDesde = fechaEntradaVigencia.selectedDate"/>
+			                </mx:HBox>
+		                </mx:HBox>
+		                <mx:HBox>
+			                <mx:Label text="Filtro para Clientes:" paddingLeft="20"/>
+			                <mx:TextArea id="txtQuery" text="{planVersion.queryClientesQueAplican}" change="planVersion.queryClientesQueAplican = txtQuery.text" width="500"/>
+		                </mx:HBox>
+	                </mx:VBox>
+	                <mx:VBox>
+	                	<mx:HBox>
+	                		<mx:LinkButton icon="@Embed(source='../../img/modif.png')"  toolTip="Editar Versión" click="planModel.planVersionAlta= planVersion;viewStackPlan.selectedIndex=2;"/> 
+	             		    <mx:LinkButton id="eliminarVersion" icon="@Embed(source='../../img/stop_22x22.png')"  toolTip="Eliminar Versión" click="borrarVersion(planVersion);"  />
+	                	</mx:HBox>
+	                	<mx:LinkButton  id="guardarNuevaVersio" label="Guardar Nueva Versión"  toolTip="Guardar Nueva Versión" click="guardarNuevaVersion(planVersion)" />
+	                </mx:VBox>
+	                
+		<mx:Script>
+			<![CDATA[
+				import mx.core.Repeater;
+				import mx.utils.ObjectUtil;
+				import mx.containers.ViewStack;
+				import com.tarjetafiel.caja.vo.PlanVersion;
+				import model.PlanModel;
+				import mx.events.CollectionEvent;
+				import mx.collections.ArrayCollection;
+				import mx.events.ListEvent;
+				import mx.events.FlexEvent;
+				import views.components.ItemRenderer;
+				
+				[Bindable]public var planVersion:PlanVersion;
+                [Bindable]public var planModel:PlanModel;
+                [Bindable]public var viewStackPlan:ViewStack;
+                [Bindable]public var rep:Repeater;
+
+                 public function puedoBorrarVersion():void {
+                 	if (planVersion) {
+	                 	if (ObjectUtil.dateCompare(planVersion.fechaDesde,new Date())<0) eliminarVersion.enabled= false;
+	                 	else eliminarVersion.enabled = true;
+                 	}
+                 }
+                 
+                 public function puedoGrabarNuevaVersion():void {
+                 	if (planVersion) {
+	                 	if (planVersion.plan.idPlan) {
+	                 		guardarNuevaVersio.enabled = true;
+	                 	} else {
+	                 		guardarNuevaVersio.enabled = false;
+	                 	} 
+                 	}
+                 }
+                 
+                 public function guardarNuevaVersion(planVersion:PlanVersion):void {
+                 	planModel.grabarNuevaVersion(planVersion.plan, planVersion);               	
+                 }
+                 
+                 public function borrarVersion(planVersion:PlanVersion):void {
+                 	planModel.borrarVersion(planVersion);     	
+                 }
+
+                 
+			]]>
+		</mx:Script>
+</mx:HBox>

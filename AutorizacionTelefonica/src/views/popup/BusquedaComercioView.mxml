@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="614" height="300" showCloseButton="true" close="PopUpManager.removePopUp(this)" horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/">
+
+	<mx:HBox width="50%" horizontalAlign="center" verticalAlign="middle">
+		<mx:Label text="CUIT:" />
+		<mx:TextInput width="110" id="txtCuit"  keyDown="keyPress(event)"/>
+		<mx:Label text="Razon Social:" />
+		<mx:TextInput width="110" id="txtRazonSocial"  keyDown="keyPress(event)"/>
+		<mx:Label text="Nombre Sucursal" />
+		<mx:TextInput width="110" id="txtSucursal"  keyDown="keyPress(event)"/>
+	</mx:HBox>
+	<mx:HBox width="50%" horizontalAlign="center" verticalAlign="middle">
+		<mx:LinkButton id="buscarLink" label="Buscar Comercio" click="buscarComercios()"  keyDown="keyPress(event)"/>
+	</mx:HBox>
+	
+	<mx:AdvancedDataGrid id="adg1"  designViewDataType="flat" dataProvider="{busquedaComercioViewModel.comercios}" width="100%" height="100%"  doubleClick="this.seleccionarComercio()" doubleClickEnabled="true" >
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Cod comercio" dataField="codigoPosnet"/>
+			<mx:AdvancedDataGridColumn headerText="Cuit" dataField="empresa.cuit"/>
+			<mx:AdvancedDataGridColumn headerText="Razon Social" dataField="empresa.razonSocial"/>
+			<mx:AdvancedDataGridColumn headerText="Sucursal" dataField="sucEmpresa.descripcion"/>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+     <mx:HBox width="253" horizontalAlign="center" verticalAlign="middle">
+			<mx:Button label="Aceptar" />
+			<mx:Button label="Cancelar" click ="PopUpManager.removePopUp(this)"/>
+	</mx:HBox>
+    <mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import com.tarjetafiel.caja.vo.CodComercio;
+			import views.models.BusquedaComercioViewModel;
+		    
+			[Bindable]public var busquedaComercioViewModel:BusquedaComercioViewModel;		
+			
+			
+			private function buscarComercio():void{
+			}
+			
+			private function buscarComercios():void{
+				var cuit:String = txtCuit.text;
+				var razonSocial:String = txtRazonSocial.text;
+				var sucursal:String = txtSucursal.text;
+				this.busquedaComercioViewModel.buscarComercio(cuit,razonSocial,sucursal);
+		    }
+		    
+			private function keyPress(event:Event) :void{
+				
+			}
+			
+			private function seleccionarComercio():void {
+				busquedaComercioViewModel.comercioSeleccionado = adg1.selectedItem as CodComercio;
+				trace(adg1.selectedItem);
+				busquedaComercioViewModel.dispatcher.dispatchEvent(new Event("focusEnListaPrecio"));
+				PopUpManager.removePopUp(this);
+			}
+			
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>

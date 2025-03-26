@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cairngorm:ServiceLocator xmlns:cairngorm="com.adobe.cairngorm.business.*" xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:s="library://ns.adobe.com/flex/spark" >
+	
+	<s:ChannelSet id="remotingChannels">
+		<s:AMFChannel id="amf" url="http://localhost:8080/web/messagebroker/amf"/>	
+	</s:ChannelSet>
+	
+	<s:RemoteObject 
+		channelSet="{remotingChannels}" 
+		destination="permisoWebService" 
+		id="permisoWebService" />
+	
+	
+</cairngorm:ServiceLocator>

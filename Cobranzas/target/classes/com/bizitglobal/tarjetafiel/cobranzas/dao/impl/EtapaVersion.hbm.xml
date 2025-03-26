@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.bizitglobal.tarjetafiel.cobranzas.negocio">
+  <class name="EtapaVersion" table="t_vis_cob_etapas_version">
+  	<id name="idEtapaVersion" type="integer" column="c_id_etapa_version">
+  		<generator class="increment"/>
+  	</id>
+    <property name="descripcion" column="c_descripcion" type="string"/>
+    <property name="nombreEtapa" column="c_nombre_etapa" type="string"/>
+    <property name="dias" column="c_dias" type="integer"/>
+    
+    <many-to-one name="planVersion"    
+		        class="PlanVersion" not-null="true">
+        <column name="c_id_plan_version" />
+    </many-to-one>
+    
+    <many-to-one name="etapa"    
+		        class="Etapa" not-null="true" lazy="false">
+        <column name="c_id_etapa" />
+    </many-to-one>
+    
+    <set name="accionesVersion" inverse="false" cascade="all" lazy="false">
+		<key>
+			<column name="c_id_etapa_version" />
+		</key>
+		<one-to-many class="AccionVersion"/>
+	</set>
+  </class>
+</hibernate-mapping>

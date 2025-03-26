@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.planificadoremail.negocio.ParamTemplate" table="T_VIS_PLA_PARAM_TEMPATES" >
+	
+	<cache usage="read-write"/>
+	<id name="idParam" type="java.lang.Long" column="C_ID_PARAM">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_PARAM_TEMPATE_ID</param>
+		</generator>
+	</id>
+	
+	<property name="parametro" type="java.lang.String" column="C_PARAMETRO" not-null="true" length="100"/>
+	<property name="descripcion" type="java.lang.String" column="C_DESCRIPCION" not-null="true" length="150"/>
+	<property name="paramSystem" type="java.lang.Boolean" column="C_PARAM_SYSTEM" not-null="true" />
+    
+  	<many-to-one name="template" class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.Template" not-null="true" >
+		<column name="C_ID_TEMPLATE" />
+	</many-to-one>
+	
+	<many-to-one name="tipo" class="com.bizitglobal.tarjetafiel.planificadoremail.negocio.TipoParamTemp" not-null="true" >
+		<column name="C_ID_TIPO" />
+	</many-to-one>
+	
+    
+</class>
+</hibernate-mapping>

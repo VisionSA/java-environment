@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/exception
+END
+ComercioException.class
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/exception/ComercioException.class
+END
+LogInException.class
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/exception/LogInException.class
+END

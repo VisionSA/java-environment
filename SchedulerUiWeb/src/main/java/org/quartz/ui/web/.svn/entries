@@ -1,0 +1,117 @@
+9
+
+dir
+132
+https://testingpc/svn/testing/trunk/SchedulerUiWeb/src/main/java/org/quartz/ui/web
+https://testingpc/svn/testing
+
+
+
+2017-09-14T14:01:25.619382Z
+88
+gaston
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+global
+dir
+
+model
+dir
+
+form
+dir
+
+init
+dir
+
+security
+dir
+
+base
+dir
+
+QuartzAppContext.java
+file
+
+
+
+
+2017-12-01T12:48:07.511563Z
+8982f9c1c9f95b1d387c62826543e0e8
+2017-09-14T14:01:25.619382Z
+88
+gaston
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1081
+
+action
+dir
+
+Util.java
+file
+
+
+
+
+2017-12-01T12:48:07.511563Z
+44f8cb746cd4513df11428dfd4e1b0df
+2017-09-14T14:01:25.619382Z
+88
+gaston
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+6841
+

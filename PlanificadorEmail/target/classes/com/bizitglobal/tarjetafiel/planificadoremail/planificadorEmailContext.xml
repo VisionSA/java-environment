@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+                       "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+ <!-- ================================================================================================ 
+ ========================         DEFINICION DE DAOS DEL MODULO         ========================= 
+ ================================================================================================ -->
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.planificadoremail.dao.impl.EmailInColaDaoHibernateImpl" id="emailInColaDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.planificadoremail.dao.impl.PlanProcesoEmailDaoHibernateImpl" id="planProcesoEmailDao">
+    <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <!-- property name="dataSource">
+   <ref bean="dataSource"/>
+  </property -->
+ </bean>
+  <bean
+  class="com.bizitglobal.tarjetafiel.planificadoremail.dao.impl.TemplateEmailDaoHibernateImpl" id="templateEmailDao">
+    <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+  <bean
+  class="com.bizitglobal.tarjetafiel.planificadoremail.dao.impl.TipoOrigenEmailDaoHibernateImpl" id="tipoOrigenEmailDao">
+    <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+  <bean
+  class="com.bizitglobal.tarjetafiel.planificadoremail.dao.impl.TipoParamTempEmailDaoHibernateImpl" id="tipoParamTempEmailDao">
+    <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+ 
+  
+ <!-- ================================================================================================== 
+ =========================      DEFINICION DE PARAMETROSISTEMA SERVICE       =========================== 
+ =================================================================================================== -->
+	 <bean  class="com.bizitglobal.tarjetafiel.planificadoremail.service.impl.EnvioEmailServiceImpl" id="envioEmailServiceTarget">
+	 	<property name="genericDao" ref="genericDao"/>	 
+	 	<property name="emailInColaDao" ref="emailInColaDao"/>
+	 </bean>
+	 <bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" id="envioEmailService" abstract="false">
+	 	<property name="transactionManager" ref="myTxManager"/>
+	 	<property name="target"><ref bean="envioEmailServiceTarget"/></property>
+	 	
+		 <property name="transactionAttributes">
+		    <props>
+		      <prop key="grabar*">PROPAGATION_REQUIRED</prop>
+		      <prop key="modificar*">PROPAGATION_REQUIRED</prop>
+		      <prop key="eliminar*">PROPAGATION_REQUIRED</prop>
+		      <prop key="list*">PROPAGATION_REQUIRED,readOnly</prop>
+		      <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+		      <prop key="leer*">PROPAGATION_REQUIRED,readOnly</prop>
+		    </props>
+		  </property>
+	 </bean>
+	 
+	 	 <bean  class="com.bizitglobal.tarjetafiel.planificadoremail.service.impl.ArreglaControlClientesServiceImpl" id="arrelaClienteServiceTarget">
+	 	<property name="genericDao" ref="genericDao"/>
+	 	<property name="clienteTransaccionDao" ref="clienteTransaccionDao"/>		
+	 	
+	 	
+	 </bean>
+	 <bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" id="arrelaClienteService" abstract="false">
+	 	<property name="transactionManager" ref="myTxManager"/>
+	 	<property name="target"><ref bean="arrelaClienteServiceTarget"/></property>
+	 	
+		 <property name="transactionAttributes">
+		    <props>
+		      <prop key="grabar*">PROPAGATION_REQUIRED</prop>
+		      <prop key="modificar*">PROPAGATION_REQUIRED</prop>
+		      <prop key="eliminar*">PROPAGATION_REQUIRED</prop>
+		      <prop key="list*">PROPAGATION_REQUIRED,readOnly</prop>
+		      <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+		      <prop key="leer*">PROPAGATION_REQUIRED,readOnly</prop>
+		    </props>
+		  </property>
+	 </bean>
+	 
+	 
+	 
+	 
+	 <bean  class="com.bizitglobal.tarjetafiel.planificadoremail.service.impl.PlanProcesoEmailServiceImpl" id="planProcesoEmailServiceTarget">
+	 	<property name="planProcesoEmailDao" ref="planProcesoEmailDao"/>
+	 </bean>
+	 <bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" id="planProcesoEmailService" abstract="false">
+	 	<property name="transactionManager" ref="myTxManager"/>
+	 	<property name="target"><ref bean="planProcesoEmailServiceTarget"/></property>
+	 	
+	 	 <property name="transactionAttributes">
+		    <props>
+		      <prop key="grabar*">PROPAGATION_REQUIRED</prop>
+		      <prop key="modificar*">PROPAGATION_REQUIRED</prop>
+		      <prop key="eliminar*">PROPAGATION_REQUIRED</prop>
+		      <prop key="list*">PROPAGATION_REQUIRED,readOnly</prop>
+		      <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+		      <prop key="leer*">PROPAGATION_REQUIRED,readOnly</prop>
+		    </props>
+		  </property>
+	 </bean>
+ 
+	 <bean  class="com.bizitglobal.tarjetafiel.planificadoremail.service.impl.TemplateEmailServiceImpl" id="templateEmailServiceTarget">
+	    <property name="transactionManager" ref="myTxManager"/>
+	 	<property name="templateEmailDao" ref="templateEmailDao"/>
+	 </bean>
+ 	 <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="templateEmailService">
+  		<property name="proxyInterfaces">
+   			<value>com.bizitglobal.tarjetafiel.planificadoremail.service.TemplateEmailService</value>
+  		</property>
+  		<property name="target">
+   			<ref bean="templateEmailServiceTarget"/>
+  		</property>
+ 	 </bean>
+ 
+	 <bean  class="com.bizitglobal.tarjetafiel.planificadoremail.service.impl.TipoOrigenEmailServiceImpl" id="tipoOrigenEmailServiceTarget">
+	    <property name="transactionManager" ref="myTxManager"/>
+	 	<property name="tipoOrigenEmailDao" ref="tipoOrigenEmailDao"/>
+	 </bean>
+ 	 <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="tipoOrigenEmailService">
+  		<property name="proxyInterfaces">
+   			<value>com.bizitglobal.tarjetafiel.planificadoremail.service.TipoOrigenEmailService</value>
+  		</property>
+  		<property name="target">
+   			<ref bean="tipoOrigenEmailServiceTarget"/>
+  		</property>
+ 	 </bean>
+ 
+	 <bean  class="com.bizitglobal.tarjetafiel.planificadoremail.service.impl.TipoParamTempEmailServiceImpl" id="tipoParamTempEmailServiceTarget">
+	    <property name="transactionManager" ref="myTxManager"/>
+	 	<property name="tipoParamTempEmailDao" ref="tipoParamTempEmailDao"/>
+	 </bean>
+ 	 <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="tipoParamTempEmailService">
+  		<property name="proxyInterfaces">
+   			<value>com.bizitglobal.tarjetafiel.planificadoremail.service.TipoParamTempEmailService</value>
+  		</property>
+  		<property name="target">
+   			<ref bean="tipoParamTempEmailServiceTarget"/>
+  		</property>
+ 	 </bean>
+
+   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host">
+		 	<value>${mail.smtp.host}</value>
+		</property>
+		<property name="username">
+		 	<value>${mail.smtp.user}</value>
+		</property>
+		<property name="password">
+		 	<value>${mail.smtp.password}</value>
+		</property>
+	    <property name="javaMailProperties">
+	    <props>
+	        <prop key="mail.smtp.from">${mail.smtp.from}</prop>
+	        <prop key="mail.smtp.user">${mail.smtp.user}</prop>
+	        <prop key="mail.smtp.password">${mail.smtp.password}</prop>
+	        <prop key="mail.smtp.host">${mail.smtp.host}</prop>
+	        <prop key="mail.smtp.port">${mail.smtp.port}</prop>
+	        <prop key="mail.smtp.auth">true</prop>
+	        <prop key="mail.smtp.starttls.enable">true</prop>
+	    </props>
+	    </property>
+   </bean>
+   
+   <bean id="mailSender1" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host">
+		 	<value>${mail1.smtp.host}</value>
+		</property>
+		<property name="username">
+		 	<value>${mail1.smtp.user}</value>
+		</property>
+		<property name="password">
+		 	<value>${mail1.smtp.password}</value>
+		</property>
+	    <property name="javaMailProperties">
+	    <props>
+	        <prop key="mail.smtp.from">${mail1.smtp.from}</prop>
+	        <prop key="mail.smtp.user">${mail1.smtp.user}</prop>
+	        <prop key="mail.smtp.password">${mail1.smtp.password}</prop>
+	        <prop key="mail.smtp.host">${mail1.smtp.host}</prop>
+	        <prop key="mail.smtp.port">${mail1.smtp.port}</prop>
+	        <prop key="mail.smtp.auth">true</prop>
+	        <prop key="mail.smtp.starttls.enable">true</prop>
+	    </props>
+	    </property>
+   </bean>
+
+   <bean id="registrationService" class="com.bizitglobal.tarjetafiel.planificadoremail.service.impl.SimpleRegistrationService">
+      <property name="genericDao" ref="genericDao"/>
+      <property name="mailSender" ref="mailSender"/>
+      <property name="mailSender1" ref="mailSender1"/>
+      <property name="velocityEngine" ref="velocityEngine"/>
+   </bean>
+   
+   
+   <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+      <property name="velocityProperties">
+         <value>
+            resource.loader=class
+            class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+         </value>
+      </property>
+      
+   </bean>
+ </beans>
+ 
+ 

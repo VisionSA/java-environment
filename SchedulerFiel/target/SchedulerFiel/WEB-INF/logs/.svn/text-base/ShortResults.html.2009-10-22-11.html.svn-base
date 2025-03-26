@@ -1,0 +1,2137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Wed Oct 21 15:08:55 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>110</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>500</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>703</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>719</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>719</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>719</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>750</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/download/servers/apache-tomcat-6.0.20/webapps/quartz/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>1031</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 1 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>1031</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>4266</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:09:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>4281</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:09:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>19219</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:09:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>19235</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:09:15 10/21/2009 and reports: null</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Wed Oct 21 15:17:56 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>31</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>203</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>312</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>328</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>328</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>328</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/download/servers/apache-tomcat-6.0.20/webapps/quartz/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>469</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 1 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>469</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>3031</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:18:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>3031</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:18:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>18000</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:18:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>18000</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:18:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>33016</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:18:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>33016</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:18:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>48000</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:18:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>48000</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:18:45 10/21/2009 and reports: null</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Wed Oct 21 15:27:02 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>15</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>171</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/download/servers/apache-tomcat-6.0.20/webapps/quartz/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>468</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 1 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>468</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>12234</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:27:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>12250</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:27:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>27234</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:27:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>27234</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:27:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>42234</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:27:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>42234</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:27:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>57234</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:28:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>57234</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:28:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>72234</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:28:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>72234</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:28:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>87234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:28:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>87234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:28:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>102234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:28:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>102234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:28:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>117234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:29:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>117234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:29:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>132234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:29:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>132234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:29:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>147234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:29:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>147234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:29:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>162234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:29:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>162234</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:29:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>177234</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:30:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>177234</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:30:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>192234</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:30:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>192234</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:30:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>207234</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:30:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>207234</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:30:30 10/21/2009 and reports: null</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Wed Oct 21 15:34:49 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>219</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>328</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>344</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>344</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>344</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>360</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/download/servers/apache-tomcat-6.0.20/webapps/quartz/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>485</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 1 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>485</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>9766</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:35:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>9797</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:35:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>24719</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:35:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>24719</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:35:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>39719</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:35:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>39719</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:35:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>54719</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:35:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>54719</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:35:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>69719</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:36:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>69719</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:36:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>84719</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:36:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>84719</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:36:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>99719</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:36:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>99719</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:36:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>114719</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:36:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>114719</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:36:45 10/21/2009 and reports: null</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Wed Oct 21 15:40:21 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>203</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>313</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>328</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>328</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>328</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>344</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/download/servers/apache-tomcat-6.0.20/webapps/quartz/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>422</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 1 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>422</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>8000</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:40:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>8031</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:40:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>22969</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:40:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>22969</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:40:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>37969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:41:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>37969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:41:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>52969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:41:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>52969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:41:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>67969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:41:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>67969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:41:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>82969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:41:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>82969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:41:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>97969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:42:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>97969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:42:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>112969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:42:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>112969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:42:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>127969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:42:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>127969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:42:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>142969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:42:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>142969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:42:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>157969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:43:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>157969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:43:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>172969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:43:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>172969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:43:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>187969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:43:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>187969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:43:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>202969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:43:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>202969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:43:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>217969</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:44:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>217969</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:44:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>232969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:44:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>232969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:44:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>247969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:44:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>247969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:44:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>262969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:44:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>262969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:44:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>277969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:45:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>277969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:45:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>292969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:45:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>292969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:45:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>307969</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:45:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>307969</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:45:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>322969</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:45:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>322969</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:45:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>337969</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:46:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>337969</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:46:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>352969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:46:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>352969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:46:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>367969</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:46:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>367969</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:46:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>382969</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:46:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>382969</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:46:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>397969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:47:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>397969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:47:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>412969</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:47:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>412969</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:47:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>427969</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:47:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>427969</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:47:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>442969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:47:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>442969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:47:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>457969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:48:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>457969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:48:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>472969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:48:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>472969</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:48:15 10/21/2009 and reports: null</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Wed Oct 21 15:49:20 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>31</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>219</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>344</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>359</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/download/servers/apache-tomcat-6.0.20/webapps/quartz/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>484</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 1 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>484</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>9109</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:49:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>9125</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:49:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>24078</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:49:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>24078</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:49:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>39078</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:50:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>39078</td>
+<td title="TestScheduler_Worker-4 thread">TestScheduler_Worker-4</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:50:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>54078</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:50:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>54078</td>
+<td title="TestScheduler_Worker-2 thread">TestScheduler_Worker-2</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:50:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>69078</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:50:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>69078</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:50:30 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>84078</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:50:45 10/21/2009</td>
+</tr>
+
+<tr>
+<td>84078</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:50:45 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>99078</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:51:00 10/21/2009</td>
+</tr>
+
+<tr>
+<td>99078</td>
+<td title="TestScheduler_Worker-0 thread">TestScheduler_Worker-0</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:51:00 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>114094</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:51:15 10/21/2009</td>
+</tr>
+
+<tr>
+<td>114094</td>
+<td title="TestScheduler_Worker-1 thread">TestScheduler_Worker-1</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:51:15 10/21/2009 and reports: null</td>
+</tr>
+
+<tr>
+<td>129078</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 fired (by trigger testJobs.testTrigger1) at:  15:51:30 10/21/2009</td>
+</tr>
+
+<tr>
+<td>129078</td>
+<td title="TestScheduler_Worker-3 thread">TestScheduler_Worker-3</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.history.LoggingJobHistoryPlugin category">org.quartz.plugins.history.LoggingJobHistoryPlugin</td>
+<td title="Message">Job testJobs.testJob1 execution complete at  15:51:30 10/21/2009 and reports: null</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Thu Oct 22 11:41:02 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>16</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>235</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>391</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/repositorios/tarjetafiel/SchedulerFiel/WebContent/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>485</td>
+<td title="main thread">main</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Error scheduling jobs: The string "--" is not permitted within comments.</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">org.xml.sax.SAXParseException: The string "--" is not permitted within comments.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1231)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:522)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.commons.digester.Digester.parse(Digester.java:1548)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.quartz.xml.JobSchedulingDataProcessor.processFile(JobSchedulingDataProcessor.java:369)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.quartz.xml.JobSchedulingDataProcessor.processFileAndScheduleJobs(JobSchedulingDataProcessor.java:394)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.quartz.plugins.xml.JobInitializationPlugin.processFile(JobInitializationPlugin.java:342)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.quartz.plugins.xml.JobInitializationPlugin.start(JobInitializationPlugin.java:316)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.quartz.core.QuartzScheduler.startPlugins(QuartzScheduler.java:1800)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.quartz.core.QuartzScheduler.start(QuartzScheduler.java:367)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.quartz.impl.StdScheduler.start(StdScheduler.java:149)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.quartz.ee.servlet.QuartzInitializerServlet.init(QuartzInitializerServlet.java:126)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.quartz.ui.web.init.DefinitionInitializer.init(DefinitionInitializer.java:30)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:1173)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapper.load(StandardWrapper.java:993)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContext.loadOnStartup(StandardContext.java:4149)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContext.start(StandardContext.java:4458)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:791)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:771)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:526)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:630)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.startup.HostConfig.deployDescriptors(HostConfig.java:556)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:491)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.startup.HostConfig.start(HostConfig.java:1206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:314)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.util.LifecycleSupport.fireLifecycleEvent(LifecycleSupport.java:119)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1053)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHost.start(StandardHost.java:722)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1045)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:443)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardService.start(StandardService.java:516)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardServer.start(StandardServer.java:710)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.startup.Catalina.start(Catalina.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.reflect.Method.invoke(Method.java:597)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:288)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:413)
+</td></tr>
+
+<tr>
+<td>485</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Thu Oct 22 11:41:36 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>
+
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.config.DefaultConfiguration category">com.opensymphony.webwork.config.DefaultConfiguration</td>
+<td title="Message">Loading global messages from ApplicationResources</td>
+</tr>
+
+<tr>
+<td>62</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>218</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.webwork.views.velocity.VelocityManager category">com.opensymphony.webwork.views.velocity.VelocityManager</td>
+<td title="Message">Initializing velocity using 'velocity.properties'</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.plugins.xml.JobInitializationPlugin category">org.quartz.plugins.xml.JobInitializationPlugin</td>
+<td title="Message">Registering Quartz Job Initiazation Plug-in.</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.simpl.RAMJobStore category">org.quartz.simpl.RAMJobStore</td>
+<td title="Message">RAMJobStore initialized.</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler 'TestScheduler' initialized from default resource file in Quartz package: 'quartz.properties'</td>
+</tr>
+
+<tr>
+<td>375</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.impl.StdSchedulerFactory category">org.quartz.impl.StdSchedulerFactory</td>
+<td title="Message">Quartz scheduler version: 1.4.0</td>
+</tr>
+
+<tr>
+<td>390</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Parsing XML file: jobs.xml with systemId: null validating: true validating schema: jar:file:/D:/repositorios/tarjetafiel/SchedulerFiel/WebContent/WEB-INF/lib/quartz.jar!/org/quartz/xml/job_scheduling_data_1_1.xsd</td>
+</tr>
+
+<tr>
+<td>468</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.xml.JobSchedulingDataProcessor category">org.quartz.xml.JobSchedulingDataProcessor</td>
+<td title="Message">Scheduling 0 parsed jobs.</td>
+</tr>
+
+<tr>
+<td>468</td>
+<td title="main thread">main</td>
+<td title="Level">INFO</td>
+<td title="org.quartz.core.QuartzScheduler category">org.quartz.core.QuartzScheduler</td>
+<td title="Message">Scheduler TestScheduler_$_NON_CLUSTERED started.</td>
+</tr>
+
+<tr>
+<td>8953</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = list</td>
+</tr>
+
+<tr>
+<td>10640</td>
+<td title="http-8080-4 thread">http-8080-4</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = start</td>
+</tr>
+
+<tr>
+<td>15828</td>
+<td title="http-8080-4 thread">http-8080-4</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = start</td>
+</tr>
+
+<tr>
+<td>19156</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = list</td>
+</tr>
+
+<tr>
+<td>27906</td>
+<td title="http-8080-3 thread">http-8080-3</td>
+<td title="Level">INFO</td>
+<td title="com.opensymphony.xwork.DefaultActionInvocation category">com.opensymphony.xwork.DefaultActionInvocation</td>
+<td title="Message">Executing action method = start</td>
+</tr>
+
+<tr>
+<td>851093</td>
+<td title="http-8080-2 thread">http-8080-2</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+
+<tr>
+<td>851109</td>
+<td title="http-8080-2 thread">http-8080-2</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="com.opensymphony.xwork.util.InstantiatingNullHandler category">com.opensymphony.xwork.util.InstantiatingNullHandler</td>
+<td title="Message">Could not create and/or set value back on to object</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.NullPointerException
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.ObjectFactory.buildBean(ObjectFactory.java:86)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.createObject(InstantiatingNullHandler.java:120)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.InstantiatingNullHandler.nullPropertyValue(InstantiatingNullHandler.java:82)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTProperty.getValueBody(ASTProperty.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:171)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.getValue(SimpleNode.java:193)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.ASTChain.setValueBody(ASTChain.java:168)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.evaluateSetValueBody(SimpleNode.java:180)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.SimpleNode.setValue(SimpleNode.java:230)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at ognl.Ognl.setValue(Ognl.java:476)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:114)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.util.OgnlValueStack.setValue(OgnlValueStack.java:98)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.ParametersInterceptor.before(ParametersInterceptor.java:66)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:33)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.interceptor.AroundInterceptor.intercept(AroundInterceptor.java:34)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionInvocation.invoke(DefaultActionInvocation.java:165)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.xwork.DefaultActionProxy.execute(DefaultActionProxy.java:115)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.serviceAction(ServletDispatcher.java:278)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.dispatcher.ServletDispatcher.service(ServletDispatcher.java:248)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.webwork.lifecycle.RequestLifecycleFilter.doFilter(RequestLifecycleFilter.java:75)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.parsePage(PageFilter.java:142)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at com.opensymphony.module.sitemesh.filter.PageFilter.doFilter(PageFilter.java:58)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.securityfilter.filter.SecurityFilter.doFilter(SecurityFilter.java:188)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:849)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:454)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at java.lang.Thread.run(Thread.java:619)
+</td></tr>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Thu Oct 22 12:03:53 ART 2009<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
+<tr>
+<th>Time</th>
+<th>Thread</th>
+<th>Level</th>
+<th>Category</th>
+<th>Message</th>
+</tr>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+		 xmlns:binding="com.asfusion.mate.utils.binding.*"
+		 horizontalAlign="center" minWidth="5" borderStyle="solid" 
+		 cornerRadius="10" verticalGap="2" width="220" height="55"
+		 toolTip="{lblNombre.text}"
+		 horizontalScrollPolicy="off" verticalScrollPolicy="off"
+		 verticalAlign="middle" creationComplete="hbox1_creationCompleteHandler(event)">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.messaging.channels.StreamingAMFChannel;
+			[Embed(source="img/user_female_64x64.png")]
+			[Bindable] public static var USER_FEMALE:Class;
+			
+			[Embed(source="img/user_male_64x64.png")]
+			[Bindable] public static var USER_MALE:Class;
+			
+			[Embed(source="img/user_64x64.png")]
+			[Bindable] public static var USER:Class;
+			
+			[Bindable]
+			public var individuo:Object = new Object();
+			
+			/* private function set refreshComponent(value:Object):void
+			{
+				refreshComponentData();
+			} */
+			
+			private function refreshComponentData():void
+			{
+				if (imgUsuario != null)
+				{
+					if (individuo.SEXO == null || individuo.SEXO.toString().toUpperCase() == "NULL")
+					{
+						imgUsuario.source = USER;
+					}
+					else
+					{
+						imgUsuario.source = individuo.SEXO == 'M'?USER_MALE:USER_FEMALE;
+					}
+					var apellido:String = individuo.APELLIDO == null || individuo.APELLIDO.toString().toUpperCase() == "NULL" ?"":individuo.APELLIDO + ", ";
+					lblNombre.text = upperFirstLetter(apellido + individuo.NOMBRE);
+					lblDoc.text = individuo.TIPODOC + " " + individuo.NRODOC;
+				}
+			}
+			
+			private function upperFirstLetter(text:String):String
+			{
+				var arrayPalabras:Array = text.split(" ");
+				var resultado:String = "";
+				for(var i:int = 0; i < arrayPalabras.length; i++){
+					resultado += arrayPalabras[i].substr(0,1).toUpperCase() + arrayPalabras[i].substr(1,arrayPalabras[i].length).toString().toLowerCase();
+					resultado += " ";
+				}
+				return resultado.substr(0,resultado.length-1);
+			}
+			
+
+			protected function hbox1_creationCompleteHandler(event:FlexEvent):void
+			{
+				refreshComponentData();
+			}
+
+		]]>
+	</mx:Script>
+	<!--<mx:Binding source="individuo" destination="refreshComponent"/>-->
+	
+	<mx:Image id="imgUsuario" autoLoad="true"/><!--source="{individuo.SEXO == 'M'?USER_MALE:USER_FEMALE}"-->
+	<mx:VBox width="100%" verticalGap="1">
+		<mx:Label id="lblNombre"  fontSize="10"
+				  truncateToFit="true" fontWeight="bold" color="white"/><!--text="{upperFirstLetter(individuo.APELLIDO + ', ' + individuo.NOMBRE)}"-->
+		<mx:Label id="lblDoc" fontSize="10" color="white"/> <!--text="{individuo.TIPODOC} {individuo.NRODOC}"-->
+	</mx:VBox>
+</mx:HBox>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<version>
+	<fecha><![CDATA[<b>25/06/2015</b>]]></fecha>
+	<despliegue><![CDATA[<b>Produccion</b>]]></despliegue>
+	<descripcion><![CDATA[				
+			- Plasticos Clientes: Generar los plasticos con fecha de vigencia hasta fin de mes en la creacion de cuenta y reempazo de plastico (850)</br>					
+				]]>
+	</descripcion>	
+</version>

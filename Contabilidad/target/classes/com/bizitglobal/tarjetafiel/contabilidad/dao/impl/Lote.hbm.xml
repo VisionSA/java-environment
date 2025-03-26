@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+                               
+<hibernate-mapping>
+<class name="com.bizitglobal.tarjetafiel.contabilidad.negocio.Lote" table="t_cont_lote_c" >
+	<id name="idAsiento" type="java.lang.Long" column="c_asiento">
+		<generator class="increment" />
+	</id>
+	<property name="idEmpresa" type="java.lang.Integer" column="c_empresa" not-null="true"/>
+	<property name="idEjercicio" type="java.lang.Integer" column="c_ejercicio" not-null="true"/>
+	<property name="idTipoAsiento" type="java.lang.Integer" column="c_tipo_asiento" not-null="true"/>
+    <property name="concepto" type="java.lang.String" column="c_concepto" not-null="false" length="40"/>
+    <property name="operador" type="java.lang.String" column="c_operador" not-null="false" length="8"/>
+    <property name="horaCarga" type="java.sql.Timestamp" column="c_hora_carga" not-null="false"/>
+    <property name="fechaContab" type="java.util.Date" column="c_fecha_contab" not-null="false"/>
+    <property name="fechaCarga" type="java.sql.Date" column="c_fecha_carga" not-null="false"/>
+   
+    
+</class>
+</hibernate-mapping>

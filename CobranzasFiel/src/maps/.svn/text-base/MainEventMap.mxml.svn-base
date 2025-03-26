@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import events.CobradoresEvent;
+			import events.PaisEvent;
+			import manager.CobradoresManager;
+			import events.ProvinciaEvent;
+			import events.BarraMenuEvent;
+			import views.MenuView;
+		]]>
+	</mx:Script>
+	
+	<!--Aqui los event handlers...-->
+	
+	<Injectors target="{MenuView}" >
+		<PropertyInjector targetKey="dispatcher" source="{scope.dispatcher}"/>
+	</Injectors>
+	
+	
+	
+</EventMap>

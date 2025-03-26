@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox  xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="keyPress(event)" 
+	creationComplete="onCreationComplete()"  width="100%" height="100%" 
+	xmlns:date="com.util.components.date.*" verticalAlign="middle" horizontalAlign="center" 
+	xmlns:clientes="com.tarjetafiel.caja.view.clientes.*" xmlns:datagrid="com.util.components.datagrid.*">	
+		
+	<mx:TabNavigator width="100%" height="100%" id="tabLiquidacion" borderStyle="none">
+		<mx:VBox width="100%" height="100%" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" verticalAlign="middle" horizontalAlign="center" label="Liquidaciones Pendientes" borderStyle="none" >
+			<mx:AdvancedDataGrid id="adgLiquidaciones" 
+				dataProvider="{ModelLocator.getInstance().liqClienteModel.arrayLiqCliente}"
+				 lockedColumnCount="1" horizontalScrollPolicy="auto" doubleClickEnabled="true"
+				 designViewDataType="flat" width="100%" height="100%" fontSize="13" fontWeight="bold">				
+				<mx:columns>										
+					<mx:AdvancedDataGridColumn headerText="Pagar">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:HBox width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+									<mx:CheckBox selected="{data.pagar}" click="{outerDocument.seleccionPago(chk.selected)}" id="chk"/>	
+								</mx:HBox>								
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Tipo">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:HBox width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+									<mx:Label text="{data.liquidacionClientes.tipoLiquidacion == 2 ? 'Particular' : 'Mensual'}"/>	
+								</mx:HBox>								
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Estado" styleFunction="styleFuntionVencimientoLiq" dataField="leyendaVencimiento" width="140"/>						
+					<mx:AdvancedDataGridColumn headerText="Fecha Liquidación" paddingLeft="10" width="150">
+						<mx:itemRenderer>
+						<mx:Component>
+							<mx:Label text="{outerDocument.dateFormat.format(data.fechaCierre)}" />
+						</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>																																																																					
+					<mx:AdvancedDataGridColumn headerText="Fecha Prim. Vto" width="150" paddingLeft="10" >
+						<mx:itemRenderer>
+						<mx:Component>
+							<mx:Label text="{outerDocument.dateFormat.format(data.fechaLiq)}"/>
+						</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Importe" width="150" formatter="{currencyFormat}"  dataField="montoTotal" />
+					<mx:AdvancedDataGridColumn headerText="Importe pagado" width="150" formatter="{currencyFormat}" dataField="importePagado"/>
+					<mx:AdvancedDataGridColumn headerText="Saldo" formatter="{currencyFormat}" dataField="saldo" />																	
+				</mx:columns>																					
+			</mx:AdvancedDataGrid>
+		</mx:VBox>		
+		<mx:VBox width="100%" height="100%" verticalAlign="middle" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" horizontalAlign="center" label="Futuros Vencimientos">
+			<mx:Button enabled="{ModelLocator.getInstance().clienteSeleccionado.cliente != null}" label="Consultar Futuros Vencimientos" click="new ClientesEvent(ClientesEvent.BUSCAR_FUTUROS_VENCIMIENTOS,null,null).dispatch()"/>
+			<mx:AdvancedDataGrid id="adg1" doubleClick="this.verDetalleFuturosVenc()" doubleClickEnabled="true" sortableColumns="false" designViewDataType="flat" 
+				dataProvider="{ModelLocator.getInstance().clienteSeleccionado.futurosVencimientos}" 
+				width="100%" height="100%"  fontWeight="bold">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Fecha" >
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label fontSize="16"  text="{data.fecha}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Importe">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label fontSize="16" text="{outerDocument.currencyFormat.format(data.monto)}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>									
+				</mx:columns>
+			</mx:AdvancedDataGrid>	
+		</mx:VBox>
+	</mx:TabNavigator>	
+	<mx:HBox width="100%">
+		<mx:Button label="Ctrl + 3 - Pago Parcial" click="pagarParcial()" id="bottonpago"/>
+		<mx:Button label="Ctrl + 4 - Pagar Todo" click="pagarTodo(event)"/>
+		<mx:HBox width="100%" horizontalAlign="right">
+		<mx:Button label="Ctrl + 5 - Refinanciar" click="pagarTodo(event)" />	
+		</mx:HBox>
+	</mx:HBox>	
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormat"/>
+	<mx:CurrencyFormatter currencySymbol="$" id="currencyFormat" rounding="nearest" precision="2"/>
+	<mx:NumberFormatter id="numberFormat" rounding="none" precision="2" />		
+		
+	<!--mx:Resize id="resize"/-->
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.event.RepactacionEvent;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import com.tarjetafiel.caja.model.LiqClienteModel;
+			import com.tarjetafiel.caja.model.PagoModel;
+			import mx.controls.ColorPicker;
+			import mx.events.CloseEvent;
+			import com.tarjetafiel.caja.vo.LiqClienteFuturoVencimiento;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.utils.ColorUtil;
+			import mx.utils.ObjectUtil;
+			import com.tarjetafiel.caja.vo.LiqCliente;
+			import mx.events.CalendarLayoutChangeEvent;
+			import com.util.components.alert.AlertWarning;			
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import com.tarjetafiel.caja.event.ClientesEvent;
+			import com.util.format.FormatUtil;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import flash.events.Event; 
+			import mx.controls.Alert;
+			
+			private var popUpMediosDePagos:MediosDePagos = new MediosDePagos();
+			private var popUpMediosDePagos1:MediosDePagos1 = new MediosDePagos1();
+			private var liqClienteDetView:LiqClienteDetView = new LiqClienteDetView();			
+			private var pagoModel:PagoModel = ModelLocator.getInstance().pagoModel;
+			private var liqClienteModel:LiqClienteModel = ModelLocator.getInstance().liqClienteModel;
+			
+			
+			private function styleFuntionVencimientoLiq(data:Object,col:AdvancedDataGridColumn):Object{
+				var liq:LiqCliente = LiqCliente(data);
+				var fechaCierre:Date = liq.fechaCierre == null ? liq.fechaLiq : liq.fechaCierre;
+				var diferencia:Number = new Date().getTime() - fechaCierre.getTime();
+				diferencia = diferencia/86400000;
+				if(diferencia >= 15){
+					var obj:Object = new Object();
+					obj["color"] = "#FF0000";
+					return obj;
+				}
+								
+				return null; 
+			}
+												
+			private function pagar():void{
+				if(ModelLocator.getInstance().clienteSeleccionado.cliente)
+				if(ModelLocator.getInstance().clienteSeleccionado.cliente.estadoCobranza.idEstadoCobranza == 10){
+					AlertWarning.show("La cuenta se encuentra en gestión Judicial\nConsulte con administración");
+					return;	
+				}
+				this.efectuarPago();
+			}
+			
+			private function pagar1():void{
+				if(ModelLocator.getInstance().clienteSeleccionado.cliente)
+					if(ModelLocator.getInstance().clienteSeleccionado.cliente.estadoCobranza.idEstadoCobranza == 10){
+						AlertWarning.show("La cuenta se encuentra en gestión Judicial\nConsulte con administración");
+						return;	
+					}
+				this.efectuarPago1();
+			}
+			
+			
+			private function pagarTodo(evt:Event):void{
+				if (evt.target.label == 'Ctrl + 4 - Pagar Todo') {
+					pagoModel.activarRepactacion = true;
+				} else {
+					pagoModel.activarRepactacion = false;
+				}
+				new RepactacionEvent(RepactacionEvent.REPACTACION_PAGO_MINIMO).dispatch();
+				ModelLocator.getInstance().liqClienteModel.pagarTodo();
+				pagar();
+			}
+			
+			private function pagarTodo1():void{
+				new RepactacionEvent(RepactacionEvent.REPACTACION_PAGO_MINIMO).dispatch();
+				ModelLocator.getInstance().liqClienteModel.pagarTodo();
+				pagar1();
+			}
+			
+			private function pagarParcial():void{
+				ModelLocator.getInstance().pagoModel.pagarTodo = false;
+				pagar();
+			}
+			
+			public function rowColorLiquidaciones(item:Object, color:uint):uint{
+				if(LiqCliente(item).fechaPago < new Date()){
+					return 0xFF8989;	
+				}					
+				else {
+					return color;
+				}			
+			}		
+			
+			private function efectuarPago():void{
+				
+				if(ModelLocator.getInstance().clienteSeleccionado.cliente == null){
+					AlertWarning.show("No hay ningún cliente seleccionado");
+					return;
+				}
+				
+				ModelLocator.getInstance().repactacionModel.repactacionVisible = false;
+				ModelLocator.getInstance().repactacionModel.arrayRepactaciones.removeAll();				
+				pagoModel.arrayMedios.removeAll();
+				popUpMediosDePagos.init();									
+				pagoModel.calcularImporte();															
+				PopUpManager.addPopUp(popUpMediosDePagos,Application.application.contGlobal,true);
+				PopUpManager.centerPopUp(popUpMediosDePagos);
+				popUpMediosDePagos.adg1.setFocus();
+				/*if(liqClienteModel.arrayLiqCliente.length != 0){								
+					if(pagoModel.arrayLiqPagar.length > 0){						
+						popUpMediosDePagos.init();					
+						pagoModel.calcularImporte();															
+						PopUpManager.addPopUp(popUpMediosDePagos,Application.application.contGlobal,true);
+						PopUpManager.centerPopUp(popUpMediosDePagos);
+						popUpMediosDePagos.adg1.setFocus();
+					} else {
+						AlertWarning.show("No hay ninguna liquidación seleccionada para pagar.",function (evt:CloseEvent):void{
+							adgLiquidaciones.setFocus();
+						});
+					}					
+				} else {					
+					AlertWarning.show("No hay liquidaciones pendientes en lista.\nSe procedera a realizar la busqueda.",function (evt:CloseEvent):void{
+						consultarLiquidaciones();
+						adgLiquidaciones.setFocus();
+					});
+				}*/
+								
+			}
+			
+			private function efectuarPago1():void{
+				
+				if(ModelLocator.getInstance().clienteSeleccionado.cliente == null){
+					AlertWarning.show("No hay ningún cliente seleccionado");
+					return;
+				}
+				
+				ModelLocator.getInstance().repactacionModel.repactacionVisible = false;
+				ModelLocator.getInstance().repactacionModel.arrayRepactaciones.removeAll();				
+				pagoModel.arrayMedios.removeAll();
+				popUpMediosDePagos.init();									
+				pagoModel.calcularImporte();															
+				PopUpManager.addPopUp(popUpMediosDePagos,Application.application.contGlobal,true);
+				PopUpManager.centerPopUp(popUpMediosDePagos);
+				popUpMediosDePagos.adg1.setFocus();
+				/*if(liqClienteModel.arrayLiqCliente.length != 0){								
+				if(pagoModel.arrayLiqPagar.length > 0){						
+				popUpMediosDePagos.init();					
+				pagoModel.calcularImporte();															
+				PopUpManager.addPopUp(popUpMediosDePagos,Application.application.contGlobal,true);
+				PopUpManager.centerPopUp(popUpMediosDePagos);
+				popUpMediosDePagos.adg1.setFocus();
+				} else {
+				AlertWarning.show("No hay ninguna liquidación seleccionada para pagar.",function (evt:CloseEvent):void{
+				adgLiquidaciones.setFocus();
+				});
+				}					
+				} else {					
+				AlertWarning.show("No hay liquidaciones pendientes en lista.\nSe procedera a realizar la busqueda.",function (evt:CloseEvent):void{
+				consultarLiquidaciones();
+				adgLiquidaciones.setFocus();
+				});
+				}*/
+				
+			}
+			
+														
+			public function orderByDate(obj1:Object, obj2:Object):int{
+				return ObjectUtil.compare(obj1,obj2);
+			}
+			
+			private function verDetalleFuturosVenc():void{
+				
+				try{
+					//buscar los item de la ctacte que se correspondan con la fecha de
+					//facturacion
+				} catch(err:Error){
+					trace(err);
+				}
+				
+			}
+			
+			private function onCreationComplete():void{
+				
+				popUpMediosDePagos.addEventListener(CloseEvent.CLOSE,consultarLiquidaciones);
+				liqClienteDetView.addEventListener(CloseEvent.CLOSE,closeLiqClienteView);
+				
+				bottonpago.setFocus();
+				
+								
+			}
+			
+			
+			
+			private function verDetalle():void{				
+				liqClienteModel.liqCliente = LiqCliente(this.adgLiquidaciones.selectedItem);
+				if(liqClienteModel.liqCliente){								
+					var filtro:Filtro = new Filtro();
+					filtro.campos.push("liqCliente.idLiqCliente");
+					filtro.operadores.push(Filtro.IGUAL);
+					filtro.valores.push(liqClienteModel.liqCliente.idLiqCliente);
+					PopUpManager.addPopUp(liqClienteDetView,Application.application.contGlobal,true);
+					PopUpManager.centerPopUp(liqClienteDetView);
+					liqClienteDetView.adg1.setFocus();	
+					var event:ClientesEvent = new ClientesEvent(ClientesEvent.BUSCAR_LIQUIDACIONES_DETALLE,filtro,null);
+					event.dispatch();
+				}
+				
+			}
+			
+			private function closeLiqClienteView(evt:CloseEvent):void{				
+				adgLiquidaciones.setFocus();
+			}
+								
+			private function consultarLiquidaciones(evt:Event=null):void{
+																
+				liqClienteModel.buscarLiquidaciones();
+				adgLiquidaciones.setFocus();
+				
+			}
+			
+			private function keyPress(evt:KeyboardEvent):void{
+				
+				if(evt.ctrlKey){
+					if(String.fromCharCode(evt.charCode) == "3"){
+						pagoModel.pagarTodo = false;
+						efectuarPago();
+					} else if(String.fromCharCode(evt.charCode) == "1"){
+						consultarLiquidaciones();						
+					} else if(String.fromCharCode(evt.charCode) == "4"){
+						pagoModel.activarRepactacion = true;
+				
+						liqClienteModel.pagarTodo();
+						efectuarPago();
+					} else if(String.fromCharCode(evt.charCode) == "5"){
+						pagoModel.activarRepactacion = false;
+						liqClienteModel.pagarTodo();
+						efectuarPago();
+					
+					} else if(String.fromCharCode(evt.charCode) == "6"){
+						
+					} 
+				} else {
+					if(evt.keyCode == Keyboard.ENTER){
+						if(evt.target.id == "adgLiquidaciones"){
+							verDetalle();
+						} else {
+							verDetalleFuturosVenc();
+						}	
+					} else if(evt.keyCode == Keyboard.SPACE){
+						if(this.adgLiquidaciones.selectedItem != null)
+							this.seleccionPago(!this.adgLiquidaciones.selectedItem.pagar);	
+					}				
+				}
+			}
+			
+			
+			
+			public function seleccionPago(select:Boolean):void{				
+								
+				for each(var liq:LiqCliente in liqClienteModel.arrayLiqCliente){
+					liq.pagar = false;
+				}
+				var i:int = this.adgLiquidaciones.selectedIndex;								
+				pagoModel.arrayLiqPagar.removeAll();
+				if(select){
+					for(i;i>=0;i--){
+						LiqCliente(liqClienteModel.arrayLiqCliente.getItemAt(i)).pagar = true;
+						pagoModel.arrayLiqPagar.addItem(liqClienteModel.arrayLiqCliente.getItemAt(i));
+					}	
+				}
+				
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:VBox>

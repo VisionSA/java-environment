@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="33%" verticalAlign="middle" horizontalAlign="center"
+		  visible="false"
+		  includeInLayout="false" xmlns:textInput="com.util.components.textInput.*"
+		  creationComplete="hgroup1_creationCompleteHandler(event)">
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			
+			import mx.events.FlexEvent;
+			
+			[Inspectable][Bindable]
+			public var medioPago:CajaMP;
+			
+			[Inspectable][Bindable]
+			public var titulo:String = "Titulo";
+			
+			[Bindable]
+			private var modelo:CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			protected function hgroup1_creationCompleteHandler(event:FlexEvent):void
+			{
+				medioPago.importeRetiro = 0;
+				medioPago.caja = modelo.cajaApertura.caja;
+				modelo.arrCajaMpDescarga.addItem(medioPago);
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:Label id="lblTitulo" text="{titulo}: "/>
+	<textInput:TextInputMoneda text="0" id="txtValor" change="medioPago.importeRetiro = Number(txtValor.text)"/>
+</s:HGroup>

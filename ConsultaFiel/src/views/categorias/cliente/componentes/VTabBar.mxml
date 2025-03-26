@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TabBar xmlns:mx="http://www.adobe.com/2006/mxml"
+	 direction="vertical" verticalGap="2"
+	 tabHeight="80" width="28" alpha="1.0"
+	 firstTabStyleName="VTabSkin"
+	 lastTabStyleName="VTabSkin"
+	 tabStyleName="VTabSkin"
+	 barColor="#ffffff"
+	 creationComplete="init()">
+
+	<mx:Style source="/css/VTabSkin.css" />
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UITextField;
+			import mx.controls.Button;
+			import mx.core.mx_internal;
+			
+			public var icons:Array;
+			
+			private function init():void
+			{
+				if(!icons){
+					icons = new Array();
+				}
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				
+				var i:int = 0;
+				var b:Button = null;
+				var txt:UITextField = null;
+				
+				for(i = 0; i < this.numChildren; i++){
+					b = getChildAt(i) as Button;
+					txt = b.mx_internal::getTextField();
+					txt.text = "";
+					txt.visible = false;
+					
+					if(icons[i]){
+						b.setStyle("icon", icons[i]);
+					}
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:TabBar>

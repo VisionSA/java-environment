@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleGeneral xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="100%" 
+	height="100%" xmlns:maps="views.categorias.comercio.maps.*" xmlns:date="com.util.components.date.*" 
+	xmlns:mate="http://mate.asfusion.com/" >
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.SortField;
+			import mx.collections.Sort;
+			import mx.collections.ArrayCollection;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			
+			import views.categorias.comercio.models.RetencionComercioModel;
+			
+			import mx.collections.ICollectionView;
+			
+			[Bindable]public var retencionComercioModel:RetencionComercioModel;
+			
+      		private function styleTotalFunction(item:Object,column:AdvancedDataGridColumn):Object{
+      			var obj:Object = { color:"#DD0015",
+								   fontWeight:"bold",
+								   fontSize:14	
+								 };
+      			return obj;
+      		}
+      		/*
+      		private function recivedRefreshDataGrid():void{
+      			
+      			if(retencionComercioModel.retencionesList && retencionComercioModel.retencionesList.length > 0){
+      				adgRetenciones.dataProvider = gc;
+					gc.refresh();
+      				if(liquidacionComModel.expand){
+      					adgRetenciones.collapseAll();
+      				} else {
+      					adgRetenciones.expandAll();
+      				}	
+      			
+      				liquidacionComModel.expand = !liquidacionComModel.expand; 
+      			}
+      		}
+      		*/
+      		private function recivedRemoveItemDataGrid():void{
+      			if(adgRetenciones)
+      			{
+      				adgRetenciones.dataProvider = new ArrayCollection();
+      			}
+      		}
+      		
+      		
+		]]>
+	</mx:Script>
+	<!--
+	<mate:Listener type="refreshDataGrig" receive="recivedRefreshDataGrid()"/>
+	-->
+	<mate:Listener type="removeItemDataGrig" receive="recivedRemoveItemDataGrid()"/>
+	
+	
+	
+	<mx:ApplicationControlBar width="100%">
+		<mx:Label text="Fecha Desde:" styleName="lblInfoBlanco"/>
+		<date:DateFiledMultiLan id="fechaDesde" change="retencionComercioModel.fechaDesde = fechaDesde.selectedDate" selectedDate="{new Date(new Date().fullYear,new Date().month,1)}"/>
+		<mx:Button label="Buscar" click="retencionComercioModel.buscarRetenciones()"/>
+	</mx:ApplicationControlBar>
+       		
+	<mx:AdvancedDataGrid id="adgRetenciones" sortableColumns="false" designViewDataType="flat" horizontalScrollPolicy="auto"  width="100%" height="100%"
+		dataProvider="{retencionComercioModel.retencionesList}">
+				<mx:columns>	
+					<mx:AdvancedDataGridColumn headerText="Periodo" paddingLeft="10" width="100" dataField="periodo" />
+					
+					
+					<mx:AdvancedDataGridColumn headerText="Pdf Retencion" width="300">
+			                 <mx:itemRenderer>
+			                <mx:Component>
+			                   <mx:HBox horizontalScrollPolicy="off" toolTip="{String(data.urlPdf).replace('webapps','')}">
+			                   <mx:Script>
+								    <![CDATA[
+								    	import mx.controls.LinkButton;
+									import mx.controls.Alert;
+									import mx.events.CloseEvent;
+			                        
+			                         public  function abrirPDF(url:String):void {
+		   							   	  
+										   		if(data.urlPdf && data.urlPdf != "")
+										   	    	navigateToURL( new URLRequest( String(data.urlPdf).replace('/webapps/archivos/','/archivos//')+".pdf"),'_blank'); 
+									} 
+									
+									   
+								    ]]>
+								</mx:Script>
+						         <mx:LinkButton label="{String(data.urlPdf).replace('/webapps/archivos/','/archivos//')+'.pdf'}" click="abrirPDF(data.urlPdf)" rollOverColor="#fd9595" visible="{(data.urlPdf) ? true : false}"/>
+						        </mx:HBox>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			       	
+			       	<mx:AdvancedDataGridColumn headerText="Retencion" paddingLeft="10" width="250" dataField="descripcionRetencion" />
+					<mx:AdvancedDataGridColumn headerText="Monto" paddingLeft="10" width="100" dataField="monto" />
+				</mx:columns>																					
+	</mx:AdvancedDataGrid>
+	
+
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormat"/>
+	<mx:CurrencyFormatter currencySymbol="$" id="currencyFormat" rounding="none" precision="2"/>
+	<mx:NumberFormatter id="numberFormat" rounding="none" precision="0" />		
+	
+</ModuleGeneral>

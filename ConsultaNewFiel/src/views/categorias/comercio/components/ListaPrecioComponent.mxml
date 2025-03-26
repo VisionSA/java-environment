@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" >
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.ComercioListaPrecio;
+			
+			import mx.collections.ArrayCollection;
+			[Bindable]
+			public var titulo:String = "";
+			
+			[Bindable]
+			public var listaPrecioProvider:ArrayCollection = new ArrayCollection();
+			
+			public function refreshComponent():void
+			{
+				if (tlListaPrecio != null)
+				{
+					tlListaPrecio.removeAllChildren();
+					lblMensaje.visible = false;
+					lblMensaje.includeInLayout = false;
+					
+					if (listaPrecioProvider != null && 
+						listaPrecioProvider.length > 0)
+					{
+						for each (var listaPrecio:ComercioListaPrecio in listaPrecioProvider)
+						{
+							var lpCmp:ListaPrecioItem = new ListaPrecioItem();
+							lpCmp.comercioListaPrecio = listaPrecio;
+							tlListaPrecio.addChild(lpCmp);
+						} 
+					}
+					else
+					{
+						lblMensaje.visible = true;
+						lblMensaje.includeInLayout = true;
+					}
+				}
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:ApplicationControlBar id="cmpTitle" minWidth="5" styleName="infoApplicationControlBar" dock="true" width="100%">
+		<mx:Label id="lblTitle" text="{titulo}" styleName="lblTitleInfo"/>
+	</mx:ApplicationControlBar>
+	<mx:Tile id="tlListaPrecio"
+			 horizontalGap="4" verticalGap="4"
+			 visible="{!lblMensaje.visible}"
+			 includeInLayout="{!lblMensaje.includeInLayout}" width="320" height="100%"/>
+	<mx:Label id="lblMensaje" text="No se registran datos" 
+			  fontWeight="bold" width="100%" fontSize="13" textAlign="center"
+			  visible="false" includeInLayout="false" color="white"/>
+</mx:VBox>

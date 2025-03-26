@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.fondos.negocio.AcreditacionFondoDetalle" table="T_VIS_FON_ACREDIT_DETALLE" >
+	
+	<id name="idAcreditacionDetalle" type="java.lang.Long" column="C_ID_ACREDIT_DETALLE">
+		<generator class="increment" />
+	</id>
+	
+	
+	<many-to-one name="acreditacionFondo" class="com.bizitglobal.tarjetafiel.fondos.negocio.AcreditacionFondo" not-null="false" cascade="save-update">
+		<column name="C_ID_ACREDITACION" />
+	</many-to-one>
+	
+	<property name="nroTransaccion" type="java.lang.Long" column="C_NRO_TRANSACCION" not-null="false"/>
+	<property name="fechaSolicitud" type="java.util.Date" column="C_FECHA_SOLICITUD" not-null="false" />
+	<property name="tipoTrasferencia" type="java.lang.Integer" column="C_TIPO_TRASFERENCIA" not-null="false"/>
+	
+	<property name="bancoDebito" type="java.lang.Long" column="C_BANCO_DEBITO" not-null="false" length="3"/>
+	<property name="tipoCuentaDebito" type="java.lang.Integer" column="C_TIPO_CUENTA_DEBITO" not-null="false"/>
+	<property name="nroCuentaDebito" type="java.lang.String" column="C_NRO_CUENTA_DEBITO" not-null="false"/>
+	
+	<property name="bancoCredito" type="java.lang.Long" column="C_BANCO_CREDITO" not-null="false" length="3"/>
+	<property name="tipoCuentaCredito" type="java.lang.Integer" column="C_TIPO_CUENTA_CREDITO" not-null="false"/>
+	<property name="nroCuentaCredito" type="java.lang.String" column="C_NRO_CUENTA_CREDITO" not-null="false"/>
+	
+	<property name="nombreBeneficiario" type="java.lang.String" column="C_NOMBRE_BENEFICIARIO" not-null="false" length="29"/>
+	<property name="importeTrasferencia" type="java.lang.Double" column="C_IMPORTE_TRASFERENCIA" not-null="false"/>
+	<property name="moneda" type="java.lang.String" column="C_MONEDA" not-null="false" length="3"/>
+	<property name="numeroReferencia" type="java.lang.Long" column="C_NUMERO_REFERENCIA" not-null="false"/>
+	<property name="observacion1" type="java.lang.String" column="C_OBSER1" not-null="false" length="60"/>
+	<property name="observacion2" type="java.lang.String" column="C_OBSER2" not-null="false" length="100"/>
+	<property name="blancos" type="java.lang.String" column="C_BLANCOS" not-null="false" length="44"/>
+	<property name="filler" type="java.lang.String" column="C_FILLER" not-null="false" length="29"/>
+	
+	<property name="idCheque" type="java.lang.Long" column="C_ID_CHEQUE" not-null="false"/>
+	<property name="conciliado" type="java.lang.String" column="C_CONCILIADO" not-null="false" length="1"/>
+	
+	<property name="registroOriginal" type="java.lang.String" column="C_REGISTRO_ORIGINAL" not-null="false" length="500"/>
+	
+	<property name="fechaSolicitudCadena" type="java.lang.String" column="C_FECHA_SOLICITUD_CADENA" not-null="false" length="8"/>
+	<property name="idBanco" type="java.lang.Long" column="C_ID_BANCO" not-null="false"/>
+
+</class>
+</hibernate-mapping>

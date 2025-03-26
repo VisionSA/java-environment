@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="GestionCliente"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="725"
+		 pageHeight="255116"
+		 columnWidth="725"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true" />
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true" />
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false" />
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.bizitglobal.webapp.faces.beans.util.*" />
+	<import value="net.sf.jasperreports.engine.design.JasperDesign" />
+
+	<parameter name="fecha_desde" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="operador" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[SELECT CLIENTE,APELLIDO||', '||NOMBRE as AANN,FECHA_INICIO,FECHA_VTO,OPERADOR_APELLIDO||', '||OPERADOR_NOMBRE,
+CUIL, ID_GESTION, ID_TIPO_GESTION,
+DESCRIPCION_ESTADO,FECHA_GESTION,ULT_COMPRA, ID_ESTADO_ACTUAL
+FROM (SELECT cli_gest.c_fecha_inicio AS FECHA_INICIO,
+cli_gest.c_fecha_vencimiento AS FECHA_VTO, cli_gest.c_id_gestion AS ID_GESTION,
+cli_gest.c_id_tipo_gestion AS ID_TIPO_GESTION,
+cli_gest.c_fecha_consumo AS ULT_COMPRA,
+cli_gest.c_id_cliente AS CLIENTE,indi.c_apellido AS APELLIDO,
+indi.c_nombres AS NOMBRE, indi.c_cuil AS CUIL,
+seg_oper.c_apellido AS OPERADOR_APELLIDO, gest_log.c_fecha FECHA_GESTION,
+seg_oper.c_nombre AS OPERADOR_NOMBRE,
+est_gest.c_descripcion AS DESCRIPCION_ESTADO, gest_log.c_id_estado_gestion as ID_ESTADO_ACTUAL
+FROM t_vis_cli_gestionar cli_gest,t_vis_cli_gestion_log gest_log,t_vis_cli_estado_gestion est_gest,
+t_vis_tra_clientes cli,t_vis_eva_individuos indi,t_vis_seg_operadores seg_oper
+WHERE cli_gest.c_id_gestion=gest_log.c_id_gestion
+and cli_gest.c_id_operador = $P{operador}
+AND gest_log.c_id_estado_gestion=est_gest.c_id_estado_gestion
+AND gest_log.c_id_log_gestion=(SELECT MAX(c_id_log_gestion) FROM t_vis_cli_gestion_log
+WHERE cli_gest.c_id_gestion=c_id_gestion) AND cli_gest.c_id_cliente=cli.c_id_cliente
+AND cli.c_id_individuo=indi.c_id_individuo AND cli_gest.c_id_operador=seg_oper.c_codigo)
+WHERE ULT_COMPRA BETWEEN $P{fecha_desde} and $P{fecha_hasta} 
+order by ULT_COMPRA]]></queryString>
+
+	<field name="CLIENTE" class="java.math.BigDecimal"/>
+	<field name="AANN" class="java.lang.String"/>
+	<field name="FECHA_INICIO" class="java.sql.Timestamp"/>
+	<field name="FECHA_VTO" class="java.sql.Timestamp"/>
+	<field name="OPERADOR_APELLIDO||','||OPERADOR_NOMBRE" class="java.lang.String"/>
+	<field name="CUIL" class="java.lang.String"/>
+	<field name="ID_GESTION" class="java.math.BigDecimal"/>
+	<field name="ID_TIPO_GESTION" class="java.math.BigDecimal"/>
+	<field name="DESCRIPCION_ESTADO" class="java.lang.String"/>
+	<field name="FECHA_GESTION" class="java.sql.Timestamp"/>
+	<field name="ULT_COMPRA" class="java.sql.Timestamp"/>
+	<field name="ID_ESTADO_ACTUAL" class="java.math.BigDecimal"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="12"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="15"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="0"
+						width="88"
+						height="15"
+						forecolor="#333333"
+						backcolor="#FFFFFF"
+						key="element-1"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="12" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Nro Cuenta]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="483"
+						y="0"
+						width="120"
+						height="15"
+						forecolor="#333333"
+						backcolor="#FFFFFF"
+						key="element-15"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="12" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Fecha Gestión]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="603"
+						y="0"
+						width="122"
+						height="15"
+						forecolor="#333333"
+						backcolor="#FFFFFF"
+						key="element-18"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="12" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Fecha Consumo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="88"
+						y="0"
+						width="275"
+						height="15"
+						forecolor="#333333"
+						backcolor="#FFFFFF"
+						key="element-19"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="12" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Apellido y Nombres]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="363"
+						y="0"
+						width="120"
+						height="15"
+						forecolor="#333333"
+						backcolor="#FFFFFF"
+						key="element-14"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="12" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[Fecha Asignación]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="0"
+						width="88"
+						height="15"
+						key="textField-7"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{CLIENTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="363"
+						y="0"
+						width="120"
+						height="15"
+						key="textField-14"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{FECHA_INICIO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="88"
+						y="0"
+						width="275"
+						height="15"
+						key="textField-15"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{AANN}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="483"
+						y="0"
+						width="120"
+						height="15"
+						key="textField-16"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.sql.Timestamp"><![CDATA[$F{FECHA_GESTION}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="603"
+						y="0"
+						width="122"
+						height="15"
+						key="textField-17"
+						stretchType="RelativeToBandHeight"/>
+					<box topBorder="None" topBorderColor="#CCCCCC" leftBorder="None" leftBorderColor="#CCCCCC" leftPadding="2" rightBorder="None" rightBorderColor="#CCCCCC" rightPadding="2" bottomBorder="None" bottomBorderColor="#CCCCCC"/>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="Calibri" pdfFontName="Courier" size="11" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.sql.Timestamp"><![CDATA[$F{ULT_COMPRA}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" xmlns:textInput="com.util.components.textInput.*" backgroundColor="#D4CFCF" xmlns:maps="views.categorias.cliente.maps.*">
+	<mx:HBox horizontalAlign="center" verticalAlign="middle">
+		<mx:RadioButtonGroup id="radiogroup1"/>
+		<mx:RadioButton id="rdbRef" styleName="tituloBusquedas" label="Refinanciación" groupName="radiogroup1" selected="true"/>
+		<mx:RadioButton id="rdbRep" styleName="tituloBusquedas" label="Repactación" groupName="radiogroup1"/>
+	</mx:HBox>
+	
+	<mx:HBox borderStyle="solid" borderThickness="4" borderColor="#959595">
+		<mx:Form width="100%">
+			<mx:FormItem styleName="tituloBusquedas" label="Pago a cuenta:" fontSize="15" fontWeight="bold">
+				<textInput:TextInputMoneda id="txtPagoACuenta" text="{repactacionModel.pagoCuenta}" editable="false" fontSize="20" textAlign="center" color="#001EFF" fontWeight="bold" width="240"/>			
+			</mx:FormItem>
+			<mx:FormItem styleName="tituloBusquedas" label="Su Pago:" fontSize="15" fontWeight="bold">
+				<textInput:TextInputMoneda id="txtPagoActual" enter="repactacionModel.simular(rdbRep.selected)" change="{repactacionModel.suPago = Number(txtPagoActual.text)}" fontSize="20" textAlign="center" color="#001EFF" fontWeight="bold" width="240"/>
+				<mx:HRule width="100%" height="10" strokeColor="#000000"/>
+			</mx:FormItem>
+			<mx:FormItem styleName="tituloBusquedas" label="Total pago:" fontSize="15" fontWeight="bold">
+				<textInput:TextInputMoneda id="txtPagoACuenta0" editable="false" fontSize="20" text="{repactacionModel.pagoTotal}" 
+					textAlign="center" color="#001EFF" fontWeight="bold" width="240"/>			
+			</mx:FormItem>
+			<mx:FormItem styleName="tituloBusquedas" label="Importe a refinanciar" fontSize="15" fontWeight="bold">
+				<textInput:TextInputMoneda id="txtSupago" editable="false" 
+					fontSize="20" textAlign="center" color="#FF0000" fontWeight="bold" width="240" text="{repactacionModel.deudaFinal}"/>			
+			</mx:FormItem>								
+			<mx:FormItem styleName="tituloBusquedas" label="Importe Total:" fontSize="15" fontWeight="bold">
+				<textInput:TextInputMoneda id="txtTotal" editable="false" text="{repactacionModel.importeTotal}"
+					fontSize="20" textAlign="center" color="#FF0000" fontWeight="bold" width="240"/>			
+			</mx:FormItem>
+		</mx:Form>	
+		<mx:VBox height="100%" paddingBottom="15" paddingTop="15" paddingRight="15" horizontalAlign="center" verticalAlign="middle">
+			<mx:HRule width="95%"/>
+			<mx:Label styleName="tituloBusquedas" text="Cuotas" fontSize="15" fontWeight="bold" width="100%" textAlign="center" textDecoration="normal"/>
+			<mx:HRule width="95%"/>
+			<mx:AdvancedDataGrid id="adgCuotas" designViewDataType="flat" width="100%" height="100%"
+				dataProvider="{repactacionModel.arrayRepactaciones}">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Cuota" dataField="nroCuota" />
+					<mx:AdvancedDataGridColumn headerText="Importe" dataField="montoCuota" formatter="{currencyFormat}"/>			
+					<mx:AdvancedDataGridColumn headerText="Total">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{outerDocument.currencyFormat.format(data.nroCuota*data.montoCuota)}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+				</mx:columns>
+			</mx:AdvancedDataGrid>		
+		</mx:VBox>		
+	</mx:HBox>
+	<mx:Button label="Simular" click="this.repactacionModel.simular(rdbRep.selected)"/>
+	
+	<mx:CurrencyFormatter currencySymbol="$" id="currencyFormat" rounding="nearest" precision="2"/>
+	
+	<maps:RepactacionModelMap/>
+	
+	<mx:Script>
+		<![CDATA[
+			import views.categorias.cliente.models.RepactacionModel;
+			[Bindable]public var repactacionModel:RepactacionModel;
+		]]>
+	</mx:Script>
+	
+</mx:VBox>

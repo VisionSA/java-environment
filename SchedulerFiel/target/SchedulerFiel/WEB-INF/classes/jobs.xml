@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<quartz xmlns="http://www.quartzscheduler.org/ns/quartz"
+	      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	      xsi:schemaLocation="http://www.quartzscheduler.org/ns/quartz http://www.quartzscheduler.org/ns/quartz/job_scheduling_data_1_1.xsd"
+	      version="1.1">
+
+
+	<calendar class-name="org.quartz.impl.calendar.HolidayCalendar" replace="true">
+		<name>holidayCalendar</name>
+		<description>HolidayCalendar</description>
+		<base-calendar class-name="org.quartz.impl.calendar.WeeklyCalendar">
+			<name>weeklyCalendar</name>
+			<description>WeeklyCalendar</description>
+			<base-calendar class-name="org.quartz.impl.calendar.AnnualCalendar">
+				<name>annualCalendar</name>
+				<description>AnnualCalendar</description>
+			</base-calendar>
+		</base-calendar>
+	</calendar>
+
+</quartz>

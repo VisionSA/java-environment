@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox   xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"   horizontalAlign="center" verticalAlign="top" show="this.obtenerTramiteDetalle()">
+       	<mx:AdvancedDataGrid id="adg1" designViewDataType="flat"  doubleClickEnabled="true"    dataProvider="{tramiteWorkflowModel.arrayTramitesDetalle}" width="100%" height="100%">
+					<mx:columns>
+					     
+					     <mx:AdvancedDataGridColumn headerText="Fecha inicio" >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.dateFormatter.format(data.fechaInicio)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+						<mx:AdvancedDataGridColumn  headerText="Tramite" dataField="comentario" />
+						<!--
+						<mx:AdvancedDataGridColumn headerText="Imp. Cuota"  >
+			                 <mx:itemRenderer>
+					         <mx:Component>
+						         <mx:Label text="{outerDocument.currencyFormatter.format(data.importeCuota)}"/>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            -->
+			         </mx:columns>
+		</mx:AdvancedDataGrid>
+       	
+	<mx:DateFormatter id="dateFormatter" formatString="DD/MM/YYYY"/>
+	<mx:CurrencyFormatter  id="currencyFormatter" currencySymbol="$"  useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="."
+		 rounding="nearest" precision="2" decimalSeparatorFrom="," decimalSeparatorTo=","    alignSymbol="left"/>  
+        
+    
+  
+<mx:Script>
+	<![CDATA[
+		import views.categorias.cliente.models.ComposicionSaldoClienteModel;
+		import views.categorias.cliente.models.TramiteWorkflowModel;
+		import mx.effects.easing.Back;
+		import com.tarjetafiel.caja.vo.MovimientoCtaCte;
+		import mx.controls.Alert;
+		       
+		 [Bindable]public var  tramiteWorkflowModel:TramiteWorkflowModel;
+		 [Bindable (event="changedDetalleTramiteModel")];
+		 //[Bindable (event="changedcomposicionSaldoClienteModel")]
+		   	
+		     
+		    
+        private function obtenerTramiteDetalle():void{
+          tramiteWorkflowModel.buscarTramitesDetalles();	
+	    }
+		     
+		     
+		
+	]]>
+</mx:Script>
+
+	
+</mx:VBox>

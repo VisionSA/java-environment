@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VboxComun xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" label="Consulta de Liquidaciones" width="100%" 
+	height="100%" xmlns:maps="views.categorias.comercio.maps.*" xmlns:date="com.util.components.date.*" xmlns:mate="http://mate.asfusion.com/" xmlns:renderers="views.categorias.comercio.renderers.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.HierarchicalData;
+			import mx.collections.SortField;
+			import mx.collections.Sort;
+			import mx.collections.ArrayCollection;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import com.tarjetafiel.caja.vo.LiqComercioLP;
+			import mx.collections.GroupingField;
+			import views.categorias.comercio.models.LiquidacionComModel;
+			import mx.collections.ICollectionView;
+			
+			[Bindable]public var liquidacionComModel:LiquidacionComModel;
+			
+			private function groupFunc(item:Object, field:GroupingField):String
+		    {
+        	  	return LiqComercioLP(item).liqComercio.codComercio.sucEmpresa.descripcion.toString();        	  	        	  	
+      		}
+      		
+      		private function groupFuncLiquidacion(item:Object, field:GroupingField):String{
+      			return "Liq. " + LiqComercioLP(item).liqComercio.idLiqComercio + " - " + dateFormat.format(LiqComercioLP(item).liqComercio.liquidacion.fechaLiquidacion);
+      		}
+      		
+      		private function styleTotalFunction(item:Object,column:AdvancedDataGridColumn):Object{
+      			var obj:Object = { color:"#DD0015",
+								   fontWeight:"bold",
+								   fontSize:14	
+								 };
+      			return obj;
+      		}
+      		
+      		private function recivedRefreshDataGrid():void{
+      			
+      			if(liquidacionComModel.liquidacionesList && liquidacionComModel.liquidacionesList.length > 0){
+      				adgLiquidaciones.dataProvider = gc;
+					gc.refresh();
+      				if(liquidacionComModel.expand){
+      					adgLiquidaciones.collapseAll();
+      				} else {
+      					adgLiquidaciones.expandAll();
+      				}	
+      			
+      				liquidacionComModel.expand = !liquidacionComModel.expand; 
+      			}
+      			
+      			
+      		}
+      		
+      		private function recivedRemoveItemDataGrid():void{
+      			if(adgLiquidaciones)
+      				adgLiquidaciones.dataProvider = new ArrayCollection();
+      		}
+      		
+      		private function clickExpand():void{
+      			liquidacionComModel.expand = !liquidacionComModel.expand;
+      			if(liquidacionComModel.expand)
+      				adgLiquidaciones.expandAll(); 
+      			else 
+      				adgLiquidaciones.collapseAll();
+      		}
+      		
+      		private function mySortFunction(item1:Object, item2:Object):int {
+			     if(LiqComercioLP(item1).idLiqComercioLp < LiqComercioLP(item2).idLiqComercioLp)
+			          return 1;
+			     else
+			          return -1;
+			}
+      		
+		]]>
+	</mx:Script>
+	
+	<mate:Listener type="refreshDataGrig" receive="recivedRefreshDataGrid()"/>
+	<mate:Listener type="removeItemDataGrig" receive="recivedRemoveItemDataGrid()"/>
+	
+	
+	
+	
+	<mx:ApplicationControlBar width="100%">
+		<mx:Label text="Fecha Desde:" styleName="lblInfoBlanco"/>
+		<date:DateFiledMultiLan id="fechaDesde" change="liquidacionComModel.fechaDesde = fechaDesde.selectedDate" selectedDate="{new Date(new Date().fullYear,new Date().month,1)}"/>
+		<mx:Button label="Buscar" click="liquidacionComModel.buscarLiquidaciones()"/>
+		<mx:Button label="{liquidacionComModel.expand ? 'Cerrar árbol' : 'Expandir arbol'}" enabled="{liquidacionComModel.expandButtonEnabled}" click="clickExpand()" />
+	</mx:ApplicationControlBar>
+	
+	<mx:AdvancedDataGrid id="adgLiquidaciones" lockedColumnCount="1" horizontalScrollPolicy="auto" designViewDataType="tree" width="100%" height="100%">
+				<mx:columns>	
+					<mx:AdvancedDataGridColumn headerText="Periodo" paddingLeft="10" width="200" >
+						<mx:itemRenderer>
+						<mx:Component>
+							<mx:Label text="{outerDocument.dateFormat.format(data.periodoDesde) + ' - ' + outerDocument.dateFormat.format(data.periodoHasta)}"/>
+						</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Lista Precio" width="100" >
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.listaPrecio.descripcion}" toolTip="{data.listaPrecio.descripcion}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Cod. Posnet" width="90">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.liqComercio.codComercio.codigoPosnet}" toolTip="{data.liqComercio.codComercio.codigoPosnet}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Liq. Finali." width="90">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.liqComercio.finalizoLiquidado == 'S' ? 'Si' : 'No'}"/>												
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Disp. Impr." width="90">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{data.liqComercio.disponibleImpresion == 'S' ? 'Si' : 'No'}"/>												
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Pdf Liquidación" >
+			                 <mx:itemRenderer>
+			                <mx:Component>
+			                   <mx:HBox horizontalScrollPolicy="off" toolTip="{String(data.rutaPdf).replace('webapps','')}">
+			                   <mx:Script>
+								    <![CDATA[
+								    	import mx.controls.LinkButton;
+								    import com.tarjetafiel.caja.vo.LiqCliente;
+									import mx.controls.Alert;
+									import mx.events.CloseEvent;
+			                        
+			                         public  function abrirPDF(url:String):void {
+		   							   	  
+										   		if(data.rutaPdf && data.rutaPdf != "")
+										   	    	navigateToURL( new URLRequest( String(data.rutaPdf).replace('webapps','')+".pdf"),'_blank'); 
+									} 
+									   
+								    ]]>
+								</mx:Script>
+						         <mx:LinkButton label="{String(data.rutaPdf).replace('webapps','')+'.pdf'}" click="abrirPDF(data.rutaPdf)" rollOverColor="#fd9595" visible="{(data.rutaPdf) ? true : false}"/>
+						         <!--<renderers:LinkButtonRender label="{String(data.rutaPdf).replace('webapps','')+'.pdf'}" click="abrirPDF(data.rutaPdf)" rollOverColor="#fd9595"/>-->
+						        </mx:HBox>
+					         </mx:Component>
+			             	</mx:itemRenderer>
+			            </mx:AdvancedDataGridColumn>
+			            
+					<mx:AdvancedDataGridColumn headerText="Total Bruto" width="100" formatter="{currencyFormat}" dataField="totalBruto" />																															
+					<mx:AdvancedDataGridColumn headerText="Total Neto" width="100" formatter="{currencyFormat}" dataField="totalNeto" />
+					<mx:AdvancedDataGridColumn width="100" styleFunction="styleTotalFunction" headerText="Total Pagar" formatter="{currencyFormat}" dataField="totalPagar" />
+					
+				</mx:columns>																					
+		</mx:AdvancedDataGrid>
+	
+
+	<mx:GroupingCollection id="gc" source="{liquidacionComModel.liquidacionesList}">
+		<mx:grouping>
+			<mx:Grouping>
+				
+				<mx:GroupingField groupingFunction="groupFuncLiquidacion" compareFunction="mySortFunction" >									
+					<mx:SummaryRow summaryPlacement="group">
+             			<mx:fields>
+                 			<mx:SummaryField dataField="totalBruto" label="Total"/>                                 			
+             			</mx:fields>
+           			</mx:SummaryRow>
+           			                           			
+				</mx:GroupingField>	
+				<mx:GroupingField groupingFunction="groupFunc" name="sucEmpresa" descending="true">									
+					<mx:SummaryRow summaryPlacement="group">
+             			<mx:fields>
+                 			<mx:SummaryField dataField="totalBruto" label="Total"/>                                 			
+             			</mx:fields>
+           			</mx:SummaryRow>                           			
+				</mx:GroupingField>																							
+			</mx:Grouping>
+		</mx:grouping>								
+	</mx:GroupingCollection>
+					
+	
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormat"/>
+	<mx:CurrencyFormatter currencySymbol="$" id="currencyFormat" rounding="none" precision="2"/>
+	<mx:NumberFormatter id="numberFormat" rounding="none" precision="0" />		
+	
+</VboxComun>

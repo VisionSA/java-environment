@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="usuarioWebView_creationCompleteHandler(event)" height="100%" title="UsuarioWeb List" width="100%">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.ProgressBar;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.messaging.ChannelSet;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import com.bizit.consulta.web.entity.UsuarioWeb;
+			
+			import spark.components.TitleWindow;
+			
+			[Bindable]
+			public var remotingChannels:ChannelSet;
+			
+			private var progressBar:ProgressBar;
+
+			protected function usuarioWebView_creationCompleteHandler(event:FlexEvent):void
+			{
+				usuarioWebService.list();
+			}
+			
+			protected function usuarioWebView_usuarioWebCreateEventHandler(event:UsuarioWebEvent):void
+			{
+				usuarioWebService.create(event.usuarioWeb);
+				showProgressBar();
+			}
+			
+			protected function usuarioWebView_usuarioWebUpdateEventHandler(event:UsuarioWebEvent):void
+			{
+				usuarioWebService.update(event.usuarioWeb);
+				showProgressBar();
+			}
+			
+			private function showForm(usuarioWeb:UsuarioWeb = null):void 
+			{
+				var form:UsuarioWebForm = PopUpManager.createPopUp(this, UsuarioWebForm, true) as UsuarioWebForm;
+				form.remotingChannels = remotingChannels;
+				form.usuarioWeb = usuarioWeb != null ? usuarioWeb : new UsuarioWeb();
+				form.addEventListener(UsuarioWebEvent.CREATE, usuarioWebView_usuarioWebCreateEventHandler);
+				form.addEventListener(UsuarioWebEvent.UPDATE, usuarioWebView_usuarioWebUpdateEventHandler);
+				PopUpManager.centerPopUp(form);
+			}
+			
+			private function showProgressBar():void {
+				progressBar = PopUpManager.createPopUp(this, ProgressBar, true) as ProgressBar;
+				progressBar.indeterminate = true;
+				progressBar.mode="manual";
+				PopUpManager.centerPopUp(progressBar);
+			}
+			
+			private function closeProgressBar():void {
+				PopUpManager.removePopUp(progressBar);
+			}
+
+			protected function usuarioWebService_createResultHandler(event:ResultEvent):void
+			{
+				var createdUsuarioWeb:UsuarioWeb = event.result as UsuarioWeb;
+				var people:ArrayCollection = usuarioWebGrid.dataProvider as ArrayCollection;
+				people.addItem(createdUsuarioWeb);
+				closeProgressBar();
+			}
+			
+			protected function usuarioWebService_updateResultHandler(event:ResultEvent):void
+			{
+				var updatedUsuarioWeb:UsuarioWeb = event.result as UsuarioWeb;
+				var people:ArrayCollection = usuarioWebGrid.dataProvider as ArrayCollection;
+				for (var i:int=0; i<people.length; i++) {
+					var usuarioWeb:UsuarioWeb = people.getItemAt(i) as UsuarioWeb;
+					if (usuarioWeb.id == updatedUsuarioWeb.id) {
+						people.removeItemAt(i);
+						people.addItemAt(updatedUsuarioWeb, i);
+					}
+				}
+				closeProgressBar();
+			}
+			
+			protected function usuarioWebService_removeResultHandler(event:ResultEvent):void
+			{
+				var people:ArrayCollection = usuarioWebGrid.dataProvider as ArrayCollection;
+				people.removeItemAt(usuarioWebGrid.selectedIndex);
+				closeProgressBar();
+			}
+
+			protected function usuarioWebService_faultHandler(event:FaultEvent):void
+			{
+				closeProgressBar();
+				Alert.show(event.fault.faultString, "Remote Operation Failed");
+			}
+
+			protected function editUsuarioWebBtn_clickHandler(event:MouseEvent):void
+			{
+				if (usuarioWebGrid.selectedIndex > -1) {
+					var selectedUsuarioWeb:UsuarioWeb = usuarioWebGrid.selectedItem as UsuarioWeb;
+					showForm(selectedUsuarioWeb);
+				}
+			}
+
+			protected function deleteUsuarioWebBtn_clickHandler(event:MouseEvent):void
+			{
+				if (usuarioWebGrid.selectedIndex > -1) {
+					var selectedUsuarioWeb:UsuarioWeb = usuarioWebGrid.selectedItem as UsuarioWeb;
+					showProgressBar();
+					usuarioWebService.remove(selectedUsuarioWeb.id);
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RemoteObject channelSet="{remotingChannels}" destination="usuarioWebService" fault="usuarioWebService_faultHandler(event)" id="usuarioWebService">
+			<s:method name="create" result="usuarioWebService_createResultHandler(event)"/>
+			<s:method name="update" result="usuarioWebService_updateResultHandler(event)"/>
+			<s:method name="remove" result="usuarioWebService_removeResultHandler(event)"/>
+		</s:RemoteObject>
+		
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<s:Button click="showForm();" id="newUsuarioWebBtn" label="New UsuarioWeb"/>
+	
+	<mx:DataGrid dataProvider="{usuarioWebService.list.lastResult}" height="80%" id="usuarioWebGrid" width="80%">
+		<mx:columns>
+			<mx:DataGridColumn dataField="nombreUsuario" headerText="Nombre Usuario" id="nombreUsuarioColumn"/>
+            <mx:DataGridColumn dataField="password" headerText="Password" id="passwordColumn"/>
+		<mx:DataGridColumn dataField="email" headerText="Email" id="emailColumn"/>
+        <mx:DataGridColumn dataField="activo" headerText="Activo" id="activoColumn"/>
+        <mx:DataGridColumn dataField="ultimoLogin" headerText="Ultimo Login" id="ultimoLoginColumn"/>
+        <mx:DataGridColumn dataField="fechaCreacion" headerText="Fecha Creacion" id="fechaCreacionColumn"/>
+        </mx:columns>
+	</mx:DataGrid>
+	
+	<s:Group>
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		<s:Button click="editUsuarioWebBtn_clickHandler(event)" id="editUsuarioWebBtn" label="Edit"/>
+		<s:Button click="deleteUsuarioWebBtn_clickHandler(event)" id="deleteUsuarioWebBtn" label="Delete"/>
+	</s:Group>
+</s:Panel>

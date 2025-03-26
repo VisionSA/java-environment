@@ -1,0 +1,275 @@
+<%@include file="/inc/tags.jsp" %>
+<jsp:useBean id="ahora" class="java.util.Date" scope="request"/>
+
+<f:view>
+<html lang="es">
+    
+<head>
+
+	<title>Tarjeta Fiel | Inicio</title>	
+	<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+		<s:script language="javascript">
+		    function popup(pagina,popW,popH) {
+				var w = 0, h = 0;
+				w = screen.width;
+				h = screen.height;
+			
+				var leftPos = (w-popW)/2, topPos = (h-popH)/2;
+			
+				popupWindow=open(pagina,'','resizable=no,scrollbars=yes,width='+popW+',height='+popH+',top='+topPos+',left='+leftPos);
+				if (popupWindow.opener == null){popupWindow.opener = self;}
+			};
+    </s:script> 
+</head>
+<jsp:include page="/inc/includes.jsp" />
+
+
+<body class="hold-transition skin-blue sidebar-mini" onbeforeunload="ShowWait('generalLibroDiarioForm');" onload="${ReporteContabilidadPlanCuentasBean.popupReport}">
+
+
+
+<h:form id="mainMenu" style="display: none">
+  <jsp:include page="/inc/navigation_test.jsp" />
+  <x:commandLink id="cerrarSesion" action="#{LoginBean.salir}"/>
+</h:form>
+
+<jsp:include page="/inc/header.jsp" />
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>INICIO</h1>
+</section>
+
+<section class="content">
+
+
+
+
+		<!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-lg-3 col-xs-6">
+          <a href="#" onclick="callLink('inicio:escritorioLink')">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+              <div class="inner"><h2 style="padding-left: 10px">Escritorio</h2>
+                <div class="icon" style="padding-right: 10px">
+                	<p>&nbsp;</p>
+                	<i class="fa fa-desktop"></i>
+                </div>
+                <p>&nbsp;</p>
+              </div>
+              <div class="small-box-footer"><i>&nbsp;</i>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <a href="#" onclick="callLink('inicio:cajaLink')">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+              <div class="inner"><h2 style="padding-left: 10px">Caja</h2>
+                <div class="icon" style="padding-right: 10px">
+                	<p>&nbsp;</p>
+                	<i class="fa fa-dollar"></i>
+                </div>
+                <p>&nbsp;</p>
+              </div>
+              <div class="small-box-footer"><i>&nbsp;</i>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <a href="#" onclick="callLink('inicio:consultaLink')">        
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+              <div class="inner"><h2 style="padding-left: 10px">Consultas</h2>
+                <div class="icon" style="padding-right: 10px">
+					        <p>&nbsp;</p>
+                	<i class="ion ion-person-add"></i>
+                </div>
+                <p>&nbsp;</p>
+              </div>
+              <div class="small-box-footer"><i>&nbsp;</i>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+			<a href="#" onclick="callLink('inicio:consultaBCRALink')"> 
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+              <div class="inner"><h2 style="padding-left: 10px">Consulta BCRA</h2>
+                <div class="icon" style="padding-right: 10px">
+                	<p>&nbsp;</p>
+                	<i class="fa fa-bank"></i>
+                </div>
+                <p>&nbsp;</p>
+              </div>
+              <div class="small-box-footer"><i>&nbsp;</i>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <a href="#" onclick="callLink('inicio:variosLink')">
+          <!-- small box -->
+          <div class="small-box bg-aqua">
+            <div class="inner"><h2 style="padding-left: 10px">Varios</h2>
+              <div class="icon" style="padding-right: 10px">
+              	<p>&nbsp;</p>
+              	<i class="fa fa-plus-square"></i>
+              </div>
+              <p>&nbsp;</p>
+            </div>
+            <div class="small-box-footer"><i>&nbsp;</i>
+            </div>
+          </div>
+        </a>
+        </div>
+        <!-- ./col -->      
+        <div class="col-lg-3 col-xs-6">
+          <a href="#" onclick="callLink('inicio:gestionClienteLinkFiel')">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+              <div class="inner"><h2 style="padding-left: 10px">Gestión Cliente</h2>
+                <div class="icon" style="padding-right: 10px">
+                	<p>&nbsp;</p>
+                	<i class="ion ion-person-add"></i>
+                </div>
+                <p>&nbsp;</p>
+              </div>
+              <div class="small-box-footer"><i>&nbsp;</i>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- ./col -->        
+        <div class="col-lg-3 col-xs-6">
+          <a href="#" onclick="callLink('inicio:emailLinkFiel')">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+              <div class="inner"><h2 style="padding-left: 10px">Email</h2>
+                <div class="icon" style="padding-right: 10px">
+                	<p>&nbsp;</p>
+                	<i class="fa fa-envelope-o"></i>
+                </div>
+                <p>&nbsp;</p>
+              </div>
+              <div class="small-box-footer"><i>&nbsp;</i></div>
+            </div>
+          </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <a href="#" onclick="callLink('inicio:cajaJudicialLinkFiel')">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+              <div class="inner"><h2 style="padding-left: 10px">Caja Judicial</h2>
+                <div class="icon" style="padding-right: 10px">
+                	<p>&nbsp;</p>
+                	<i class="fa fa-legal"></i>
+                </div>
+                <p>&nbsp;</p>
+              </div>
+              <div class="small-box-footer"><i>&nbsp;</i></div>
+            </div>
+          </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <a href="#" onclick="callLink('inicio:reclamosLinkFiel')">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+              <div class="inner"><h2 style="padding-left: 10px">Reclamos</h2>
+                <div class="icon" style="padding-right: 10px">
+                	<p>&nbsp;</p>
+                	<i class="fa fa-commenting"></i>
+                </div>
+                <p>&nbsp;</p>
+              </div>
+              <div class="small-box-footer"><i>&nbsp;</i></div>
+            </div>
+          </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <a href="#" onclick="callLink('inicio:plasticosLinkFiel')">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+              <div class="inner"><h2 style="padding-left: 10px">Plásticos</h2>
+                <div class="icon" style="padding-right: 10px">
+                	<p>&nbsp;</p>
+                	<i class="fa fa-credit-card"></i>
+                </div>
+                <p>&nbsp;</p>
+              </div>
+              <div class="small-box-footer"><i>&nbsp;</i></div>
+            </div>
+          </a>
+        </div>
+		 <div class="col-lg-3 col-xs-6">
+          <a href="#" onclick="callLink('inicio:PrueComercioLinkFiel')">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+              <div class="inner"><h2 style="padding-left: 10px">Cuatificar Cuotas</h2>
+                <div class="icon" style="padding-right: 10px">
+                	<p>&nbsp;</p>
+                	<i class="fa fa-credit-card"></i>
+                </div>
+                <p>&nbsp;</p>
+              </div>
+              <div class="small-box-footer"><i>&nbsp;</i></div>
+            </div>
+          </a>
+        </div>
+        <!-- ./col -->
+      </div>
+
+    </section> 
+
+	<secure:check />
+
+	<h:form id="inicio" style="display: none">
+			<x:commandLink id="escritorioLink" action="#{LoginBean.callEscritorio}"/>
+			<x:commandLink id="cajaLink" action="#{LoginBean.callCaja}"/>
+			<x:commandLink id="consultaLink" action="#{LoginBean.callConsultasFlex}"/>
+			<x:commandLink id="autorizacionFlexLink" action="#{LoginBean.callAutorizacionFlex}"/>
+			<x:commandLink id="consultaBCRALink" action="#{LoginBean.callConsultaBCRA}"/>
+			<x:commandLink id="variosLink" action="#{LoginBean.callVariosFlex}"/>
+			<x:commandLink id="gestionClienteLinkFiel" action="#{LoginBean.callGestionCliente}"/>
+			<x:commandLink id="emailLinkFiel" action="#{LoginBean.callEmailFiel}"/>
+			<x:commandLink id="cajaJudicialLinkFiel" action="#{LoginBean.callCajaJudicialFiel}"/>
+			<x:commandLink id="reclamosLinkFiel" action="#{LoginBean.callReclamosFiel}"/>
+			<x:commandLink id="plasticosLinkFiel" action="#{LoginBean.callPlasticosFiel}"/>
+			<x:commandLink id="PrueComercioLinkFiel" action="#{LoginBean.callConsultasPruebaComercio}"/>
+			
+	</h:form>
+
+</div>
+<!-- ./Main content -->
+
+
+<%@include file="/inc/footer.jsp" %>
+
+
+<script type="text/javascript">
+
+document.getElementById("sideMenu").innerHTML = `<li class="header">MENU</li>`;
+
+for(var i = 1; i < mainMenu__idJsp1_menu.length-1; i++) {
+    var obj = mainMenu__idJsp1_menu[i];
+    document.getElementById("sideMenu").innerHTML += generateMenu(obj) + `</li>`;
+}
+
+</script>
+
+
+
+</body>
+</html>
+</f:view>

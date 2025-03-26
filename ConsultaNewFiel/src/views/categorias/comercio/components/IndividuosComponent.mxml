@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" minHeight="5"
+		 initialize="vbox1_initializeHandler(event)" verticalAlign="middle" horizontalAlign="center">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			public var titulo:String = "";
+			
+			[Bindable]
+			public var individuosProvider:ArrayCollection = new ArrayCollection();
+			
+			protected function vbox1_initializeHandler(event:FlexEvent):void
+			{
+				tlIndividuos.removeAllChildren();
+			}
+			
+			public function refreshComponent():void
+			{
+				if (tlIndividuos != null)
+				{
+					tlIndividuos.removeAllChildren();
+					lblMensaje.visible = false;
+					lblMensaje.includeInLayout = false;
+					
+					if (individuosProvider != null && 
+						individuosProvider.length > 0)
+					{
+						for each (var individuo:Object in individuosProvider)
+						{
+							var indCmp:IndividuoItem = new IndividuoItem();
+							indCmp.individuo = individuo;
+							tlIndividuos.addChild(indCmp);
+						}
+					}
+					else
+					{
+						lblMensaje.visible = true;
+						lblMensaje.includeInLayout = true;
+					}
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:ApplicationControlBar id="cmpTitle" minWidth="5" styleName="infoApplicationControlBar" dock="true" width="100%">
+		<mx:Label id="lblTitle" text="{titulo}" styleName="lblTitleInfo"/>
+	</mx:ApplicationControlBar>
+	<mx:VBox width="100%" minHeight="2" verticalAlign="middle" verticalGap="0" horizontalAlign="center">
+		<mx:Tile id="tlIndividuos" width="460" height="115"
+				 horizontalGap="2" verticalGap="2"
+				 visible="{!lblMensaje.visible}"
+				 includeInLayout="{!lblMensaje.includeInLayout}"/>
+		<mx:Label id="lblMensaje" text="No se registran datos" 
+				  fontWeight="bold" width="100%" fontSize="13" textAlign="center"
+				  visible="false" includeInLayout="false" color="white"/>
+	</mx:VBox>
+</mx:VBox>

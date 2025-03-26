@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" keyUp="keyPress(event)" resize="startRezise()"
+	xmlns:view="com.tarjetafiel.caja.view.*" width="100%" styleName="hboxBusquedas">
+	<mx:HBox width="100%">
+		<mx:Label text="Busqueda de Empresa" styleName="tituloBusquedas"/>
+	</mx:HBox>	
+	<mx:LinkBar dataProvider="paramPlastico" width="100%"/>
+	<mx:ViewStack id="paramPlastico" width="100%" >				
+			<mx:HBox label="Código Posnet">
+				<mx:Label text="Cód. Posnet:" styleName="lblInfo"/>
+				<mx:TextInput styleName="textInputFiltroBusqueda" id="txtCodPosnet" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>				
+			</mx:HBox>
+			<mx:HBox label="Razón Social">
+				<mx:Label text="Razón Social:" styleName="lblInfo"/>
+				<mx:TextInput styleName="textInputFiltroBusqueda" id="txtRazonSocial" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+				<mx:Label text="C.U.I.T: " styleName="lblInfo" visible="false" includeInLayout="false"/>
+				<mx:TextInput styleName="textInputFiltroBusqueda" visible="false" includeInLayout="false" id="txtCuit" restrict="0-9" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>	
+			</mx:HBox>			
+	</mx:ViewStack>					
+	<mx:HBox width="100%" horizontalAlign="center">
+		<mx:LinkButton label="Buscar Empresa" styleName="busqueda2" click="buscar()"/>		
+		<mx:LinkButton label="Limpiar Filtro" styleName="busqueda2" click="limpiarFiltro()"/>
+	</mx:HBox>
+		
+	<mx:Script>
+		<![CDATA[
+			import com.util.paginacion.Paginador;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.model.EmpresaModel;
+			import com.util.components.alert.AlertWarning;
+			import com.tarjetafiel.caja.event.EmpresaEvent;
+			
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			
+			private var filtro:Filtro = new Filtro();
+			
+			private var empresaModel:EmpresaModel = ModelLocator.getInstance().empresaModel;
+			
+			private var paginador:Paginador = new Paginador();
+			
+			private var buscarPorCodPonet:Boolean = false;
+			
+			public function buscar():void{								
+				paginador.cantidadRegistros = 10;
+				paginador.pagina = 0;
+ 			    this.paginador.cantidadPaginas = 0;		
+ 			    empresaModel.paginador = paginador;		
+				if(this.armarFiltro()){				
+					var evt:EmpresaEvent = new EmpresaEvent(EmpresaEvent.BUSCAR_EMPRESA, filtro);
+					evt.paginador = paginador;
+					evt.dispatch();
+				}
+			}
+			
+			
+			
+			private function armarFiltro():Boolean{
+				
+				if(paramPlastico.selectedIndex == 0 && txtCodPosnet.text.length == 0){
+					AlertWarning.show("Debe ingresar algún dato para realizar la busqueda.");
+					return false;
+				}
+				
+				if(paramPlastico.selectedIndex == 1 && txtRazonSocial.text.length == 0){
+					AlertWarning.show("Debe ingresar algún dato para realizar la busqueda.");
+					return false;
+				}
+					
+					filtro = new Filtro();
+					
+					/*if(txtCuit.text.length > 0){
+						this.filtro.campos.push("cuit");
+						this.filtro.operadores.push(Filtro.LIKE_DER);
+						this.filtro.valores.push(Number(this.txtCuit.text));
+					}*/
+					
+					if(paramPlastico.selectedIndex == 1){
+						buscarPorCodPonet = false;
+						this.filtro.campos.push("razonSocial");
+						this.filtro.operadores.push(Filtro.LIKE_DER);
+						this.filtro.valores.push(this.txtRazonSocial.text.toUpperCase());
+					}
+					
+					if(paramPlastico.selectedIndex == 0){							
+						buscarPorCodPonet = true;				
+						this.filtro.campos.push("codPosnet");
+						this.filtro.operadores.push(Filtro.IGUAL);
+						this.filtro.valores.push(this.txtCodPosnet.text);
+					}
+					
+					empresaModel.filtro = filtro;
+																					
+				
+				return true;
+			}
+						
+			private function startRezise():void{
+				this.txtCodPosnet.setFocus();
+			}
+			
+			private function keyPress(evt:KeyboardEvent):void {
+				if (evt.keyCode == Keyboard.F7){					
+					this.buscar();		
+				}
+			}
+			
+			public function limpiarFiltro():void{
+				this.txtCodPosnet.text = "";
+				if(txtRazonSocial){
+					this.txtCuit.text = "";
+					this.txtRazonSocial.text = "";					
+				}
+			}
+			
+		]]>
+	</mx:Script>
+</mx:VBox>

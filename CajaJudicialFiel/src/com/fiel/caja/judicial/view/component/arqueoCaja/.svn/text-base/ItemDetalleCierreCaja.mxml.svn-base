@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  xmlns:textInput="com.util.components.textInput.*"
+		  verticalAlign="top" horizontalAlign="center" 
+		  creationComplete="vgroup1_creationCompleteHandler(event)"
+		  xmlns:arqueoCaja="com.fiel.caja.judicial.view.component.arqueoCaja.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.CajaCierre;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			import com.tarjetafiel.caja.vo.FormaPagoValor;
+			
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			private var modelo:CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance(); 
+			
+			[Bindable]
+			private var _cajaMp:CajaMP;
+			
+			[Bindable]
+			private var _cajaCierre:CajaCierre;
+			
+			[Bindable (event="changedCajaMpEvent")]
+			public function get cajaMp():CajaMP{
+				return _cajaMp;
+			}
+			
+			public function set cajaMp(target:CajaMP):void
+			{
+				_cajaMp = target;
+				_cajaMp.caja = modelo.cajaApertura.caja;
+				_cajaCierre = new CajaCierre();	
+				_cajaCierre.caja = _cajaMp;
+				_cajaCierre.fecha = new Date();
+				modelo.arrCajaCierre.addItem(_cajaCierre);
+			}
+			
+			public function set cajaCierre(cajaCierre:CajaCierre):void
+			{
+				_cajaCierre = cajaCierre;
+				_cajaCierre.totalArqueo = 0;
+				_cajaCierre.caja = _cajaMp;							
+				var cantFormaPago:int = vGroupformaPago.numElements;
+				for (var i:int=0; i<cantFormaPago;i++)
+				{
+					var formaPago:FormaPagoValorComponent = vGroupformaPago.getElementAt(i) as FormaPagoValorComponent;
+					formaPago.cajaCierre = _cajaCierre;
+				}
+				dispatchEvent(new Event("changedCajaCierre"));
+			}
+			
+			[Bindable (event="changedCajaCierre")]
+			public function get cajaCierre():CajaCierre
+			{
+				return _cajaCierre;
+			}
+			
+			protected function vgroup1_creationCompleteHandler(event:FlexEvent):void
+			{
+				vGroupformaPago.removeAllElements();
+				for each(var formaPago:FormaPagoValor in modelo.formaPagoValoresList)
+				{
+					if((formaPago.formaPago.idFormaPago == _cajaMp.formaPago.idFormaPago))
+					{
+						var formaPagoValorComp:FormaPagoValorComponent = new FormaPagoValorComponent();							
+						formaPagoValorComp.formaPagoValor = formaPago;						
+						formaPagoValorComp.cajaCierre = _cajaCierre;
+						formaPagoValorComp.visible = true;
+						formaPagoValorComp.includeInLayout = true;
+						this.vGroupformaPago.addElement(formaPagoValorComp);
+					}
+				}
+				dispatchEvent(new Event("changedCajaMpEvent"));
+				dispatchEvent(new Event("changedCajaCierre"));	
+			}
+		]]>
+	</fx:Script>
+	<mx:HRule width="100%"/>
+	<s:Label styleName="lblInfo" text="Cuenta {cajaMp.planCuentaDos.titulo}"/>		
+	<mx:HRule width="100%"/>	
+	<s:VGroup id="vGroupformaPago" horizontalAlign="center" verticalAlign="top" width="100%" height="100%">
+	</s:VGroup>			
+		<mx:HRule width="100%"/>
+		<s:HGroup horizontalAlign="center" verticalAlign="middle">
+			<s:Label styleName="lblInfo" text="Total:"/>
+			<textInput:TextInputMoneda text="{_cajaCierre.totalArqueo}" editable="false" width="120"/>	
+			<s:Label styleName="lblInfo" text="Diferencia:" visible="{modelo.mostrarDiferencia}" includeInLayout="{modelo.mostrarDiferencia}"/>
+			<textInput:TextInputMoneda text="{_cajaCierre.diferencia}"  editable="false" visible="{modelo.mostrarDiferencia}" includeInLayout="{modelo.mostrarDiferencia}" fontWeight="bold" color="#DC0000" width="120"/>
+		</s:HGroup>		
+	</s:VGroup>

@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.IndividuoEvaluacion" table="t_vis_eva_individuos" >
+	<id name="idIndividuo" type="java.lang.Long" column="c_id_individuo">
+		<generator class="increment" />
+	</id>
+
+	<property name="apellido" type="java.lang.String" column="c_apellido" not-null="true" length="50"/>
+
+	<property name="apellidoMaterno" type="java.lang.String" column="c_apellido_materno" not-null="false" length="50"/>
+
+	<property name="cbu" type="java.lang.String" column="c_cbu" not-null="false" length="50"/>
+
+	<property name="cuil" type="java.lang.String" column="c_cuil" not-null="true" length="11"/>
+
+	<property name="fechaNacimiento" type="java.sql.Timestamp" column="c_fecha_nacimiento" not-null="false" length="3594"/>
+
+	<property name="hijosCargo" type="java.lang.Long" column="c_hijos_cargo" not-null="false" length="512"/>
+
+	<many-to-one name="actividad" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.ActividadEvaluacion" not-null="false" cascade="save-update">
+		<column name="c_id_actividad" />
+	</many-to-one>
+
+	<many-to-one name="diaPago" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.DiaPago" not-null="false" cascade="none">
+		<column name="c_id_dia_pago" />
+	</many-to-one>
+
+	<many-to-one name="domicilio" class="com.bizitglobal.tarjetafiel.general.negocio.Domicilio" not-null="false" cascade="save-update">
+		<column name="c_id_domicilio" />
+	</many-to-one>
+
+	<many-to-one name="domicilioDoc" class="com.bizitglobal.tarjetafiel.general.negocio.Domicilio" not-null="false" cascade="save-update">
+		<column name="c_id_domicilio_docum" />
+	</many-to-one>
+
+	<many-to-one name="educacion" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Educacion" not-null="false" >
+		<column name="c_id_educacion" />
+	</many-to-one>
+
+	<many-to-one name="estadoCivil" class="com.bizitglobal.tarjetafiel.general.negocio.EstadoCivil" not-null="false" >
+		<column name="c_id_estado_civil" />
+	</many-to-one>
+
+	<property name="idOperador" type="java.lang.Long" column="c_id_operador" not-null="true" length="2560"/>
+
+	<many-to-one name="profesion" class="com.bizitglobal.tarjetafiel.general.negocio.Profesion" not-null="false" >
+		<column name="c_id_profesion" />
+	</many-to-one>
+
+	<many-to-one name="tipoDocumento" class="com.bizitglobal.tarjetafiel.general.negocio.TipoDocumento" not-null="true" >
+		<column name="c_id_tipo_documento" />
+	</many-to-one>
+
+	<many-to-one name="vinculo" class="com.bizitglobal.tarjetafiel.general.negocio.Vinculo" not-null="false" >
+		<column name="c_id_vinculo" />
+	</many-to-one>
+
+	<property name="nombres" type="java.lang.String" column="c_nombres" not-null="true" length="100"/>
+
+	<property name="nroCuenta" type="java.lang.String" column="c_nro_cuenta" not-null="false" length="50"/>
+
+	<property name="nroDocumento" type="java.lang.String" column="c_nro_documento" not-null="true" length="10"/>
+
+	<property name="observacion" type="java.lang.String" column="c_observacion" not-null="false" length="255"/>
+
+	<property name="sexo" type="java.lang.String" column="c_sexo" not-null="false" length="1"/>
+
+	<property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="true" length="3594"/>
+
+	<property name="tipoCuenta" type="java.lang.String" column="c_tipo_cuenta" not-null="false" length="10"/>
+
+	<property name="vehiculoPropio" type="java.lang.String" column="c_vehiculo_propio" not-null="false" length="1"/>
+
+	<set name="domicilios" inverse="false" cascade="save-update"  >
+		<key>
+			<column name="c_id_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.IndividuoDomicilio"/>
+	</set>
+	
+	<set name="telefonos" inverse="false" cascade="all"  >
+		<key>
+			<column name="c_id_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Telefonos"/>
+	</set>
+	
+	<set name="bancos" inverse="false" cascade="all"  >
+		<key>
+			<column name="c_id_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Bancos"/>
+	</set>
+	
+	<set name="vehiculos" inverse="false" cascade="save-update"  >
+		<key>
+			<column name="c_id_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.IndividuoVehiculo"/>
+	</set>
+	
+	<set name="mails" inverse="false" cascade="all"  >
+		<key>
+			<column name="c_id_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Emails"/>
+	</set>
+	
+	<set name="tarjetas" inverse="false" cascade="all"  >
+		<key>
+			<column name="c_id_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Tarjeta"/>
+	</set>
+	
+	<set name="docAdjuntos" inverse="false" cascade="all"  >
+		<key>
+			<column name="c_id_individuo" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Digital"/>
+	</set>
+	
+</class>
+</hibernate-mapping>

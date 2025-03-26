@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+                               
+<hibernate-mapping>
+<class name="com.bizitglobal.tarjetafiel.contabilidad.negocio.PlanCuentaDos" table="t_vis_cont_plan_cuenta" >
+	<id name="idPlanCuenta" type="java.lang.Long" column="c_id_plan_cuenta">
+		<generator class="increment" />
+	</id>
+	<property name="idPadre" type="java.lang.Long" column="c_id_padre" not-null="false" length="100"/>
+    <property name="seccion" type="java.lang.Long" column="c_seccion" not-null="false" length="100"/>
+    <property name="numeroContable" type="java.lang.String" column="numero_contable" not-null="false" length="100"/>
+    <property name="estado" type="java.lang.String" column="estado" not-null="false" length="100"/>
+    <property name="titulo" type="java.lang.String" column="titulo" not-null="false" length="100"/>
+    <property name="cuenta" type="java.lang.Long" column="cuenta" not-null="false" length="100"/>
+    <property name="habilitada" type="java.lang.String" column="habilitada" not-null="false" length="100"/>
+    <property name="operador" type="java.lang.Long" column="operador" not-null="false" length="100"/>
+    <property name="fecha_carga" type="java.sql.Timestamp" column="fecha_carga" not-null="false" length="100"/>
+    <property name="contab" type="java.lang.String" column="c_contab" not-null="false" length="100"/>
+    <property name="fondos" type="java.lang.String" column="c_fondos" not-null="false" length="1"/>
+    <property name="tipoCuenta" type="java.lang.Long" column="c_tipo_cuenta" not-null="false" length="100"/>
+    <property name="moneda" type="java.lang.Long" column="c_moneda" not-null="false" length="100"/>
+    <property name="codBco" type="java.lang.Long" column="c_cod_bco" not-null="false" length="100"/>
+    <property name="codCtaBco" type="java.lang.String" column="c_cod_cta_bco" not-null="false" length="100"/>
+    <property name="signo" type="java.lang.Integer" column="c_signo" not-null="false" length="100"/>
+    <property name="saldo" type="java.math.BigDecimal" column="c_saldo" not-null="false" length="100"/>
+    <property name="importeMaximo" type="java.math.BigDecimal" column="c_importe_maximo" not-null="false" length="100"/>
+    <property name="caja" type="java.lang.Long" column="c_caja" not-null="false" length="100"/>
+    <property name="uso" type="java.lang.String" column="c_uso" not-null="false" length="100"/>
+    <property name="saldoHabitual" type="java.lang.String" column="c_saldo_habitual" not-null="false" length="100"/>
+    <property name="centroCosto" type="java.lang.String" column="c_centro_costo" not-null="true"/>
+    <property name="tipoDeCuenta" type="java.lang.String" column="c_tipo_de_cuenta" not-null="false" length="100"/>
+    <property name="ajusteInflacion" type="java.lang.String" column="c_ajuste_inflacion" not-null="false" length="100"/>
+    <property name="flujoEfectivo" type="java.lang.String" column="c_flujo_efectivo" not-null="false" length="100"/>
+    <property name="tipoFondos" type="java.lang.Integer" column="c_tipo_fondos" not-null="false" length="100"/>
+    <property name="idEstadoCheque" type="java.lang.Long" column="C_ID_ESTADO_CHEQUE" not-null="false" />
+    <property name="idCaja" type="java.lang.Long" column="C_ID_CAJA" not-null="false" />
+    <many-to-one name="formaPago" class="com.bizitglobal.tarjetafiel.general.negocio.FormaPago" not-null="false" >
+		<column name="C_ID_FORMA_PAGO"/>
+	</many-to-one>
+	
+    
+</class>
+</hibernate-mapping>

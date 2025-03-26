@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   creationComplete="titlewindow1_creationCompleteHandler(event)" 
+			   xmlns:textInput="com.util.components.textInput.*"
+			   close="titlewindow1_closeHandler(event)"
+			   title="Agregar Depósito Bancario"
+			   keyUp="titlewindow1_keyUpHandler(event)">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Declarations>
+		<fx:Array id="validators">			
+			<mx:StringValidator id="valNroComprobante" 
+								source="{inptNroComprobante}" 
+								property="text" 
+								required="true"
+								requiredFieldError="El número de comprobante es requerido"/>
+			<mx:DateValidator id="valFechaDeposito" 
+							  source="{dateFechaDeposito}" 
+							  required="true"
+							  property="selectedDate"
+							  requiredFieldError="La fecha de depósito es requerida" />
+			<mx:CurrencyValidator id="valImporte" 
+								  source="{inptImporte}"
+								  property="text"
+								  required="true"
+								  requiredFieldError="El Importe es requerido" 
+								  minValue="0.01"
+								  lowerThanMinError="Debe Ingresar un valor mayor que $ 0.00 (cero)"/>
+			<mx:NumberValidator
+				source="{cmbBanboSuc}"
+				lowerThanMinError="Debe seleccionar un banco"
+				property="selectedIndex"
+				minValue="0"/>  
+		</fx:Array>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.event.ChequeEvent;
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.BancoPropio;
+			import com.tarjetafiel.caja.vo.Cheque;
+			import com.tarjetafiel.caja.vo.ChequeEstado;
+			import com.tarjetafiel.proveedorconexion.business.ConstantesChequesEstados;
+			import com.tarjetafiel.proveedorconexion.event.BancoPropioEvent;
+			
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			import mx.validators.Validator;
+			
+			import skin.BotonAceptarSkin;
+			
+			import utils.ManejadorMensajes;
+			import utils.ManejadorPantallas;
+			
+			[Bindable]
+			private var modelo : CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			
+			[Bindable]
+			private var estadoNuevoDeposito : ChequeEstado = null;
+			
+			private function getLabelBancosPropios(item:Object):String{
+				var bp : BancoPropio = item as BancoPropio;
+				return StringUtil.substitute("{0} ({1}) Cta: {2}",StringUtil.trim(bp.banco.descripcion.toString()),bp.numeroSucursal,bp.numeroCuenta);
+			}
+			
+			
+
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				estadoNuevoDeposito = new ChequeEstado();
+				var obj : Object = new Object();
+				obj.chequeEstado = estadoNuevoDeposito;
+				obj.idEstado = ConstantesChequesEstados.CORRIENTE_ACREDITADO;
+				new ChequeEvent(ChequeEvent.BUSCAR_CHEQUE_ESTADO_BY_ID_EVENT,obj).dispatch();
+				
+				new BancoPropioEvent(BancoPropioEvent.LISTAR_TODOS_EVENT,null).dispatch();
+/*@I3820*/				cmbBanboSuc.setFocus();
+/*@F3820*/			}
+			
+			private function cerrarPopUp():void{
+				ManejadorPantallas.cerrarPop(this);
+			}
+
+
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				cerrarPopUp();
+			}
+
+
+			protected function btnAceptar_clickHandler(event:MouseEvent):void
+			{
+				
+				
+				if (Validator.validateAll(validators).length == 0){//Si no hay errores
+					var deposito : Cheque = new Cheque();
+					/*Datos Formularios*/
+					deposito.bancoPropio = modelo.listaBancosPropios.getItemAt(cmbBanboSuc.selectedIndex) as BancoPropio;
+					deposito.importe = Number(inptImporte.text);
+					deposito.fechaEmision = dateFechaDeposito.selectedDate;
+					deposito.fechaPago = dateFechaDeposito.selectedDate;
+					deposito.numero = inptNroComprobante.text;
+					
+					/*Datos restantes*/					
+					deposito.tipo = "D";
+					deposito.beneficiario = StringUtil.substitute("Deposito {0}", StringUtil.trim(deposito.bancoPropio.banco.descripcion));
+					deposito.esCruzado = 'N';
+					deposito.noOrden = 'N';
+					deposito.conciliado = 'N';
+					deposito.procesado = 'N';
+					deposito.cuenta = deposito.bancoPropio.numeroCuenta;
+					deposito.codigoPostal = deposito.bancoPropio.plaza.toString();
+					deposito.banco = deposito.bancoPropio.banco;
+					deposito.sucursalBanco = deposito.bancoPropio.numeroSucursal.toString();
+					deposito.chequeEstado = this.estadoNuevoDeposito;
+					new ChequeEvent(ChequeEvent.AGREGAR_DEPOSITO_EVENT,deposito).dispatch();
+					cerrarPopUp();
+				}else {
+					ManejadorMensajes.mostrarMensajeError("Datos Inválidos","Agregar Depósito Bancario");
+				}	
+			}
+/*@I3820*/
+			protected function components_keyDownHandler(event:KeyboardEvent):void
+			{
+				switch (event.keyCode)
+				{
+					case Keyboard.ENTER:
+					{
+						focusManager.getNextFocusManagerComponent().setFocus();
+						event.stopPropagation();
+						break;
+					}
+					/* case Keyboard.ESCAPE:
+					{
+						cerrarPopUp();
+						event.stopPropagation();
+						break;
+					} */
+				}
+			}
+
+			protected function btns_keyUpHandler(event:KeyboardEvent):void
+			{
+				switch (event.keyCode)
+				{
+					case Keyboard.ENTER:
+					{
+						Button(event.currentTarget).dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						event.stopPropagation();
+						break;
+					}
+					/* case Keyboard.ESCAPE:
+					{
+						cerrarPopUp();
+						event.stopPropagation();
+						break;
+					} */
+				}
+			}
+			
+			protected function titlewindow1_keyUpHandler(event:KeyboardEvent):void
+			{
+				switch (event.keyCode)
+				{
+					case Keyboard.ESCAPE:
+					{
+						cerrarPopUp();
+						event.stopPropagation();
+						break;
+					}
+				}
+			}
+/*@F3820*/
+		]]>
+	</fx:Script>
+	<mx:Form>		
+<!--@I3820-->		<mx:FormItem label="Banco (Suc):">
+			<s:DropDownList id="cmbBanboSuc" prompt="Seleccione un Banco" selectedIndex="-1" 
+							dataProvider="{modelo.listaBancosPropios}" labelFunction="getLabelBancosPropios" 
+							textAlign="right" width="300" 
+							keyDown="components_keyDownHandler(event)"/>			
+		</mx:FormItem>
+		<mx:FormItem label="Fecha Deposito:" width="100%">
+			<mx:DateField id="dateFechaDeposito" width="100%" formatString="DD/MM/YYYY" textAlign="right"
+						  keyDown="components_keyDownHandler(event)" editable="true" buttonMode="true"/>			
+		</mx:FormItem>
+		<mx:FormItem label="Nro. Comprobante:" width="100%">
+			<s:TextInput id="inptNroComprobante" restrict="0-9" width="100%" textAlign="right"
+						 keyDown="components_keyDownHandler(event)"/> 
+		</mx:FormItem>
+		<mx:FormItem label="Importe:" width="100%">
+			<textInput:TextInputMoneda id="inptImporte" width="100%" textAlign="right" text="0"
+									   keyDown="components_keyDownHandler(event)"/> 
+		</mx:FormItem>
+	</mx:Form>
+	
+	<s:controlBarContent>
+		<s:Rect width="100%"/>
+		<s:Button id="btnAceptar" label="Aceptar" click="btnAceptar_clickHandler(event)" skinClass="skin.BotonAceptarSkin"
+				  keyUp="btns_keyUpHandler(event)"/>
+	</s:controlBarContent>
+<!--@F3820-->
+</s:TitleWindow>

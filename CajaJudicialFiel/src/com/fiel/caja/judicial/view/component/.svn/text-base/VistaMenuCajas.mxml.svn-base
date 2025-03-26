@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   close="titlewindow1_closeHandler(event)"
+			   currentState="{modelo.estadoActualVMenuCajas}">
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		.windowStyles {
+			color: white;
+			letterSpacing: 2;
+		}
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.fiel.caja.judicial.business.ConstantesEstados;
+			import com.fiel.caja.judicial.event.ArqueoCajaEvent;
+			import com.fiel.caja.judicial.event.CajaJudicialEvent;
+			import com.fiel.caja.judicial.event.ChequeEvent;
+			import com.fiel.caja.judicial.model.CajaJudicialModelLocator;
+			import com.tarjetafiel.caja.vo.CajaCierre;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			import com.tarjetafiel.caja.vo.Cheque;
+			import com.tarjetafiel.proveedorconexion.business.ConstantesFormaPago;
+			import com.tarjetafiel.proveedorconexion.vo.SetDataVo;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ModuleEvent;
+			import mx.events.ResizeEvent;
+			
+			import utils.ManejadorMensajes;
+			import utils.ManejadorPantallas;
+			import utils.constantes.ConstantesCierreCaja;
+			
+			[Inspectable][Bindable]
+			public var item:XML = null;
+			
+			[Bindable]
+			private var modelo:CajaJudicialModelLocator = CajaJudicialModelLocator.getInstance();
+			
+			private var oldY:Number = y;
+			private var newY:Number = y;
+			private var oldWidth:Number = width;
+			private var newWidth:Number = width;
+			private var oldHeight:Number = height;
+			private var newHeight:Number = height;
+			
+			private function closePopUp():void
+			{
+				modLoader.unloadModule();
+				modLoader.url = null;
+				modLoader.data = null;
+				modLoader.removeAllChildren();
+				modLoader.removeAllElements();
+				System.gc();
+				new SetDataVo(modelo, "estadoActualVMenuCajas", ConstantesEstados.ESTADO_VMC_BASE).guardarValor();
+			}
+			
+			//Al terminar de descargarse el modulo, se cierra el popUp
+			protected function modLoader_unloadHandler(event:ModuleEvent):void
+			{
+				ManejadorPantallas.cerrarPop(this);
+			}
+			
+			protected function modLoader_readyHandler(event:ModuleEvent):void
+			{
+				ManejadorPantallas.cerrarProgressBar();
+				ManejadorPantallas.centrarPopUp(this);
+			}
+			
+			
+			protected function modLoader_errorHandler(event:ModuleEvent):void
+			{
+				ManejadorPantallas.cerrarProgressBar();
+				ManejadorMensajes.mostrarMensajeError("Error al cargar el módulo");
+				closePopUp();
+			}
+			
+			private function refresh():void
+			{
+				if (item != null && modLoader.data != item.@id)
+				{
+					/*Se debe definir el dominio de la aplicación, ya que el módulo se levanta en un dominio distinto
+					y no se pueden castear todas las clases de la aplicación*/
+					modLoader.applicationDomain = ApplicationDomain.currentDomain;
+					modLoader.removeEventListener(ModuleEvent.UNLOAD, modLoader_unloadHandler);
+					closePopUp();			
+					modLoader.addEventListener(ModuleEvent.UNLOAD, modLoader_unloadHandler);
+					this.title = item.@label;
+					ManejadorPantallas.mostrarProgressBar();
+					modLoader.unloadModule();
+					modLoader.removeAllChildren();
+					modLoader.url = CajaJudicialModelLocator.PATH_MODULES + item.@module;             	
+					modLoader.data = item.@id;	
+					modLoader.loadModule();
+					var state:String = item.@state
+					if (state != null && state != "")
+					{
+						new SetDataVo(modelo, "estadoActualVMenuCajas", item.@state).guardarValor();
+					}
+				}
+			}
+			
+			private function set refreshModule(value:Boolean):void
+			{
+				refresh();
+			}
+			
+			protected function modLoader_resizeHandler(event:ResizeEvent):void
+			{
+				ManejadorPantallas.centrarPopUp(this);
+			}
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				closePopUp();
+/*@I3820*/				event.stopPropagation();
+/*@F3820*/			}
+			
+			protected function btnDescargaValores_clickHandler(event:MouseEvent):void
+			{
+				//Calcula el importe de la descarga de los cheques
+				for each (var mp:CajaMP in modelo.arrCajaMpDescarga)
+				{
+					mp.descargaChequesList = modelo.arrChequesDescargados.toArray();
+					if (mp.formaPago.idFormaPago == ConstantesFormaPago.CHEQUE)
+					{
+						mp.importeRetiro = 0;
+						for each (var chq:Cheque in mp.descargaChequesList)
+						{
+							mp.importeRetiro+= chq.importe;
+						}
+					}
+				}
+				new CajaJudicialEvent(CajaJudicialEvent.DESCARGA_VALORES).dispatch();				
+			}
+			
+			protected function descargaValoresCompleteStt_enterStateHandler(event:FlexEvent):void
+			{
+				new SetDataVo(modelo, "estadoActualVMenuCajas", ConstantesEstados.ESTADO_VMC_BASE).guardarValor();
+				ManejadorMensajes.mostrarMensajeInformacion(modelo.ultimaRespuestaImpresion.mensaje);
+				closePopUp();
+			}
+			
+			protected function btnImpresorasCaja_clickHandler(event:MouseEvent):void
+			{
+				var popUpVMC:VistaMenuCajas = ManejadorPantallas.crearPopUp(this, VistaMenuCajas,true) as VistaMenuCajas;
+				var item:XML = new XML("<node/>");
+				item.@label="Impresoras";
+				item.@module="VistaImpresorasModule.swf";
+				item.@id="2";
+				popUpVMC.item = item;
+				popUpVMC.currentState = ConstantesEstados.ESTADO_VMC_BASE;
+			}
+			
+			protected function btnCierreCajaX_clickHandler(event:MouseEvent):void
+			{
+				new SetDataVo(modelo,"tipoDeCierreCaja",ConstantesCierreCaja.ARQUEO_PROVISORIO).guardarValor();
+				for each(var cierre:CajaCierre in modelo.arrCajaCierre)
+				{
+					cierre.tipo = modelo.tipoDeCierreCaja;
+				}
+				ManejadorMensajes.mostrarMensajeYesNo("¿Confirma la ejecución del cierre " + modelo.tipoDeCierreCaja.toUpperCase()
+					+ "?", onCierreCajaX);
+			}
+			
+			private function onCierreCajaX (evt:CloseEvent):void
+			{
+				if(evt.detail == Alert.YES)
+				{
+					new ArqueoCajaEvent(ArqueoCajaEvent.EJECUTAR_ARQUEO_CAJA).dispatch();
+				}
+			}
+			
+			
+			protected function btnNuevoCierreCajaX_clickHandler(event:MouseEvent):void
+			{										
+				new CajaJudicialEvent(CajaJudicialEvent.BUSCAR_MEDIO_DE_PAGO_CAJA_DESCARGA_VALORES, modelo.cajaApertura).dispatch(); 
+				new CajaJudicialEvent(CajaJudicialEvent.BUSCAR_FORMA_DE_PAGO_VALORES).dispatch();
+				new ChequeEvent(ChequeEvent.LIST_CHEQUES_EN_CAJA, modelo.cajaApertura.caja.lugar).dispatch();
+				new SetDataVo(modelo, "mostrarDiferencia",false).guardarValor();
+				new SetDataVo(modelo,"estadoActualVMenuCajas",ConstantesEstados.ESTADO_VMC_CIERRE_CAJA_X).guardarValor();
+			}
+			
+			
+			protected function btnCierreCajaZ_clickHandler(event:MouseEvent):void
+			{
+				modelo.tipoDeCierreCaja = ConstantesCierreCaja.ARQUEO_DEFINITIVO;
+				for each(var cierre:CajaCierre in modelo.arrCajaCierre)
+				{
+					cierre.tipo = modelo.tipoDeCierreCaja;
+				}
+				ManejadorMensajes.mostrarMensajeYesNo("¿Confirma la ejecución del cierre " + modelo.tipoDeCierreCaja + "?",
+					onCierreCajaZ);
+			}
+			
+			private function onCierreCajaZ (evt:CloseEvent):void
+			{
+				if(evt.detail == Alert.YES)
+				{
+					new ArqueoCajaEvent(ArqueoCajaEvent.EJECUTAR_ARQUEO_CAJA).dispatch();
+				}
+			}
+			
+			protected function cierreCajaZCompletoStt_enterStateHandler(event:FlexEvent):void
+			{
+				ManejadorPantallas.cerrarPop(this);
+				modelo.estadoActualApp = ConstantesEstados.ESTADO_CAJA_CERRADA;
+			}
+		]]>
+	</fx:Script>
+	<!--Controla el cambio de item para actualizar el componente-->
+	<fx:Binding source="item" destination="refreshModule"/>
+	
+	<s:states>
+		<s:State name="Base" id="baseStt"/>
+		<s:State name="DescargaValores" id="descargaValoresStt"/>
+		<s:State name="DescargaValoresComplete" id="descargaValoresCompleteStt"
+				 enterState="descargaValoresCompleteStt_enterStateHandler(event)"/>
+		<s:State name="CierreCajaX" id="cierreCajaXStt"/>
+		<s:State name="NuevoCierreCajaX" id="nuevoCierreCajaXStt"/>
+		<s:State name="CierreCajaZ" id="cierreCajaZStt"/>
+		<s:State name="CierraCajaZCompleto" id="cierreCajaZCompletoStt" 
+				 enterState="cierreCajaZCompletoStt_enterStateHandler(event)"/>
+	</s:states>
+	<s:layout>
+		<s:VerticalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+	</s:layout>
+	<mx:ModuleLoader id="modLoader" width="100%" height="100%" ready="modLoader_readyHandler(event)"
+					 error="modLoader_errorHandler(event)" resize="modLoader_resizeHandler(event)"
+					 unload="modLoader_unloadHandler(event)"/>
+	<s:controlBarContent>
+		<s:Rect width="100%"/>
+		<s:HGroup id="grpBotonesDesc">			
+			<s:Button id="btnDescargaValores" label="Descarga Valores"  
+					  click="btnDescargaValores_clickHandler(event)"
+					  visible="false" includeInLayout="false"
+					  visible.DescargaValores="true" includeInLayout.DescargaValores="true"
+					  visible.DescargaValoresComplete="true" includeInLayout.DescargaValoresComplete="true"/>
+		</s:HGroup>
+		<s:HGroup id="grpBotonesCierre" visible="false" includeInLayout="false"
+				  visible.CierreCajaX="true" includeInLayout.CierreCajaX="true"
+				  visible.NuevoCierreCajaX="true" includeInLayout.NuevoCierreCajaX="true"
+				  visible.CierreCajaZ="true" includeInLayout.CierreCajaZ="true">
+			<s:Button id="btnImpresorasCaja" label="Impresoras"
+					  click="btnImpresorasCaja_clickHandler(event)"/>
+			<s:Rect width="100%"/>
+			<s:Button id="btnCierreCajaX" label="Cierre X" 
+					  click="btnCierreCajaX_clickHandler(event)"
+					  visible.NuevoCierreCajaX="false" includeInLayout.NuevoCierreCajaX="false"/>
+			<s:Button id="btnNuevoCierreCajaX" label="Nuevo Cierre X"
+					  visible="false" includeInLayout="false"
+					  visible.NuevoCierreCajaX="true" includeInLayout.NuevoCierreCajaX="true"
+					  visible.CierreCajaX="false" includeInLayout.CierreCajaX="false"
+					  click="btnNuevoCierreCajaX_clickHandler(event)"/>
+			<s:Button id="btnCierreCajaZ" label="Cierre Z"
+					  visible="false" includeInLayout="false"
+					  visible.CierreCajaZ="true" includeInLayout.CierreCajaZ="true"
+					  visible.NuevoCierreCajaX="true" includeInLayout.NuevoCierreCajaX="true"
+					  click="btnCierreCajaZ_clickHandler(event)"/>
+		</s:HGroup>
+		<s:Button id="btnCancel" label="Cerrar" click="{closePopUp()}"/>
+	</s:controlBarContent>
+</s:TitleWindow>

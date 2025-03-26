@@ -1,0 +1,71 @@
+9
+
+dir
+698
+https://testingpc/svn/testing/trunk/Fondos/target
+https://testingpc/svn/testing
+
+
+
+2017-09-14T13:48:47.972898Z
+48
+gaston
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+maven-archiver
+dir
+
+test-classes
+dir
+
+Fondos-1.0-SNAPSHOT.jar
+file
+
+
+
+
+2017-12-01T12:32:37.320997Z
+b650e8d7f9b653acaa5278a6d391de94
+2017-09-14T13:48:47.972898Z
+48
+gaston
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+619218
+
+classes
+dir
+

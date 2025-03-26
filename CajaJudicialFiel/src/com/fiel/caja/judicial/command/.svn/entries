@@ -1,0 +1,46 @@
+9
+
+dir
+700
+https://testingpc/svn/testing/trunk/CajaJudicialFiel/src/com/fiel/caja/judicial/command
+https://testingpc/svn/testing
+
+
+
+2017-09-14T13:24:36.525632Z
+14
+gaston
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e0ee0915-78c8-aa43-9eab-34e64aeadcd8
+
+Impresoras
+dir
+
+CajaJudicialEvent
+dir
+
+descargaValores
+dir
+
+arqueoCaja
+dir
+
+bancoPropio
+dir
+
+Cheques
+dir
+

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml"
+	layout="vertical" width="100%" height="100%" creationComplete="init()"
+	horizontalAlign="center" xmlns:date="com.util.components.date.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.formatters.DateFormatter;
+		]]>
+	</mx:Script>
+	<mx:Script>
+		<![CDATA[
+			import mx.formatters.DateFormatter;
+		]]>
+	</mx:Script>
+	
+	<mx:Style source="assets/styles/main.css"/>
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.BancoPropio;
+			import business.DetalleExtracto;
+			import flash.net.navigateToURL;
+			import mx.core.Application;
+			import mx.utils.URLUtil;
+			import mx.events.DataGridEvent;
+			import mx.core.FlexSprite;
+			import mx.rpc.events.ResultEvent;
+			import business.ConciliacionFondoCabecera;
+			import mx.collections.ArrayCollection;
+			import events.ConciliacionFondoCabeceraEvent;
+			import events.ConciliacionFondoEvent;
+			import business.MovimientoConciliable;
+			import events.MovimientoConciliableEvent;
+			import flash.sampler.NewObjectSample;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.controls.DateField;
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import com.tarjetafiel.caja.vo.util.Filtro;
+			import events.ExtractoBancarioEvent;
+			import model.ConciliacionModelLocator;
+			[Bindable]
+			private var modelo : ConciliacionModelLocator = ConciliacionModelLocator.getInstance();			
+			private var filtro:Filtro;
+		
+			
+			private function init():void {
+				modelo.listaConciliable.removeAll();
+				modelo.listaCabeceraConciliable.removeAll();
+				var filtro:Filtro = new Filtro();
+				filtro.agregarCampoOperValor("habilitado",Filtro.LIKEXS,"S");
+				new ExtractoBancarioEvent(ExtractoBancarioEvent.BUSCAR_BANCOS_PROPIOS_EVENT,filtro).dispatch();
+			}
+			
+			private function crearInformeResumenConciliados():void {
+				cleanResult();				
+				var detalle:DetalleExtracto = new DetalleExtracto();
+				detalle.idBancoPropio = bancoPropioCBox.selectedItem.idBancoPropio;
+				detalle.fechaCorte = fechaHastaDt.selectedDate;					
+				new ExtractoBancarioEvent(ExtractoBancarioEvent.CALCULAR_SALDO_BCO_FECHACORTE_EVENT,detalle).dispatch();
+				
+				new ExtractoBancarioEvent(ExtractoBancarioEvent.CALCULAR_SALDO_MOV_NO_CONCILIADOS_BANCO_EVENT,detalle).dispatch();
+				
+				var mov:MovimientoConciliable = new MovimientoConciliable();
+				mov.idPlanCuentas = bancoPropioCBox.selectedItem.planCuenta.idPlanCuenta;
+				mov.fechaHasta = fechaHastaDt.selectedDate;
+				new MovimientoConciliableEvent(MovimientoConciliableEvent.CALCULAR_SALDO_MOV_NO_CONCILIADOS_CONTABILIDAD_EVENT,mov).dispatch();
+				
+				new MovimientoConciliableEvent(MovimientoConciliableEvent.CALCULAR_SALDO_CONTABLE_MAYOR_EVENT,mov).dispatch();
+				
+				//Event calcular saldos.
+				//new MovimientoConciliableEvent(MovimientoConciliableEvent.CALCULAR_SALDOS_CALCULADOS_Y_DIFERENCIAS_EVENT,null).dispatch(); 
+			}
+			private function cleanResult():void
+			{
+				modelo.saldoBancoAFechaCorteString="";
+				modelo.movimientosNoConciliadosBancoAFechaCorteString="";
+				modelo.movimientosNoConciliadosContabilidadAFechaCorteString = "";	
+				modelo.saldoContableCalculadoAFechaCorteString = "";
+				modelo.saldoContableRealMayorAFechaCorteString = "";
+				modelo.diferenciaMovimientosConciliadosString = "";
+				
+				modelo.saldoBancoAFechaCorte=0;
+				modelo.movimientosNoConciliadosBancoAFechaCorte=0;
+				modelo.movimientosNoConciliadosContabilidadAFechaCorte = 0;
+				modelo.saldoContableCalculadoAFechaCorte = 0;	
+				modelo.saldoContableRealMayorAFechaCorte = 0;
+				modelo.diferenciaMovimientosConciliados = 0;
+			}
+			
+			private function exportarPDF():void{
+				var bcoPropioSel:BancoPropio = bancoPropioCBox.selectedItem as BancoPropio;
+				
+				var url:String = URLUtil.getServerNameWithPort(Application.application.loaderInfo.url);
+				var protocol:String = URLUtil.getProtocol(Application.application.loaderInfo.url);
+				var fullURL:String = protocol + "://" + url +"/Presentacion";
+				var SQL:String = "&SQL=Select 3 from dual";
+				//Parameters.
+				var URLImagen:String   = "&URLImagen="+fullURL+"/img/fiel/logo_fiel.jpg";
+				var cuentaContable:String = "&cuentaContable="+ String(bcoPropioSel.planCuenta.idPlanCuenta);
+				var descripcion:String = "&descripcion="+ bcoPropioSel.banco.descripcion;
+				var cuentaBancaria:String = "&cuentaBancaria="+ bcoPropioSel.numeroCuenta;
+				var fechaCorte:String  = "&fechaCorte="+df.format(fechaHastaDt.selectedDate);
+				
+				var saldoBanco:String  = "&saldoBanco="+ modelo.saldoBancoAFechaCorteString;
+				var movimientosNoConciliadosBanco:String  = "&movimientosNoConciliadosBanco="+ modelo.movimientosNoConciliadosBancoAFechaCorteString;
+				var movimientosNoConciliadosContabilidad:String  = "&movimientosNoConciliadosContabilidad="+ modelo.movimientosNoConciliadosContabilidadAFechaCorteString;
+				var saldoContableCalculado:String  = "&saldoContableCalculado="+ modelo.saldoContableCalculadoAFechaCorteString;
+				
+				var saldoContableReal:String  = "&saldoContableReal="+ modelo.saldoContableRealMayorAFechaCorteString;
+				
+				var movimientosConciliados:String = "&movimientosConciliados="+ modelo.diferenciaMovimientosConciliadosString;
+				
+				var ruta:String = fullURL+"/report/informeResumenConciliacion.jrxml?";
+				ruta = ruta + URLImagen + SQL + cuentaContable + descripcion + cuentaBancaria + fechaCorte 
+				+ saldoBanco + movimientosNoConciliadosBanco + movimientosNoConciliadosContabilidad 
+				+ saldoContableCalculado + saldoContableReal + movimientosConciliados; 
+				
+	   	    	navigateToURL(new URLRequest(ruta), "_blank");	   	    					
+			}
+			
+			private function doEvent(evt:Event):void {                
+                var fr:FileReference = evt.currentTarget as FileReference;  
+                try {
+                } catch (err:*) { 
+                }
+            }
+ 
+            public function formatearNumero(item:Number):String{
+				return numberFormat.format(item).toString();
+			}
+			
+			public function mostraInfoBanco():void {
+				var bcoPropioSel:BancoPropio = bancoPropioCBox.selectedItem as BancoPropio;
+				lblInfoBanco.text =  bcoPropioSel.banco.descripcion;
+				lblCuentaContable.text = String(bcoPropioSel.planCuenta.idPlanCuenta);
+				lblDescripcion.text =bcoPropioSel.banco.descripcion;
+				lblCuentaBancaria.text = bcoPropioSel.numeroCuenta;
+				cleanResult();
+			}
+		]]>
+	</mx:Script>
+	<mx:DateFormatter id="df" formatString="DD/MM/YYYY"/>	
+	<mx:NumberFormatter id="numberFormat" precision="2" />
+	
+	<mx:Canvas id="canvasContenido">
+		<mx:VBox width="100%" horizontalAlign="center" paddingTop="5">
+			<mx:HBox>
+				<mx:Form>
+					<mx:HBox>
+						<mx:FormItem label="Cuenta:">
+							<mx:ComboBox id="bancoPropioCBox" dataProvider="{modelo.listaBancoPropio}" labelField="numeroCuenta" change="mostraInfoBanco()" />
+						</mx:FormItem>	
+						<mx:FormItem width="150">
+								<mx:Label id="lblInfoBanco" text="DE SAN JUAN S.A." fontSize="12" fontWeight="bold"/>
+						</mx:FormItem>
+					</mx:HBox>					
+					<mx:HBox>
+						<!--<mx:FormItem label="Fecha Desde:">
+							<date:DateFiledMultiLan id="fechaDesdeDt" formatString="DD/MM/YYYY" selectedDate="{new Date()}"/>
+						</mx:FormItem>-->
+						<mx:FormItem label="Fecha Hasta:">
+							<date:DateFiledMultiLan id="fechaHastaDt" formatString="DD/MM/YYYY" selectedDate="{new Date()}"/>
+						</mx:FormItem>
+					</mx:HBox>								
+				</mx:Form>
+				<mx:Button id="buscarBtn" label="Buscar" click="crearInformeResumenConciliados()"/>
+				<mx:Button id="exportarBtn" label="Exportar PDF" click="exportarPDF()"/>
+			</mx:HBox>
+			<mx:VBox horizontalAlign="left">
+				<mx:Label text="Conciliacion de Bancos" fontSize="18" width="100%"/>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:FormItem  width="150" horizontalAlign="left" >
+						<mx:Label text="Cuenta Contable: " fontSize="12" fontWeight="bold" />
+					</mx:FormItem>
+					<mx:FormItem  width="350" horizontalAlign="left">
+						<mx:Label text="390" id="lblCuentaContable" fontSize="12" />
+					</mx:FormItem>
+				</mx:HBox>				
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:FormItem  width="150" horizontalAlign="left" >
+						<mx:Label text="Descripcion: " fontSize="12" fontWeight="bold"/>
+					</mx:FormItem>
+					<mx:FormItem  width="350" horizontalAlign="left">
+						<mx:Label   text="DE SAN JUAN S.A." id="lblDescripcion" fontSize="12" />
+					</mx:FormItem>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:FormItem  width="150" horizontalAlign="left" >
+						<mx:Label text="Cuenta Bancaria: " fontSize="12" fontWeight="bold"/>
+					</mx:FormItem>
+					<mx:FormItem  width="350" horizontalAlign="left">
+						<mx:Label text="050001900652" id="lblCuentaBancaria" fontSize="12" />
+					</mx:FormItem>
+				</mx:HBox>	
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:Spacer width="100%"/>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:FormItem  width="150" horizontalAlign="left" >
+						<mx:Label text="Fecha de Corte: " fontSize="12" fontWeight="bold"/>
+					</mx:FormItem>
+					<mx:FormItem  width="350" horizontalAlign="left">
+						<mx:Label text="{fechaHastaDt.text}" id="lblFechaCorte" fontSize="12" />
+					</mx:FormItem>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:Spacer width="100%"/>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:HRule width="500" height="8"/>
+				</mx:HBox>
+				
+				
+				<!--Calculo de los saldos-->
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:FormItem  width="400" horizontalAlign="left" >
+						<mx:Label text="Saldo del banco a fecha de corte: " fontSize="12" />
+					</mx:FormItem>
+					<mx:FormItem  width="100" horizontalAlign="right">
+						<mx:Label text="{modelo.saldoBancoAFechaCorteString}" id="lblSaldoAFechaCorte" fontSize="12" />
+					</mx:FormItem>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:FormItem  width="400" horizontalAlign="left" >
+						<mx:Label text="Movimientos no conciliados del banco: " fontSize="12" />
+					</mx:FormItem>
+					<mx:FormItem  width="100" horizontalAlign="right">
+						<mx:Label text="{modelo.movimientosNoConciliadosBancoAFechaCorteString}" id="lblMovNoConciliadosBanco" fontSize="12" />
+					</mx:FormItem>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:FormItem  width="400" horizontalAlign="left" >
+						<mx:Label text="Movimientos no conciliados de contabilidad: " fontSize="12" />
+					</mx:FormItem>
+					<mx:FormItem  width="100" horizontalAlign="right">
+						<mx:Label text="{modelo.movimientosNoConciliadosContabilidadAFechaCorteString}" id="lblMovNoConciliadosContabilidad" fontSize="12" />
+					</mx:FormItem>
+				</mx:HBox>
+				
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:FormItem  width="400" horizontalAlign="left" >
+						<mx:Label text="Saldo contable calculado a la fecha de corte: " fontSize="12" />
+					</mx:FormItem>
+					<mx:FormItem  width="100" horizontalAlign="right">
+						<mx:Label text="{modelo.saldoContableCalculadoAFechaCorteString}" id="lblSaldoCalculadoFechaCorte" fontSize="12" />
+					</mx:FormItem>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:Spacer width="100%"/>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:HRule width="500" height="8"/>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:FormItem  width="400" horizontalAlign="left"  >
+						<mx:Label text="Saldo contable real a la fecha de corte (Mayor): " fontSize="12" />
+					</mx:FormItem>
+					<mx:FormItem  width="100" horizontalAlign="right">
+						<mx:Label text="{modelo.saldoContableRealMayorAFechaCorteString}" id="lblSaldoMayor" fontSize="12" />
+					</mx:FormItem>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:Spacer width="100%"/>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:HRule width="500" height="8"/>
+				</mx:HBox>
+				<mx:HBox  width="100%" horizontalAlign="left" >
+					<mx:FormItem  width="400" horizontalAlign="left" >
+						<mx:Label text="Movimientos conciliados: " fontSize="12" />
+					</mx:FormItem>
+					<mx:FormItem  width="100" horizontalAlign="right">
+						<mx:Label text="{modelo.diferenciaMovimientosConciliadosString}" id="lblMovimientosConciliados" fontSize="12" />
+					</mx:FormItem>
+				</mx:HBox>
+				
+			</mx:VBox>			
+		</mx:VBox>
+	</mx:Canvas>
+	
+</mx:Module>

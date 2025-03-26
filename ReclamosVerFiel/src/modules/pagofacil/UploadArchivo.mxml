@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+				creationComplete="onCreationComplete()" 
+				close="PopUpManager.removePopUp(this)" 
+				layout="vertical" title="Adjuntar Archivo Reclamo" 
+				horizontalAlign="center" verticalAlign="middle" 
+				xmlns:upload="com.util.upload.*" showCloseButton="true" 
+				width="428" height="252">
+	<mx:Script>
+		<![CDATA[
+			import com.util.components.alert.AlertOk;
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import models.ApplicationModel;
+			
+			[Bindable]public var manager:Manager;
+			
+			[Bindable]public var applicationModel:ApplicationModel;
+			
+			/* [Bindable]private var _tipoArchivo:String = "PF"; */
+			
+			[Bindable]private var _tipoArchivo:String = "";
+			
+			[Bindable]private var url:String;
+			
+			[Bindable]public var extensionFiltro;
+			 
+			[Bindable]public var nombreFiltro;
+			
+			private function uploadComplete():void{
+				manager.getFechaServidor(); 
+				AlertOk.show('El archivo se subio con éxito',closePopUp);
+				
+			}
+			
+			
+			
+			private function closePopUp (evt:CloseEvent):void{
+				manager.procesarListaReclamoDoc(parseInt(manager.idReclamoNuevo));
+				PopUpManager.removePopUp(this);			
+				
+				
+				
+				/* AlertOk.show('salir '); */
+			}
+			
+			private function onCreationComplete():void{
+				var array:Array = Application.application.url.split("/");
+				/* uploadComp.uploadURL = "/" +array[3] + "/UploadFilePagoFacil"; */
+				uploadComp.uploadURL = "/" +array[3] + "/UploadArchivoReclamos";
+				//manager.procesarListaTipoCobro() */;
+				
+				
+				/* cmbTipoCobro.selectedIndex = 0;
+				AlertOk.show(manager.listaTipoCobro.length + " close" ); */
+				/* uploadComp.params = {"tipoArchivo" : cmbTipoCobro.selectedItem.nombreSufijo}; */
+						
+				
+			}
+			
+			public function set tipoArchivo(value:String):void{
+				_tipoArchivo = value;
+				/* uploadComp.params = {"tipoArchivo" : value}; */
+			}
+			
+			
+            
+            private function closeHandler(event:Event):void {
+                /* myLabel.text = "You selected: " +  ComboBox(event.target).selectedItem.label;
+                myData.text = "Data: " +  ComboBox(event.target).selectedItem.data; */
+                /* AlertOk.show(ComboBox(event.target).selectedItem.nombreSufijo + "close" ); */
+                //uploadComp.params = [{"idReclamo" : "1","idOperador":"1233","NombreOperador":"Carlos","apellidoOperador":"Ibanez"}];	
+				var o:Object = new Object();
+            }     
+			
+			
+		]]>
+	</mx:Script>
+	<!--<mx:HBox width="100%" horizontalAlign="center">
+			<mx:Label text="Subir Archivo "/>						
+		</mx:HBox>-->
+	<!--<mx:VBox width="378" horizontalAlign="left" >
+			<mx:Label text="Tipo de Archivo: "/>				
+			<mx:ComboBox id="cmbTipoCobro" labelField="nombre" dataProvider="{manager.listaTipoCobro}" width="151"  close="closeHandler(event)"  />
+	
+		</mx:VBox>-->
+	
+	<upload:UploadReclamo id="uploadComp" 
+						  nombreFiltro="{nombreFiltro}" 
+						  extensionFiltro="{extensionFiltro}"  
+						  idReclamo ="{manager.idReclamoNuevo}"  
+						  nombreOperador="{applicationModel.operador.nombre}" 
+						  apellidoOperador="{applicationModel.operador.apellido}" 
+						  idOperador="{applicationModel.operador.codigo}"   
+						  fileUploaded="uploadComplete()"  
+						  horizontalAlign="center" 
+						  backgroundAlpha="1.0"
+						  horizontalScrollPolicy="off"
+						  verticalScrollPolicy="off" width="250"/>
+	
+</mx:TitleWindow>

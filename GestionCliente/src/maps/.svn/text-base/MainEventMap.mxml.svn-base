@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import modules.ModulesView;
+			import com.asfusion.mate.utils.debug.Debugger;
+			
+			import events.OperadorEvent;
+			
+			import managers.PermisosManager;
+			
+			import models.ApplicationModel;
+			
+			import modules.principal.GestionClienteModule;
+			import modules.ModulesView;
+			
+			
+			import mx.events.FlexEvent;
+			
+		]]>
+	</mx:Script>
+	
+	
+	<Debugger level="{Debugger.ALL}" />
+	
+	<!-- ######################### CLIENTE #############################-->
+	
+	<EventHandlers type="{FlexEvent.APPLICATION_COMPLETE}" debug="true">		
+		<MethodInvoker generator="{ApplicationModel}" method="buscarConfiguracionModo"/>
+	</EventHandlers>
+	
+		<!-- LOGIN -->
+   	<EventHandlers type="{OperadorEvent.BUSCAR_OPERADOR_LOGUEADO}">
+   		<RemoteObjectInvoker instance="{operadorService}" method="getOperadorLogueado" arguments="{event.codigoOperador}">
+   			<resultHandlers>
+   				<MethodInvoker generator="{ApplicationModel}" method="resultOperadorLogueado" arguments="{resultObject}"/>
+   			</resultHandlers>
+   			<faultHandlers>
+   				<MethodInvoker generator="{ApplicationModel}" method="faultConsultaOperador" arguments="{fault}"/>   				
+   			</faultHandlers>
+   		</RemoteObjectInvoker>
+   	</EventHandlers>   	
+   	<!-- LOGIN -->
+	
+	<Injectors targets="{[GestionClienteFiel,GestionClienteModule,ModulesView]}">
+		<ObjectBuilder generator="{ApplicationModel}" >
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector targetKey="applicationModel" source="{lastReturn}"/>
+	</Injectors>
+	
+   
+  <mx:RemoteObject id="operadorService" destination="GenericSessionDestination" source="operadorServiceTarget"/>
+ 
+</EventMap>
+

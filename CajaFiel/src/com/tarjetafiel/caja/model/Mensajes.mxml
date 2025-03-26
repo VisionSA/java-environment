@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="load = false, PopUpManager.removePopUp(this)" layout="vertical" width="400" height="300" showCloseButton="true" title="Mensajes">
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			public var load:Boolean = false;			
+		]]>
+	</mx:Script>
+	<mx:TextArea width="100%" height="100%" id="txtMensajes" editable="false"/>
+	
+</mx:TitleWindow>

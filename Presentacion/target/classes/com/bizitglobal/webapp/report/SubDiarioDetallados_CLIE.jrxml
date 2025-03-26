@@ -1,0 +1,964 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="SubDiarioDetallados_CLIE"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="URLImagen" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="Fecha_desde" isForPrompting="true" class="java.util.Date"/>
+	<parameter name="Fecha_hasta" isForPrompting="true" class="java.util.Date"/>
+	<queryString><![CDATA[/* Esta consulta detalla el libro de iva dividido por items, diferenciando los cargos e intereses con sus respectivos IVA para los conceptos de Adelanto en Efectivo, Refinanciación y Repactación. La primer parte de la consulta calcula todos los items no incluidos en los mencionados y luego, por cada UNION ALL en la consulta, se calcula cada item con su IVA de los conceptos necesitados*/
+SELECT to_date(TO_CHAR(fecha,'DD/MM/YYYY'),'DD/MM/YYYY') AS FECHA,
+  MAX(c_descripcion) Concepto,
+  c_id_liq_cliente AS Comprobante,
+  c_id_cliente Cod_Cliente,
+  MAX(nombre) Nombre,
+  (SUM(total) * c_signo) Total,
+  (SUM(iva)   * c_signo) IVA,
+  ((SUM(total)* c_signo) - (SUM(iva)* c_signo)) Importe_Neto
+FROM
+  (SELECT to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') AS Fecha, DET.C_NOMBRE AS TIPO, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || ind.c_nombres) nombre, con.c_descripcion, det.c_id_tipo_concepto_det CondIva, con.c_id_concepto, cta.c_signo, cta.c_id_tranascciones, SUM(cta.c_importe) AS Total, (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN T_VIS_EVA_INDIVIDUOS IND
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) BETWEEN
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('01/06/2011','DD/MM/YYYY') AND to_date('02/06/2011','DD/MM/YYYY')
+  AND cta.c_id_liq_cliente       IS NOT NULL
+  AND det.c_id_tipo_concepto_det IN (2,3,8,9,10,11)
+  GROUP BY to_date(cta.c_fecha_facturacion,'DD/MM/YYYY'), DET.C_NOMBRE, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || ind.c_nombres), con.c_descripcion, det.c_id_tipo_concepto_det, con.c_id_concepto, cta.c_signo, cta.c_id_tranascciones
+  ORDER BY con.c_descripcion, cta.c_id_liq_cliente
+  )
+WHERE C_ID_CONCEPTO_DETALLE NOT IN (23,24,25,155,58,59,60,70,75,76,77,78,724,725)--Excluye Intereses y Cargos de Adelanto Efectivo, Refinanciación y Repactación
+and total <>0 --Para que filtre valores que tengan saldo 0
+GROUP BY c_id_cliente,
+  fecha,
+  c_id_liq_cliente,
+  C_ID_CONCEPTO,
+  c_signo,
+  c_id_tranascciones
+UNION ALL
+/*Se calculan para Adelanto en efectivo los Intereses con su IVA */
+SELECT TO_DATE(TO_CHAR(FECHA,'DD/MM/YYYY'),'DD/MM/YYYY') AS FECHA,
+  MIN(c_descripcion
+  || ' - '
+  || TIPO) Concepto,
+  c_id_liq_cliente AS Comprobante,
+  C_ID_CLIENTE COD_CLIENTE,
+  MAX(NOMBRE) NOMBRE,
+  (SUM(Total) * C_SIGNO) Total,
+  (SUM(IVA)   * C_SIGNO) IVA,
+  ((SUM(total)* c_signo) - (SUM(iva)* c_signo)) Importe_Neto
+FROM
+  (SELECT to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') AS Fecha, DET.C_NOMBRE AS TIPO, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || ind.c_nombres) nombre, con.c_descripcion, det.c_id_tipo_concepto_det CondIva, con.c_id_concepto, cta.c_signo, cta.c_id_tranascciones, SUM(cta.c_importe) AS Total, (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN T_VIS_EVA_INDIVIDUOS IND
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) BETWEEN
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('01/06/2011','DD/MM/YYYY') AND to_date('02/06/2011','DD/MM/YYYY')
+  AND cta.c_id_liq_cliente       IS NOT NULL
+  AND det.c_id_tipo_concepto_det IN (2,3,8,9,10,11)
+  GROUP BY TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY'), CTA.C_ID_TRANASCCIONES, DET.C_NOMBRE, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || IND.C_NOMBRES), CON.C_DESCRIPCION, DET.C_ID_TIPO_CONCEPTO_DET, CON.C_ID_CONCEPTO, CTA.C_SIGNO
+  ORDER BY CON.C_DESCRIPCION, DET.c_nombre, cta.c_id_liq_cliente
+  )
+WHERE C_ID_CONCEPTO_DETALLE IN (23,24)--Intereses e IVA de adelanto en efectivo, 23 Intereses, 24 IVA
+and total <>0 --Para que filtre valores que tengan saldo 0
+GROUP BY c_id_cliente,
+  fecha,
+  c_id_liq_cliente,
+  C_ID_CONCEPTO,
+  C_SIGNO,
+  c_id_tranascciones
+UNION ALL
+/*Se calculan para Adelanto en efectivo los Cargos con su IVA */
+SELECT TO_DATE(TO_CHAR(FECHA,'DD/MM/YYYY'),'DD/MM/YYYY') AS FECHA,
+  MIN(c_descripcion
+  || ' - '
+  || TIPO) Concepto,
+  c_id_liq_cliente AS Comprobante,
+  C_ID_CLIENTE COD_CLIENTE,
+  MAX(NOMBRE) NOMBRE,
+  (SUM(Total) * C_SIGNO) Total,
+  (SUM(IVA)   * C_SIGNO) IVA,
+  ((SUM(total)* c_signo) - (SUM(iva)* c_signo)) Importe_Neto
+FROM
+  (SELECT to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') AS Fecha, DET.C_NOMBRE AS TIPO, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || ind.c_nombres) nombre, con.c_descripcion, det.c_id_tipo_concepto_det CondIva, con.c_id_concepto, cta.c_signo, cta.c_id_tranascciones, SUM(cta.c_importe) AS Total, (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN T_VIS_EVA_INDIVIDUOS IND
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) BETWEEN
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('01/06/2011','DD/MM/YYYY') AND to_date('02/06/2011','DD/MM/YYYY')
+  AND cta.c_id_liq_cliente       IS NOT NULL
+  AND det.c_id_tipo_concepto_det IN (2,3,8,9,10,11)
+  GROUP BY TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY'), CTA.C_ID_TRANASCCIONES, DET.C_NOMBRE, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || IND.C_NOMBRES), CON.C_DESCRIPCION, DET.C_ID_TIPO_CONCEPTO_DET, CON.C_ID_CONCEPTO, CTA.C_SIGNO
+  ORDER BY CON.C_DESCRIPCION, DET.c_nombre, cta.c_id_liq_cliente
+  )
+WHERE C_ID_CONCEPTO_DETALLE IN (25,155)--Cargo e IVA de adelanto en efectivo, 25 Cargo, 155 IVA
+and total <>0 --Para que filtre valores que tengan saldo 0
+GROUP BY c_id_cliente,
+  fecha,
+  c_id_liq_cliente,
+  C_ID_CONCEPTO,
+  C_SIGNO,
+  c_id_tranascciones
+UNION ALL
+/*Se calculan para Repactación los Intereses con su IVA */
+SELECT TO_DATE(TO_CHAR(FECHA,'DD/MM/YYYY'),'DD/MM/YYYY') AS FECHA,
+  MIN(c_descripcion
+  || ' - '
+  || TIPO) Concepto,
+  c_id_liq_cliente AS Comprobante,
+  C_ID_CLIENTE COD_CLIENTE,
+  MAX(NOMBRE) NOMBRE,
+  (SUM(Total) * C_SIGNO) Total,
+  (SUM(IVA)   * C_SIGNO) IVA,
+  ((SUM(total)* c_signo) - (SUM(iva)* c_signo)) Importe_Neto
+FROM
+  (SELECT to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') AS Fecha, DET.C_NOMBRE AS TIPO, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || ind.c_nombres) nombre, con.c_descripcion, det.c_id_tipo_concepto_det CondIva, con.c_id_concepto, cta.c_signo, cta.c_id_tranascciones, SUM(cta.c_importe) AS Total, (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN T_VIS_EVA_INDIVIDUOS IND
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) BETWEEN
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('01/06/2011','DD/MM/YYYY') AND to_date('02/06/2011','DD/MM/YYYY')
+  AND cta.c_id_liq_cliente       IS NOT NULL
+  AND det.c_id_tipo_concepto_det IN (2,3,8,9,10,11)
+  GROUP BY TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY'), CTA.C_ID_TRANASCCIONES, DET.C_NOMBRE, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || IND.C_NOMBRES), CON.C_DESCRIPCION, DET.C_ID_TIPO_CONCEPTO_DET, CON.C_ID_CONCEPTO, CTA.C_SIGNO
+  ORDER BY CON.C_DESCRIPCION, DET.c_nombre, cta.c_id_liq_cliente
+  )
+WHERE C_ID_CONCEPTO_DETALLE IN (58,60)--Intereses e IVA de repactacion, 58 Intereses, 60 IVA
+and total <>0 --Para que filtre valores que tengan saldo 0
+GROUP BY c_id_cliente,
+  fecha,
+  c_id_liq_cliente,
+  C_ID_CONCEPTO,
+  C_SIGNO,
+  c_id_tranascciones
+UNION ALL
+/*Se calculan para Repactación los Cargos con su IVA */
+SELECT TO_DATE(TO_CHAR(FECHA,'DD/MM/YYYY'),'DD/MM/YYYY') AS FECHA,
+  MIN(c_descripcion
+  || ' - '
+  || TIPO) Concepto,
+  c_id_liq_cliente AS Comprobante,
+  C_ID_CLIENTE COD_CLIENTE,
+  MAX(NOMBRE) NOMBRE,
+  (SUM(Total) * C_SIGNO) Total,
+  (SUM(IVA)   * C_SIGNO) IVA,
+  ((SUM(total)* c_signo) - (SUM(iva)* c_signo)) Importe_Neto
+FROM
+  (SELECT to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') AS Fecha, DET.C_NOMBRE AS TIPO, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || ind.c_nombres) nombre, con.c_descripcion, det.c_id_tipo_concepto_det CondIva, con.c_id_concepto, cta.c_signo, cta.c_id_tranascciones, SUM(cta.c_importe) AS Total, (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN T_VIS_EVA_INDIVIDUOS IND
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) BETWEEN
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('01/06/2011','DD/MM/YYYY') AND to_date('02/06/2011','DD/MM/YYYY')
+  AND cta.c_id_liq_cliente       IS NOT NULL
+  AND det.c_id_tipo_concepto_det IN (2,3,8,9,10,11)
+  GROUP BY TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY'), CTA.C_ID_TRANASCCIONES, DET.C_NOMBRE, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || IND.C_NOMBRES), CON.C_DESCRIPCION, DET.C_ID_TIPO_CONCEPTO_DET, CON.C_ID_CONCEPTO, CTA.C_SIGNO
+  ORDER BY CON.C_DESCRIPCION, DET.c_nombre, cta.c_id_liq_cliente
+  )
+WHERE C_ID_CONCEPTO_DETALLE IN (59,70)--Cargos e IVA de repactacion, 59 Cargos, 70 IVA
+and total <>0 --Para que filtre valores que tengan saldo 0
+GROUP BY c_id_cliente,
+  fecha,
+  c_id_liq_cliente,
+  C_ID_CONCEPTO,
+  C_SIGNO,
+  c_id_tranascciones
+UNION ALL
+/*Se calculan para Refinanciación los Cargos con su IVA */
+SELECT TO_DATE(TO_CHAR(FECHA,'DD/MM/YYYY'),'DD/MM/YYYY') AS FECHA,
+  MIN(c_descripcion
+  || ' - '
+  || TIPO) Concepto,
+  c_id_liq_cliente AS Comprobante,
+  C_ID_CLIENTE COD_CLIENTE,
+  MAX(NOMBRE) NOMBRE,
+  (SUM(Total) * C_SIGNO) Total,
+  (SUM(IVA)   * C_SIGNO) IVA,
+  ((SUM(total)* c_signo) - (SUM(iva)* c_signo)) Importe_Neto
+FROM
+  (SELECT to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') AS Fecha, DET.C_NOMBRE AS TIPO, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || ind.c_nombres) nombre, con.c_descripcion, det.c_id_tipo_concepto_det CondIva, con.c_id_concepto, cta.c_signo, cta.c_id_tranascciones, SUM(cta.c_importe) AS Total, (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN T_VIS_EVA_INDIVIDUOS IND
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) BETWEEN
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('01/06/2011','DD/MM/YYYY') AND to_date('02/06/2011','DD/MM/YYYY')
+  AND cta.c_id_liq_cliente       IS NOT NULL
+  AND det.c_id_tipo_concepto_det IN (2,3,8,9,10,11)
+  GROUP BY TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY'), CTA.C_ID_TRANASCCIONES, DET.C_NOMBRE, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || IND.C_NOMBRES), CON.C_DESCRIPCION, DET.C_ID_TIPO_CONCEPTO_DET, CON.C_ID_CONCEPTO, CTA.C_SIGNO
+  ORDER BY CON.C_DESCRIPCION, DET.c_nombre, cta.c_id_liq_cliente
+  )
+WHERE C_ID_CONCEPTO_DETALLE IN (75,78)--Cargos e IVA de refinanciación, 75 Cargos, 78 IVA
+and total <>0 --Para que filtre valores que tengan saldo 0
+GROUP BY c_id_cliente,
+  fecha,
+  c_id_liq_cliente,
+  C_ID_CONCEPTO,
+  C_SIGNO,
+  c_id_tranascciones
+UNION ALL 
+/*Se calculan para Refinanciación los Intereses con su IVA */
+SELECT TO_DATE(TO_CHAR(FECHA,'DD/MM/YYYY'),'DD/MM/YYYY') AS FECHA,
+  MIN(c_descripcion
+  || ' - '
+  || TIPO) Concepto,
+  c_id_liq_cliente AS Comprobante,
+  C_ID_CLIENTE COD_CLIENTE,
+  MAX(NOMBRE) NOMBRE,
+  (SUM(Total) * C_SIGNO) Total,
+  (SUM(IVA)   * C_SIGNO) IVA,
+  ((SUM(total)* c_signo) - (SUM(iva)* c_signo)) Importe_Neto
+FROM
+  (SELECT to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') AS Fecha, DET.C_NOMBRE AS TIPO, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || ind.c_nombres) nombre, con.c_descripcion, det.c_id_tipo_concepto_det CondIva, con.c_id_concepto, cta.c_signo, cta.c_id_tranascciones, SUM(cta.c_importe) AS Total, (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN T_VIS_EVA_INDIVIDUOS IND
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) BETWEEN
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('01/06/2011','DD/MM/YYYY') AND to_date('02/06/2011','DD/MM/YYYY')
+  AND cta.c_id_liq_cliente       IS NOT NULL
+  AND DET.C_ID_TIPO_CONCEPTO_DET IN (2,3,8,9,10,11)
+  GROUP BY TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY'), CTA.C_ID_TRANASCCIONES, DET.C_NOMBRE, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || IND.C_NOMBRES), CON.C_DESCRIPCION, DET.C_ID_TIPO_CONCEPTO_DET, CON.C_ID_CONCEPTO, CTA.C_SIGNO
+  ORDER BY CON.C_DESCRIPCION, DET.c_nombre, cta.c_id_liq_cliente
+  )
+WHERE C_ID_CONCEPTO_DETALLE IN (76,77)--Intereses e IVA de refinanciación, 76 Intereses, 77 IVA
+and total <>0 --Para que filtre valores que tengan saldo 0
+GROUP BY c_id_cliente,
+  fecha,
+  c_id_liq_cliente,
+  C_ID_CONCEPTO,
+  C_SIGNO,
+  c_id_tranascciones
+  UNION ALL
+SELECT TO_DATE(TO_CHAR(FECHA,'DD/MM/YYYY'),'DD/MM/YYYY') AS FECHA,
+  MIN(c_descripcion
+  || ' - '
+  || TIPO) Concepto,
+  c_id_liq_cliente AS Comprobante,
+  C_ID_CLIENTE COD_CLIENTE,
+  MAX(NOMBRE) NOMBRE,
+  (SUM(Total) * C_SIGNO) Total,
+  (SUM(IVA)   * C_SIGNO) IVA,
+  ((SUM(total)* c_signo) - (SUM(iva)* c_signo)) Importe_Neto
+FROM
+  (SELECT to_date(cta.c_fecha_facturacion,'DD/MM/YYYY') AS Fecha, DET.C_NOMBRE AS TIPO, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || ind.c_nombres) nombre, con.c_descripcion, det.c_id_tipo_concepto_det CondIva, con.c_id_concepto, cta.c_signo, cta.c_id_tranascciones, SUM(cta.c_importe) AS Total, (
+    CASE
+      WHEN det.c_id_tipo_concepto_det = 3
+      THEN SUM(cta.c_importe)
+      ELSE 0
+    END) AS Iva
+  FROM t_vis_tra_conceptos con
+  INNER JOIN t_vis_tra_conceptos_detalle det
+  ON con.c_id_concepto = det.c_id_concepto
+  INNER JOIN t_vis_tra_ctacte_clientes cta
+  ON det.c_id_concepto_detalle = cta.c_id_concepto_detalle
+  INNER JOIN t_vis_tra_clientes cli
+  ON cli.c_id_cliente = cta.c_id_cliente
+  INNER JOIN T_VIS_EVA_INDIVIDUOS IND
+  ON CLI.C_ID_INDIVIDUO = IND.C_ID_INDIVIDUO
+  WHERE TRUNC(CTA.C_FECHA_FACTURACION) BETWEEN
+    $P{Fecha_desde} and $P{Fecha_hasta}
+    --to_date('01/06/2011','DD/MM/YYYY') AND to_date('02/06/2011','DD/MM/YYYY')
+  --AND cta.c_id_liq_cliente       IS NOT NULL
+  AND DET.C_ID_TIPO_CONCEPTO_DET IN (2,3,8,9,10,11)
+  GROUP BY TO_DATE(CTA.C_FECHA_FACTURACION,'DD/MM/YYYY'), CTA.C_ID_TRANASCCIONES, DET.C_NOMBRE, DET.C_ID_CONCEPTO_DETALLE, cta.c_id_liq_cliente, cta.c_id_cliente, (ind.c_apellido ||  ',' || IND.C_NOMBRES), CON.C_DESCRIPCION, DET.C_ID_TIPO_CONCEPTO_DET, CON.C_ID_CONCEPTO, CTA.C_SIGNO
+  ORDER BY CON.C_DESCRIPCION, DET.c_nombre, cta.c_id_liq_cliente
+  )
+WHERE C_ID_CONCEPTO_DETALLE IN (724,725)--nota debito judicial y IVA nota debito
+and total <>0 --Para que filtre valores que tengan saldo 0
+GROUP BY c_id_cliente,
+  fecha,
+  c_id_liq_cliente,
+  C_ID_CONCEPTO,
+  C_SIGNO,
+  c_id_tranascciones
+ORDER BY fecha,
+  NOMBRE,
+  CONCEPTO]]></queryString>
+
+	<field name="FECHA" class="java.sql.Timestamp"/>
+	<field name="CONCEPTO" class="java.lang.String"/>
+	<field name="COMPROBANTE" class="java.math.BigDecimal"/>
+	<field name="COD_CLIENTE" class="java.math.BigDecimal"/>
+	<field name="NOMBRE" class="java.lang.String"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<field name="IVA" class="java.math.BigDecimal"/>
+	<field name="IMPORTE_NETO" class="java.math.BigDecimal"/>
+
+	<variable name="SUM_IMPORTE_NTO" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_NETO}]]></variableExpression>
+	</variable>
+	<variable name="SUM_IVA" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{IVA}]]></variableExpression>
+	</variable>
+	<variable name="SUM_TOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+	<variable name="SUM_IMPORTE_NTO_PARCIAL" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Sum">
+		<variableExpression><![CDATA[$F{IMPORTE_NETO}]]></variableExpression>
+	</variable>
+	<variable name="SUM_IVA_PARCIAL" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Sum">
+		<variableExpression><![CDATA[$F{IVA}]]></variableExpression>
+	</variable>
+	<variable name="SUM_TOTAL_PARCIAL" class="java.math.BigDecimal" resetType="Group" resetGroup="fecha" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+
+		<group  name="fecha" isStartNewColumn="true" >
+			<groupExpression><![CDATA[$F{FECHA}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="16"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="311"
+						y="2"
+						width="87"
+						height="11"
+						key="textField-23"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Total por Día:"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="480"
+						y="2"
+						width="52"
+						height="13"
+						key="textField-24"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_TOTAL_PARCIAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="451"
+						y="2"
+						width="27"
+						height="13"
+						key="textField-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_IVA_PARCIAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="398"
+						y="2"
+						width="50"
+						height="13"
+						key="textField-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_IMPORTE_NTO_PARCIAL}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="cliente" >
+			<groupExpression><![CDATA[$F{NOMBRE}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="concepto" >
+			<groupExpression><![CDATA[$F{CONCEPTO}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="2"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="59"  isSplitAllowed="true" >
+				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="432"
+						y="3"
+						width="100"
+						height="53"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{URLImagen}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement
+						x="7"
+						y="15"
+						width="291"
+						height="30"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" pdfFontName="Courier-Bold" size="16" isBold="true" isPdfEmbedded ="true"/>
+					</textElement>
+				<text><![CDATA[SUBDIARIO IVA VENTAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="44"
+						width="49"
+						height="15"
+						key="staticText-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[CLIENTE]]></text>
+				</staticText>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="22"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="2"
+						width="90"
+						height="15"
+						key="staticText-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Opcion: Detallado]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="276"
+						y="1"
+						width="66"
+						height="17"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<text><![CDATA[Fecha desde:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="341"
+						y="3"
+						width="52"
+						height="15"
+						key="textField-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{Fecha_desde}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="403"
+						y="1"
+						width="66"
+						height="17"
+						key="staticText-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<text><![CDATA[Fecha Hasta:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="469"
+						y="3"
+						width="52"
+						height="16"
+						key="textField-22"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{Fecha_hasta}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="19"  isSplitAllowed="true" >
+				<rectangle radius="0" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="3"
+						width="536"
+						height="15"
+						forecolor="#000000"
+						backcolor="#CCCCCC"
+						key="element-1"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</rectangle>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="3"
+						y="4"
+						width="40"
+						height="13"
+						key="textField-40"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Fecha"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="42"
+						y="4"
+						width="67"
+						height="13"
+						key="textField-41"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Nro.Compr"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="109"
+						y="4"
+						width="59"
+						height="13"
+						key="textField-42"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Cod Cte/Com"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="168"
+						y="4"
+						width="144"
+						height="13"
+						key="textField-43"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Razón Social"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="313"
+						y="4"
+						width="87"
+						height="13"
+						key="textField-44"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Concepto"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="400"
+						y="4"
+						width="50"
+						height="13"
+						key="textField-45"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Import Nto"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="453"
+						y="4"
+						width="27"
+						height="13"
+						key="textField-46"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["IVA"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="482"
+						y="4"
+						width="52"
+						height="13"
+						key="textField-47"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["total"]]></textFieldExpression>
+				</textField>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="13"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="-1"
+						y="0"
+						width="50"
+						height="13"
+						key="textField-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{FECHA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="49"
+						y="0"
+						width="58"
+						height="13"
+						key="textField-28"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{COMPROBANTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="107"
+						y="0"
+						width="54"
+						height="13"
+						key="textField-29"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{COD_CLIENTE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="166"
+						y="0"
+						width="144"
+						height="13"
+						key="textField-30"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="311"
+						y="0"
+						width="87"
+						height="13"
+						key="textField-31"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="398"
+						y="0"
+						width="50"
+						height="13"
+						key="textField-32"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IMPORTE_NETO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="451"
+						y="0"
+						width="27"
+						height="13"
+						key="textField-33"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{IVA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="480"
+						y="0"
+						width="52"
+						height="13"
+						key="textField-34"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{TOTAL}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="19"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="309"
+						y="5"
+						width="170"
+						height="13"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Courier" size="8" isPdfEmbedded ="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Pagina " + $V{PAGE_NUMBER} + " de   "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="478"
+						y="5"
+						width="47"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Courier" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="true" pdfEncoding ="CP1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="84"
+						y="5"
+						width="70"
+						height="13"
+						key="textField-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Bottom">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="7"
+						y="5"
+						width="76"
+						height="13"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Fecha Impresión:]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="405"
+						y="5"
+						width="0"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="18"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="318"
+						y="3"
+						width="55"
+						height="13"
+						key="textField-36"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["TOTAL:"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="468"
+						y="3"
+						width="64"
+						height="13"
+						key="textField-37"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_TOTAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="432"
+						y="3"
+						width="32"
+						height="13"
+						key="textField-38"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_IVA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="###0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="373"
+						y="3"
+						width="55"
+						height="13"
+						key="textField-39"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_IMPORTE_NTO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</summary>
+</jasperReport>

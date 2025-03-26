@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="calcularImporte()" layout="vertical" showCloseButton="true" close="PopUpManager.removePopUp(this)" horizontalAlign="center"  title="Confirmación de Autorización">
+		<mx:Form height="244" width="50%">
+		   <mx:FormItem styleName="tituloBusquedas" label="Nro tarjeta:" >
+				<mx:Label id ="lblPlastico" styleName="lblInfo" text="{confirmacionConsumoViewModel.nroPlastico}"/>
+			</mx:FormItem>
+			<mx:FormItem styleName="tituloBusquedas" label="Cliente:">
+				<mx:Label styleName="lblInfo" text="{confirmacionConsumoViewModel.nombreCompleto}"/>
+			</mx:FormItem>
+			<mx:FormItem styleName="tituloBusquedas" label="Codigo Comercio:">
+				<mx:Label styleName="lblInfo" id="lblCodComer" text="{confirmacionConsumoViewModel.comercio.codigoPosnet}"/>
+			</mx:FormItem>
+			<mx:FormItem styleName="tituloBusquedas" label="Comercio:">
+				<mx:Label styleName="lblInfo" text="{confirmacionConsumoViewModel.comercio.sucEmpresa.descripcion}"/>
+			</mx:FormItem>
+			<mx:FormItem styleName="tituloBusquedas" label="Cuotas:">
+				<mx:Label styleName="lblInfo" id="lblCuota" text="{simuladorViewModel.cantidadCuotaSeleccionada}"/>
+			</mx:FormItem>
+			<mx:FormItem styleName="tituloBusquedas" label="Monto:">
+				<mx:Label styleName="lblInfo" id="lblMonto" text="{simuladorViewModel.monto}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Importe Cuota" styleName="tituloBusquedas" >
+			         <mx:Label styleName="lblInfo" text="{confirmacionConsumoViewModel.importeCuota}"/>
+			</mx:FormItem>
+       </mx:Form>
+		<mx:HBox width="253" horizontalAlign="center" verticalAlign="middle">
+				<mx:Button label="Aceptar" click="confirmarConsumo()" id="btnAceptar"/>
+				<mx:Button label="Cancelar" click ="PopUpManager.removePopUp(this)"/>
+		</mx:HBox>
+		
+	<mx:Script>
+		<![CDATA[
+			import views.models.SimuladorViewModel;
+			import views.models.ConfirmacionConsumoViewModel;
+			import mx.managers.PopUpManager;
+		    [Bindable]public var confirmacionConsumoViewModel:ConfirmacionConsumoViewModel;
+		    [Bindable]public var simuladorViewModel:SimuladorViewModel;
+		    
+		    private function confirmarConsumo():void{
+				 this.confirmacionConsumoViewModel.confirmarConsumo(lblMonto.text,lblCodComer.text,lblPlastico.text,lblCuota.text,confirmacionConsumoViewModel.comercio.nroCupon);// falta agregarle el nro cupon
+				  PopUpManager.removePopUp(this);
+		    }
+		    
+		     private function  calcularImporte():void{
+     	   	   	 var monto:Number = Number(lblMonto.text);
+			   	 var cantCuotas:Number = Number(lblCuota.text);
+			   	 this.simuladorViewModel.monto= monto;
+			   	 this.simuladorViewModel.cantidadCuotaSeleccionada= cantCuotas;
+			     this.simuladorViewModel.calcularCuota(monto);
+			      //aca buscamos la cuota seleccionada y seteamos la el importe y el total
+		      	 this.confirmacionConsumoViewModel.calcularImporte(cantCuotas);
+		      	
+		    }
+		    	
+		  
+		    
+		]]>
+	</mx:Script>	
+
+	
+</mx:TitleWindow>

@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" paddingBottom="5" paddingTop="5" layout="vertical" 
+		   xmlns:upload="com.util.upload.*" xmlns:pagofacil="modules.pagofacil.*" xmlns:date="com.util.components.date.*" 
+		   xmlns:paginacion="com.util.paginacion.*" backgroundColor="#6E6E6E" width="100%" 
+		   xmlns:mate="http://mate.asfusion.com/" height="100%"
+		   xmlns:controls="com.iwobanas.controls.*" xmlns:local="*"
+		   xmlns:dataGridClasses="com.iwobanas.controls.dataGridClasses.*"
+		   creationComplete="activarVariables()">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Operador;
+			import com.tarjetafiel.caja.vo.Provincia;
+			import com.util.components.alert.AlertOk;
+			
+			
+			import models.ApplicationModel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ICollectionView;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.formatters.DateFormatter;
+			
+			import vo.PlasticoMoverLugar;
+			import vo.PlasticoObservacion;
+			import com.iwobanas.controls.dataGridClasses.filters.MultipleChoiceFilter;
+			
+			[Bindable]public var manager:Manager;
+			[Bindable]public var applicationModel:ApplicationModel;
+			[Bindable]
+			public var filter:MultipleChoiceFilter;
+			var operador:Operador = new Operador;
+			
+			
+			private var listarCuentasClientes:ListarCuentasClientes = new ListarCuentasClientes();
+			
+			private var editarReclamo:EditarReclamo;
+			private var listarReclamo:ListarReclamo;
+			private var nuevoReclamo:NuevoReclamo;
+			private var nuevoReclamoComercio:NuevoReclamoComercio;
+			private var editarReclamoComercio:EditarReclamoComercio;
+			private var listarReclamoComercio:ListarReclamoComercio;
+			private var _dateformatter:DateFormatter = new DateFormatter();
+			
+			
+			
+			
+			private function formatDate(item:Object,column:DataGridColumn):String
+			{
+				_dateformatter.formatString = "DD/MM/YY";
+				return _dateformatter.format(item[column.dataField]);
+			}
+			
+			
+			public function activarVariables() {
+				manager.ListLugarPlasticos = null;
+				manager.ListObservacionPlasticos = null;
+				manager.buscarPlasticoLugar();
+				manager.procesarListaReclamoTiposTop();
+				manager.procesarListaObservacionPlastico();
+				
+			}
+			
+			
+			public function cambiarDeLugar() {
+				var encontro:Boolean;
+				encontro = false;
+				
+				for(var i=0; i<manager.archivosList1.length; i++){
+					var item:PlasticoMoverLugar = manager.archivosList1.getItemAt(i) as PlasticoMoverLugar;
+					if (item.lugarPlastico ==  manager.lugarDescripcion)
+					{
+						encontro = true;
+					}
+					
+				}
+				
+				if (manager.modoTipoReclamo > 0 &&   adg2.originalCollection.length > 0 && !encontro)
+				{	
+					operador = applicationModel.operador;
+					manager.cambiarDelugar(manager.archivosList1,operador.codigo)
+					
+				} else if (manager.modoTipoReclamo == 0) {				
+					AlertOk.show("Debe elegir un lugar adonde enviar los platicos");
+				} else if (encontro) {				
+					AlertOk.show("Esta llevando plasticos al mismo lugar ");
+				} else {
+					AlertOk.show("No movio pasticos para cambiar de lugar");
+				} 
+			}
+			
+			
+			
+			
+			
+			
+			private function buscar():void{
+				/* AlertOk.show(" buscar "); */
+				
+				//manager.fechaBuscar = dateDesde.selectedDate;
+				//manager.listAllArchivos(dateDesde.selectedDate);
+			}
+			
+			public function paginacionCompleta():void{
+				/* AlertOk.show("ProcesarPagofacil paginacionCompleta"); */
+				//paginador.paginacionCompleta(manager.paginador);
+				
+				manager.ListLugarPlasticos = null;
+				manager.ListObservacionPlasticos = null;
+				manager.archivosList1  = new ArrayCollection();
+				manager.modoTipoReclamo = 0;
+				manager.buscarPlasticoLugar();
+				manager.procesarListaReclamoTiposTop();
+				manager.procesarListaObservacionPlastico();
+				//cmbObservacion.dataProvider = "{filter.labels}";
+				
+			}
+			
+			
+			
+			
+			
+			public function procesar(data:Object):void{
+				// manager.procesarArchivo(data as ArchivoCobroExternoNegocio); 				 
+			}
+			
+			
+			private function seleccionarReclamo(event:Event):void {
+				
+				/* myLabel.text = "You selected: " +  ComboBox(event.target).selectedItem.label;
+				myData.text = "Data: " +  ComboBox(event.target).selectedItem.data; */
+				if (cmbReclamoTop.selectedIndex == 0) {
+					manager.modoTipoReclamo = 0;
+				} else {
+					manager.modoTipoReclamo = ComboBox(event.target).selectedItem.idPlasticoLugar;
+					manager.lugarDescripcion = ComboBox(event.target).selectedItem.descripcion;
+				}
+				
+				//AlertOk.show(manager.modoTipoReclamo + " ");
+				
+				//buscar();
+				
+			}
+			
+			
+			public function seleccionarObservacion(event:IndexChangedEvent,combo:ComboBox):void {
+				
+				/* myLabel.text = "You selected: " +  ComboBox(event.target).selectedItem.label;
+				myData.text = "Data: " +  ComboBox(event.target).selectedItem.data; */
+				
+				//AlertOk.show(ComboBox(event.target).selectedItem.descripcion);
+				
+				if (combo.selectedIndex < 0  ) {
+					//combo.dataProvider.addItem(ComboBox(event.target).selectedItem.descripcion);
+					combo.dataProvider.addItem(combo.selectedItem);
+				}
+				
+				//AlertOk.show(manager.modoTipoReclamo + " ");
+				
+				//buscar();
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormat"/>
+	<mx:CurrencyFormatter id="currenencyFormatter" rounding="nearest" precision="2" currencySymbol="$"/>
+	
+	<mx:Resize id="resize"/>
+	
+	<mx:Component id="inlineEditor">
+		<mx:ComboBox   dataProvider="{outerDocument.manager.ListObservacionPlasticos}"  labelField="descripcion"  >
+			<!--<mx:dataProvider>
+			
+			<mx:String>Retira por oficina</mx:String>
+			<mx:String>Se deja aviso</mx:String>
+			<mx:String>Vivienda alquilada</mx:String>
+			<mx:String>Casa deshabitada</mx:String>
+			<mx:String>Se mudo</mx:String>
+			<mx:String>Domicilio erroneo</mx:String>
+			<mx:String>Informe malo</mx:String>
+			<mx:String>No vive aqui</mx:String>
+			<mx:String>Rechaza plastico</mx:String>
+			<mx:String>Fallecido</mx:String>
+			<mx:String>Otros</mx:String>
+			</mx:dataProvider>-->
+		</mx:ComboBox>
+	</mx:Component> 
+	
+	<mate:Listener type="paginacionCompleta" receive="paginacionCompleta()"/>
+	
+	<mx:HBox horizontalGap="0" height="100%" width="100%">
+		<mx:VBox label="Eventos" width="100%" height="100%" horizontalAlign="center">
+			
+			
+			<controls:MDataGrid id="adg1"  height="50%" width="100%" dataProvider="{manager.archivosList}"
+								allowMultipleSelection="true" 
+								dragEnabled="true" 
+								dropEnabled="true" 
+								dragMoveEnabled="true"   >
+				<controls:columns>
+					<!--<dataGridClasses:MDataGridColumn headerText="codigo" dataField="codigobarra" textAlign="left" width="90" />-->
+					<dataGridClasses:MDataGridColumn headerText="Lote" dataField="numeroLote" textAlign="right" width="60"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+					<dataGridClasses:MDataGridColumn headerText="F.Lote" dataField="fechaLote" labelFunction="formatDate" textAlign="left" width="70"/>					
+					<dataGridClasses:MDataGridColumn headerText="Cuenta" dataField="cuenta" textAlign="right" width="65" />
+					<dataGridClasses:MDataGridColumn headerText="Apellido Nombre" dataField="apellidoNombre" textAlign="left" width="150"/>
+					<dataGridClasses:MDataGridColumn headerText="C." dataField="cantidadPlastico" textAlign="right" width="30" />					
+					<dataGridClasses:MDataGridColumn headerText="Operacion" dataField="operacionDesc" textAlign="left" width="80"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+					<dataGridClasses:MDataGridColumn headerText="Lugar" dataField="lugarPlastico" textAlign="left" width="120"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+					<dataGridClasses:MDataGridColumn headerText="F.Lugar" dataField="fechaUltimoLugar" labelFunction="formatDate" textAlign="left" width="70" />					
+					<dataGridClasses:MDataGridColumn headerText="Operador" dataField="operador" textAlign="left" width="110"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+					<dataGridClasses:MDataGridColumn headerText="V.Desde" dataField="vigenciaDesde" labelFunction="formatDate" textAlign="left" width="70" />					
+					<dataGridClasses:MDataGridColumn headerText="V.Hasta" dataField="vigenciaHasta" labelFunction="formatDate" textAlign="left" width="70" />
+					<dataGridClasses:MDataGridColumn headerText="E.Cliente" dataField="estadoCliente" textAlign="left" width="80"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+					<dataGridClasses:MDataGridColumn headerText="E.Cobranza" dataField="estado_cobranza" textAlign="left" width="90" 
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+					<dataGridClasses:MDataGridColumn headerText="Partido" dataField="partido" textAlign="left" width="80"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor"/>
+					<dataGridClasses:MDataGridColumn headerText="Observacion" dataField="observacion" textAlign="left" width="130"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+					
+				</controls:columns>
+			</controls:MDataGrid>
+			
+			<mx:ApplicationControlBar width="100%">
+				
+				<mx:HBox width="100%" horizontalAlign="left" verticalAlign="top">
+					
+					<mx:Label text="A que lugar:" styleName="lblInfoCaja"/>
+					<mx:ComboBox id="cmbReclamoTop"  labelField="descripcion" styleName="tituloBusquedas"
+								 dataProvider="{manager.ListLugarPlasticos}"  width="30%"  close="seleccionarReclamo(event)" />
+					
+					<mx:Spacer width="10%" />
+					<local:SearchBox target="{adg1}" color = "white" width="20%"  />
+					<mx:Spacer width="10%" />					
+					<mx:Label text="Cantidad :" color = "white"  />
+					<mx:Label text="{ICollectionView(adg1.dataProvider).length} / {adg1.originalCollection.length}" color = "white"  />
+				</mx:HBox>		
+			</mx:ApplicationControlBar>	
+			
+			<controls:MDataGrid id="adg2"  height="50%" width="100%" dataProvider="{manager.archivosList1}"
+								allowMultipleSelection="true" 
+								dragEnabled="true" 
+								dropEnabled="true" 
+								dragMoveEnabled="true" editable="true" >
+				<controls:columns>
+					<!--<dataGridClasses:MDataGridColumn headerText="codigo" dataField="codigobarra" textAlign="left" width="90" />-->
+					<dataGridClasses:MDataGridColumn headerText="Lote" dataField="numeroLote" textAlign="right" width="60" editable="false"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" />
+					<dataGridClasses:MDataGridColumn headerText="F.Lote" dataField="fechaLote" labelFunction="formatDate" textAlign="left" width="70" editable="false"/>					
+					<dataGridClasses:MDataGridColumn headerText="Cuenta" dataField="cuenta" textAlign="right" width="65" editable="false"/>
+					<dataGridClasses:MDataGridColumn headerText="Apellido Nombre" dataField="apellidoNombre" textAlign="left" width="150" editable="false"/>
+					<dataGridClasses:MDataGridColumn headerText="C." dataField="cantidadPlastico" textAlign="right" width="30" editable="false" />					
+					<dataGridClasses:MDataGridColumn headerText="Operacion" dataField="operacionDesc" textAlign="left" width="80"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" editable="false" />
+					<dataGridClasses:MDataGridColumn headerText="Lugar" dataField="lugarPlastico" textAlign="left" width="120"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" editable="false"/>
+					<dataGridClasses:MDataGridColumn headerText="F.Lugar" dataField="fechaUltimoLugar" labelFunction="formatDate" textAlign="left" width="70" editable="false" />					
+					<dataGridClasses:MDataGridColumn headerText="Operador" dataField="operador" textAlign="left" width="110"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" editable="false" />
+					<dataGridClasses:MDataGridColumn headerText="V.Desde" dataField="vigenciaDesde" labelFunction="formatDate" textAlign="left" width="70" editable="false"/>					
+					<dataGridClasses:MDataGridColumn headerText="V.Hasta" dataField="vigenciaHasta" labelFunction="formatDate" textAlign="left" width="70" editable="false" />
+					<dataGridClasses:MDataGridColumn headerText="E.Cliente" dataField="estadoCliente" textAlign="left" width="80"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" editable="false" />
+					<dataGridClasses:MDataGridColumn headerText="E.Cobranza" dataField="estado_cobranza" textAlign="left" width="90" 
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" editable="false"/>
+					<dataGridClasses:MDataGridColumn headerText="Partido" dataField="partido" textAlign="left" width="80"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" editable="false"/>
+					<dataGridClasses:MDataGridColumn headerText="Observacion" dataField="observacionNew" textAlign="left" width="130"
+													 filterEditor="com.iwobanas.controls.dataGridClasses.filterEditors.MultipleChoiceFilterEditor" itemEditor="{inlineEditor}"/>
+					
+				</controls:columns>
+			</controls:MDataGrid>
+			
+			<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" horizontalGap="2">
+				<mx:ControlBar>
+					<mx:Spacer width="20%" />
+					<mx:Label text="Cantidad :" color = "white" />
+					<mx:Label text="{ICollectionView(adg2.dataProvider).length} / {adg2.originalCollection.length}" color = "white" />
+					<mx:Spacer width="20%" />
+					<mx:Button label="Cambiar de Lugar" click="cambiarDeLugar()"/>
+				</mx:ControlBar>
+				
+			</mx:HBox>			
+			
+			
+		</mx:VBox>		
+		
+	</mx:HBox>
+	
+	
+	
+	
+</mx:Module>
+

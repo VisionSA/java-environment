@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VboxComun xmlns="views.categorias.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Estados, Acciones e Historicos">
+	<mx:Script>
+		<![CDATA[
+			import mx.utils.StringUtil;
+			import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+			import views.categorias.cliente.models.EncabezadoClienteModel;
+			[Bindable]public var encabezadoClienteModel:EncabezadoClienteModel;
+			
+			
+			[Bindable]
+			private var modelo : ModelLocatorGeneral = ModelLocatorGeneral.getInstance();
+			
+			private function getFechaEstadoCobranza(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaEstadoCobranza);
+			}
+			
+			private function getFechaEstadoComercial(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaEstadoComercial);
+			}
+			
+			private function getFechaEjecucion(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaEjecucion);
+			}
+			
+			private function getNombreCobrador(item:Object, column:DataGridColumn):String {
+				if (item.cobrador!=null){
+					return StringUtil.substitute("{0}, {1}",item.cobrador.cobrador.apellido,item.cobrador.cobrador.nombre);	
+				}else {
+					return "";
+				}
+				
+			}
+			
+			private function getAccionDescripcion(item:Object, column:DataGridColumn):String {
+				return item.accion.descripcion+"";
+			}
+			
+			private function getFechaDesdeHistLineaCredito(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaDesde);
+			}
+			
+			private function getFechaHastaHistLineaCredito(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaHasta);
+			}
+			
+			private function getFechaUltimaModifHistLineaCredito(item:Object, column:DataGridColumn):String {
+				return df.format(item.fechaUltModif);
+			}
+			
+			
+		]]>
+	</mx:Script>
+	<mx:DateFormatter id="df" formatString="DD/MM/YYYY"/>
+	<mx:HBox width="100%" height="100%">
+		<mx:Panel title="Histórico de Estados de Cobranza y Comercial" width="33%" height="95%">
+			<mx:VBox width="100%">				
+				<mx:Label text="Estado Actual" fontSize="22" fontStyle="italic"/>
+				<mx:HBox width="100%">
+					<mx:Form>
+						<mx:FormItem label="Estado Cobranza" styleName="tituloBusquedas">
+							<mx:Label styleName="lblInfo" text="{modelo.clienteSeleccionado.cliente.estadoCobranza.descripcion.toUpperCase()}" />
+						</mx:FormItem>
+						<mx:FormItem styleName="tituloBusquedas" label="Fecha Estado Cobranza">
+							<mx:Label styleName="lblInfo" text="{df.format(modelo.clienteSeleccionado.cliente.fechaEstadoCobranzaFlex)}" />
+						</mx:FormItem>
+					</mx:Form>	
+					<mx:Form>
+						<mx:FormItem styleName="tituloBusquedas" label="Estado Cliente">
+							<mx:Label styleName="lblInfo" text="{modelo.clienteSeleccionado.cliente.estadoCliente.descripcion.toUpperCase()}" />
+						</mx:FormItem>
+						<mx:FormItem styleName="tituloBusquedas" label="Fecha Estado Cliente">
+							<mx:Label styleName="lblInfo" text="{df.format(modelo.clienteSeleccionado.cliente.fechaEstadoClienteFlex)}" />
+						</mx:FormItem>
+						<mx:FormItem styleName="tituloBusquedas" label="Habilitado">
+							<mx:Label styleName="lblInfo" text="{(modelo.clienteSeleccionado.cliente.habilitadoConsumo == 'H')?'Habilitado':'Deshabilitado'}" />
+						</mx:FormItem>
+					</mx:Form>
+				</mx:HBox>
+			
+				<mx:Label text="Historico Estados" fontSize="22" fontStyle="italic"/>
+				<mx:DataGrid id="dgHistEstadosYComercial" dataProvider="{modelo.listaHistoricoEstado}" height="200">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Estado Cobranza" dataField="estadoCobranza" />
+						<mx:DataGridColumn headerText="Fecha Est. Cobranza" dataField="fechaEstadoCobranza" labelFunction="getFechaEstadoCobranza"/>
+						<mx:DataGridColumn headerText="Estado Comercial" dataField="estadoComercial"/>
+						<mx:DataGridColumn headerText="Fecha Est. Comercial" dataField="fechaEstadoComercial" labelFunction="getFechaEstadoComercial"/>
+						<mx:DataGridColumn headerText="Habilitado Consumo" dataField="habilitadoConsumo"/>
+					</mx:columns>
+				</mx:DataGrid>				
+			</mx:VBox>		
+		</mx:Panel>
+		<mx:Panel title="Acciones ejectuadas al cliente" width="33%" height="95%">
+			<mx:VBox width="100%">				
+				<mx:Label text="Historico Acciones Cobranza" fontSize="22" fontStyle="italic"/>
+				<mx:DataGrid id="dgAcciones" height="200" dataProvider="{modelo.listaAccionesCliente}" width="100%">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Fecha" labelFunction="getFechaEjecucion" width="120"/>
+						<mx:DataGridColumn headerText="Accion" labelFunction="getAccionDescripcion"/>
+						<mx:DataGridColumn headerText="Cobrador" labelFunction="getNombreCobrador"/>
+					</mx:columns>
+				</mx:DataGrid>
+			</mx:VBox>
+		</mx:Panel>
+		<mx:Panel title="Histórico Linea de crédito" width="34%" height="95%">
+<!--*@I5374*--> <mx:VBox width="100%">				
+				<mx:VBox width="100%" height="20%">
+					<mx:Label text="Linea Temporal Activa" fontSize="22" fontStyle="italic"/>
+					<mx:DataGrid id="dgLineaActiva" height="30%" dataProvider="{encabezadoClienteModel.arrayLineaTemporal}" width="100%" >
+						<mx:columns>
+							<mx:DataGridColumn headerText="Fecha Desde" labelFunction="getFechaDesdeHistLineaCredito" width="80"/>
+							<mx:DataGridColumn headerText="Fecha Hasta" labelFunction="getFechaHastaHistLineaCredito" width="80"/>
+							<mx:DataGridColumn headerText="Importe" dataField="importe" textAlign="right"/>
+							<mx:DataGridColumn headerText="Tipo" dataField="tipo"/>
+										<mx:DataGridColumn headerText="Operador" width="90">
+														<mx:itemRenderer>
+															<mx:Component>
+																<mx:Label text="{data.operador.apellido} - {data.operador.nombre}"/>
+															</mx:Component>
+														</mx:itemRenderer>
+										</mx:DataGridColumn>
+							<mx:DataGridColumn headerText="Ultima Actualización" labelFunction="getFechaUltimaModifHistLineaCredito" width="100"/>
+						</mx:columns>
+					</mx:DataGrid>
+<!--@F5374-->	</mx:VBox>				
+				<mx:VBox width="100%" height="70%">
+				<mx:Label text="Historico Linea de Crédito" fontSize="22" fontStyle="italic"/>
+<!--@I5374 -->	<mx:DataGrid id="dgHistLineaCredito" height="70%" dataProvider="{modelo.listaHistLineaCredito}" width="100%">
+					<mx:columns>
+				<mx:DataGridColumn headerText="Fecha Desde" labelFunction="getFechaDesdeHistLineaCredito" width="80"/>
+						<mx:DataGridColumn headerText="Fecha Hasta" labelFunction="getFechaHastaHistLineaCredito" width="80"/>
+						<mx:DataGridColumn headerText="Importe" dataField="importe" textAlign="right"/>
+						<mx:DataGridColumn headerText="Tipo" dataField="tipo"/>
+						<mx:DataGridColumn headerText="Operador" width="90">
+							<mx:itemRenderer>
+								<mx:Component>
+									<mx:Label text="{data.operador.apellido} - {data.operador.nombre}"/>
+								</mx:Component>
+							</mx:itemRenderer>
+					</mx:DataGridColumn>
+						<mx:DataGridColumn headerText="Ultima Actualización" labelFunction="getFechaUltimaModifHistLineaCredito" width="100"/>
+					</mx:columns>
+				</mx:DataGrid>
+<!--F5374 -->	</mx:VBox>
+			</mx:VBox>
+		</mx:Panel>
+	</mx:HBox>
+</VboxComun>

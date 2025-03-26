@@ -1,0 +1,2128 @@
+package com.bizitglobal.webapp.faces.beans.proveedores;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.faces.component.html.HtmlOutputText;
+import javax.faces.context.FacesContext;
+
+import org.apache.log4j.Logger;
+import org.apache.myfaces.custom.fileupload.UploadedFile;
+
+import com.bizitglobal.tarjetafiel.commons.filtros.Filtro;
+import com.bizitglobal.tarjetafiel.commons.util.Archivo;
+import com.bizitglobal.tarjetafiel.commons.util.Convertidores;
+import com.bizitglobal.tarjetafiel.commons.util.Fecha;
+import com.bizitglobal.tarjetafiel.contabilidad.exception.EjercicioException;
+import com.bizitglobal.tarjetafiel.contabilidad.exception.PlanCuentaDosException;
+import com.bizitglobal.tarjetafiel.contabilidad.negocio.Ejercicio;
+import com.bizitglobal.tarjetafiel.contabilidad.negocio.PlanCuentaDos;
+import com.bizitglobal.tarjetafiel.contabilidad.service.PlanCuentaDosService;
+import com.bizitglobal.tarjetafiel.general.dao.NoLaborableDao;
+import com.bizitglobal.tarjetafiel.general.exception.TipoComprobanteException;
+import com.bizitglobal.tarjetafiel.general.negocio.TipoComprobante;
+import com.bizitglobal.tarjetafiel.general.service.TipoComprobanteService;
+import com.bizitglobal.tarjetafiel.impuestos.negocio.Impuesto;
+import com.bizitglobal.tarjetafiel.operador.negocio.Operador;
+import com.bizitglobal.tarjetafiel.proveedores.dao.ComprobanteDao;
+import com.bizitglobal.tarjetafiel.proveedores.exception.ComprobanteDuplicateException;
+import com.bizitglobal.tarjetafiel.proveedores.exception.ComprobanteException;
+import com.bizitglobal.tarjetafiel.proveedores.exception.ComprobanteImputadoException;
+import com.bizitglobal.tarjetafiel.proveedores.exception.CuitNoValidoException;
+import com.bizitglobal.tarjetafiel.proveedores.exception.DocumentoAdjuntoDuplicateException;
+import com.bizitglobal.tarjetafiel.proveedores.exception.ProveedorException;
+import com.bizitglobal.tarjetafiel.proveedores.exception.ProveedorNotFoundException;
+import com.bizitglobal.tarjetafiel.proveedores.negocio.AsientoContable;
+import com.bizitglobal.tarjetafiel.proveedores.negocio.Comprobante;
+import com.bizitglobal.tarjetafiel.proveedores.negocio.ComprobanteImputado;
+import com.bizitglobal.tarjetafiel.proveedores.negocio.CuitValido;
+import com.bizitglobal.tarjetafiel.proveedores.negocio.CuotaComprobante;
+import com.bizitglobal.tarjetafiel.proveedores.negocio.DocumentoAdjunto;
+import com.bizitglobal.tarjetafiel.proveedores.negocio.Proveedor;
+import com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorImpuesto;
+import com.bizitglobal.tarjetafiel.proveedores.negocio.TipoVencimiento;
+import com.bizitglobal.tarjetafiel.proveedores.service.ProveedorService;
+import com.bizitglobal.webapp.faces.beans.BaseBean;
+import com.bizitglobal.webapp.faces.beans.contabilidad.PlanCuentaBean;
+import com.bizitglobal.webapp.faces.beans.proveedores.wrappers.ArchivoAdjunto;
+import com.bizitglobal.webapp.faces.beans.util.Popup;
+import com.bizitglobal.webapp.faces.beans.util.ScrollBean;
+import com.bizitglobal.webapp.faces.util.AsientoCont;
+import com.bizitglobal.webapp.faces.util.ComprobanteLista;
+import com.bizitglobal.webapp.faces.util.Error;
+import com.bizitglobal.webapp.faces.util.ImpConMonto;
+import com.bizitglobal.webapp.faces.util.Session;
+import com.bizitglobal.webapp.faces.util.Util;
+import com.bizitglobal.webapp.faces.util.Validador;
+
+
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public class ComprobanteBean extends BaseBean {
+	private static final Logger log = Logger.getLogger(ComprobanteBean.class);
+
+	private Long idComprobante;
+	private String nroCorto;
+	private String nroLargo;
+	private Timestamp fechaEmision;
+	private Timestamp fechaContable;
+	private String observacion;
+	private BigDecimal montoGrabado;
+	private BigDecimal montoNoGrabado;
+	private BigDecimal importeNeto;
+	private BigDecimal totalImpuestos;
+	private BigDecimal importeTotal;
+	private Character contabilizado;
+	private Timestamp timestamp;
+	private TipoComprobante tipoComprobante = null;
+	private String conceptoAsiento;
+	private Set proveedorImpuestos = new HashSet();
+	private Set cuotaComprobantes = new HashSet();
+	private Set asientos = new HashSet();
+	private Proveedor provPedidoPor = null;
+	private Proveedor proveedor = null;
+	private Operador operador;
+
+	private Integer nroCompLargo;
+
+	private String urlImagen;
+
+	private String cuitIdentificador;
+	private String cuitDni;
+	private String cuitVerificador;
+
+	private String razonSocialFiltro;
+	private String nombreFantasiaFiltro;
+	private String aliasFiltro;
+	private String auxConceptoAsiento;
+
+	Comprobante comprobante = null;
+
+	// Objetos de control
+	private String cuitBusqueda;
+	private String cuit;
+	private String lugarArchivoTxt;
+	private Long proveedorSeleccionado;
+	private Long tipoComprobanteSeleccionado;
+	private boolean boolImpuestos;
+	private boolean boolCuit;
+	private Popup popupImpuestos = new Popup();
+	private boolean boolComprobante;
+	private boolean mostraTablaArchivosAdjuntos;
+	private boolean llamarAppletScan = true;
+	private boolean mostraAppletScan;
+
+	// Objetos de validacion
+	private CuitValido cuitValido;
+	private BigDecimal sumaImpCalculados;
+
+	// Objetos p/ filtro de busquedas
+	private String cuitComprobanteFiltro;
+	private Timestamp fechaDesde;
+	private Timestamp fechaHasta;
+
+	// Listados
+	private List comprobantes;
+	private List tablaDeImpuestos;
+	private List tablaDePercepciones;
+	private List tablaDeCuotas;
+	private List tablaDeAsientos;
+	private List listArchivosAdjuntos;
+
+	// Contiene una lista de objetos SelectItem, usados para construir un selectOneMenu.
+	private List tiposCompList;
+
+	// Objetos de servicio
+	ComprobanteDao comprobanteDao = proveedoresService.getComprobanteDao();
+	TipoComprobanteService tipoComprobanteService = generalService.getTipoComprobanteService();
+	ProveedorService proveedorService = proveedoresService.getProveedorService();
+	PlanCuentaDosService planCuentaService = contabilidadService.getPlanCuentaDosService();
+
+	//
+	private boolean alta = true;
+	private String tituloLargo = "Tarjeta Fiel - Comprobantes";
+	private String tituloCorto = "Alta de comprobante";
+
+	private String focoHidden;
+
+	private String path;
+
+	private Integer idHidden;
+	private boolean btnDes;
+
+	// Para hacer upload de el archovo digital
+	private UploadedFile imagen;
+
+	private HtmlOutputText textAdjuntar = new HtmlOutputText();
+
+	// Para eliminar un comprobante
+	private List imputaciones;
+
+
+	public ComprobanteBean() {
+		super();
+		borrar();
+
+	}
+
+
+	/**
+	 * Llamado desde el menú, permite inicilizar el contenido del bean cada vez que se invoque.
+	 */
+	public String inicializar() {
+		borrarBaseBean();
+		borrar();
+		PlanCuentaBean plancito = (PlanCuentaBean) Session.getBean("PlanCuentaBean");
+		plancito.inicializaBusqueda(PlanCuentaBean.COMPROBANTE);
+		if (Session.getBean("ScrollBean") != null) {
+			ScrollBean bean = (ScrollBean) Session.getBean("ScrollBean");
+			bean.setHiddenScrollY(new Integer(0));
+		}
+		return "altaComprobantes";
+	}
+
+
+	public boolean getBtnDes() {
+		return btnDes;
+	}
+
+
+	// public void setBtnDes(boolean btnDes) {
+	//
+	// this.btnDes = btnDes;
+	// }
+
+	public String getFocoHidden() {
+		return focoHidden;
+	}
+
+
+	public void setFocoHidden(String focoHidden) {
+		this.focoHidden = focoHidden;
+	}
+
+
+	public boolean getAlta() {
+		return alta;
+	}
+
+
+	public void setAlta(boolean alta) {
+		this.alta = alta;
+	}
+
+
+	public String getTituloCorto() {
+		return tituloCorto;
+	}
+
+
+	public void setTituloCorto(String tituloCorto) {
+		this.tituloCorto = tituloCorto;
+	}
+
+
+	public String getTituloLargo() {
+		return tituloLargo;
+	}
+
+
+	public void setTituloLargo(String tituloLargo) {
+		this.tituloLargo = tituloLargo;
+	}
+
+
+	public String getCuit() {
+		return cuit;
+	}
+
+
+	public void setCuit(String cuit) {
+		if (cuitBusqueda != null) {
+			this.cuit = cuitBusqueda;
+			cuitBusqueda = null;
+		} else {
+			this.cuit = cuit;
+		}
+	}
+
+
+	public String getCuitBusqueda() {
+		return cuitBusqueda;
+	}
+
+
+	public void setCuitBusqueda(String cuitBusqueda) {
+		this.cuitBusqueda = cuitBusqueda;
+	}
+
+
+	public Set getAsientos() {
+		return asientos;
+	}
+
+
+	public void setAsientos(Set asientos) {
+		this.asientos = asientos;
+	}
+
+
+	public Character getContabilizado() {
+		return contabilizado;
+	}
+
+
+	public void setContabilizado(Character contabilizado) {
+		this.contabilizado = contabilizado;
+	}
+
+
+	public Set getCuotaComprobantes() {
+		return cuotaComprobantes;
+	}
+
+
+	public void setCuotaComprobantes(Set cuotaComprobantes) {
+		this.cuotaComprobantes = cuotaComprobantes;
+	}
+
+
+	public Date getFechaContable() {
+		return fechaContable;
+	}
+
+
+	public void setFechaContable(Date fechaContable) {
+		this.fechaContable = new Timestamp(fechaContable.getTime());
+	}
+
+
+	public Date getFechaEmision() {
+		return fechaEmision;
+	}
+
+
+	public void setFechaEmision(Date fechaEmision) {
+		this.fechaEmision = new Timestamp(fechaEmision.getTime());
+	}
+
+
+	public Long getIdComprobante() {
+		return idComprobante;
+	}
+
+
+	public void setIdComprobante(Long idComprobante) {
+		this.idComprobante = idComprobante;
+	}
+
+
+	public BigDecimal getImporteNeto() {
+		if (montoGrabado == null)
+			montoGrabado = new BigDecimal(0);
+		if (montoNoGrabado == null)
+			montoNoGrabado = new BigDecimal(0);
+		importeNeto = montoGrabado.add(montoNoGrabado);
+		return importeNeto.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+	}
+
+
+	public void setImporteNeto(BigDecimal importeNeto) {
+		this.importeNeto = importeNeto;
+	}
+
+
+	public BigDecimal getImporteTotal() {
+		importeTotal = getImporteNeto().add(getTotalImpuestos());
+		return importeTotal.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+	}
+
+
+	public void setImporteTotal(BigDecimal importeTotal) {
+		this.importeTotal = importeTotal;
+	}
+
+
+	public List getTablaDeImpuestos() {
+		return tablaDeImpuestos;
+	}
+
+
+	public void setTablaDeImpuestos(List tablaDeImpuestos) {
+		this.tablaDeImpuestos = tablaDeImpuestos;
+	}
+
+
+	public List getTablaDePercepciones() {
+		return tablaDePercepciones;
+	}
+
+
+	public void setTablaDePercepciones(List tablaDePercepciones) {
+		this.tablaDePercepciones = tablaDePercepciones;
+	}
+
+
+	public BigDecimal getMontoGrabado() {
+		return montoGrabado.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+	}
+
+
+	public void setMontoGrabado(BigDecimal montoGrabado) {
+		this.montoGrabado = montoGrabado;
+	}
+
+
+	public BigDecimal getMontoNoGrabado() {
+		return montoNoGrabado.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+	}
+
+
+	public void setMontoNoGrabado(BigDecimal montoNoGrabado) {
+		this.montoNoGrabado = montoNoGrabado;
+	}
+
+
+	public String getNroCorto() {
+		return nroCorto;
+	}
+
+
+	public void setNroCorto(String nroCorto) {
+		this.nroCorto = nroCorto;
+	}
+
+
+	public String getNroLargo() {
+		return nroLargo;
+	}
+
+
+	public void setNroLargo(String nroLargo) {
+		this.nroLargo = nroLargo;
+	}
+
+
+	public String getObservacion() {
+		return observacion;
+	}
+
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
+
+
+	public Proveedor getProveedor() {
+		return proveedor;
+	}
+
+
+	public void setProveedor(Proveedor proveedor) {
+		this.proveedor = proveedor;
+	}
+
+
+	public Proveedor getProvPedidoPor() {
+		return provPedidoPor;
+	}
+
+
+	public void setProvPedidoPor(Proveedor provPedidoPor) {
+		this.provPedidoPor = provPedidoPor;
+	}
+
+
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
+
+
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
+	}
+
+
+	public String getConceptoAsiento() {
+		return conceptoAsiento;
+	}
+
+
+	public void setConceptoAsiento(String conceptoAsiento) {
+		this.conceptoAsiento = conceptoAsiento;
+		setTituloAsiento();
+	}
+
+
+	public TipoComprobante getTipoComprobante() {
+		return tipoComprobante;
+	}
+
+
+	public void setTipoComprobante(TipoComprobante tipoComprobante) {
+		this.tipoComprobante = tipoComprobante;
+	}
+
+
+	public BigDecimal getTotalImpuestos() {
+		totalImpuestos = new BigDecimal(0);
+		BigDecimal calculoImp = new BigDecimal(0);
+		calculoImp.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+		sumaImpCalculados = new BigDecimal(0);
+		if (!tablaDeImpuestos.isEmpty()) {
+			Iterator iterImp = tablaDeImpuestos.iterator();
+			while (iterImp.hasNext()) {
+				ImpConMonto impConMonto = (ImpConMonto) iterImp.next();
+				if (impConMonto.getMonto() != null && impConMonto.getMonto().compareTo(new BigDecimal(0)) != 0) {
+					calculoImp = montoGrabado.multiply(
+							new BigDecimal(impConMonto.getImpuesto().getPorcAlicuota().longValue())).divide(
+							new BigDecimal(100));
+					sumaImpCalculados = sumaImpCalculados.add(calculoImp);
+
+					totalImpuestos = totalImpuestos.add(impConMonto.getMonto());
+				}
+			}
+		}
+		if (!tablaDePercepciones.isEmpty()) {
+			Iterator iterPer = tablaDePercepciones.iterator();
+			while (iterPer.hasNext()) {
+				ImpConMonto impConMonto = (ImpConMonto) iterPer.next();
+				if (impConMonto.getMonto() != null && impConMonto.getMonto().compareTo(new BigDecimal(0)) != 0) {
+					calculoImp = montoGrabado.multiply(
+							new BigDecimal(impConMonto.getImpuesto().getPorcAlicuota().longValue())).divide(
+							new BigDecimal(100));
+					sumaImpCalculados = sumaImpCalculados.add(calculoImp);
+
+					totalImpuestos = totalImpuestos.add(impConMonto.getMonto().setScale(2, BigDecimal.ROUND_HALF_DOWN));
+				}
+			}
+		}
+		return totalImpuestos.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+	}
+
+
+	public void setTotalImpuestos(BigDecimal totalImpuestos) {
+		this.totalImpuestos = totalImpuestos;
+	}
+
+
+	public void setOperador(Operador operador) {
+		this.operador = operador;
+	}
+
+
+	public Operador getOperador() {
+		return operador;
+	}
+
+
+	public String getUrlImagen() {
+		return urlImagen;
+	}
+
+
+	public void setUrlImagen(String urlImagen) {
+		this.urlImagen = urlImagen;
+	}
+
+
+	public String getCuitDni() {
+		return cuitDni;
+	}
+
+
+	public void setCuitDni(String cuitDni) {
+		this.cuitDni = cuitDni;
+	}
+
+
+	public String getCuitIdentificador() {
+		return cuitIdentificador;
+	}
+
+
+	public void setCuitIdentificador(String cuitIdentificador) {
+		this.cuitIdentificador = cuitIdentificador;
+	}
+
+
+	public String getCuitVerificador() {
+		return cuitVerificador;
+	}
+
+
+	public void setCuitVerificador(String cuitVerificador) {
+		this.cuitVerificador = cuitVerificador;
+	}
+
+
+	public Long getProveedorSeleccionado() {
+		return proveedorSeleccionado;
+	}
+
+
+	public void setProveedorSeleccionado(Long proveedorSeleccionado) {
+		this.proveedorSeleccionado = proveedorSeleccionado;
+	}
+
+
+	public Long getTipoComprobanteSeleccionado() {
+		return tipoComprobanteSeleccionado;
+	}
+
+
+	public void setTipoComprobanteSeleccionado(Long tipoComprobanteSeleccionado) {
+		this.tipoComprobanteSeleccionado = tipoComprobanteSeleccionado;
+	}
+
+
+	public List getComprobantes() {
+		return comprobantes;
+	}
+
+
+	public void setComprobantes(List comprobantes) {
+		this.comprobantes = comprobantes;
+	}
+
+
+	public List getTiposCompList() {
+		// Si ya fue leeida no lo vuelve a hacer
+		if (tiposCompList == null) {
+			Operador operadorSession = Session.getOperador();
+			try {
+				tiposCompList = ComprobanteUtil.getTipoCompItem(
+						tipoComprobanteService.getTipoComprobantes(new Filtro()));
+				log.info("Cargando tipos de comprobantes ");
+			} catch (TipoComprobanteException e1) {
+				log.info("Error al leer la base de datos");
+			} catch (Exception e2) {
+				log.info("No tiene permisos");
+			}
+
+		}
+		return tiposCompList;
+	}
+
+
+	public void setTiposCompList(List tiposCompList) {
+		this.tiposCompList = tiposCompList;
+	}
+
+
+	public List getTablaDeAsientos() {
+		return tablaDeAsientos;
+	}
+
+
+	public void setTablaDeAsientos(List tablaDeAsientos) {
+		this.tablaDeAsientos = tablaDeAsientos;
+	}
+
+
+	public List getTablaDeCuotas() {
+		return tablaDeCuotas;
+	}
+
+
+	public void setTablaDeCuotas(List tablaDeCuotas) {
+		this.tablaDeCuotas = tablaDeCuotas;
+	}
+
+
+	public Set getProveedorImpuestos() {
+		return proveedorImpuestos;
+	}
+
+
+	public void setProveedorImpuestos(Set proveedorImpuestos) {
+		this.proveedorImpuestos = proveedorImpuestos;
+	}
+
+
+	public String getCuitComprobanteFiltro() {
+		return cuitComprobanteFiltro;
+	}
+
+
+	public void setCuitComprobanteFiltro(String cuitComprobanteFiltro) {
+		this.cuitComprobanteFiltro = cuitComprobanteFiltro;
+	}
+
+
+	public Date getFechaDesde() {
+		return fechaDesde;
+	}
+
+
+	public void setFechaDesde(Date fechaDesde) {
+		this.fechaDesde = new Timestamp(fechaDesde.getTime());
+	}
+
+
+	public Date getFechaHasta() {
+		return fechaHasta;
+	}
+
+
+	public void setFechaHasta(Date fechaHasta) {
+		this.fechaHasta = new Timestamp(fechaHasta.getTime());
+	}
+
+
+	public boolean getBoolComprobante() {
+		return boolComprobante;
+	}
+
+
+	public void setBoolComprobante(boolean boolComprobante) {
+		this.boolComprobante = boolComprobante;
+	}
+
+
+	public boolean getBoolImpuestos() {
+		return boolImpuestos;
+	}
+
+
+	public void setBoolImpuestos(boolean boolImpuestos) {
+		this.boolImpuestos = boolImpuestos;
+	}
+
+
+	public boolean getBoolCuit() {
+		return boolCuit;
+	}
+
+
+	public void setBoolCuit(boolean boolCuit) {
+		this.boolCuit = boolCuit;
+	}
+
+
+	public Popup getPopupImpuestos() {
+		return popupImpuestos;
+	}
+
+
+	public void setPopupImpuestos(Popup popupImpuestos) {
+		this.popupImpuestos = popupImpuestos;
+	}
+
+
+	public boolean getVerPopup() {
+		if (popup.getMostrar() || popupImpuestos.getMostrar())
+			return true;
+		else
+			return false;
+	}
+
+
+	public Integer getIdHidden() {
+		return idHidden;
+	}
+
+
+	public void setIdHidden(Integer idHidden) {
+		this.idHidden = idHidden;
+	}
+
+
+	public String getAliasFiltro() {
+		return aliasFiltro;
+	}
+
+
+	public void setAliasFiltro(String aliasFiltro) {
+		this.aliasFiltro = aliasFiltro;
+	}
+
+
+	public String getNombreFantasiaFiltro() {
+		return nombreFantasiaFiltro;
+	}
+
+
+	public void setNombreFantasiaFiltro(String nombreFantasiaFiltro) {
+		this.nombreFantasiaFiltro = nombreFantasiaFiltro;
+	}
+
+
+	public String getRazonSocialFiltro() {
+		return razonSocialFiltro;
+	}
+
+
+	public void setRazonSocialFiltro(String razonSocialFiltro) {
+		this.razonSocialFiltro = razonSocialFiltro;
+	}
+
+
+	public UploadedFile getImagen() {
+		return imagen;
+	}
+
+
+	public void setImagen(UploadedFile imagen) {
+		this.imagen = imagen;
+	}
+
+
+	public HtmlOutputText getTextAdjuntar() {
+		return textAdjuntar;
+	}
+
+
+	public void setTextAdjuntar(HtmlOutputText textAdjuntar) {
+		this.textAdjuntar = textAdjuntar;
+	}
+
+
+	public Integer getNroCompLargo() {
+		return nroCompLargo;
+	}
+
+
+	public void setNroCompLargo(Integer nroCompLargo) {
+		this.nroCompLargo = nroCompLargo;
+	}
+
+
+	public void armarDocumentosAdj() {
+		Iterator ite = listArchivosAdjuntos.iterator();
+		while (ite.hasNext()) {
+			ArchivoAdjunto arAd = (ArchivoAdjunto) ite.next();
+			try {
+				comprobante.agregarDocumentoAdjunto(new DocumentoAdjunto(arAd.getNombreArchivo()));
+			} catch (DocumentoAdjuntoDuplicateException e) {
+				error.agregar("Ha ocurrido un error al intentar grabar el comprobante");
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	public String saveFile() {
+		try {
+
+			int size = new Long(imagen.getSize()).intValue();
+			Calendar calendar = Calendar.getInstance();
+			int mes1 = calendar.get(Calendar.MONTH) + 1;
+			String mes = ("00" + mes1).substring(("00" + mes1).length() - 2);
+
+			path = Archivo.grabarArchivo(imagen.getInputStream(), imagen.getName(), size,
+					Archivo.archivosDeProveedores + File.separator + calendar.get(Calendar.YEAR) + "" + File.separator + mes);
+			log.info(path);
+
+			if (path != null && !path.equals("No grabo")) {
+
+				// if (comprobante.agregarDocumentoAdjunto(new DocumentoAdjunto(path))) {
+				ArchivoAdjunto adjunto = new ArchivoAdjunto();
+				adjunto.setIdArchivoAdjunto(new Long(adjunto.hashCode()));
+				adjunto.setNombreArchivo(calendar.get(Calendar.YEAR) + "" + File.separator + mes + File.separator + path);
+				listArchivosAdjuntos.add(adjunto);
+				mostraTablaArchivosAdjuntos = true;
+				mostraAppletScan = false;
+				llamarAppletScan = true;
+				// }
+
+			}
+
+		} catch (Exception x) {
+			x.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+
+
+	public String saveFileApplet() {
+		try {
+
+			// String fileName = "itexttest.pdf";
+			String fileName = this.lugarArchivoTxt;
+			Calendar calendar = Calendar.getInstance();
+			// String nameImage = fileName;
+			// String webAppHome = System.getProperty("catalina.home") + File.separator + "webapps";
+			// PropertieFile propertieFile = new PropertieFile(webAppHome + File.separator + "contexto.properties");
+			// String pathArchivos = webAppHome + propertieFile.getProperties("directorio.reclamo");
+
+			// String path = sc.getRealPath(File.separator)+fileName;
+			// String path = sc.getRealPath(File.separator)+fileName;
+
+			// if (comprobante.agregarDocumentoAdjunto(new DocumentoAdjunto(path))) {
+			ArchivoAdjunto adjunto = new ArchivoAdjunto();
+			adjunto.setIdArchivoAdjunto(new Long(adjunto.hashCode()));
+			adjunto.setNombreArchivo(fileName);
+			listArchivosAdjuntos.add(adjunto);
+			mostraTablaArchivosAdjuntos = true;
+			mostraAppletScan = false;
+			// }
+
+		} catch (Exception x) {
+			x.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+
+
+	// Metodos para el listado
+	public String filtrarComprobantes() {
+		String result = "listadoComprobantes";
+		log.info("filtrando comprobantes!!!");
+		Long idOP = null;
+		try {
+			List tipoList = generalService.getTipoComprobanteService().getTipoComprobantes(new Filtro("descripcionCorta", Filtro.LIKE, "OP"));
+			TipoComprobante tipoOP = (TipoComprobante) tipoList.get(0);
+			idOP = tipoOP.getIdTipoComprobante();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		log.info("tipoComprobanteSeleccionado  -> " + tipoComprobanteSeleccionado);
+		log.info("tipoOP.getIdTipoComprobante()  -> " + idOP);
+		Filtro filtro = new Filtro();
+
+		try {
+
+			if (tipoComprobanteSeleccionado != null && getTipoComprobanteSeleccionado().equals(new Long(1))) {
+				log.info("Ingreso a FiltroOP y ROP");
+				filtro.agregarfuncion(" AND (obj.tipoComprobante.idTipoComprobante = 1 " +
+						"OR obj.tipoComprobante.idTipoComprobante = 27) ");
+			} else {
+				log.info("Ingreso a FiltroComprobantes");
+				filtro.agregarCampoOperValor("tipoComprobante.idTipoComprobante", Filtro.DISTINTO, new Long(1));
+				filtro.agregarCampoOperValor("tipoComprobante.idTipoComprobante", Filtro.DISTINTO, new Long(27));
+			}
+
+			if (!cuitComprobanteFiltro.equals("")) {
+				log.info("Ingreso a cuitComprobanteFiltro");
+				filtro.agregarCampoOperValor("proveedor.cuit", Filtro.LIKE, cuitComprobanteFiltro);
+			}
+
+			if (!razonSocialFiltro.equals("")) {
+				log.info("Ingreso a razonSocialFiltro");
+				filtro.agregarCampoOperValor("proveedor.razonSocial", Filtro.LIKE, razonSocialFiltro);
+			}
+
+			if (!nombreFantasiaFiltro.equals("")) {
+				log.info("Ingreso a nombreFantasiaFiltro");
+				filtro.agregarCampoOperValor("proveedor.nombreFantasia", Filtro.LIKE, nombreFantasiaFiltro);
+			}
+
+			if (!aliasFiltro.equals("")) {
+				log.info("Ingreso a aliasFiltro");
+				filtro.agregarCampoOperValor("proveedor.alias", Filtro.LIKE, aliasFiltro);
+			}
+
+			if (fechaDesde != null) {
+				filtro.agregarCampoOperValor("fechaEmision", Filtro.MAYOR_IGUAL, Filtro.getTO_DATE(fechaDesde));
+			}
+
+			if (fechaHasta != null) {
+				filtro.agregarCampoOperValor("fechaEmision", Filtro.MENOR, Filtro.getTO_DATE(Fecha.addDias(new Date(fechaHasta.getTime()), 1)));
+			}
+
+			if (nroCompLargo != null && !nroCompLargo.equals(new Integer(0))) {
+				filtro.agregarCampoOperValor("nroLargo", Filtro.IGUAL, nroCompLargo);
+			}
+
+			// filtro.agregarJoin("proveedor");
+			// filtro.agregarJoin("tipoComprobante");
+
+			log.info("Filtro -> " + filtro.getHQL());
+			comprobantes = new ArrayList();
+
+			List compList = proveedoresService.getComprobanteService().getComprobantes(filtro);
+			if (!compList.isEmpty()) {
+				Iterator iterComp = compList.iterator();
+				while (iterComp.hasNext()) {
+					Comprobante comp = (Comprobante) iterComp.next();
+					comp.getTipoComprobante().descripcion();
+					comp.getProveedor().getCuit();
+					ComprobanteLista compLista = new ComprobanteLista(comp);
+					comprobantes.add(compLista);
+				}
+			}
+			log.info("Creando lista de comprobantes...");
+		} catch (ComprobanteException e1) {
+			e1.printStackTrace();
+			result = "fallaGeneral";
+		} catch (Exception e2) {
+			e2.printStackTrace();
+			result = "accesoDenegado";
+		}
+		return result;
+	}
+
+
+	public String listarComprobantes() {
+		borrar();
+		tituloCorto = "Listado de comprobantes";
+		Session.redirect("/tarjetafiel/proveedores/comprobantes/listarComprobantes.jsf");
+		tituloCorto = "Listado de comprobantes";
+		return null;
+	}
+
+
+	public String filtrarComp() {
+		String resul = filtrarComprobantes();
+		Session.redirect("/tarjetafiel/proveedores/comprobantes/listarComprobantes.jsf");
+		return resul;
+	}
+
+
+	public String volverCtaCte() {
+		Session.redirect("/tarjetafiel/proveedores/listarCtaCte.jsf");
+		return "";
+	}
+
+
+	// Metodos para el ABM
+	public String grabar() {
+		log.info("Grabando el Comprobante");
+		String result = "alta_falla";
+		// Operador operadorSession = Session.getOperador();
+
+		try {
+			if (validar()) {
+				comprobante = armarComprobante();
+				if (alta) {
+
+					proveedoresService.getComprobanteService().grabarComprobante(comprobante);
+				} else {
+					proveedoresService.getComprobanteService().actualizarComprobante(comprobante);
+				}
+				log.info("Grabando comprobante ->" + comprobante);
+				popup.setPopup(popup.ICONO_OK, "El comprobante ha sido almacenada exitosamente.");
+			} else {
+				ScrollBean scrollBean = (ScrollBean) Session.getBean("ScrollBean");
+				scrollBean.borrar();
+			}
+
+		} catch (ComprobanteDuplicateException e1) {
+			log.info("No se pudo grabar el comprobante");
+			popup.setPopup(popup.ICONO_FALLA, "Falla el alta del comprobante.");
+			e1.printStackTrace();
+		} catch (ComprobanteException e2) {
+			log.info("No se pudo grabar el comprobante");
+			popup.setPopup(popup.ICONO_FALLA, "Falla el alta del comprobante.");
+			e2.printStackTrace();
+		} catch (Exception e3) {
+			log.info("No se pudo grabar el comprobante");
+			popup.setPopup(popup.ICONO_FALLA, "Falla el alta del comprobante.");
+			e3.printStackTrace();
+		}
+
+		return result;
+	}
+
+
+	public String cancelar() {
+		log.info("Cancelando el comprobante");
+		borrar();
+		return null;
+	}
+
+
+	public String validarNro() {
+		log.info("Validacion del nro.");
+		List compCargado = new ArrayList();
+		try {
+			Filtro filtroComp = new Filtro();
+			filtroComp.agregarCampoOperValor("nroCorto", Filtro.IGUAL, new Integer(nroCorto));
+			filtroComp.agregarCampoOperValor("nroLargo", Filtro.IGUAL, new Integer(nroLargo));
+			filtroComp.agregarCampoOperValor("proveedor.idProveedor", Filtro.IGUAL, proveedor.getIdProveedor());
+			filtroComp.agregarCampoOperValor("tipoComprobante.idTipoComprobante", Filtro.IGUAL, tipoComprobante.getIdTipoComprobante());
+			log.info("Filtro ValidarNro: " + filtroComp.getHQL());
+			compCargado = comprobanteDao.listarTodos(filtroComp);
+
+		} catch (Exception e2) {
+			log.info("Esepcion General.");
+			e2.printStackTrace();
+			return "";
+		}
+
+		if (compCargado.isEmpty()) {
+			log.info("Nro NO usado.");
+			return "Libre";
+		} else {
+			if (alta) {
+				error.agregar(Error.COMPROBANTE_NUMERO_EXISTE);
+			}
+			log.info("Nro Usado.");
+			return "NroUsado";
+		}
+
+	}
+
+
+	public String crearComprobante() {
+		error.borrar();
+
+		String result = null;
+		if (cuit.equals(null) || cuit.equals("")) {
+			error.agregar(Error.PROVEEDOR_CUIT_REQUERIDO);
+			return null;
+		}
+
+		try {
+			cuitValido = new CuitValido(cuit);
+		} catch (CuitNoValidoException e1) {
+			error.agregar(Error.PROVEEDOR_CUIT_INVALIDO);
+			e1.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			error.agregar(Error.PROVEEDOR_CUIT_INVALIDO);
+			e.printStackTrace();
+			return null;
+		}
+
+		if (tipoComprobanteSeleccionado.equals(new Long(0))) {
+			error.agregar(Error.COMPROBANTE_TIPO_REQUERIDO);
+			return null;
+		}
+
+		Operador operadorSession = Session.getOperador();
+		this.operador = operadorSession;
+
+		// busco el proveedor que trajo el comprobante y lo cargo en el bean
+
+		try {
+			List proveedores = (proveedoresService.getProveedorService().getProveedores(new Filtro("cuit", Filtro.LIKEXS, cuit)));
+			if (proveedores.isEmpty()) {
+				error.agregar("El número de CUIT no corresponde a ningun proveedor cargado.");
+				return null;
+			}
+			this.provPedidoPor = (Proveedor) proveedores.get(0);
+			cuitIdentificador = cuitValido.getIdentificador();
+			cuitDni = cuitValido.getDni();
+			cuitVerificador = cuitValido.getVerificador();
+		} catch (ProveedorNotFoundException e1) {
+			e1.printStackTrace();
+			return null;
+		} catch (Exception e2) {
+			e2.printStackTrace();
+			return "accesoDenegado";
+		}
+
+		// busco el tipo y lo cargo en el baen
+		try {
+			this.tipoComprobante = tipoComprobanteService.leerTipoComprobante(tipoComprobanteSeleccionado);
+		} catch (TipoComprobanteException e1) {
+			return "errorTipo";
+		} catch (Exception e2) {
+			return "accesoDenegado";
+		}
+
+		// valido el cuit y cargo las cosas relacionadas a el
+		result = validarCUIT();
+
+		// verifico si nro comprobante se genera automaticamente
+		try {
+			if (tipoComprobante.getSigno().equals(new Integer(1))) {
+				if (tipoComprobante.getIdTipoComprobante().longValue() > 11 &&
+						tipoComprobante.getIdTipoComprobante().longValue() < 17) {
+					setNroCorto(Util.completar("1", 4));
+					Integer nroMax = proveedoresService.getComprobanteDao().leerNroTipo(tipoComprobante.getDescripcionCorta());
+					setNroLargo(Util.completar(new Integer(nroMax.intValue() + 1).toString(), 8));
+					setBoolComprobante(true);
+					// genera el nombre del asiento
+					setConceptoAsiento(proveedor.getRazonSocial() + " " + tipoComprobante.getDescripcionCorta() + " " +
+							getNroCorto() + "-" + getNroLargo());
+				}
+			}
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+		// busco los tipos de vencimientos para armar la composicion de pagos
+		try {
+			if (!provPedidoPor.getTiposVtos().isEmpty()) {
+				tablaDeCuotas = new ArrayList();
+				Iterator iterTipoVen = provPedidoPor.getTiposVtos().iterator();
+				while (iterTipoVen.hasNext()) {
+					TipoVencimiento tVen = (TipoVencimiento) iterTipoVen.next();
+					Cuota cuota = new Cuota();
+					cuota.setDias(tVen.getDias());
+					cuota.setPorcentaje(new BigDecimal(tVen.getPorcentajeMonto().doubleValue()));
+
+					log.info("Carga cuota en la lista: " + cuota);
+					tablaDeCuotas.add(cuota);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// Busco las cuentas de los proveedores para armar los asientos
+		// conceptoAsiento = provPedidoPor.getRazonSocial();
+		// try {
+		// if (!provPedidoPor.getFormasDePago().isEmpty()) {
+		// tablaDeAsientos = new ArrayList();
+		//
+		// Iterator iterAsientos = provPedidoPor.getFormasDePago().iterator();
+		// while (iterAsientos.hasNext()) {
+		// ProveedorFormaPago fPago = (ProveedorFormaPago) iterAsientos.next();
+		// if (fPago.getEsActivo().equals("S")) {
+		// PlanCuenta pCuenta = planCuentaService.leerPlanCuenta(fPago.getNroCuentaFondos());
+		// if (pCuenta != null) {
+		// tablaDeAsientos.add(ComprobanteUtil.getAsientoCont(pCuenta.getNumeroImputa(), pCuenta.getTitulo()));
+		// }
+		// }
+		// }
+		// }
+		// setTituloAsiento();
+		// }catch (PlanCuentaException e1) {
+		// e1.printStackTrace();
+		// }catch (Exception e) {
+		// // TODO: handle exception
+		// }
+
+		// Busco las cuentas preseteadas para armar los asientos
+		try {
+			tablaDeAsientos = new ArrayList();
+			PlanCuentaDos pCuenta = planCuentaService.leerPlanCuenta(new Long(154));
+			if (pCuenta != null) {
+				tablaDeAsientos.add(ComprobanteUtil.getAsientoCont(pCuenta.getIdPlanCuenta(), pCuenta.getTitulo()));
+			}
+			pCuenta = planCuentaService.leerPlanCuenta(new Long(62));
+			if (pCuenta != null) {
+				tablaDeAsientos.add(ComprobanteUtil.getAsientoCont(pCuenta.getIdPlanCuenta(), pCuenta.getTitulo()));
+			}
+			pCuenta = planCuentaService.leerPlanCuenta(new Long(64));
+			if (pCuenta != null) {
+				tablaDeAsientos.add(ComprobanteUtil.getAsientoCont(pCuenta.getIdPlanCuenta(), pCuenta.getTitulo()));
+			}
+		} catch (PlanCuentaDosException e1) {
+			e1.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+
+	public String validarCUIT() {
+		boolCuit = !boolCuit;
+		Operador operadorSession = Session.getOperador();
+		log.info("Validacion del nro. de cuit");
+		try {
+			log.info("Cuit a validar: " + cuitIdentificador + cuitDni + cuitVerificador);
+			cuitValido = new CuitValido(cuitIdentificador + cuitDni + cuitVerificador);
+		} catch (CuitNoValidoException e1) {
+			boolCuit = !boolCuit;
+			error.agregar(Error.PROVEEDOR_CUIT_INVALIDO);
+			e1.printStackTrace();
+			return "";
+		} catch (Exception e) {
+			boolCuit = !boolCuit;
+			error.agregar(Error.PROVEEDOR_CUIT_INVALIDO);
+			e.printStackTrace();
+			return "";
+		}
+
+		if (!cuitValido.getCuit().equals(provPedidoPor.getCuit())) {
+			try {
+				// proveedor = proveedoresService.getProveedorService().buscarProveedor(cuit);
+				proveedor = proveedoresService.getProveedorService().buscarProveedor(cuitValido.getCuit().toString());
+			} catch (ProveedorException e1) {
+				boolCuit = !boolCuit;
+				error.agregar(Error.PROVEEDOR_NO_EXISTE);
+				e1.printStackTrace();
+				return "";
+			} catch (Exception e) {
+				boolCuit = !boolCuit;
+				error.agregar(Error.PROVEEDOR_NO_EXISTE);
+				e.printStackTrace();
+				return "";
+			}
+		} else {
+			proveedor = provPedidoPor;
+		}
+
+		log.info("Proveedor del Comprobante: " + proveedor);
+
+		// busco los impuestos y percepciones asignados al proveedor del comprobante
+		ComprobanteUtil cUtil = new ComprobanteUtil();
+		cUtil.armarImpuestos(proveedor);
+		tablaDePercepciones = cUtil.getPercepciones();
+		tablaDeImpuestos = cUtil.getImpuestos();
+		return null;
+	}
+
+
+	public String verImpuestos() {
+		log.info("Estado del boolImpuestos:" + boolImpuestos);
+		boolImpuestos = !boolImpuestos;
+		return null;
+	}
+
+
+	public String agregarCuota() {
+		log.info("Agregando Cuota!!!");
+		error.borrar();
+		if (!tablaDeCuotas.isEmpty()) {
+			Iterator cuotaIter = tablaDeCuotas.iterator();
+			while (cuotaIter.hasNext()) {
+				Cuota cuota = (Cuota) cuotaIter.next();
+				if (cuota.dias == null || cuota.porcentaje == null || cuota.porcentaje.equals(new Integer(0))) {
+					error.agregar("Los campos se deben completar para seguir agregando cuotas(el procentaje no puede ser 0)");
+					return null;
+				}
+			}
+		}
+
+		if (sumarPorCiento() < 100) {
+			tablaDeCuotas.add(new Cuota());
+			log.info("Long: " + tablaDeCuotas.size());
+		} else {
+			error.agregar("No se pueden agregar mas cuotas. Ya se alcanzo el 100%");
+		}
+
+		return null;
+	}
+
+
+	public String eliminarCuota() {
+		if (tablaDeCuotas.size() > 0) {
+			tablaDeCuotas.remove(tablaDeCuotas.size() - 1);
+		}
+		return null;
+	}
+
+
+	public String eliminarAsiento() {
+		Long codigo = new Long(Session.getRequestParameter("codigoAsiento"));
+		AsientoCont asC = new AsientoCont();
+		asC.getAsiento().setNroImputa(codigo);
+		try {
+			if (tablaDeAsientos.remove(asC))
+				log.info("Asiento removido");
+			else
+				log.info("Asiento no existe en la lista");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+
+	// metodos para los botones del popup
+
+	public String irANuevoComp() {
+		log.info("irANuevoComp()");
+		return inicializar();
+	}
+
+
+	public String irAModificarComp() {
+		log.info("irAModificarComp()");
+		alta = false;
+		popup.borrar();
+		return null;
+	}
+
+
+	public String irAListarComp() {
+		log.info("irAListarComp()");
+		popup.borrar();
+		return listarComprobantes();
+	}
+
+
+	private Comprobante armarComprobante() {
+		log.info("armandoCromprobante()");
+		if (comprobante == null) {
+			comprobante = new Comprobante();
+			comprobante.setTipoComprobante(tipoComprobante);
+			comprobante.setContabilizado(new Character('N'));
+			comprobante.setOperador(operador);
+			comprobante.setSigno(getTipoComprobante().getSigno());
+
+			proveedorImpuestos = ComprobanteUtil.componerImpuestos(tablaDeImpuestos, tablaDePercepciones, comprobante);
+			cuotaComprobantes = ComprobanteUtil.componerCuotaContable(tablaDeCuotas, comprobante);
+			asientos = ComprobanteUtil.componerAsientos(tablaDeAsientos, comprobante);
+
+			comprobante.setAsientos(asientos);
+			comprobante.setProveedorImpuestos(proveedorImpuestos);
+			comprobante.setCuotaComprobantes(cuotaComprobantes);
+
+		}
+		comprobante.setProvPedidoPor(provPedidoPor);
+		comprobante.setFechaContable(fechaContable);
+		comprobante.setFechaEmision(fechaEmision);
+		comprobante.setImporteNeto(getImporteNeto());
+		comprobante.setMontoGrabado(montoGrabado);
+		comprobante.setMontoNoGrabado(montoNoGrabado);
+		comprobante.setImporteTotal(getImporteTotal());
+		comprobante.setTotalImpuestos(getTotalImpuestos());
+		comprobante.setObservacion(observacion);
+		comprobante.setProveedor(proveedor);
+		comprobante.setConceptoAsiento(conceptoAsiento);
+		comprobante.setTimestamp(new Timestamp(new java.util.Date().getTime()));
+		armarDocumentosAdj();
+		// controlo si tengo que generar el numero de comprobante
+		try {
+			if (getTipoComprobante().getSigno().equals(new Integer(1))) {
+				setNroCorto(Util.completar("1", 4));
+				Integer nroMax = proveedoresService.getComprobanteDao().leerNroTipo(tipoComprobante.getDescripcionCorta());
+				setNroLargo(Util.completar(new Integer(nroMax.intValue() + 1).toString(), 8));
+			}
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		comprobante.setNroCorto(new Integer(nroCorto));
+		comprobante.setNroLargo(new Integer(nroLargo));
+
+		return comprobante;
+	}
+
+
+	public void borrar() {
+		error.borrar();
+		this.idComprobante = null;
+		this.nroCorto = null;
+		this.nroLargo = null;
+		this.provPedidoPor = null;
+		this.fechaEmision = new Timestamp(Calendar.getInstance().getTime().getTime());
+		this.fechaContable = new Timestamp(new java.util.Date().getTime());
+		this.observacion = null;
+		this.montoGrabado = new BigDecimal(0);
+		this.montoNoGrabado = new BigDecimal(0);
+		this.importeNeto = new BigDecimal(0);
+		this.totalImpuestos = new BigDecimal(0);
+		this.importeTotal = new BigDecimal(0);
+		this.contabilizado = new Character('N');
+		this.conceptoAsiento = null;
+		this.tipoComprobante = null;
+		this.proveedor = null;
+		this.provPedidoPor = null;
+		this.operador = Session.getOperador();
+		this.timestamp = new Timestamp(new java.util.Date().getTime());
+		this.urlImagen = null;
+		this.comprobante = null;
+		// this.imagen = new UploadedFile();
+		// ----------------------------------------------
+		this.cuitValido = null;
+		this.cuitDni = null;
+		this.cuitIdentificador = null;
+		this.cuitVerificador = null;
+		this.proveedorSeleccionado = null;
+		this.tipoComprobanteSeleccionado = null;
+		this.comprobantes = new ArrayList();
+		this.tablaDeImpuestos = new ArrayList();
+		this.tablaDePercepciones = new ArrayList();
+		this.tablaDeCuotas = new ArrayList();
+		this.tablaDeAsientos = new ArrayList();
+		this.boolImpuestos = false;
+		this.boolCuit = false;
+		this.cuitBusqueda = null;
+		this.cuit = null;
+		Calendar fecha = Calendar.getInstance();
+		this.fechaHasta = new Timestamp(fecha.getTime().getTime());
+		fecha.add(Calendar.MONTH, -1);
+		this.fechaDesde = new Timestamp(fecha.getTime().getTime());
+		this.cuitComprobanteFiltro = null;
+		this.alta = true;
+		this.boolComprobante = false;
+
+		this.aliasFiltro = "";
+		this.nombreFantasiaFiltro = "";
+		this.razonSocialFiltro = "";
+
+		this.focoHidden = "NroCorto";
+
+		this.idHidden = new Integer(0);
+
+		this.tituloLargo = "Tarjeta Fiel - Comprobantes";
+		this.tituloCorto = "Alta de comprobante";
+		btnDes = true;
+		listArchivosAdjuntos = new ArrayList();
+
+		mostraTablaArchivosAdjuntos = false;
+		mostraAppletScan = true;
+
+		this.nroCompLargo = new Integer(0);
+
+	}
+
+
+	private int sumarPorCiento() {
+		int aux = 0;
+		if (!tablaDeCuotas.isEmpty()) {
+			Iterator iterator = tablaDeCuotas.iterator();
+			while (iterator.hasNext()) {
+				Cuota cuota = (Cuota) iterator.next();
+				aux += cuota.getPorcentaje().intValue();
+			}
+		}
+		return aux;
+	}
+
+
+	public boolean validar() {
+		error.borrar();
+
+		if (!Validador.esNuloVacio(nroCorto) && !Validador.esNuloVacio(nroLargo)) {
+			Integer nrocorto = new Integer(nroCorto);
+			Integer nrolargo = new Integer(nroLargo);
+			if (!nrocorto.equals(new Integer(0)) && !nrolargo.equals(new Integer(0))) {
+				String tmp = validarNro();
+			} else {
+				error.agregar(Error.COMPROBANTE_NUMERO_REQUERIDO);
+			}
+		} else {
+			error.agregar(Error.COMPROBANTE_NUMERO_REQUERIDO);
+		}
+
+		if (!boolCuit) {
+			error.agregar(Error.COMPROBANTE_CONFIRMAR_CUIT);
+		}
+
+		if (fechaEmision == null) {
+			error.agregar(Error.COMPROBANTE_FECHA_EMISION_REQUERIDO);
+		}
+
+		if (fechaContable == null) {
+			error.agregar(Error.COMPROBANTE_FECHA_CONTABLE_REQUERIDO);
+		}
+
+		// Valida que la fecha contable sea posterir a la fecha de emicion
+		if (fechaEmision.after(fechaContable)) {
+			error.agregar(Error.COMPROBANTE_FECHA_CONTABLE_MENOR);
+		}
+
+		if (fechaContable == null) {
+			error.agregar("La fecha contable es requerida");
+		} else {
+			try {
+				Ejercicio ejercicio = contabilidadService.getEjercicioService().ejercicioActual();
+				if (ejercicio.getFechaPeriodo().compareTo(fechaContable) > 0)
+					error.agregar(Error.COMPROBANTE_FECHA_CONTABLE_MENOR_PERIODO);
+				if (fechaContable.after(ejercicio.getFechaCierre()))
+					error.agregar(Error.COMPROBANTE_FECHA_CONTABLE_MAYOR_CIERRE);
+				// if (fechaContable.after(new Date()))
+				// error.agregar("La fecha contable no puede ser mayor a la facha de hoy.");
+			} catch (EjercicioException e) {
+				error.agregar(e.getMessage());
+				e.printStackTrace();
+			}
+		}
+
+		// if (periodoEjercicioDao.buscarPeriodoActual().getFechaPeriodo().after(fechaContable)) {
+		// error.agregar(Error.COMPROBANTE_FECHA_CONTABLE_MENOR_PERIODO);
+		// }
+		//
+		// if (fechaContable.after(periodoEjercicioDao.buscarPeriodoActual().getFechaCierre())) {
+		// error.agregar(Error.COMPROBANTE_FECHA_CONTABLE_MAYOR_CIERRE);
+		// }
+
+		if (montoGrabado.equals(new BigDecimal(0.00).setScale(2)) || montoGrabado == null) {
+			error.agregar(Error.COMPROBANTE_MONTO_GRABADO_REQUERIDO);
+		}
+
+		// if(montoNoGrabado.equals(new BigDecimal(0)) || montoNoGrabado == null) {
+		// error.agregar(Error.COMPROBANTE_MONTO_NO_GRABADO_REQUERIDO);
+		// }
+
+		if (sumarPorCiento() != 100) {
+			error.agregar(Error.COMPROBANTE_PORCENTAJE_CUOTA_MAL);
+		}
+
+		if (tablaDeAsientos.size() == 0) {
+			error.agregar(Error.COMPROBANTE_ASIENTO_REQUERIDO);
+		} else {
+			BigDecimal totalDebe = new BigDecimal(0);
+			BigDecimal totalHaber = new BigDecimal(0);
+			Iterator iter = tablaDeAsientos.iterator();
+			while (iter.hasNext()) {
+				AsientoCont element = (AsientoCont) iter.next();
+				if (element.getAsiento().getImporteDebe() == null) {
+					if (element.getAsiento().getImporteHaber() == null) {
+						error.agregar(Error.COMPROBANTE_ASIENTO_INCOMPLETO + " " + element.getTitulo());
+					} else {
+						totalHaber = totalHaber.add(element.getAsiento().getImporteHaber());
+					}
+				} else {
+					totalDebe = totalDebe.add(element.getAsiento().getImporteDebe());
+				}
+			}
+			if (totalDebe.compareTo(totalHaber) != 0) {
+				error.agregar(Error.COMPROBANTE_ASIENTO_DESEQUILIBRADO);
+			}
+			if (importeTotal.compareTo(totalDebe) != 0) {
+				error.agregar(Error.COMPROBANTE_ASIENTO_DISTINTO_TOTAL);
+			}
+		}
+
+		return (error.cantidad() == 0) ? true : false;
+	}
+
+
+	public String validarImpuestos() {
+		if (totalImpuestos.compareTo(sumaImpCalculados) == 0) {
+			return grabar();
+		} else {
+			popupImpuestos.setPopup(popup.ICONO_FALLA, Error.COMPROBANTE_IMPUESTOS_DISTINTOS);
+			return null;
+		}
+	}
+
+
+	public String irAGrabarComp() {
+		log.info("irAGrabarComp()");
+		popupImpuestos.borrar();
+		return grabar();
+	}
+
+
+	public String irAModificarCompSinGrabar() {
+		log.info("irAModificarCompSinGrabar()");
+		popupImpuestos.borrar();
+		return null;
+	}
+
+
+	public void setTituloAsiento() {
+		if (!tablaDeAsientos.isEmpty()) {
+			Iterator iterator = tablaDeAsientos.iterator();
+			while (iterator.hasNext()) {
+				AsientoCont element = (AsientoCont) iterator.next();
+				if (Validador.esNuloVacio(element.getAsiento().getLeyenda())) {
+					element.getAsiento().setLeyenda(conceptoAsiento);
+				}
+			}
+		}
+	}
+
+
+	public String mostrarComprobante() {
+		log.info("idhidden: " + idHidden);
+		alta = false;
+		String result = "";
+
+		if (idHidden != null && !idHidden.equals(new Integer(0))) {
+			Long idcomp = new Long(idHidden.longValue());
+			Comprobante comp = null;
+
+			try {
+
+				comp = proveedoresService.getComprobanteService().leerComprobante(idcomp);
+			} catch (ComprobanteException e) {
+				e.printStackTrace();
+				return null;
+			}
+
+			if (comp != null) {
+				borrar();
+				btnDes = false;
+
+				// recordar que el metodo soporta solo un documento Adjunto.
+				if (comp.getDocAdjuntos() != null) {
+					Iterator itD = comp.getDocAdjuntos().iterator();
+					while (itD.hasNext()) {
+						DocumentoAdjunto doA = (DocumentoAdjunto) itD.next();
+						ArchivoAdjunto adjunto = new ArchivoAdjunto();
+						adjunto.setIdArchivoAdjunto(new Long(adjunto.hashCode()));
+						adjunto.setNombreArchivo(doA.getUrl());
+						listArchivosAdjuntos.add(adjunto);
+						mostraTablaArchivosAdjuntos = true;
+						mostraAppletScan = false;
+						break;
+					}
+				} else {
+					mostraTablaArchivosAdjuntos = true;
+					mostraAppletScan = false;
+				}
+
+				if (comp.getProveedor() != null && comp.getTipoComprobante() != null && comp.getProvPedidoPor() != null) {
+
+					proveedor = comp.getProveedor();
+					tipoComprobante = comp.getTipoComprobante();
+					provPedidoPor = comp.getProvPedidoPor();
+				} else {
+					error.agregar(Error.COMPROBANTE_DATOS_COMPROBANTE);
+					return null;
+				}
+
+				tituloLargo = "Tarjeta Fiel - Mostrar de Comprobante";
+				tituloCorto = "Mostrar de Comprobante";
+
+				try {
+					cuitValido = new CuitValido(proveedor.getCuit().toString());
+					cuitIdentificador = cuitValido.getIdentificador();
+					cuitDni = cuitValido.getDni();
+					cuitVerificador = cuitValido.getVerificador();
+				} catch (CuitNoValidoException e1) {
+					error.agregar(Error.PROVEEDOR_CUIT_INVALIDO);
+					e1.printStackTrace();
+					return null;
+				} catch (Exception e) {
+					error.agregar(Error.PROVEEDOR_CUIT_INVALIDO);
+					e.printStackTrace();
+					return null;
+				}
+
+				if (comp.getNroCorto().toString() != null && !comp.getNroCorto().toString().equals("") &&
+						comp.getNroLargo().toString() != null && !comp.getNroLargo().toString().equals("")) {
+
+					nroCorto = Util.completar(comp.getNroCorto().toString(), 4);
+					nroLargo = Util.completar(comp.getNroLargo().toString(), 8);
+				} else {
+					nroCorto = "";
+					nroLargo = "";
+				}
+
+				if (comp.getFechaEmision() != null && !comp.getFechaEmision().equals("") &&
+						comp.getFechaContable() != null && !comp.getFechaContable().equals("")) {
+
+					fechaEmision = comp.getFechaEmision();
+					fechaContable = comp.getFechaContable();
+				}
+
+				if (comp.getObservacion() != null && !comp.getObservacion().equals("")) {
+					observacion = comp.getObservacion();
+				} else {
+					observacion = "";
+				}
+
+				if (comp.getMontoNoGrabado() != null) {
+					montoNoGrabado = comp.getMontoNoGrabado();
+				} else {
+					montoNoGrabado = new BigDecimal(0);
+				}
+
+				if (comp.getMontoGrabado() != null) {
+					montoGrabado = comp.getMontoGrabado();
+				} else {
+					montoGrabado = new BigDecimal(0);
+				}
+
+				if (comp.getImporteNeto() != null) {
+					importeNeto = comp.getImporteNeto();
+				} else {
+					importeNeto = new BigDecimal(0);
+				}
+
+				if (comp.getTotalImpuestos() != null) {
+					totalImpuestos = comp.getTotalImpuestos();
+				} else {
+					totalImpuestos = new BigDecimal(0);
+				}
+
+				if (comp.getImporteTotal() != null) {
+					importeTotal = comp.getImporteTotal();
+				} else {
+					importeTotal = new BigDecimal(0);
+				}
+
+				if (comp.getConceptoAsiento() != null) {
+					conceptoAsiento = comp.getConceptoAsiento();
+					log.info("conceptoAsiento: " + conceptoAsiento);
+				}
+
+				// busco los tipos de vencimientos para armar la composicion de
+				// pagos
+				try {
+					if (!comp.getCuotaComprobantes().isEmpty()) {
+						tablaDeCuotas = new ArrayList();
+						Iterator iterCuotaComprobantes = comp.getCuotaComprobantes().iterator();
+						while (iterCuotaComprobantes.hasNext()) {
+							CuotaComprobante cuotaComprobante = (CuotaComprobante) iterCuotaComprobantes.next();
+							CuotaMostrar cuota = new CuotaMostrar(cuotaComprobante, comp.getImporteTotal(),
+									comp.getFechaEmision());
+							log.info("Carga cuota en la lista: " + cuota);
+							tablaDeCuotas.add(cuota);
+						}
+
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				// Busco las cuentas de los proveedores para armar los asientos
+				try {
+					if (!comp.getAsientos().isEmpty()) {
+						tablaDeAsientos = new ArrayList();
+
+						Iterator iterAsientos = comp.getAsientos().iterator();
+						while (iterAsientos.hasNext()) {
+							/*
+							 * ProveedorFormaPago fPago = (ProveedorFormaPago) iterAsientos.next(); if (fPago.getEsActivo().equals("S")) { PlanCuenta
+							 * pCuenta = planCuentaService.leerPlanCuenta(fPago.getNroCuentaFondos()); if (pCuenta != null) {
+							 * tablaDeAsientos.add(ComprobanteUtil.getAsientoCont(pCuenta.getNumeroImputa(), pCuenta.getTitulo())); } }
+							 */
+							AsientoContable asC = (AsientoContable) iterAsientos.next();
+							AsientoCont asientoCont = new AsientoCont(planCuentaService.leerPlanCuenta(asC.getNroImputa()));
+							asientoCont.setAsiento(asC);
+							tablaDeAsientos.add(asientoCont);
+
+						}
+					}
+					// setTituloAsiento();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				tablaDeImpuestos = new ArrayList();
+
+				if (!comp.getProveedorImpuestos().isEmpty()) {
+					log.info("Armando Persepción / Impuesto");
+					log.info("comp.getProveedorImpuestos(): " + comp.getProveedorImpuestos().size());
+					List provImp = Convertidores.setToList(comp.getProveedorImpuestos());
+					log.info("provImp.size(): " + provImp.size());
+					Iterator iter = provImp.iterator();
+					while (iter.hasNext()) {
+						ProveedorImpuesto provImpuesto = (ProveedorImpuesto) iter.next();
+						Impuesto impuesto = provImpuesto.getImpuesto();
+
+						ImpConMonto conMonto = new ImpConMonto(impuesto, provImpuesto);
+						log.info("Es persepción: " + impuesto.getPercepcion());
+						if (conMonto.getImpuesto().getPercepcion().equals(new Character('S'))) {
+							log.info("Persepción.");
+							tablaDePercepciones.add(conMonto);
+						} else {
+							log.info("Impuesto.");
+							tablaDeImpuestos.add(conMonto);
+						}
+					}
+					log.info("tablaDePercepciones.size(): " + tablaDePercepciones.size());
+					log.info("tablaDeImpuestos.size(): " + tablaDeImpuestos.size());
+				}
+
+				result = "altaComprobantes";
+			}
+			else {
+				error.agregar(Error.COMPROBANTE_DATOS_COMPROBANTE);
+			}
+		}
+
+		return result;
+	}
+
+
+	public String buscarProveedorPopup() {
+		log.info("Ir a buscar proveedor!!!");
+		BuscarProveedorBean bean = (BuscarProveedorBean) Session.getBean("BuscarProveedorBean");
+		bean.inicializar(BuscarProveedorBean.COMPROBANTE);
+
+		String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+		path += "/tarjetafiel/proveedores/popup/buscarProveedor.jsf";
+		ejecutarJavaScript("popup('" + path + "',700,400), 'titlebar=no';");
+		// ejecutarJavaScript("verDialog();");
+		return null;
+	}
+
+	public class Cuota {
+		private CuotaComprobante cuotaComprobante;
+		private Integer dias;
+		private BigDecimal porcentaje;
+
+
+		public Cuota() {
+			cuotaComprobante = new CuotaComprobante();
+			dias = new Integer(0);
+			porcentaje = new BigDecimal(0);
+		}
+
+
+		public CuotaComprobante getCuotaComprobante() {
+			cuotaComprobante.setActivo(new Character('S'));
+			return cuotaComprobante;
+		}
+
+
+		public void setCuotaComprobante(CuotaComprobante cuotaComprobante) {
+			this.cuotaComprobante = cuotaComprobante;
+		}
+
+
+		public Integer getDias() {
+			return dias;
+		}
+
+
+		public void setDias(Integer dias) {
+			this.dias = dias;
+			Calendar vencimiento = Fecha.addDiasLaborable(fechaEmision, this.dias.intValue());
+			NoLaborableDao noLaborableDao = generalService.getNoLaborableDao();
+
+			if (noLaborableDao.esNoLaborable(new Timestamp(vencimiento.getTime().getTime()))) {
+				log.info("Es Feriado: " + vencimiento.getTime());
+				vencimiento.add(Calendar.DATE, 1);
+			}
+			cuotaComprobante.setFechaVencimiento(new Timestamp(vencimiento.getTime().getTime()));
+		}
+
+
+		public BigDecimal getPorcentaje() {
+			return porcentaje.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+		}
+
+
+		public void setPorcentaje(BigDecimal porcentaje) {
+			this.porcentaje = porcentaje;
+			float importe = porcentaje.floatValue() * getImporteTotal().floatValue() / 100;
+			log.info("getImporteTotal().floatValue() "+ getImporteTotal().floatValue());
+			log.info("importe "+ importe);
+			cuotaComprobante.setImporte(new Float(importe));
+		}
+
+
+		public String toString() {
+			return "Cuota: " + porcentaje + "% " + dias + " dias" + cuotaComprobante;
+		}
+
+
+		public void setImporte(Float importe) {
+			cuotaComprobante.setImporte(importe);
+		}
+
+
+		public BigDecimal getImporte() {
+			BigDecimal aux = new BigDecimal(cuotaComprobante.getImporte().doubleValue());
+			return aux.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+		}
+	}
+
+	public class CuotaMostrar {
+		private CuotaComprobante cuotaComprobante;
+		private Integer dias;
+		private BigDecimal porcentaje;
+		private BigDecimal importeTotal;
+		private Timestamp fechaEmision;
+
+
+		public CuotaMostrar(CuotaComprobante cuotaComprobante, BigDecimal importeTotal, Timestamp fechaEmision) {
+			this.cuotaComprobante = cuotaComprobante;
+			this.importeTotal = importeTotal;
+			this.fechaEmision = fechaEmision;
+
+			BigDecimal importe = new BigDecimal(cuotaComprobante.getImporte().doubleValue());
+			this.porcentaje = importe.multiply(new BigDecimal(100));
+			this.porcentaje = this.porcentaje.divide(importeTotal, 2, BigDecimal.ROUND_HALF_DOWN);
+
+			this.dias = new Integer(Fecha.calcularDiferenciaDias(cuotaComprobante.getFechaVencimiento(),
+					fechaEmision));
+		}
+
+
+		public CuotaComprobante getCuotaComprobante() {
+			return cuotaComprobante;
+		}
+
+
+		public void setCuotaComprobante(CuotaComprobante cuotaComprobante) {
+			this.cuotaComprobante = cuotaComprobante;
+		}
+
+
+		public Integer getDias() {
+			return dias;
+		}
+
+
+		public void setDias(Integer dias) {
+			this.dias = dias;
+		}
+
+
+		public BigDecimal getPorcentaje() {
+			return porcentaje.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+		}
+
+
+		public void setPorcentaje(BigDecimal porcentaje) {
+			this.porcentaje = porcentaje;
+		}
+
+
+		public String toString() {
+			return "Cuota: " + porcentaje + "% " + dias + " dias" + cuotaComprobante;
+		}
+	}
+
+
+	public String eliminarArchivoAdjunto() {
+		if (alta) {
+			Long id = new Long(Session.getRequestParameter("idProcesoAtributo"));
+			listArchivosAdjuntos = ComprobanteUtil.eliminarArchivoAdjunto(listArchivosAdjuntos, id);
+
+			if (listArchivosAdjuntos == null || listArchivosAdjuntos.size() == 0)
+				mostraTablaArchivosAdjuntos = false;
+			this.llamarAppletScan = true;
+			mostraAppletScan = true;
+		}
+		return null;
+	}
+
+
+	public String refrescarApplet() {
+
+		return null;
+	}
+
+
+	public String llamarApplet() {
+
+		this.llamarAppletScan = false;
+
+		return null;
+	}
+
+
+	public String abrirArchivoAdjunto() {
+		if (!listArchivosAdjuntos.isEmpty()) {
+			try {
+				ArchivoAdjunto element = (ArchivoAdjunto) listArchivosAdjuntos.get(0);
+				String url = element.getURL();
+				log.info(url);
+				// ejecutarJavaScript("popupWindow=open(pagina,'','resizable=no,scrollbars=yes,width='+popW+',height='+popH+',top='+topPos+',left='+leftPos);)");
+				// ejecutarJavaScript("popupWindow=open(" + url + ", window, param);" +
+				// "if (popupWindow.opener == null) popupWindow.opener = self;");
+				ejecutarJavaScript("popup('" + "/../archivos/" + Archivo.archivosDeProveedores + "/" + element.getNombreArchivo()
+						+ "',1000,700), 'titlebar=no';");
+			} catch (Exception e) {
+				log.info("Error al intentar leer el archivo");
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+
+	public List getListArchivosAdjuntos() {
+		return listArchivosAdjuntos;
+	}
+
+
+	public void setListArchivosAdjuntos(List listArchivosAdjuntos) {
+		this.listArchivosAdjuntos = listArchivosAdjuntos;
+	}
+
+
+	public boolean isMostraTablaArchivosAdjuntos() {
+		return mostraTablaArchivosAdjuntos;
+	}
+
+
+	public void setMostraTablaArchivosAdjuntos(boolean mostraTablaArchivosAdjuntos) {
+		this.mostraTablaArchivosAdjuntos = mostraTablaArchivosAdjuntos;
+	}
+
+
+	public String getPath() {
+		return path;
+	}
+
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+
+	public String eliminarComprobante() {
+		log.info("Eleminando Comprobante");
+		comprobante = null;
+		imputaciones = new ArrayList();
+		try {
+			comprobante = proveedoresService.getComprobanteService().leerComprobante(new Long(getIdHidden().longValue()));
+			List cuotasList = new ArrayList(comprobante.getCuotaComprobantes());
+			Iterator iterCuota = cuotasList.iterator();
+			while (iterCuota.hasNext()) {
+				CuotaComprobante cuotaComp = (CuotaComprobante) iterCuota.next();
+				imputaciones.addAll(cuotaComp.getCuotaComprobanteD());
+			}
+		} catch (ComprobanteException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		if (!imputaciones.isEmpty()) {
+			popup.setPopup(popup.ICONO_FALLA, "El comprobante tiene cuotas imputadas.\n ¿Confirma eliminarlo?");
+		} else {
+			borrarComprobante();
+		}
+
+		return null;
+	}
+
+
+	public String borrarComprobante() {
+		try {
+			Iterator iterImp = imputaciones.iterator();
+			while (iterImp.hasNext()) {
+				ComprobanteImputado imputado = (ComprobanteImputado) iterImp.next();
+				proveedoresService.getComprobanteImputadoService().borrarComprobanteImputado(imputado);
+			}
+			imputaciones = new ArrayList();
+		} catch (ComprobanteImputadoException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		try {
+			proveedoresService.getComprobanteService().borrarComprobante(comprobante);
+		} catch (ComprobanteException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		popup.borrar();
+		return filtrarComp();
+	}
+
+
+	public String cancelarEliminar() {
+		imputaciones = new ArrayList();
+		popup.borrar();
+		Session.redirect("/tarjetafiel/proveedores/comprobantes/listarComprobantes.jsf");
+		return null;
+	}
+
+
+	public boolean isMostraAppletScan() {
+		return mostraAppletScan;
+	}
+
+
+	public void setMostraAppletScan(boolean mostraAppletScan) {
+		this.mostraAppletScan = mostraAppletScan;
+	}
+
+
+	public String getLugarArchivoTxt() {
+		return lugarArchivoTxt;
+	}
+
+
+	public void setLugarArchivoTxt(String lugarArchivoTxt) {
+		this.lugarArchivoTxt = lugarArchivoTxt;
+	}
+
+
+	public boolean isLlamarAppletScan() {
+		return llamarAppletScan;
+	}
+
+
+	public void setLlamarAppletScan(boolean llamarAppletScan) {
+		this.llamarAppletScan = llamarAppletScan;
+	}
+}

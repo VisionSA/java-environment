@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VboxComun xmlns="views.categorias.*" width="100%" xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="this.onCreationCompl()" xmlns:mate="http://mate.asfusion.com/" horizontalAlign="left" verticalGap="8" xmlns:cliente="views.categorias.cliente.*"   xmlns:ns1="com.dougmccune.containers.*" xmlns:managers="com.yahoo.astra.mx.managers.*" xmlns:componentes="views.categorias.cliente.componentes.*" xmlns:formatters="utils.*" >
+	<!--@I4070-->	<formatters:CUITFormatter id="CUITFormatter"/>
+	<mx:VBox  width="100%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top" verticalGap="0">		
+    	<mx:HBox width="90%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top" >
+		
+			<mx:Label text="DNI: " styleName="lblInfo"/>
+			<mx:TextInput id="txtDNI" restrict="0-9" width="9%"  keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+                   
+                    	<mx:Label  text="Nro de cuenta: " styleName="lblInfo" paddingLeft="7"/>
+                    	<mx:TextInput width="6%" id="txtNroCuenta" textAlign="left"  restrict="0-9" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+		
+			
+			<mx:Label text="CUIL: " styleName="lblInfo"/>
+			<mx:TextInput id="txtCUIL" restrict="0-9" width="8%"  keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+			
+                    	<mx:Label text="Apellido: " styleName="lblInfo" paddingLeft="7"/>
+                    	<mx:TextInput id="txtApellido" width="12%" textAlign="left"  restrict="A-Z/a-z/ /" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>
+                    	<mx:Label text="Nombre: " styleName="lblInfo" paddingLeft="7"/>
+                    	<mx:TextInput id="txtNombre" width="12%" textAlign="left"  restrict="A-Z/a-z/ /" keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()"/>                   
+						<mx:Label text="Generico: " styleName="lblInfo" paddingLeft="7"/>
+						<mx:TextInput id="txtGeneral" width="15%" textAlign="left"   keyDown="if(event.keyCode == Keyboard.ENTER)this.buscar()" paddingRight="7"/>
+						<mx:Label text="   " styleName="lblInfo" paddingLeft="7" width="15%"/>
+			<mx:HBox width="10%" height="100%" horizontalGap="0" horizontalAlign="right" verticalAlign="top" >
+						<mx:Button label="Limpiar Campos" width="7%"  click="this.limpiarBusqueda()" />
+			</mx:HBox>		
+			</mx:HBox>	
+		
+		<mx:HBox width="100%" height="100%" horizontalGap="0" horizontalAlign="left" verticalAlign="top" >
+			
+			<mx:Label  text="Nro de cuenta: " styleName="tituloBusquedas"/>
+			<mx:Label styleName="lblInfo" text="{currencyFormatter.format(encabezadoClienteModel.titular.idCliente)}" />
+				
+			<mx:Label text="CUIL/DNI: " styleName="tituloBusquedas" paddingLeft="7"/>
+			<mx:Label id="lblNroCuil" styleName="lblInfo" text="{((encabezadoClienteModel.titular.nuevoTipoCliente=='Garante') ?CUITFormatter.format(encabezadoClienteModel.titular.cuilConsulta) :CUITFormatter.format(encabezadoClienteModel.clienteEncontrado.individuo.cuil)) }" />
+			<mx:Label text="Apellido Nombre: " styleName="tituloBusquedas" paddingLeft="7"/>
+			<mx:Label id="lblNombreCliente" styleName="lblInfo" text="{encabezadoClienteModel.nombreCliente}" />
+				
+			
+				<mx:HBox width="100%" height="100%" horizontalGap="0" horizontalAlign="right" verticalAlign="top" >
+					<mx:Label styleName="tituloBusquedas" text="Tipo Cliente" paddingLeft="7"/>
+					<mx:Label styleName="lblInfo" text="{encabezadoClienteModel.titular.nuevoTipoCliente}"/>
+					<mx:Label text="Sit. Cobranza: " styleName="tituloBusquedas" paddingLeft="7"/>
+					<mx:Label id="lblSitComercial"  styleName="lblInfo" text="{encabezadoClienteModel.titular.estadoCobranza.descripcion}"  />
+					<mx:Label text="Sit. Comercial: " styleName="tituloBusquedas" paddingLeft="7"/>
+					<mx:Label id="lblSitCobranza" styleName="lblInfo" text="{encabezadoClienteModel.titular.estadoCliente.descripcion}"/>
+					<mx:Label text="Consumo: " styleName="tituloBusquedas" paddingLeft="7"/>
+					<mx:Label styleName="lblInfo" text="{encabezadoClienteModel.titular.diaCierre}"/>
+				</mx:HBox>					
+				
+			
+		</mx:HBox>
+			
+		</mx:VBox> 
+	<mx:NumberFormatter  id="currencyFormatter"   useThousandsSeparator="true" thousandsSeparatorFrom="." thousandsSeparatorTo="." decimalSeparatorFrom="," decimalSeparatorTo=","/>  
+
+<mx:Script>
+	<![CDATA[
+		import com.tarjetafiel.proveedorconexion.model.ModelLocatorGeneral;
+		import com.util.components.alert.AlertOk;
+		import managers.ClienteManager;
+		import views.categorias.cliente.models.EncabezadoClienteModel;
+		import mx.core.UIComponentDescriptor;
+		import mx.messaging.channels.StreamingAMFChannel;
+		import mx.controls.Alert;
+		import com.util.paginacion.Paginador;
+		import mx.containers.Accordion;
+		import com.util.components.alert.AlertWarning;
+		
+		 [Embed(systemFont='Arial', fontWeight="bold", fontName='accordionHeader', mimeType='application/x-font')] 
+		 private var font1:Class;
+	
+	     private var paginador:Paginador;
+	     [Bindable]public var encabezadoClienteModel:EncabezadoClienteModel;
+			
+		 private function limpiarBusqueda():void{
+				if(this.txtNombre)
+					this.txtNombre.text = "";
+				if(this.txtApellido)
+					this.txtApellido.text = "";
+				if(this.txtCUIL){
+					this.txtCUIL.text = "";					
+				}
+				if(this.txtDNI)
+					this.txtDNI.text = ""; 
+				if(this.txtNroCuenta)
+					this.txtNroCuenta.text = "";
+				
+				if(this.txtGeneral)
+					this.txtGeneral.text = "";
+				
+				this.txtDNI.setFocus();
+				
+				/* if(this.txtSitCobranza)
+					this.txtSitCobranza.text = "";
+				if(this.txtSitComercial)
+					this.txtSitComercial.text = ""; */
+				/* if(this.txtTar1){
+					this.txtTar2b.text = "";
+					this.txtTar3.text = "";
+					this.txtTar4.text = "";
+				}				 */
+			}
+			
+		public function nombreCliente():String{
+			
+			
+			Alert.show("encabezadoClienteModel.titular.nuevoTipoCliente " );
+			if(encabezadoClienteModel.titular.nuevoTipoCliente=="Garante"){
+				return encabezadoClienteModel.titular.apellidoConsulta+ ", "+encabezadoClienteModel.titular.nombreConsulta;   
+				// mostrarPanelCliente = true;
+			} else {
+				return encabezadoClienteModel.nombreCliente; 
+			}
+		}  	
+		
+			
+			private function inicializarBusqueda():void{
+				/*  if(this.accordion.selectedIndex ==0){
+                        txtDNI.text="";  				 	
+				 		txtDNI.setFocus();
+				 }	  */
+				 /* if(this.accordion.selectedIndex ==1){
+                        if(txtTar1 && txtTar2 && txtTar2b && txtTar3 && txtTar4){
+                          txtTar2b.text="";
+                          txtTar3.text="";
+                          txtTar4.text="";
+                          txtTar2b.setFocus(); 
+                        }  				 	
+				 }
+				 	 if(this.accordion.selectedIndex ==2){
+				 	   if(txtCuil1 && txtCuil2 &&  txtCuil3){	
+	                        txtCuil1.text="";
+	                        txtCuil2.text="";
+	                        txtCuil3.text="";
+	                        txtCuil1.setFocus();
+                        }   				 	
+				 		
+				 }	 if(this.accordion.selectedIndex ==3){
+                        if(txtNroCuenta){  
+                        txtNroCuenta.text=""; 
+                        txtNroCuenta.setFocus();
+                        }
+				 }	 if(this.accordion.selectedIndex ==4){
+                        if(txtApellido){
+                         txtApellido.text="";  				 	
+				 		 txtApellido.setFocus();
+                        }
+				 }	 if(this.accordion.selectedIndex ==5){
+				 	   if(txtSitComercial){
+                        txtSitComercial.text="";  				 	
+				 		txtSitComercial.setFocus();
+				 	   } 
+				 }	 
+				  if(this.accordion.selectedIndex ==6){
+				  	   if(txtSitCobranza){  
+                        txtSitCobranza.text="";  				 	
+				 		txtSitCobranza.setFocus();
+				  	   } */
+				/*  }	 */ 
+				 
+				 
+	        		
+			}
+			
+			private function onCreationCompl():void{
+				this.paginador = new Paginador();
+				this.txtNroCuenta.setFocus();
+			}
+			
+			
+			public function buscar():void{
+						
+				this.paginador.cantidadRegistros =10;
+				this.paginador.pagina = 0;		
+				this.paginador.tipo_consulta = "particular";
+				var buscarPor: String="";
+				var nroPlastico :String="";
+				var cuil:String ="";
+				
+				if ( txtDNI.text.length == 0 && txtNroCuenta.text.length == 0 && txtCUIL.text.length == 0 && txtApellido.text.length == 0  &&  txtNombre.text.length == 0 
+				&& txtGeneral.text.length == 0 )
+				{
+					AlertWarning.show("Debe ingresar un parametro de busqueda");
+					return;
+				} else {
+					if ( txtNroCuenta.text.length == 0 && txtCUIL.text.length == 0 && txtApellido.text.length == 0  &&  txtNombre.text.length == 0 
+						&& txtGeneral.text.length == 0)
+					{
+						buscarPor= ClienteManager.BUSQ_POR_DNI;
+						this.encabezadoClienteModel.buscarCliente(paginador,txtDNI.text, buscarPor);
+					} else if (txtDNI.text.length == 0  && txtCUIL.text.length == 0 && txtApellido.text.length == 0  &&  txtNombre.text.length == 0 
+						&& txtGeneral.text.length == 0) 
+					{
+						buscarPor= ClienteManager.BUSQ_POR_NRO_CUENTA;
+						this.encabezadoClienteModel.buscarCliente(paginador, txtNroCuenta.text, buscarPor);
+					
+						
+					}	else if (txtNroCuenta.text.length == 0 && txtDNI.text.length == 0   && txtApellido.text.length == 0  &&  txtNombre.text.length == 0 
+							&& txtGeneral.text.length == 0) 
+						{
+							buscarPor= ClienteManager.BUSQ_POR_CUIL;
+							this.encabezadoClienteModel.buscarCliente(paginador, txtCUIL.text, buscarPor);
+							
+						}
+					 else if ( txtDNI.text.length == 0 && txtNroCuenta.text.length == 0  && txtGeneral.text.length == 0 && txtCUIL.text.length == 0)
+					{
+						buscarPor= ClienteManager.BUSQ_POR_APELLIDO;
+						var parametro:String ="";
+						if(txtNombre.text=="")
+							parametro= txtApellido.text;   
+						else  parametro= txtApellido.text+"."+txtNombre.text;
+						this.encabezadoClienteModel.buscarCliente(paginador,parametro, buscarPor);
+					} else if (txtDNI.text.length == 0 && txtNroCuenta.text.length == 0 && txtCUIL.text.length == 0 && txtApellido.text.length == 0  &&  txtNombre.text.length == 0 )
+					{
+						buscarPor= ClienteManager.BUSQ_POR_GENERAL;
+						this.encabezadoClienteModel.buscarCliente(paginador, txtGeneral.text, buscarPor);						
+					} else {
+						buscarPor= ClienteManager.BUSQ_POR_PARAMETRO;
+						this.paginador.tipo_consulta = "parametro";
+						this.encabezadoClienteModel.armarFiltro(txtDNI.text, txtNroCuenta.text, txtCUIL.text, txtApellido.text,  txtNombre.text,  txtGeneral.text);
+						this.encabezadoClienteModel.buscarClientesListado(paginador);						
+					} 
+				}
+			    /* if(this.accordion.selectedIndex !=3){	
+					lblClienteViejo.text="";
+					lblCuenta.text="";
+					lblNombreCliente.text="";
+					lblNroDocuento.text="";
+					lblSitCobranza.text="";
+					lblSitComercial.text="";
+			    } */
+				
+				//if((this.accordion.selectedChild.childDescriptors[this.accordion.selectedIndex](UIComponentDescriptor)).id == this.paramDNI){
+				
+				/*  if(this.accordion.selectedIndex ==0){	 
+				 	//if(txtDNI && txtDNI.text)
+			    	buscarPor= ClienteManager.BUSQ_POR_DNI;
+	        		this.encabezadoClienteModel.buscarCliente(paginador,txtDNI.text, buscarPor);
+		        }
+				 
+				if(this.accordion.selectedIndex ==1){	 
+			    	nroPlastico= txtTar1.text+txtTar2.text+txtTar2b.text+txtTar3.text+txtTar4.text;
+			    	buscarPor= ClienteManager.BUSQ_POR_PLASTICO;
+	        		this.encabezadoClienteModel.buscarCliente(paginador,nroPlastico, buscarPor);
+		        }
+		    
+				if(this.accordion.selectedIndex == 2){ 
+		        	cuil= txtCuil1.text+txtCuil2.text+txtCuil3.text; 
+		        	buscarPor= ClienteManager.BUSQ_POR_CUIL;
+	        		this.encabezadoClienteModel.buscarCliente(paginador,cuil, buscarPor);
+		       }
+			    
+		        if(this.accordion.selectedIndex == 3){ 
+		        	buscarPor= ClienteManager.BUSQ_POR_NRO_CUENTA;
+	        		this.encabezadoClienteModel.buscarCliente(paginador, txtNroCuenta.text, buscarPor);
+	        		txtNroCuenta.text="";
+	        		//AlertOk.show("Esta busqueda esta deshabilitada momentaneamente");
+		        }
+		        
+		        if(this.accordion.selectedIndex == 4){ 
+		        	buscarPor= ClienteManager.BUSQ_POR_APELLIDO;
+		        	var parametro:String ="";
+		        	if(txtNombre.text=="")
+		        	    parametro= txtApellido.text;   
+		        	else  parametro= txtApellido.text+"."+txtNombre.text;
+	        		this.encabezadoClienteModel.buscarCliente(paginador,parametro, buscarPor);
+		        }
+		        
+		        if(this.accordion.selectedIndex == 5){ 
+		        	buscarPor= ClienteManager.BUSQ_POR_SIT_COMERCIAL;
+	        		this.encabezadoClienteModel.buscarCliente(paginador, txtApellido.text, buscarPor);
+		        }
+		        if(this.accordion.selectedIndex == 6){ 
+		        	buscarPor= ClienteManager.BUSQ_POR_SIT_COBRANZA;
+	        		this.encabezadoClienteModel.buscarCliente(paginador,txtApellido.text, buscarPor);
+		        }
+		        	encabezadoClienteModel.dispatcher.dispatchEvent(new Event("setearPestaniaDefault"));
+			         */
+			}
+			
+			private function pasarFocoATxtCuil2():void{
+				/* if(txtCuil1.text.length==2){
+					txtCuil2.setFocus();
+				  } */
+		    }
+		    
+		    
+		    private function pasarFocoATxtCuil3():void{
+				/* if(txtCuil2.text.length==8){
+					txtCuil3.setFocus();
+				  } */
+		    }
+
+			
+			private function pasarFocoATxtTar3():void{
+			/* if(txtTar2b.text.length==2){
+				txtTar3.setFocus();
+			  } */
+		    }
+		
+		
+			private function pasarFocoATxtTar4():void{
+				/* if(txtTar3.text.length==4){
+					txtTar4.setFocus();
+				} */
+			}
+		
+	]]>
+</mx:Script> 
+
+</VboxComun>
+

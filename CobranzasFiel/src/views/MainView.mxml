@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="100%" 
+	verticalGap="0" 
+	height="100%" 
+	xmlns:componentView="com.componentView.*" 
+	xmlns:views="views.*">
+	<componentView:Top/>
+	
+	<views:MenuView width="100%"/>
+	
+	<mx:ModuleLoader id="modulo" width="100%" height="100%" horizontalAlign="center"/>
+		
+</mx:VBox>

@@ -1,0 +1,6 @@
+Medio Pago     Importe    Bco. N.Cheque
+%medioPago%
+Total:         %total%
+Este pago imputa a:
+Nro. Resumen     Fec. Vto     Importe
+%resumen%

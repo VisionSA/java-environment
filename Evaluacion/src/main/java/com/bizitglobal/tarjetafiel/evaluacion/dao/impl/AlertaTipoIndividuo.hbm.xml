@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.AlertaTipoIndividuo" table="t_vis_eva_alertas_tipo_indiv" >
+	<id name="idAlertaTipoIndiv" type="java.lang.Long" column="c_id_alerta_tipo_indiv">
+		<generator class="increment" />
+	</id>
+
+	<property name="activa" type="java.lang.String" column="c_activa" not-null="false" length="1"/>
+
+	<property name="descripcion" type="java.lang.String" column="c_descripcion" not-null="false" length="2048"/>
+
+	<property name="esAutomatico" type="java.lang.String" column="c_es_automatico" not-null="false" length="1"/>
+
+	<property name="esInmediata" type="java.lang.String" column="c_es_inmediata" not-null="false" length="1"/>
+
+	<many-to-one name="estados" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.Estados" not-null="false" >
+		<column name="c_id_estado" />
+	</many-to-one>
+
+	<property name="idOperador" type="java.lang.Long" column="c_id_operador" not-null="false" length="2560"/>
+
+	<many-to-one name="regla" class="com.bizitglobal.tarjetafiel.general.negocio.Regla" not-null="false" >
+		<column name="c_id_regla" />
+	</many-to-one>
+
+	<property name="idReglaParentExito" type="java.lang.Long" column="c_id_regla_parent_exito" not-null="false" length="2560"/>
+
+	<property name="idReglaParentFracaso" type="java.lang.Long" column="c_id_regla_parent_fracaso" not-null="false" length="256"/>
+
+	<many-to-one name="tipoIndividuo" class="com.bizitglobal.tarjetafiel.evaluacion.negocio.TipoIndividuo" not-null="false" >
+		<column name="c_id_tipo_individuo" />
+	</many-to-one>
+
+	<property name="produceCierre" type="java.lang.String" column="c_produce_cierre" not-null="false" length="1"/>
+
+	<property name="requiereAutorizacion" type="java.lang.String" column="c_requiere_autorizacion" not-null="false" length="1"/>
+
+	<property name="timestamp" type="java.sql.Timestamp" column="c_timestamp" not-null="false" length="3594"/>
+
+	<set name="alertasSolicitudes" inverse="false" cascade="none"  >
+		<key>
+			<column name="c_id_alerta_tipo_indiv" />
+		</key>
+		<one-to-many class="com.bizitglobal.tarjetafiel.evaluacion.negocio.AlertaSolicitud"/>
+	</set>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" width="100%" height="100%">
+	
+	<fx:Script>
+		<![CDATA[		
+			import com.tarjetafiel.caja.vo.Cheque;
+			
+			import utils.ManejadorIconos;
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mx:CurrencyFormatter id="curFormatter" currencySymbol="$"
+							  decimalSeparatorFrom="."
+							  decimalSeparatorTo=","
+							  thousandsSeparatorFrom=""
+							  thousandsSeparatorTo="."
+							  useNegativeSign="false"
+							  precision="2"/>
+		<mx:Dissolve id="dissolveEff" duration="500"/>
+		<mx:Move id="moveEff" duration="2000"/>
+		<mx:DateFormatter id="dfFecha" formatString="DD/MM/YYYY"/>
+	</fx:Declarations>
+	
+	<s:VGroup id="vgContainer" paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2"
+			  horizontalAlign="center" moveEffect="moveEff" >		
+		<mx:Image id="imgCheques" source="{ManejadorIconos.BANCO}" autoLoad="true" 
+				  addedEffect="dissolveEff" removedEffect="dissolveEff" horizontalAlign="center"/>
+		<s:Label id="lblBanco" text="{data.banco.descripcion}" fontFamily="Georgia" fontSize="10" 
+				 addedEffect="dissolveEff" removedEffect="dissolveEff" />
+		<s:Label id="lblNro" text="Nº {data.numero}" fontSize="9" 
+				 addedEffect="dissolveEff" removedEffect="dissolveEff"/>
+		<s:Label id="lblFecha" text="{dfFecha.format((data as Cheque).fechaPago)}" fontSize="9" 
+				 addedEffect="dissolveEff" removedEffect="dissolveEff" />
+		<s:Label id="lblImporte" text="{curFormatter.format(data.importe)}" fontSize="9" 
+				 addedEffect="dissolveEff" removedEffect="dissolveEff"/>
+	</s:VGroup>
+	
+</s:ItemRenderer>

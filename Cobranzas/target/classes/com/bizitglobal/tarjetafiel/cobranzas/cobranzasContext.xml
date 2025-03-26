@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+ <!-- ===========================================================================================
+ ========================         DEFINICION DE DAOS DEL MODULO         ========================= 
+ ================================================================================================ 
+ ESTA DEFINICION PERTENECE A OTRO PAQUETE (BORRARLA) -->
+ 
+ <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.dao.impl.AccionDaoImpl" id="accionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.dao.impl.EtapaDaoImpl" id="etapaDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.dao.impl.PlanDaoImpl" id="planDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+   <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.dao.impl.TareaPendienteDaoImpl" id="tareaPendienteDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+   <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.dao.impl.AccionVersionDaoImpl" id="accionVersionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.dao.impl.EtapaVersionDaoImpl" id="etapaVersionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+  	<ref bean="dataSource"/>
+  </property>  
+ </bean>
+ 
+  <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.dao.impl.PlanVersionDaoImpl" id="planVersionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+ </bean>
+ 
+   <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.dao.impl.EjecucionPlanDaoImpl" id="ejecucionPlanDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+ 
+ 	<bean class="com.bizitglobal.tarjetafiel.cobranzas.dao.impl.ReciboDaoImpl" id="reciboDao">
+ 		<property name="hibernateTemplate">
+ 			<ref bean="hibernateTemplate"/>
+ 		</property> 		
+ 	</bean>
+ 
+ 
+ 
+	 <bean class="com.bizitglobal.tarjetafiel.evaluacion.dao.impl.IndividuoDomicilioDaoHibernateImpl" id="individuoDomiciliosCobranzasDao">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate"/>
+		</property>
+	</bean>
+ 
+ 
+<!--   <bean
+  class="com.bizitglobal.tarjetafiel.transacciones.dao.impl.TransaccionDaoHibernateImpl" id="transaccionDao">
+  <property name="hibernateTemplate">
+   <ref bean="hibernateTemplate"/>
+  </property>
+  <property name="dataSource">
+   <ref bean="dataSource"/>
+  </property>
+ </bean>
+
+ <bean id="plasticoLugarService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
+ 	<property name="target" ref="plasticoLugarServiceTarget"></property>
+   <property name="transactionManager" ref="myTxManager"/>
+   <property name="transactionAttributes">
+     <props>
+       <prop key="guardar*">PROPAGATION_REQUIRED</prop>
+       <prop key="modificar*">PROPAGATION_REQUIRED</prop>
+       <prop key="eliminar*">PROPAGATION_REQUIRED</prop>
+       <prop key="list*">PROPAGATION_REQUIRED,readOnly</prop>
+       <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+     </props>
+   </property>
+ </bean>-->
+ 
+
+ <!-- ================================================================================================ 
+ ===============================  DEFINICION DE ACCION SERVICE  ============================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.service.impl.AccionServiceImpl" id="accionServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="accionDao" ref="accionDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="accionService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.cobranzas.service.AccionService</value>
+  </property>
+  <property name="target">
+   <ref bean="accionServiceTarget"/>
+  </property>
+ </bean>
+ 
+   <!-- ================================================================================================ 
+ ===============================  DEFINICION DE TAREA PENDIENTE SERVICE  ============================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.service.impl.TareaPendienteServiceImpl" id="tareaPendienteServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="tareaPendienteDao" ref="tareaPendienteDao"/>
+  <property name="individuoDomiciliosCobranzasDao" ref="individuoDomiciliosCobranzasDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="tareaPendienteService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.cobranzas.service.TareaPendienteService</value>
+  </property>
+  <property name="target">
+   <ref bean="tareaPendienteServiceTarget"/>
+  </property>
+ </bean>
+ 
+  <!-- ================================================================================================ 
+ ===============================  DEFINICION DE Plan SERVICE  ============================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.service.impl.PlanServiceImpl" id="planServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="planDao" ref="planDao"/>
+  <property name="planVersionDao" ref="planVersionDao"/>
+  <property name="etapaDao" ref="etapaDao"/>
+  <property name="accionDao" ref="accionDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="planService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.cobranzas.service.PlanService</value>
+  </property>
+  <property name="target">
+   <ref bean="planServiceTarget"/>
+  </property>
+ </bean>
+ 
+   <!-- ================================================================================================ 
+ ===============================  DEFINICION DE Etapa SERVICE  ============================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.service.impl.EtapaServiceImpl" id="etapaServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="etapaDao" ref="etapaDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="etapaService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.cobranzas.service.EtapaService</value>
+  </property>
+  <property name="target">
+   <ref bean="etapaServiceTarget"/>
+  </property>
+ </bean>
+ 
+   <!-- ================================================================================================ 
+ ===============================  DEFINICION DE Plan Version SERVICE  ============================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.service.impl.PlanVersionServiceImpl" id="planVersionServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="planVersionDao" ref="planVersionDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="planVersionService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.cobranzas.service.PlanVersionService</value>
+  </property>
+  <property name="target">
+   <ref bean="planVersionServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- ================================================================================================ 
+ ===============================  DEFINICION DE Etapa Version SERVICE  ============================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.service.impl.EtapaVersionServiceImpl" id="etapaVersionServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="etapaVersionDao" ref="etapaVersionDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="etapaVersionService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.cobranzas.service.EtapaVersionService</value>
+  </property>
+  <property name="target">
+   <ref bean="etapaVersionServiceTarget"/>
+  </property>
+ </bean>
+ 
+  <!-- ================================================================================================ 
+ ===============================  DEFINICION DE Accion Version SERVICE  ============================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.service.impl.AccionVersionServiceImpl" id="accionVersionServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="accionVersionDao" ref="accionVersionDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="accionVersionService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.cobranzas.service.AccionVersionService</value>
+  </property>
+  <property name="target">
+   <ref bean="accionVersionServiceTarget"/>
+  </property>
+ </bean>
+
+ <!-- ================================================================================================ 
+ ===============================  DEFINICION DE Ejecucion Plan SERVICE  ============================== 
+ ================================================================================================ -->
+ <bean
+  class="com.bizitglobal.tarjetafiel.cobranzas.service.impl.EjecucionPlanServiceImpl" id="ejecucionPlanServiceTarget">
+  <property name="transactionManager" ref="myTxManager"/>
+  <property name="ejecucionPlanDao" ref="ejecucionPlanDao"/>
+ </bean>
+ <bean class="org.springframework.aop.framework.ProxyFactoryBean" id="ejecucionPlanService">
+  <property name="proxyInterfaces">
+   <value>com.bizitglobal.tarjetafiel.cobranzas.service.EjecucionPlanService</value>
+  </property>
+  <property name="target">
+   <ref bean="ejecucionPlanServiceTarget"/>
+  </property>
+ </bean>
+ 
+ <!-- ================================================================================================ 
+ ===============================  DEFINICION DE Recibo SERVICE  ============================== 
+ ================================================================================================ -->
+	<bean class="com.bizitglobal.tarjetafiel.cobranzas.service.impl.ReciboServiceImpl" id="reciboServiceTarget">
+		<property name="transactionManager" ref="myTxManager"/>
+		<property name="reciboDao" ref="reciboDao"/>
+	</bean>
+	<bean class="org.springframework.aop.framework.ProxyFactoryBean" id="reciboService">
+		<property name="proxyInterfaces">
+			<value>com.bizitglobal.tarjetafiel.cobranzas.service.ReciboService</value>
+		</property>
+		<property name="target">
+			<ref bean="reciboServiceTarget"/>
+		</property>
+	</bean>
+
+ </beans>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+

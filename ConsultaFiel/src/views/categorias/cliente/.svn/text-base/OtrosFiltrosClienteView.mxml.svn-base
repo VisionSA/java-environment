@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" >
+	<mx:HBox>
+		<mx:Form paddingBottom="0" paddingLeft="0" paddingTop="0" paddingRight="0">
+			<mx:FormItem label="Label">
+				<mx:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="Label">
+				<mx:TextInput/>
+			</mx:FormItem>
+		</mx:Form>
+		<mx:Form paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
+			<mx:FormItem label="Label">
+				<mx:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="Label">
+				<mx:TextInput/>
+			</mx:FormItem>
+		</mx:Form>
+		<mx:Form paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
+			<mx:FormItem label="Label">
+				<mx:TextInput/>
+			</mx:FormItem>
+			<mx:FormItem label="Label">
+				<mx:TextInput/>
+			</mx:FormItem>
+		</mx:Form>
+	  
+	</mx:HBox>
+	
+				 <mx:Script>
+				 	<![CDATA[
+				 		    private function buscar():void {
+	              }
+			 	]]>
+				 </mx:Script> 
+				  	
+</mx:HBox>

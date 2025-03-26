@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.evaluacion.negocio.ActividadEvaluacion" table="t_vis_eva_actividades" >
+	<id name="idActividad" type="java.lang.Long" column="c_id_actividad">
+		<generator class="increment" />
+	</id>
+
+	<property name="antiguedad" type="java.lang.Long" column="c_antiguedad" not-null="false" length="1024"/>
+	
+	<property name="cuil" type="java.lang.String" column="c_cuil" not-null="true" length="11"/>
+
+	<property name="cargo" type="java.lang.String" column="c_cargo" not-null="false" length="50"/>
+
+    <property name="tipo" type="java.lang.String" column="c_tipo" not-null="false" length="1"/>
+    
+	<property name="empleoAnterior" type="java.lang.String" column="c_empleo_anterior" not-null="false" length="100"/>
+
+	<property name="fechaIngreso" type="java.sql.Timestamp" column="c_fecha_ingreso" not-null="false" length="3594"/>
+	
+	<property name="habilitadoCuit" type="java.lang.Character" column="c_habilitado_cuit" not-null="false" />
+
+	<many-to-one name="ocupacion" class="com.bizitglobal.tarjetafiel.general.negocio.Ocupacion" not-null="false" cascade="none">
+		<column name="c_id_ocupacion" />
+	</many-to-one>
+
+	<many-to-one name="sucEmpresa" class="com.bizitglobal.tarjetafiel.general.negocio.SucEmpresa" not-null="false" cascade="none">
+		<column name="c_id_sucursal" />
+	</many-to-one>
+
+	<property name="otrosIngresosDesc" type="java.lang.String" column="c_otros_ingresos_desc" not-null="false" length="50"/>
+
+	<property name="otrosIngresosMonto" type="java.math.BigDecimal" column="c_otros_ingresos_monto" not-null="false" length="2562"/>
+
+	<property name="referencias" type="java.lang.String" column="c_referencias" not-null="false" length="255"/>
+
+	<property name="sueldoNeto" type="java.math.BigDecimal" column="c_sueldo_neto" not-null="false" length="2562"/>
+
+	<property name="telEmpleoAnt" type="java.lang.String" column="c_tel_empleo_ant" not-null="false" length="100"/>
+	
+</class>
+</hibernate-mapping>

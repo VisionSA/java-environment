@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="if(event.keyCode == Keyboard.ENTER)this.focusManager.getNextFocusManagerComponent().setFocus()" horizontalAlign="center" verticalAlign="middle" xmlns:textInput="com.util.components.textInput.*">	
+	<mx:HBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+		<mx:Label text="{_formaPagoValor.descripcion}" width="120"/>
+		<mx:TextInput restrict="0-9" change="{changedCantidadValor()}" text="0" 
+			focusOut="if(isNaN(Number(this.txtCantidad.text)) || StringUtil.trim(this.txtCantidad.text).toString() == '')this.txtCantidad.text = '0'" id="txtCantidad"	width="120"/>		
+	</mx:HBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.CajaCierre;
+			import mx.utils.StringUtil;
+			import com.tarjetafiel.caja.vo.CajaArqueo;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.model.ArqueoCajaModel;
+			
+			import com.tarjetafiel.caja.vo.FormaPagoValor;
+			
+			[Bindable]private var _formaPagoValor:FormaPagoValor;		
+			
+			[Bindable]private var arqueoModel:ArqueoCajaModel = ModelLocator.getInstance().arqueoCajaModel;
+			
+			[Bindable]private var arqueo:CajaArqueo = new CajaArqueo();
+			
+			[Bindable]private var _cajaCierre:CajaCierre;
+			
+			public function set formaPagoValor(valor:FormaPagoValor):void{
+				_formaPagoValor = valor;																			
+			}
+			
+			public function set cajaCierre(cajaCierre:CajaCierre):void{
+				if(txtCantidad){
+					txtCantidad.text = "0";					
+				}
+				_cajaCierre = cajaCierre;				
+				arqueo = new CajaArqueo();
+				arqueo.cajaCierre = cajaCierre;
+				cajaCierre.cajaArqueosList.push(arqueo);
+				arqueo.cajaCierre = _cajaCierre;
+				arqueo.formaPagoValor = _formaPagoValor;
+				arqueo.monto = 0;																	
+				dispatchEvent(new Event("changedCajaCierre"));
+			}
+			
+			[Bindable (event="changedCajaCierre")]
+			public function get cajaCierre():CajaCierre{
+				return _cajaCierre;
+			}
+			
+			public function changedCantidadValor():void{
+				if(isNaN(Number(txtCantidad.text))){					
+					this.txtCantidad.text = "0";
+					this.arqueoModel.changedMonto(_cajaCierre,arqueo,0,0);
+				} else {
+					var monto:Number = Number(txtCantidad.text) * _formaPagoValor.multiplo;
+					this.arqueoModel.changedMonto(_cajaCierre,arqueo,monto,int(txtCantidad.text));
+				}				
+			}
+								
+		]]>
+	</mx:Script>
+</mx:VBox>

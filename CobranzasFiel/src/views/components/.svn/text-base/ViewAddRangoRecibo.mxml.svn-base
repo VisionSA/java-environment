@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical"
+	creationComplete="init()">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.SandboxMouseEvent;
+			import com.tarjetafiel.caja.vo.Recibo;
+			import com.tarjetafiel.caja.vo.Recibo;
+			import events.GenericAsignacionCobradoresEvent;
+			import events.GenericAsignacionCobradoresEvent;
+			import events.GenericAsignacionCobradoresEvent;
+			import events.GenericAsignacionCobradoresEvent;
+			import events.GenericAsignacionCobradoresEvent;
+			import com.util.components.alert.AlertError;
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			import mx.controls.Alert;
+			import mx.controls.Alert;
+			import mx.validators.Validator;
+			import mx.validators.Validator;
+			import mx.validators.Validator;
+			import mx.validators.StringValidator;
+			import mx.utils.StringUtil;
+			import mx.utils.StringUtil;
+			import mx.managers.PopUpManager;
+			import model.CobranzasModelLocator;
+		
+			[Bindable]
+			private var modelo : CobranzasModelLocator = CobranzasModelLocator.getInstance();
+			
+			
+			private function init():void {
+				this.title=StringUtil.substitute('Agregar rango de recibos para {0} {1}',modelo.cobrador.nombre,modelo.cobrador.apellido);
+				inptDesde.setFocus();
+			}
+		
+			private function cerrarPopUp():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function agregarNuevoRango():void {
+				if(validateField([inptDesde,inptHasta])){
+					if (validateRange(Number(inptDesde.text),Number(inptHasta.text))){						
+						var recibo : Recibo = new Recibo();
+						recibo.cobrador = modelo.cobrador;
+						recibo.desde = Number(inptDesde.text);
+						recibo.hasta = Number(inptHasta.text);
+						new GenericAsignacionCobradoresEvent(GenericAsignacionCobradoresEvent.ADD_NUEVO_RANGO_RECIBO_EVENT,recibo).dispatch();
+						cerrarPopUp();
+					}else {
+						AlertError.show("El campo Desde no puede \nser mayor al campo Hasta");
+					}
+				}else {
+					AlertError.show("Parametros incorrectos");
+				}
+			}
+			
+			
+			private function validateRange(nro1:Number, nro2:Number) : Boolean {
+				return nro1<=nro2;
+			}
+			
+			private function validateField(fields:Array):Boolean {
+			    var rtnResult:Boolean = true;
+			    for each(var i:Object in fields)
+			    {
+			        strVal.source = i;
+			        strVal.property = "text";
+			
+			        i.validateNow();
+			        if(strVal.validate().type == ValidationResultEvent.INVALID){
+			        	rtnResult = false;
+			        }
+			    }
+			    return rtnResult;
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:StringValidator id="strVal" property="text"
+		requiredFieldError="Campo Obligatorio" />
+		
+
+	
+	<mx:Form>
+		<mx:FormItem>
+			<mx:HBox verticalAlign="middle">
+				<mx:Label text="Rango" />
+				<mx:VBox horizontalAlign="center" verticalAlign="middle">
+					<mx:Label text="Desde" />
+					<mx:TextInput id="inptDesde" restrict="0-9" width="120"/>
+				</mx:VBox>
+				<mx:VBox horizontalAlign="center" verticalAlign="middle">
+					<mx:Label text="Hasta" />
+					<mx:TextInput id="inptHasta" restrict="0-9" width="120"/>
+				</mx:VBox>
+			</mx:HBox>
+		</mx:FormItem>
+	</mx:Form>
+	
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="btnGuardar" label="Guardar" width="100" click="agregarNuevoRango()"/>
+		<mx:Button label="Salir" width="100" click="cerrarPopUp()"/>
+	</mx:ControlBar>
+	
+</mx:TitleWindow>

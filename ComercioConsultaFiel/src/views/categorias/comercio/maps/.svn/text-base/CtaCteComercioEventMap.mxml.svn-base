@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	<mx:Script>
+		<![CDATA[
+			import views.categorias.comercio.modules.CtaCteComercioModule;
+			import events.CtaCteComercioEvent;
+			import views.categorias.comercio.models.ListaComercioModel;
+			import managers.ComercioManager;
+			import views.categorias.comercio.models.CtaCteComercioModel;
+			
+			import events.ComercioManagerEvent;
+			import managers.ComercioManager;
+			import events.ComercioEvent;
+			
+			//Interfaz incluida en el modulo
+			import views.categorias.comercio.ResumidoCtaCteComercioView;
+			
+		]]>
+	</mx:Script>
+	
+	<Injectors target="{CtaCteComercioModule}">
+		<ObjectBuilder generator="{CtaCteComercioModel}"/>
+		<PropertyInjector source="{lastReturn}" targetKey="ctaCteComercioModel"/>
+	</Injectors>
+	
+	<EventHandlers type="{CtaCteComercioEvent.BUSCAR_CTA_CTE_COMERCIO}">
+		<RemoteObjectInvoker instance="{ctaCteComercioService}" arguments="{[event.filtro,event.fechaDesde,event.idValue,event.buscarPorEmpresa]}" method="getCtaCteComercioSaldoFlex">
+			<resultHandlers>
+				<MethodInvoker generator="{CtaCteComercioModel}" method="resultCtaCteComercio" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{CtaCteComercioModel}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>
+	</EventHandlers>
+	
+	
+	
+	<!-- ######################### COMERCIO #############################-->
+	<EventHandlers type="{ComercioEvent.BUSCAR_MOVIMIENTOS_CTA_CTE_COMERCIO}"> 
+		<MethodInvoker generator="{ComercioManager}" arguments="{[event.fechaDesde,event.idComercio, event.modoConciliado]}" method="buscarMovimientosCtaCte">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioManagerEvent.BUSCAR_MOVIMIENTOS_CTA_CTE_COMERCIO}">		
+		<RemoteObjectInvoker instance="{ctaCteComercioService}" method="getMovimientosCtaCte" arguments="{[event.fechaDesde,event.idComercio, event.modoConciliado]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultBuscarMovimientosCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioEvent.BUSCAR_DETALLES_MOVIMIENTO_CTA_CTE_COMERCIO}"> 
+		<MethodInvoker generator="{ComercioManager}" arguments="{[event.idTransaccion,event.idComercio]}" method="buscarDetallesMovimientoCtaCte">
+			<Properties dispatcher="{scope.dispatcher}"/>
+		</MethodInvoker>
+	</EventHandlers>
+	
+	<EventHandlers type="{ComercioManagerEvent.BUSCAR_DETALLES_MOVIMIENTO_CTA_CTE_COMERCIO}">		
+		<RemoteObjectInvoker instance="{ctaCteComercioService}" method="getDetallesMovimientoCtaCte" arguments="{[event.idComercio,event.idTransaccion]}" >
+			<resultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="resultBuscarDetallesMovimientoCtaCte" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{ComercioManager}" method="fault" arguments="{fault}"/>
+			</faultHandlers>
+		</RemoteObjectInvoker>		
+	</EventHandlers>
+	<!-- ######################### FIN COMERCIO #############################-->
+
+<!-- Remote Object Comercio -->
+  <mx:RemoteObject id="ctaCteComercioService" destination="GenericSessionDestination" source="ctaCteComercioServiceTarget"/>
+  
+  <!--
+  <Injectors targets="{[CtaCteComercioModule,ResumidoCtaCteComercioView]}"> 
+		<ObjectBuilder generator="{CtaCteComercioModel}">
+		 <Properties dispatcher="{scope.dispatcher}"/>
+		</ObjectBuilder>
+		<PropertyInjector source="{lastReturn}" targetKey="CtaCteComercioModel"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="saldoAnterior" sourceKey="saldoAnteriorCtaCte" source="{ComercioManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="arrayMovientosCtaCteResumen" sourceKey="resultBuscarMovimientosCtaCte" source="{ComercioManager}"/>
+	</Injectors>
+	
+	<Injectors target="{CtaCteComercioModel}">		
+		<PropertyInjector targetKey="arrayMovientoCtaCteDetalles" sourceKey="arrayMovientoCtaCteDetalles" source="{ComercioManager}"/>
+	</Injectors>
+	-->
+</EventMap>
+

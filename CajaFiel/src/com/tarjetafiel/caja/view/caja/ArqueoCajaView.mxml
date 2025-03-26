@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="750" height="550" creationComplete="onCreationComplete()" keyDown="if(event.keyCode == Keyboard.ESCAPE)PopUpManager.removePopUp(parent as IFlexDisplayObject)" 
+				showCloseButton="true" close="PopUpManager.removePopUp(this)"			
+				horizontalAlign="center" verticalAlign="middle" layout="vertical" xmlns:controles="com.tarjetafiel.caja.view.caja.controles.*" xmlns:textInput="com.util.components.textInput.*" backgroundColor="#D1D1D1" backgroundAlpha="1.0">
+	
+	<!--mx:HBox verticalAlign="middle" horizontalAlign="center" id="hBoxCajaMpView"-->
+		<mx:HBox width="100%" height="100%">
+			<mx:VBox verticalAlign="middle" horizontalAlign="center" width="30%" height="100%">
+				<mx:Label styleName="tituloBusquedas" text="Totales"/>
+				<mx:VBox width="100%" id="vboxTotales" verticalAlign="middle" horizontalAlign="center" borderStyle="solid"  height="100%">				
+					<mx:Repeater id="rptTotales">									
+								<mx:VBox verticalAlign="middle" horizontalAlign="center" includeInLayout="{rptTotales.currentItem.cajaMp.formaPago.idFormaPago != 2}" visible="{rptTotales.currentItem.cajaMp.formaPago.idFormaPago != 2}" width="100%">
+									<mx:LinkButton styleName="lblInfo" click="accordion.selectedIndex = vboxTotales.getChildIndex(event.target.parent as DisplayObject)" label="Total {rptTotales.currentItem.cajaMp.planCuentaDos.titulo}:" />
+									<textInput:TextInputMoneda text="{rptTotales.currentItem.cajaCierre.totalArqueo}" editable="false" width="120" fontFamily="Arial" fontSize="14" fontWeight="bold" textAlign="center"/>	
+									<mx:LinkButton click="accordion.selectedIndex = vboxTotales.getChildIndex(event.target.parent as DisplayObject)" styleName="lblInfo" label="Diferencia {rptTotales.currentItem.cajaMp.planCuentaDos.titulo}:" visible="{arqueoCajaModel.mostrarDiferencia}" includeInLayout="{arqueoCajaModel.mostrarDiferencia}" color="#FF0000"/>
+									<textInput:TextInputMoneda text="{rptTotales.currentItem.cajaCierre.diferencia}"  editable="false" visible="{arqueoCajaModel.mostrarDiferencia}" includeInLayout="{arqueoCajaModel.mostrarDiferencia}" fontWeight="bold" color="#DC0000" width="120" fontFamily="Arial" fontSize="14" textAlign="center"/>	
+								</mx:VBox>							
+					</mx:Repeater>
+				</mx:VBox>	
+			</mx:VBox>
+			
+			<mx:VBox width="70%" height="100%">			
+				<mx:ToggleButtonBar dataProvider="accordion" width="100%"/>		
+				<mx:ViewStack id="accordion" width="100%" height="100%">
+					<mx:Repeater dataProvider="{cajaMpModel.arrayFormaPagoArqueo}" id="rpt">		
+						
+						<controles:CuentasCajaMpView cajaMp="{rpt.currentItem as CajaMP}" 
+							verticalAlign="middle" horizontalAlign="center" 
+							borderStyle="solid"  width="100%" height="100%" 
+							includeInLayout="{rpt.currentItem.formaPago.idFormaPago != 2}" 
+							visible="{rpt.currentItem.formaPago.idFormaPago != 2}"   backgroundAlpha="1.0"/>
+						
+					</mx:Repeater>	
+				</mx:ViewStack>	
+			</mx:VBox>
+		</mx:HBox>
+		
+				
+	<!--/mx:HBox-->
+	
+	<mx:HRule width="95%" height="10"/>
+	<mx:Spacer height="7"/>
+	<mx:HBox verticalAlign="middle" horizontalAlign="center">
+		<mx:Button label="Impresoras" click="ModelLocator.getInstance().impresorasModel.showListaImpresoras()" />
+		<mx:Button label="Nuevo Cierre X" click="this.nuevoArqueo()" includeInLayout="{arqueoCajaModel.mostrarDiferencia}" visible="{arqueoCajaModel.mostrarDiferencia}"/>
+		<mx:Button label="Ejecutar Cierre X" click="this.ejecutarCierre()" includeInLayout="{!arqueoCajaModel.mostrarDiferencia}" visible="{!arqueoCajaModel.mostrarDiferencia}"/>
+		<mx:Button label="Ejecutar Cierre Z" click="this.ejecutarCierreZ()" includeInLayout="{arqueoCajaModel.mostrarDiferencia}" visible="{arqueoCajaModel.mostrarDiferencia}"/>	
+	</mx:HBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ResizeEvent;
+			import com.tarjetafiel.caja.vo.CajaCierre;
+			import com.tarjetafiel.caja.view.caja.controles.CuentasCajaMpView;
+			import com.tarjetafiel.caja.event.CajaArqueoEvent;
+			import com.tarjetafiel.caja.vo.CajaMP;
+			import com.tarjetafiel.caja.model.FormaPagoCajaModel;
+			import mx.controls.Alert;
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.PopUpManager;
+			import mx.events.CloseEvent;
+			import com.util.components.alert.AlertYesNo;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.model.ArqueoCajaModel;
+			
+			[Bindable]private var cajaMpModel:FormaPagoCajaModel = ModelLocator.getInstance().formaPagoCajaModel;
+			
+			[Bindable]private var arqueoCajaModel:ArqueoCajaModel = ModelLocator.getInstance().arqueoCajaModel;
+			
+			private function ejecutarCierre():void{
+				arqueoCajaModel.tipoDeArqueo = ArqueoCajaModel.ARQUEO_PROVISORIO;
+				AlertYesNo.show("¿Confirma la ejecución del cierre " + arqueoCajaModel.tipoDeArqueo + "?",
+				function (evt:CloseEvent):void{
+					if(evt.detail == Alert.YES){
+						var event:CajaArqueoEvent = new CajaArqueoEvent(CajaArqueoEvent.EJECUTAR_ARQUEO);
+						event.dispatch();
+					}
+				}
+				);
+			}
+			
+			private function ejecutarCierreZ():void{
+				arqueoCajaModel.tipoDeArqueo = ArqueoCajaModel.ARQUEO_DEFINITIVO;
+				AlertYesNo.show("¿Confirma la ejecución del cierre " + arqueoCajaModel.tipoDeArqueo + "?",
+				function (evt:CloseEvent):void{
+					if(evt.detail == Alert.YES){
+						var event:CajaArqueoEvent = new CajaArqueoEvent(CajaArqueoEvent.EJECUTAR_ARQUEO);
+						event.dispatch();
+					}
+				}
+				);
+			}
+			
+			public function onCreationComplete():void{
+				ModelLocator.getInstance().arqueoCajaModel.addEventListener(CajaArqueoEvent.NUEVO_ARQUEO,nuevoArqueo);
+				ModelLocator.getInstance().arqueoCajaModel.addEventListener(CajaArqueoEvent.ARQUEO_COMPLETE,
+				function (evt:Event):void{
+					PopUpManager.removePopUp(parent as IFlexDisplayObject);
+					ModelLocator.getInstance().accesoDenegadoModel.addPopUpCajaCerrada();
+				});
+				addEventListener(ResizeEvent.RESIZE, resize);
+				rptTotales.dataProvider = accordion.getChildren();
+				
+			}
+			
+			public function resize(evt:ResizeEvent):void{
+				PopUpManager.centerPopUp(parent as IFlexDisplayObject);
+			}  
+			
+			private function confirmarNuevoArqueo():void{
+				
+				AlertYesNo.show("¿Confirma realizar un nuevo cierre X?",function (evt:CloseEvent):void{
+					if(evt.detail == Alert.YES){
+						nuevoArqueo();
+					}
+				});
+			}
+							
+			public function nuevoArqueo(evt:CajaArqueoEvent=null):void{											
+				arqueoCajaModel.mostrarDiferencia = false;
+				arqueoCajaModel.cajaCierreList.removeAll();
+				for each(var cuentas:DisplayObject in accordion.getChildren()){					
+					if(cuentas is CuentasCajaMpView){
+						var cajaCierre:CajaCierre = new CajaCierre();									
+						CuentasCajaMpView(cuentas).cajaCierre = cajaCierre;							
+						arqueoCajaModel.addCajaCierre(CuentasCajaMpView(cuentas).cajaCierre);
+					}			
+				}
+			}
+			
+			private function closePopUp():void{
+				PopUpManager.removePopUp(this);
+				
+			}
+			
+			public function init():void{
+				
+			}
+						
+		]]>
+	</mx:Script>
+</mx:TitleWindow>

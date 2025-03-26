@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/entity
+END
+PermisoWeb.class
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/entity/PermisoWeb.class
+END
+UsuarioPermisoWeb.class
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/entity/UsuarioPermisoWeb.class
+END
+UsuarioWeb.class
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/entity/UsuarioWeb.class
+END
+UsuarioComercioWeb.class
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/testing/!svn/ver/46/trunk/FielWeb/target/classes/com/bizit/consulta/web/entity/UsuarioComercioWeb.class
+END

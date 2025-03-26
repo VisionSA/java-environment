@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.bizitglobal.tarjetafiel.cobranzas.negocio">
+  <class name="EjecucionPlan" table="t_vis_cob_ejecucion_plan">
+  	
+  	<cache usage="read-write"/>
+	
+	<id name="idEjecucionPlan" type="long" column="c_id_ejecucion_plan">
+		<generator class="sequence" >
+			<param name="sequence">SEQ_ID_EJECUCION_PLAN</param>
+		</generator>
+	</id>
+  	
+  	<property name="fechaEjecucion" column="c_fecha_ejecucion" type="date"/>
+  	<property name="confirmoAccion" column="c_confirmo_accion" type="string" length="1"/>
+  	<property name="comentario" column="c_comentario" type="string" length="255"/>
+  	<property name="urlArchivo" column="c_url_archivo" type="string" length="255"/>
+  	<property name="idUsuario" column="c_id_usuario" type="long" not-null="true"/>
+    
+    <many-to-one name="plan"  
+		        class="Plan" not-null="true">
+        <column name="c_id_plan" />
+    </many-to-one>
+    
+    <many-to-one name="etapa"    
+		        class="Etapa" not-null="true">
+        <column name="c_id_etapa" />
+    </many-to-one>
+    
+    <many-to-one name="accion"    
+		        class="Accion" not-null="true">
+        <column name="c_id_accion" />
+    </many-to-one>
+    
+    <many-to-one name="partido"    
+		        class="com.bizitglobal.tarjetafiel.general.negocio.Partido" >
+        <column name="c_id_partido" />
+    </many-to-one>
+    
+    
+    <many-to-one name="cobrador"    
+		        class="com.bizitglobal.tarjetafiel.transacciones.negocio.Colaborador" not-null="true">
+        <column name="c_id_cobrador" />
+    </many-to-one>
+    
+    <property name="idAbogado" column="c_id_abogado" type="long" />
+    
+    <property name="idParent" column="C_ID_PARENT" type="long" />
+    
+  </class>
+</hibernate-mapping>

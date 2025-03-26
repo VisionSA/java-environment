@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/config
+END
+messaging-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/config/messaging-config.xml
+END
+Copy of weborb-services-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/config/Copy%20of%20weborb-services-config.xml
+END
+proxy-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/config/proxy-config.xml
+END
+data-management-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/config/data-management-config.xml
+END
+services-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/config/services-config.xml
+END
+remoting-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/config/remoting-config.xml
+END
+services-config-server.xml
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/config/services-config-server.xml
+END
+trans-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/testing/!svn/ver/32/trunk/ConsultaNewFiel/src/config/trans-config.xml
+END

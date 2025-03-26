@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EventMap xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="http://mate.asfusion.com/">
+	
+	<mx:Script>
+		<![CDATA[
+			import events.RepactacionEvent;
+			import views.categorias.cliente.modules.SimuladorRefinanciacion;
+			import views.categorias.cliente.models.RepactacionModel;
+			import events.AdelantoEfectivoEvent;
+			import managers.ClienteManager;
+			import managers.SimuladorManager;
+			import managers.ConceptosManager;
+			import views.categorias.cliente.modules.SimuladorAdelantoEfectivo;
+			import views.categorias.cliente.models.AdelantoEfectivoModel;
+		
+		]]>
+	</mx:Script>
+
+	<Injectors target="{SimuladorRefinanciacion}">
+		<ObjectBuilder generator="{RepactacionModel}"/>
+		<PropertyInjector targetKey="repactacionModel" source="{lastReturn}"/>
+	</Injectors>
+   	
+   	<EventHandlers type="{RepactacionEvent.SIMULAR}">
+   		<RemoteObjectInvoker instance="{calculoCuota}" method="recalcularRepactacion" arguments="{[event.montoTotal, event.suPago, event.concepto, event.cliente,null]}">
+			<resultHandlers>
+				<MethodInvoker generator="{RepactacionModel}" method="resultSimulacion" arguments="{resultObject}"/>
+			</resultHandlers>
+			<faultHandlers>
+				<MethodInvoker generator="{RepactacionModel}" method="fault" arguments="{fault}"/>
+			</faultHandlers>   			
+   		</RemoteObjectInvoker>
+   	</EventHandlers>
+   	
+   	<mx:RemoteObject id="calculoCuota" destination="GenericSessionDestination" source="calculoCuotaServicesTarget"/>
+</EventMap>

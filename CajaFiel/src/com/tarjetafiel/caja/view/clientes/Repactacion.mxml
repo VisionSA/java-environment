@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="keyPress(event)" close="cancelar()" layout="vertical" xmlns:textInput="com.util.components.textInput.*" title="{repactacionModel.title}" horizontalAlign="center" verticalAlign="middle" showCloseButton="true">
+	<mx:HBox>
+		<mx:Form width="100%">
+			<mx:FormItem label="Pago minimo:" fontSize="15" fontWeight="bold">
+				<textInput:TextInputMoneda id="txtPagoMinimo" text="{repactacionModel.pagoMinimoConPagoCuenta}" editable="false" width="240" styleName="textInputRojoGrande"/>
+			</mx:FormItem>		
+			<!--<mx:FormItem label="Pago a cuenta:" fontSize="15" fontWeight="bold">
+				<textInput:TextInputMoneda id="txtPagoACuenta" text="{liqClienteModel.pagoACuenta.toString()}" editable="false" width="240" styleName="textInputNegroGrande"/>			
+			</mx:FormItem>-->
+			<mx:FormItem label="Su Pago:" fontSize="15" fontWeight="bold">
+				<textInput:TextInputMoneda id="txtPagoActual" text="{pagoModel.importePgado}" keyDown="changePagoActual(event)" editable="{repactacionModel.simular || repactacionModel.simularRef}" fontSize="20" textAlign="center" color="#001EFF" fontWeight="bold" width="240" styleName="textInputAzulGrande"/>
+				<mx:HRule width="100%" height="10" strokeColor="#000000"/>
+			</mx:FormItem>
+			<mx:FormItem label="Total pago:" fontSize="15" fontWeight="bold" visible="false" includeInLayout="false">
+				<!--<textInput:TextInputMoneda id="txtPagoACuenta0" text="{liqClienteModel.pagoACuenta  + pagoModel.importePgado}" editable="false" fontSize="20" textAlign="center" color="#001EFF" fontWeight="bold" width="240" styleName="textInputAzulGrande"/>
+-->				
+				<textInput:TextInputMoneda id="txtPagoACuenta0" text="{pagoModel.importePgado}" editable="false" fontSize="20" textAlign="center" color="#001EFF" fontWeight="bold" width="240" styleName="textInputAzulGrande"/>
+			</mx:FormItem>
+			<mx:FormItem label="Importe a {!repactacionModel.refinanciacion ? 'repactar' : 'refinanciar'}:" fontSize="15" fontWeight="bold">
+				<textInput:TextInputMoneda id="txtSupago" editable="false" 
+					text="{repactacionModel.importeFinanciar}" 
+					fontSize="20" textAlign="center" color="#FF0000" fontWeight="bold" width="240" styleName="textInputRojoGrande"/>			
+			</mx:FormItem>								
+			<mx:FormItem label="Importe Total:" fontSize="15" fontWeight="bold" visible="false" includeInLayout="false">
+				<textInput:TextInputMoneda id="txtTotal" editable="false" 
+					text="{repactacionModel.importeTotal}" 
+					fontSize="20" textAlign="center" color="#FF0000" fontWeight="bold" width="240" styleName="textInputRojoGrande"/>			
+			</mx:FormItem>
+		</mx:Form>	
+		<mx:VBox height="100%" paddingBottom="15" paddingTop="15" paddingRight="15" horizontalAlign="center" verticalAlign="middle">
+			<mx:HRule width="95%"/>
+			<mx:Label text="Cuotas" fontSize="15" fontWeight="bold" width="100%" textAlign="center" />
+			<mx:HRule width="95%"/>
+			<mx:AdvancedDataGrid id="adgCuotas" dataProvider="{repactacionModel.arrayRepactaciones}" designViewDataType="flat" width="100%" height="100%" fontSize="18" fontWeight="bold">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Cuota" dataField="nroCuota"/>
+					<mx:AdvancedDataGridColumn headerText="Importe" formatter="{currencyFormat}" dataField="montoCuota"/>
+					<mx:AdvancedDataGridColumn headerText="idConcepto" dataField="idConcepto" visible="false"/>
+					<mx:AdvancedDataGridColumn headerText="montoTotal" dataField="montoTotal" visible="false"/>
+					<mx:AdvancedDataGridColumn headerText="suPago" dataField="suPago" visible="false"/>
+				</mx:columns>
+			</mx:AdvancedDataGrid>		
+		</mx:VBox>		
+	</mx:HBox>
+	
+	<mx:Label text="{'No es posible repactar. Debe completar el pago minimo con al menos ' + currencyFormat.format(repactacionModel.restaPagar)}" includeInLayout="{repactacionModel.restaPagarVisible}" visible="{repactacionModel.restaPagarVisible}" fontSize="15" color="#FF0000" fontWeight="bold"/>  		
+	<mx:Button label="Aceptar - Ctrl + A" click="calcularRepactacion()" enabled="{repactacionModel.restaPagar == 0}" visible="{!repactacionModel.simular}"/>
+
+	<mx:CurrencyFormatter currencySymbol="$" id="currencyFormat" rounding="nearest" precision="2"/>	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Concepto;
+			import com.tarjetafiel.caja.model.ConceptosModel;
+			import com.tarjetafiel.caja.model.RepactacionModel;
+			import com.tarjetafiel.caja.model.PagoModel;
+			import com.tarjetafiel.caja.model.LiqClienteModel;
+			import com.tarjetafiel.caja.vo.LiqClienteRepactacion;
+			import com.util.components.alert.AlertWarning;
+			import com.tarjetafiel.caja.model.ModelLocator;
+			import com.tarjetafiel.caja.event.RepactacionEvent;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;					
+			
+			[Bindable]private var liqClienteModel:LiqClienteModel = ModelLocator.getInstance().liqClienteModel;
+			[Bindable]private var pagoModel:PagoModel = ModelLocator.getInstance().pagoModel;
+			[Bindable]private var repactacionModel:RepactacionModel = ModelLocator.getInstance().repactacionModel;
+			[Bindable]private var conceptoModel:ConceptosModel = ModelLocator.getInstance().conceptosModel;
+			
+			
+			private function keyPress(evt:KeyboardEvent):void{
+				if(evt.ctrlKey && String.fromCharCode(evt.charCode).toUpperCase() == "A" && (!repactacionModel.simular || !repactacionModel.simularRef)){
+				    calcularRepactacion();
+				} else if (evt.keyCode == Keyboard.ESCAPE){
+					cancelar();
+				}
+			}
+		
+			private function cancelar():void{								
+				if(repactacionModel.simular || repactacionModel.simularRef)pagoModel.importePgado = pagoModel.importePgadoTemp;				
+				if(!repactacionModel.refinanciacion)
+					dispatchEvent(new RepactacionEvent(RepactacionEvent.CANCELAR_REPACTACION));
+				else
+					dispatchEvent(new RepactacionEvent(RepactacionEvent.CANCELAR_REFINANCIACION));
+				repactacionModel.simular = false;
+				repactacionModel.simularRef = false;
+				//repactacionModel.refinanciacion = false;
+				PopUpManager.removePopUp(this);
+				
+				
+			}
+			
+			private function closePopUp():void{								
+				if(repactacionModel.refinanciacion){
+					dispatchEvent(new CloseEvent(RepactacionEvent.AGREGAR_REFINANCIACION));
+				} else {
+					dispatchEvent(new CloseEvent(RepactacionEvent.AGREGAR_REPACTACION));
+				}				
+				//repactacionModel.refinanciacion = false;
+				repactacionModel.simular = false;
+				repactacionModel.simularRef = false;
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function calcularRepactacion():void{
+				if(repactacionModel.simular || repactacionModel.simularRef) {
+					this.cancelar();
+					return;
+				} 
+				if(repactacionModel.restaPagar == 0){
+					if(adgCuotas.selectedItem != null){
+						repactacionModel.liqClienteRepactacion = this.adgCuotas.selectedItem as LiqClienteRepactacion;
+						closePopUp();	
+					} else {
+						AlertWarning.show("Debe seleccionar alguna forma de repactación/refinanciación");
+					}
+						
+				} 			
+			}
+			
+			public function recalcularCuota():void{				
+				repactacionModel.recalcularRepactacion();
+				adgCuotas.setFocus();
+			}
+			
+			private function changePagoActual(evt:KeyboardEvent):void{
+				if(evt.keyCode == Keyboard.ENTER && (repactacionModel.simular || repactacionModel.refinanciacion)){
+					if(Number(txtPagoActual.text) < liqClienteModel.saldo){						
+						
+						pagoModel.importePgado = Number(txtPagoActual.text);
+						repactacionModel.recalcularRepactacion();
+						txtPagoActual.selectionBeginIndex = 0;
+						txtPagoActual.selectionBeginIndex = txtPagoActual.text.length;
+							
+					} else {
+						evt.stopPropagation();
+						AlertWarning.show("El monto ingresado supera el saldo.");
+					}
+					
+				}
+			}
+		]]>
+	</mx:Script>
+</mx:TitleWindow>

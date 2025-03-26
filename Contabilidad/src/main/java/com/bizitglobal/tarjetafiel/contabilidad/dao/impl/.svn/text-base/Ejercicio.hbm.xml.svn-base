@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+                               
+<hibernate-mapping>
+<class name="com.bizitglobal.tarjetafiel.contabilidad.negocio.Ejercicio" table="t_cont_ejercicios" >
+	<id name="idEjercicio" type="java.lang.Integer" column="c_ejercicio">
+		<generator class="increment" />
+	</id>
+	<property name="sucursalFiel" type="java.lang.Integer" column="c_empresa" not-null="true"/>
+	<property name="fechaInicio" type="java.util.Date" column="c_fecha_inicio" not-null="true"/>
+    <property name="fechaCierre" type="java.util.Date" column="c_fecha_cierre" not-null="true"/>
+    <property name="fechaPeriodo" type="java.util.Date" column="c_fecha_periodo" not-null="false"/>
+    <property name="estado" type="java.lang.String" column="c_estado" not-null="false" length="1"/>
+    <property name="observaciones" type="java.lang.String" column="c_observaciones" not-null="false" length="50"/>
+    <property name="actual" type="java.lang.String" column="c_actual" not-null="false" length="1"/>
+ </class>
+</hibernate-mapping>

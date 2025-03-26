@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+
+<class name="com.bizitglobal.tarjetafiel.proveedores.negocio.ProveedorFormaPago" table="t_vis_prov_formas_pagos"  >
+    <id name="idProvFormaPago" type="java.lang.Long" column="c_id_prov_forma_pago">
+        <generator class="increment" />
+    </id>
+
+    <property name="esChequeCruzado" type="java.lang.String" column="c_es_cheque_cruzado" not-null="false" length="1"/>
+
+    <property name="ordenCheque" type="java.lang.String" column="c_orden_cheque" length="100"/>
+
+    <property name="codCtaDeposito" type="java.lang.String" column="c_cod_cta_deposito" length="10"/>
+
+    <property name="cbu" type="java.lang.String" column="c_cbu" length="50"/>
+
+    <property name="nroCuentaFondos" type="long" column="c_nro_cuenta_fondos" not-null="false" length="10"/>
+
+    <property name="esActivo" type="java.lang.String" column="c_activo" length="1"/>
+    
+     <property name="chequeNoAlaOrden" type="java.lang.String" column="c_cheque_no_a_la_orden" length="1"/>
+
+    <!-- Associations -->
+    <many-to-one name="formaPago"    
+                 class="com.bizitglobal.tarjetafiel.general.negocio.FormaPago" 
+                 not-null="false"
+                 cascade="none">
+        <column name="c_id_forma_pago" />
+    </many-to-one>
+
+    <many-to-one name="tipoCta"    
+                 class="com.bizitglobal.tarjetafiel.general.negocio.TipoCuentaBanco" 
+                 not-null="false"
+                 cascade="none">
+        <column name="c_id_tipo_cta_banco" />
+    </many-to-one>    
+
+    <many-to-one name="banco"    
+    			 class="com.bizitglobal.tarjetafiel.general.negocio.Banco"  
+    			 not-null="false"
+    			 cascade="none">
+        <column name="c_id_banco" />
+    </many-to-one>
+
+    <many-to-one name="proveedor"    
+    			 class="com.bizitglobal.tarjetafiel.proveedores.negocio.Proveedor" 
+    			 not-null="false"
+    			 cascade="none">
+        <column name="c_id_proveedor" />
+    </many-to-one>
+    
+     
+</class>
+</hibernate-mapping>

@@ -1,0 +1,30 @@
+.dojoDialog {
+	background : #eee;
+	border : 1px solid #999;
+	-moz-border-radius : 5px;
+	padding : 4px;
+	/*positioning outside of the visible scope to prevent some ui glitches visibility hidden does not work*/
+	position:absolute;
+	left: 40%;
+	top: 40%;
+}
+
+.viewDialog {
+	background : #eee;
+	border : 1px solid #999;
+	-moz-border-radius : 5px;
+	padding : 4px;
+	/*positioning outside of the visible scope to prevent some ui glitches visibility hidden does not work*/
+	position:absolute;
+	left: 0px;
+	top: 0px;
+}
+
+.viewDialogDecoration {
+	width: 600px;
+}
+
+.viewDialogContent {
+	width: 600px;
+	height: 500px;
+}

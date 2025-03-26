@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+	<class name="com.bizitglobal.tarjetafiel.operador.negocio.Rol" table="t_vis_seg_roles" lazy="false">
+	    <id name="idRol" type="java.lang.Long" column="c_id_rol" >
+	        <generator class="increment" />
+	    </id>
+	
+	    <property name="descripcion" type="java.lang.String" column="c_descripcion" length="50"/>
+	    
+	    <set name="menuItems" inverse="true" cascade="none" >
+	        <key>
+	            <column name="c_id_rol" />
+	        </key>
+	        <one-to-many class="com.bizitglobal.tarjetafiel.operador.negocio.RolMenuItem" />
+	    </set>	    
+	
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%">
+	<mx:Script>
+		<![CDATA[
+			import com.util.block.ControlBlock;
+			import com.util.modules.ManagerModules;
+			
+			import events.BarraMenuEvent;
+			
+			import model.ConciliacionModelLocator;
+			
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.events.ListEvent;
+			import mx.events.MenuEvent;
+			import mx.modules.IModuleInfo;
+			import mx.modules.ModuleManager;
+			import mx.utils.ObjectUtil;
+			
+			import utils.ManejadorIconos3;
+			
+			private var moduloCargado : IModuleInfo;
+			
+			[Bindable]
+			private var modelo : ConciliacionModelLocator = ConciliacionModelLocator.getInstance();
+			
+			private function clickMenu(evt:MenuEvent):void{				
+
+				if (Application.application.modulo.data != evt.item.@data){
+					Application.application.modulo.unloadModule();
+					Application.application.modulo.removeAllChildren();
+                	Application.application.modulo.url = evt.item.@nameModule;             	
+                	Application.application.modulo.data = evt.item.@data;
+                	
+//                	modelo.moduloSeleccionado = new Object();
+//                	modelo.moduloSeleccionado.url = evt.item.@nameModule;
+//                	modelo.moduloSeleccionado.data = evt.item.@data;
+                	
+                	
+                	if (ObjectUtil.toString(Application.application.modulo.data=="2")){
+                		//new GenericPlanEvent(GenericPlanEvent.INICIALIZAR_MODULO_PLAN_EVENT,null).dispatch();
+                	}
+/*@I3918*/                	ControlBlock.getInstance().add();
+/*@F3918*/                	Application.application.modulo.loadModule();
+                	
+				}				
+				
+			}
+		]]>
+	</mx:Script>
+	<mx:ApplicationControlBar width="100%">
+		<mx:Image id="imgLogo" source="{ManejadorIconos3.LOGO_FIEL_CHICO(imgLogo, Application.application.url)}" 
+				  height="25" width="75"/>
+		<mx:MenuBar dataProvider="{menu}" showRoot="false" labelField="@label" itemClick="clickMenu(event)" width="100%"/>
+	</mx:ApplicationControlBar>
+	
+	
+
+	
+	<mx:XML xmlns="" id="menu">
+		<Menu>
+			<node label="Conciliación Bancaria" >
+				<node label="Extracto Bancario" nameModule="views/modulos/FlexFileUpload.swf" data="0"/>
+				<node label="Conciliación" nameModule="views/modulos/ConciliacionModule.swf" data="1"/>
+				<node label="Reversion Conciliación" nameModule="views/modulos/ReversionConciliacion.swf" data="2"/>
+				<node label="Consulta">
+					<node label="Conciliación" nameModule="views/modulos/ConsultaConciliacion.swf" data="3"/>
+					<node label="Banco Extracto" nameModule="views/modulos/ConsultaBanco.swf" data="4"/>
+					<node label="Movimiento Fondo" nameModule="views/modulos/ConsultaMovimiento.swf" data="5"/>
+					<node label="Informe Resumen Conciliacion" nameModule="views/modulos/InformeResumenConciliados.swf" data="6"/>
+				</node>
+			</node>
+			
+		</Menu>
+	</mx:XML>
+</mx:VBox>

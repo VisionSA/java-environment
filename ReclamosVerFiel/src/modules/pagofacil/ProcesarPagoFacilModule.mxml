@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" paddingBottom="5" paddingTop="5" layout="vertical" 
+	xmlns:upload="com.util.upload.*" xmlns:pagofacil="modules.pagofacil.*" xmlns:date="com.util.components.date.*" 
+	xmlns:paginacion="com.util.paginacion.*" backgroundColor="#6E6E6E" width="100%" 
+	xmlns:mate="http://mate.asfusion.com/" height="100%"
+	creationComplete="activarVariables()">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.Operador;
+			import com.tarjetafiel.caja.vo.Provincia;
+			import com.util.components.alert.AlertOk;
+			
+			import models.ApplicationModel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import vo.ArchivoCobroExternoNegocio;
+			import vo.ReclamoCabecera;
+			import vo.ReclamoCanales;
+			import vo.ReclamoDetalle;
+			import vo.ReclamoEstados;
+			import vo.ReclamoFormaResolucion;
+			import vo.ReclamoIndividuo;
+			import vo.ReclamoTipos;
+			
+			[Bindable]public var manager:Manager;
+			[Bindable]public var applicationModel:ApplicationModel;
+			
+			private var popUpUpload:UploadArchivo = new UploadArchivo();
+			
+			private var listarCuentasClientes:ListarCuentasClientes = new ListarCuentasClientes();
+			
+			private var editarReclamo:EditarReclamo;
+			private var listarReclamo:ListarReclamo;
+			private var nuevoReclamo:NuevoReclamo;
+			private var nuevoReclamoComercio:NuevoReclamoComercio;
+			private var editarReclamoComercio:EditarReclamoComercio;
+			private var listarReclamoComercio:ListarReclamoComercio;
+			
+			private function uploadNuevoArchivo():void{
+				/* Estas dos primeras sentencias se agregaron para que el paginador 
+				no sea nulo y refersque los cobros externos cuando termine de hacer el upload 
+				de dichos archivos */
+				paginador.paginador.pagina = 0;
+				 manager.paginador = paginador.paginador;
+				 
+				popUpUpload.manager = this.manager;
+				PopUpManager.addPopUp(popUpUpload,this,true);
+				PopUpManager.centerPopUp(popUpUpload);
+				
+				/* popUpUpload.tipoArchivo = "PF"; */
+			}
+			
+			
+			public function activarVariables() {
+				popUpUpload.nombreFiltro = 'Archivos para Adjuntar';
+				popUpUpload.extensionFiltro = '*.900';
+				manager.ListReclamoTipos = null;
+				manager.ListReclamoTiposTop = null;
+				manager.procesarListaReclamoTiposTop();
+				
+				paginador.paginador.pagina = 0;
+				manager.paginador = paginador.paginador;
+				
+				var numeroDias:Number;
+				numeroDias = 3;
+				var hoy:Date = new Date();
+				hoy.date -= numeroDias;
+				manager.fechaBuscar = hoy;
+				manager.listAllArchivos(hoy);  
+				
+			}
+			
+			public function mostrarEditarReclamo(idReclamo:Number,idDestino:Number,clienteInteresado:Number):void{
+				/* Estas dos primeras sentencias se agregaron para que el paginador 
+				no sea nulo y refersque los cobros externos cuando termine de hacer el upload 
+				de dichos archivos */
+				manager.ListReclamoEstados = null;
+				manager.ListReclamoResolucion = null;
+				manager.listarReclamoAdjuntos = null;
+				manager.listarReclamoDoc = null;
+				manager.idReclamoNuevo = null;
+				manager.listarCodigoPosnet = null;
+				
+				
+				
+				paginador.paginador.pagina = 0;
+				manager.paginador = paginador.paginador;
+				
+				manager.fechaFarmaciaDesde = dateDesde.selectedDate;
+				
+				if (idDestino == 1) {
+					editarReclamo = new EditarReclamo();
+					editarReclamo.manager = this.manager;
+					PopUpManager.addPopUp(editarReclamo,this,true);
+					PopUpManager.centerPopUp(editarReclamo);					
+				} else {
+					editarReclamoComercio = new EditarReclamoComercio();
+					editarReclamoComercio.manager = this.manager;
+					manager.procesarBuscarComercio(clienteInteresado+"");
+					PopUpManager.addPopUp(editarReclamoComercio,this,true);
+					PopUpManager.centerPopUp(editarReclamoComercio);
+				}
+				
+				
+				manager.procesarListaReclamoEstados();
+				manager.procesarBuscarReclamo(idReclamo);
+				manager.procesarListaReclamoDoc(idReclamo);
+				manager.idReclamoNuevo = idReclamo+"";
+				
+				
+				
+				
+				
+				/* popUpUpload.tipoArchivo = "PF"; */
+			}
+			
+			public function listarReclamos(idReclamo:Number,idDestino:Number,clienteInteresado:Number):void{
+				/* Estas dos primeras sentencias se agregaron para que el paginador 
+				no sea nulo y refersque los cobros externos cuando termine de hacer el upload 
+				de dichos archivos */
+				manager.buscaReclamoCabecera = null;
+				manager.listarReclamoDetalle = null;
+				manager.listarReclamoAdjuntos = null;
+				manager.idReclamoNuevo = null;
+				manager.listarReclamoDoc = null;
+				manager.listarCodigoPosnet = null;
+				manager.listarReclamoDoc = null;
+				
+				
+				if (idDestino == 1) {
+					listarReclamo = new ListarReclamo();
+					listarReclamo.manager = this.manager;
+					PopUpManager.addPopUp(listarReclamo,this,true);
+					PopUpManager.centerPopUp(listarReclamo);
+				} else {
+					listarReclamoComercio = new ListarReclamoComercio();
+					listarReclamoComercio.manager = this.manager;
+					manager.procesarBuscarComercio(clienteInteresado+"");
+					PopUpManager.addPopUp(listarReclamoComercio,this,true);
+					PopUpManager.centerPopUp(listarReclamoComercio);
+					
+				}
+				
+				
+				paginador.paginador.pagina = 0;
+				manager.paginador = paginador.paginador;
+				manager.procesarListaReclamoEstados();
+				manager.procesarBuscarReclamo(idReclamo);
+				manager.procesarListaReclamoDoc(idReclamo);
+				
+				
+				
+				
+				/* popUpUpload.tipoArchivo = "PF"; */
+			}
+			
+			
+			public function getDetino(data:int):String{
+				if (data == 1) {
+					return "Cliente";
+				} else {
+					return "Comercio";
+				}				
+			}    
+			
+			
+			public function listarClientes(idArchivo:Number):void{
+				
+				
+				listarCuentasClientes.manager = this.manager;
+				
+				manager.procesarListarCuentas(idArchivo);
+				
+				PopUpManager.addPopUp(listarCuentasClientes,this,true);
+				PopUpManager.centerPopUp(listarCuentasClientes);
+			}
+			
+			
+			private function paginar():void{
+				manager.paginador = paginador.paginador;
+				manager.paginar();
+			}
+			
+			private function buscar():void{
+				/* AlertOk.show(" buscar "); */
+				paginador.paginador.pagina = 0;
+				manager.paginador = paginador.paginador;
+				//manager.fechaBuscar = dateDesde.selectedDate;
+				manager.listAllArchivos(dateDesde.selectedDate);
+			}
+			
+			private function cambiarModoVisualizacionConciliados(modo:int):void{
+				manager.modoTotal = modo;
+				buscar();
+			}
+			
+			private function seleccionarReclamo(event:Event):void {
+				/* myLabel.text = "You selected: " +  ComboBox(event.target).selectedItem.label;
+				myData.text = "Data: " +  ComboBox(event.target).selectedItem.data; */
+				if (cmbReclamoTop.selectedIndex == 0) {
+					manager.modoTipoReclamo = 0;
+				} else {
+					manager.modoTipoReclamo = ComboBox(event.target).selectedItem.reclamoTipo;
+				}
+				
+				buscar();
+				
+			}
+			
+			public function paginacionCompleta():void{
+				/* AlertOk.show("ProcesarPagofacil paginacionCompleta"); */
+				paginador.paginacionCompleta(manager.paginador);				
+				 
+			}
+			
+			public function procesar(data:Object):void{
+				 manager.procesarArchivo(data as ArchivoCobroExternoNegocio); 				 
+			}
+			
+			
+			
+			private function levantarReclamosComercio():void{
+				
+				nuevoReclamoComercio = new NuevoReclamoComercio();
+				
+				nuevoReclamoComercio.manager = this.manager;
+				
+				manager.clienteInteresado = null;
+				manager.clienteDeclarante = null;
+				manager.listaProvincias = null;
+				manager.listaPartidos = null;
+				manager.listaLocalidades = null;
+				manager.listaBarrios = null;
+				manager.ListReclamoTipos = null;
+				manager.listarReclamoCanales = null;
+				manager.listarReclamoSucursales = null;
+				manager.idReclamoNuevo = null;
+				manager.listarReclamoDoc = null;
+				
+				var tipoDestino:int = 2;
+				manager.procesarListaReclamoTipos(tipoDestino);
+				manager.procesarListaCanales();
+				manager.procesarListaSucursales();
+				paginador.paginador.pagina = 0;
+				manager.paginador = paginador.paginador;
+				
+				manager.fechaFarmaciaDesde = dateDesde.selectedDate;
+				
+				PopUpManager.addPopUp(nuevoReclamoComercio,this,true);
+				PopUpManager.centerPopUp(nuevoReclamoComercio);
+				
+				
+			}
+			
+			private function levantarReclamos():void{
+				/* Estas dos primeras sentencias se agregaron para que el paginador 
+				no sea nulo y refersque los cobros externos cuando termine de hacer el upload 
+				de dichos archivos */
+				nuevoReclamo = new NuevoReclamo();
+				
+				nuevoReclamo.manager = this.manager;
+				
+				manager.clienteInteresado = null;
+				manager.clienteDeclarante = null;
+				manager.listaProvincias = null;
+				manager.listaPartidos = null;
+				manager.listaLocalidades = null;
+				manager.listaBarrios = null;
+				manager.ListReclamoTipos = null;
+				manager.listarReclamoCanales = null;
+				manager.listarReclamoSucursales = null;
+				manager.idReclamoNuevo = null;
+				manager.listarReclamoDoc = null;
+				
+				manager.fechaFarmaciaDesde = dateDesde.selectedDate;
+				
+				 manager.procesarListaProvincias();
+				 var tipoDestino:int = 1;
+				 manager.procesarListaReclamoTipos(tipoDestino);
+				 manager.procesarListaCanales();
+				 manager.procesarListaSucursales();
+				 paginador.paginador.pagina = 0;
+				manager.paginador = paginador.paginador;			
+				
+				PopUpManager.addPopUp(nuevoReclamo,this,true);
+				PopUpManager.centerPopUp(nuevoReclamo);
+				
+				
+			}
+			
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:DateFormatter formatString="DD/MM/YYYY" id="dateFormat"/>
+	<mx:CurrencyFormatter id="currenencyFormatter" rounding="nearest" precision="2" currencySymbol="$"/>
+	
+	<mx:Resize id="resize"/>
+	
+	<mate:Listener type="paginacionCompleta" receive="paginacionCompleta()"/>
+	
+	<mx:HBox horizontalGap="0" height="100%" width="100%">
+		<mx:VBox label="Eventos" width="100%" height="100%" horizontalAlign="center">
+			
+			<mx:ApplicationControlBar width="100%">
+				<mx:Label text="Fecha desde:" styleName="lblInfoCaja"/>
+				<!--I4170-->		<date:DateFiledMultiLan id="dateDesde" selectedDate="{manager.fechaBuscar}"/>
+				<mx:Button label="Buscar" click="buscar()"/>
+				<mx:HBox width="20%" horizontalAlign="left" verticalAlign="middle">
+					<mx:Label text="Reclamos:" styleName="lblInfoCaja"/>
+					<mx:RadioButtonGroup id="radiogroup2"/>
+					<mx:RadioButton label="Todos" groupName="radiogroup2" styleName="lblInfoBlanco" selected="true"  change="cambiarModoVisualizacionConciliados(3)"/>
+					<mx:RadioButton label="Pendientes" groupName="radiogroup2" styleName="lblInfoBlanco" change="cambiarModoVisualizacionConciliados(4)"/>
+				</mx:HBox>
+				<mx:HBox width="40%" horizontalAlign="left" verticalAlign="middle">
+					
+					<mx:Label text="Tipo Reclamos:" styleName="lblInfoCaja"/>
+							<mx:ComboBox id="cmbReclamoTop"  labelField="descripcion" styleName="tituloBusquedas"
+										 dataProvider="{manager.ListReclamoTiposTop}"  width="100%"  close="seleccionarReclamo(event)" />
+				</mx:HBox>		
+			</mx:ApplicationControlBar>	
+			<mx:AdvancedDataGrid id="adg1" designViewDataType="flat" height="100%" width="100%" dataProvider="{manager.archivosList}">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Nº Reclamo" dataField="idReclamo" textAlign="left"/>	
+					<mx:AdvancedDataGridColumn headerText="Destino Reclamo" >
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Label text="{outerDocument.getDetino(data.idDestino)}"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Nº Codigo" dataField="clienteInteresado" textAlign="left"/>
+					<mx:AdvancedDataGridColumn headerText="Apellido Nombre Interesado" dataField="apynomInteresado" textAlign="left"/>
+					<mx:AdvancedDataGridColumn headerText="Nº Cliente Denunciante" dataField="clienteDenunciante" textAlign="left"/>
+					<mx:AdvancedDataGridColumn headerText="Apellido Nombre Denunciente" dataField="apynomDenunciante" textAlign="left"/>
+					<mx:AdvancedDataGridColumn headerText="Operador" dataField="apynomOperador" textAlign="left"/>
+					<mx:AdvancedDataGridColumn headerText="Fecha Reclamo" dataField="fechaReclamo" formatter="{dateFormat}" textAlign="left"/>
+					<mx:AdvancedDataGridColumn headerText="Tipo Reclamo" dataField="tipoReclamo" textAlign="left"/>
+					<mx:AdvancedDataGridColumn headerText="Estado Reclamo" dataField="estadoReclamo" textAlign="left"/>				
+					
+										
+				<mx:AdvancedDataGridColumn headerText="Editar Reclamo">				
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:Button label="Editar Reclamo" enabled="{data.estadoReclamo != 'TERMINADO' ?  true : false }"    click="outerDocument.mostrarEditarReclamo(data.idReclamo,data.idDestino,data.clienteInteresado)"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn headerText="Listar Reclamo">
+						<mx:itemRenderer>
+							<mx:Component>
+							<mx:Button label="Listar Reclamo"  click="outerDocument.listarReclamos(data.idReclamo,data.idDestino,data.clienteInteresado)"/>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:AdvancedDataGridColumn>
+				</mx:columns>
+			</mx:AdvancedDataGrid>
+			
+			
+			
+			<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" horizontalGap="2">
+				<paginacion:PaginadorComp id="paginador" verticalGap="0" paginar="this.paginar()"/>
+				<mx:HBox  width="100%" height="10%"   paddingTop="0"   horizontalAlign="center" verticalAlign="middle" paddingBottom="0" horizontalGap="60" >					
+				<mx:Button label="Nuevo Reclamo Cliente" click="levantarReclamos()"/>
+				<mx:Button label="Nuevo Reclamo Comercio" click="levantarReclamosComercio()"/>
+				</mx:HBox>
+			</mx:HBox>			
+			
+			
+		</mx:VBox>		
+		
+	</mx:HBox>
+	
+	
+	
+	
+</mx:Module>

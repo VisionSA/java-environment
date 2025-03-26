@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+				keyDown="if(event.keyCode == Keyboard.ESCAPE) PopUpManager.removePopUp(this)"  
+				creationComplete="init()" layout="vertical" 
+				showCloseButton="true" close="PopUpManager.removePopUp(this)" 
+				horizontalAlign="center" xmlns:mate="http://mate.asfusion.com/" 
+				xmlns:ns1="com.util.paginacion.*" 
+				height="146" title="Nuevo Estado" width="278" 
+				resizeEffect="{resize}" verticalScrollPolicy="off" 
+				initialize="init()"  >
+	<mx:VBox paddingTop="5" width="100%" height="100%">
+		<mx:Label styleName="tituloBusquedas" paddingLeft="5" width="100%" text="{manager.nombreCliente}"/>
+		<mx:HBox paddingBottom="10" paddingLeft="10" width="100%">
+			<mx:Label text="Estado" paddingRight="5"/>
+			<mx:ComboBox id="cmbEstados" change="cmbEstados_changeHandler(event)"
+						 dataProvider="{listaEstados}"  labelField="descripcion" width="190"/>
+		</mx:HBox>
+
+		<mx:HBox width="100%" horizontalAlign="right" paddingRight="10">
+			<mx:Button label="Guardar" width="90" click="guardar()"/>
+			<mx:Button label="Cancelar" width="90" click="PopUpManager.removePopUp(this)" />
+		</mx:HBox>
+	</mx:VBox>
+	
+	
+
+	
+	
+	<mx:Resize id="resize"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tarjetafiel.caja.vo.GestionClienteLog;
+			import com.util.components.alert.AlertOk;
+			
+			import modules.principal.GestionClienteModule;
+			import modules.principal.Manager;
+			
+			import mx.controls.Alert;
+			import mx.effects.Resize;
+			import mx.events.CloseEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ListEvent;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]public var manager:Manager;
+			
+			private var listaEstados:Array = new Array(
+				"Gestionar Cliente",
+				"Gestionando Cliente",
+				"Llamar Nuevamente",
+				"F. Con Contacto",
+				"F. Sin Contacto"
+			);
+			private var banderaEstado:Boolean = false;
+			
+			
+		    private function init():void {
+
+			}
+			
+			
+			/**
+			 * @id 3945
+			 * guarda un nuevo telefono
+			 * */
+			public function guardar():void {
+				if(banderaEstado){
+					banderaEstado = false;
+					//manager.estadoActual = this.cmbEstados.selectedIndex + 1;
+					switch(this.cmbEstados.selectedIndex){
+						case 0:
+							manager.estadoActual = 1; //Gestionar Cliente
+							break;
+						case 1:
+							manager.estadoActual = 2; //Gestionando Cliente
+							break;
+						case 2:
+							manager.estadoActual = 5; //Llamar Nuevamente
+							break;
+						case 3:
+							manager.estadoActual = 3; //F. Con Contacto
+							break
+						case 4:
+							manager.estadoActual = 4; //F. Sin Contacto
+					}
+					manager.guardarGestionClienteLog();
+					manager.buscarGestionConConsumo();
+					manager.buscarGestionSinConsumo();
+					PopUpManager.removePopUp(this);
+				}
+				else PopUpManager.removePopUp(this);
+			}
+			
+			/**
+			 * @id 3945
+			 * limpia los datos
+			 * */
+			public function cleanData():void {
+
+			}
+
+
+			public function initCombo():void {
+
+			}
+
+
+
+			protected function cmbEstados_changeHandler(event:ListEvent):void
+			{
+				this.banderaEstado = true;
+			}
+
+	 	]]>
+	</mx:Script>
+
+</mx:TitleWindow>
